@@ -1,0 +1,7 @@
+scipy
+numpy
+setuptools
+pytest
+urllib3
+cython
+matplotlib
