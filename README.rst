@@ -3,12 +3,4 @@ spharpy
 =======
 
 
-Python package for spherical array processing.
-
-
-* Free software: MIT license
-* Documentation: https://spharpy.readthedocs.io.
-
-
-Features
---------
+Python package for SPherical ARray processing in PYthon.
