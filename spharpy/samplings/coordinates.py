@@ -158,3 +158,26 @@ class Coordinates(object):
     def longitude(self):
         """The longitude angle as used in geospatial coordinates."""
         return np.arctan2(self.y, self.x)
+
+    @property
+    def cartesian(self):
+        """Cartesian coordinates of all points."""
+        return np.vstack((self.x, self.y, self.z))
+
+    @cartesian.setter
+    def cartesian(self, value):
+        """Cartesian coordinates of all points."""
+        self.x = value[0, :]
+        self.y = value[1, :]
+        self.z = value[2, :]
+
+    @property
+    def spherical(self):
+        """Spherical coordinates of all points."""
+        return np.vstack((self.radius, self.elevation, self.azimuth))
+
+    @spherical.setter
+    def spherical(self, value):
+        """Cartesian coordinates of all points."""
+        x, y, z = sph2cart(value[0, :], value[1, :], value[2, :])
+        self.cartesian = np.vstack((x, y, z))
