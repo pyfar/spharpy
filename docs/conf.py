@@ -20,9 +20,13 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
-
 import spharpy
+
+# Inserting the path of the extension module is required to scrape docstrings
+# from binary. Sphinx does not generate documentation from the corresponding
+# *.pyx file.
+sys.path.insert(0, os.path.abspath('../spharpy/'))
+
 
 # -- General configuration ---------------------------------------------
 

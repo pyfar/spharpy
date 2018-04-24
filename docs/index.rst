@@ -5,7 +5,7 @@ Welcome to spharpy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   readme
+   intro
    installation
    usage
    modules
