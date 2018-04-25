@@ -197,6 +197,8 @@ def spherical_harmonic_basis(n_max, coords):
     set_base(arr, mat)
     return arr
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def spherical_harmonic_basis_real(n_max, coords):
     """
     Calulcates the real valued spherical harmonic basis matrix of order Nmax
