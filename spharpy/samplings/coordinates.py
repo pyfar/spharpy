@@ -146,6 +146,9 @@ class Coordinates(object):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
+        radius = np.asarray(radius, dtype=np.double)
+        elevation = np.asarray(elevation, dtype=np.double)
+        azimuth = np.asarray(azimuth, dtype=np.double)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return Coordinates(x, y, z)
 

@@ -9,6 +9,7 @@ import numpy as np
 cimport numpy as cnp
 from libc.stdlib cimport free
 import cython
+from spharpy.samplings import Coordinates
 
 cdef extern from "spherical_harmonics.h":
     int pyramid2linear(int order, int degree);
@@ -149,9 +150,7 @@ def acn2nm(acn):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def spherical_harmonic_basis(unsigned Nmax,
-                             cnp.ndarray[double, ndim=1] theta,
-                             cnp.ndarray[double, ndim=1] phi):
+def spherical_harmonic_basis(n_max, coords):
     """
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
@@ -170,19 +169,26 @@ def spherical_harmonic_basis(unsigned Nmax,
 
     Parameters
     ----------
-    n : integer
+    n_max : integer
         Spherical harmonic order
-    theta : double ndarray
-        Elevation angle [0, pi]
-    phi : double ndarray
-        Azimuth angle [0, 2pi]
+    coordinates : Coordinates
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
 
     Returns
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
     """
-
+    cdef unsigned Nmax = <unsigned>n_max
+    if coords.elevation.ndim < 1:
+        elevation = coords.elevation[np.newaxis]
+        azimuth = coords.azimuth[np.newaxis]
+    else:
+        elevation = coords.elevation
+        azimuth = coords.azimuth
+    cdef cnp.ndarray[double, ndim=1] theta = elevation
+    cdef cnp.ndarray[double, ndim=1] phi = azimuth
     cdef unsigned n_points = theta.shape[0]
     cdef int n_coeff = (Nmax+1)*(Nmax+1)
     cdef complex *mat = make_spherical_harmonics_basis(Nmax, &theta[0], &phi[0], n_points)
@@ -191,9 +197,7 @@ def spherical_harmonic_basis(unsigned Nmax,
     set_base(arr, mat)
     return arr
 
-def spherical_harmonic_basis_real(unsigned Nmax,
-                                  cnp.ndarray[double, ndim=1] theta,
-                                  cnp.ndarray[double, ndim=1] phi):
+def spherical_harmonic_basis_real(n_max, coords):
     """
     Calulcates the real valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
@@ -219,10 +223,9 @@ def spherical_harmonic_basis_real(unsigned Nmax,
     ----------
     n : integer
         Spherical harmonic order
-    theta : double ndarray
-        Elevation angle [0, pi]
-    phi : double ndarray
-        Azimuth angle [0, 2pi]
+    coordinates : Coordinates
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
 
     Returns
     -------
@@ -231,6 +234,15 @@ def spherical_harmonic_basis_real(unsigned Nmax,
 
 
     """
+    cdef unsigned Nmax = <unsigned>n_max
+    if coords.elevation.ndim < 1:
+        elevation = coords.elevation[np.newaxis]
+        azimuth = coords.azimuth[np.newaxis]
+    else:
+        elevation = coords.elevation
+        azimuth = coords.azimuth
+    cdef cnp.ndarray[double, ndim=1] theta = elevation
+    cdef cnp.ndarray[double, ndim=1] phi = azimuth
     cdef unsigned n_points = theta.shape[0]
     cdef int n_coeff = (Nmax+1)*(Nmax+1)
     cdef double *mat = make_spherical_harmonics_basis_real(Nmax, &theta[0], &phi[0], n_points)
