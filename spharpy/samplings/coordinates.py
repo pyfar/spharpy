@@ -184,3 +184,8 @@ class Coordinates(object):
         """Cartesian coordinates of all points."""
         x, y, z = sph2cart(value[0, :], value[1, :], value[2, :])
         self.cartesian = np.vstack((x, y, z))
+
+    @property
+    def n_points(self):
+        """Return number of points stored in the object"""
+        return self.x.size

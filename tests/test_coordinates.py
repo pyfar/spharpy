@@ -206,3 +206,7 @@ def test_setter_spherical():
     npt.assert_allclose(coords._z, z, atol=eps)
 
 
+def test_n_points():
+    coords = Coordinates([1,0], [1,1], [0,1])
+    assert coords.n_points == 2
+
