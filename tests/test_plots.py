@@ -1,6 +1,5 @@
 import spharpy
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def test_balloon_plot_abs():

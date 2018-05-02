@@ -3,15 +3,13 @@ Plot functions for spatial data
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
 import matplotlib.tri as mtri
-import scipy.spatial as sspat
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
-import matplotlib
+
+import scipy.spatial as sspat
 
 from spharpy.samplings import sph2cart
-from spharpy.samplings.coordinates import Coordinates
 
 
 def set_aspect_equal_3d(ax):
