@@ -3,12 +3,14 @@ Plot functions for spatial data
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
 import matplotlib.tri as mtri
-import scipy.spatial as sspat
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
+
+import scipy.spatial as sspat
+
 from spharpy.samplings import sph2cart
+
 
 def set_aspect_equal_3d(ax):
     """Fix equal aspect bug for 3D plots."""
@@ -33,22 +35,17 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(x, y, z):
+def scatter(coordinates):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
     ----------
-    x : ndarray, double
-        x - coordinates
-    y : ndarray, double
-        y - coordinates
-    z : ndarray, double
-        z - coordinates
+    coordinates : Coordinates
 
     """
     fig = plt.gcf()
     ax = fig.add_subplot('111', projection='3d')
-    ax.scatter(x, y, z)
+    ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
@@ -57,48 +54,72 @@ def scatter(x, y, z):
     plt.show()
 
 
-def surf(theta, phi, data, cmap=cm.viridis, phase=False):
+def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True):
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi
 
+    Note
+    ----
+    When plotting the phase encoded in the colormap, the function will switch
+    to the HSV colormap and ignore the user input for the cmap input variable.
+
     Parameters
     ----------
-    theta : ndarray, double
-        Elevation angles
-    phi : ndarray, double
-        Azimuth angles
+    coordinates : Coordinates
+        Coordinates defining a sphere
     data : ndarray, double
-        Data for each angle, must be of the same dimension as theta and phi
+        Data for each angle, must have size corresponding to the number of
+        points given in coordinates.
     cmap : matplotlib colomap, optional
         Colormap for the plot, see matplotlib.cm
     phase : boolean, optional
-        Decode the phase of the data in the colormap. This option will be activated
-        by default of the data is complex valued.
+        Encode the phase of the data in the colormap. This option will be
+        activated by default of the data is complex valued.
+    show : boolean, optional
+        Wheter to show the figure or not
     """
-    x, y, z = sph2cart(np.abs(data), theta, phi)
-    hull = sspat.ConvexHull(np.asarray(sph2cart(np.ones(theta.shape[0]), theta, phi)).T)
+    n_points = coordinates.n_points
+    x, y, z = sph2cart(np.abs(data),
+                       coordinates.elevation,
+                       coordinates.azimuth)
+    hull = sspat.ConvexHull(np.asarray(sph2cart(np.ones(n_points),
+                                                coordinates.elevation,
+                                                coordinates.azimuth)).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
     fig = plt.gcf()
     ax = fig.add_subplot(111, projection='3d', aspect='equal')
 
     if np.iscomplex(data).any() or phase:
+        cdata = np.mod(np.angle(data), 2*np.pi)
         cmap = cm.hsv
-        phase_colors = cmap(np.mod(np.angle(data), 2*np.pi)/(2*np.pi))
-        facecolors = np.mean(phase_colors[tri.triangles], axis=1)
-        plot = ax.plot_trisurf(tri, z, antialiased=True)
-        plot.set_facecolors(facecolors)
+        vmin = 0
+        vmax = 2*np.pi
     else:
-        plot = ax.plot_trisurf(tri, z, antialiased=True, cmap=cmap)
-        fig.colorbar(plot, shrink=0.75, aspect=20)
+        cdata = np.abs(data)
+        vmin = np.min(cdata)
+        vmax = np.max(cdata)
+
+    plot = ax.plot_trisurf(tri,
+                           z,
+                           cmap=cmap,
+                           antialiased=True,
+                           vmin=vmin,
+                           vmax=vmax)
+
+    colors = np.mean(cdata[tri.triangles], axis=1)
+    plot.set_array(colors)
+
+    fig.colorbar(plot, shrink=0.75, aspect=20)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
     set_aspect_equal_3d(ax)
-    plt.show()
+    if show:
+        plt.show()
 
 
-def contour(latitude, longitude, data, limits=None, cmap=cm.viridis):
+def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -115,11 +136,14 @@ def contour(latitude, longitude, data, limits=None, cmap=cm.viridis):
     longitude: ndarray, double
         Geodetic longitude angle of the map, must be in [-pi, pi]
     data: ndarray, double
-        Data for each angle, must be of the same dimension as latitude and longitude
+        Data for each angle, must have size corresponding to the number of
+        points given in coordinates.
+    show : boolean, optional
+        Wheter to show the figure or not
 
     """
-    lat_deg = latitude * 180/np.pi
-    lon_deg = longitude * 180/np.pi
+    lat_deg = coordinates.latitude * 180/np.pi
+    lon_deg = coordinates.longitude * 180/np.pi
     fig = plt.gcf()
     ax = plt.gca()
     ax.set_xlabel('Longitude [$^\\circ$]')
@@ -148,5 +172,5 @@ def contour(latitude, longitude, data, limits=None, cmap=cm.viridis):
     plt.grid(True)
     cb = fig.colorbar(cf, ax=ax)
     cb.set_label('Amplitude')
-
-    plt.show()
+    if show:
+        plt.show()

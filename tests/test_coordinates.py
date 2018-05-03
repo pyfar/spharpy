@@ -158,3 +158,55 @@ def test_getter_longitude():
     height, lat, lon = cart2latlon(x, y, z)
     coords = Coordinates(x, y, z)
     npt.assert_allclose(coords.longitude, lon)
+
+def test_getter_cartesian():
+    x = [1, 0, 0, 0]
+    y = [0, 1, 0, 0]
+    z = [0, 0, 1, 0]
+
+    coords = Coordinates(x, y, z)
+    ref = np.vstack((x, y, z))
+    npt.assert_allclose(coords.cartesian, ref)
+
+
+def test_setter_cartesian():
+    x = np.array([1, 0, 0, 0])
+    y = np.array([0, 1, 0, 0])
+    z = np.array([0, 0, 1, 0])
+    cart = np.vstack((x, y, z))
+    coords = Coordinates()
+    coords.cartesian = cart
+    npt.assert_allclose(coords.cartesian, cart)
+
+
+def test_getter_spherical():
+    x = np.array([1, 0, 0, 1], dtype=np.float64)
+    y = np.array([0, 1, 0, 1], dtype=np.float64)
+    z = np.array([0, 0, 1, 1], dtype=np.float64)
+
+
+    rad, theta, phi = cart2sph(x, y, z)
+
+    coords = Coordinates(x, y, z)
+    ref = np.vstack((rad, theta, phi))
+    npt.assert_allclose(coords.spherical, ref)
+
+
+def test_setter_spherical():
+    eps = np.spacing(1)
+    x = np.array([1, 0, 0, 1], dtype=np.float64)
+    y = np.array([0, 1, 0, 1], dtype=np.float64)
+    z = np.array([0, 0, 1, 1], dtype=np.float64)
+    rad, theta, phi = cart2sph(x, y, z)
+    spherial = np.vstack((rad, theta, phi))
+    coords = Coordinates()
+    coords.spherical = spherial
+    npt.assert_allclose(coords._x, x, atol=eps)
+    npt.assert_allclose(coords._y, y, atol=eps)
+    npt.assert_allclose(coords._z, z, atol=eps)
+
+
+def test_n_points():
+    coords = Coordinates([1,0], [1,1], [0,1])
+    assert coords.n_points == 2
+

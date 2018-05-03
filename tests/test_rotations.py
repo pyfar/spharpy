@@ -4,6 +4,7 @@ import pytest
 import numpy as np
 import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
+from spharpy.samplings import Coordinates
 
 def test_rotation_matrix_z_axis_complex():
     rot_angle = np.pi/2
@@ -32,10 +33,12 @@ def test_rotation_sh_basis_z_axis_complex():
     theta = np.asarray(np.pi/2)[np.newaxis]
     phi_x = np.asarray(0.0)[np.newaxis]
     phi_y = np.asarray(np.pi/2)[np.newaxis]
-    reference = spherical_harmonic_basis(n_max, theta, phi_y).T.conj()
+    coords_x = Coordinates(1, 0, 0)
+    coords_y = Coordinates(0, -1, 0)
+    reference = spherical_harmonic_basis(n_max, coords_x).T.conj()
 
     rot_mat = transforms.rotation_z_axis(n_max, rot_angle)
-    sh_vec_x = spherical_harmonic_basis(n_max, theta, phi_x)
+    sh_vec_x = spherical_harmonic_basis(n_max, coords_y)
     sh_vec_rotated = rot_mat @ sh_vec_x.T.conj()
 
     np.testing.assert_almost_equal(sh_vec_rotated, reference)

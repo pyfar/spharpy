@@ -4,8 +4,7 @@ Collection of sampling schemes for the sphere
 
 import urllib3
 import numpy as np
-from spharpy.samplings.helpers import cart2sph
-# import healpy
+from spharpy.samplings.coordinates import Coordinates
 
 
 def hyperinterpolation(n_max):
@@ -31,12 +30,10 @@ def hyperinterpolation(n_max):
 
     Returns
     -------
-    rad : ndarray
-        Radius of the sampling points
-    theta : ndarray
-        Elevation angle in the range [0, pi]
-    phi : ndarray
-        Azimuth angle in the range [0, 2 pi]
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
+    weights : ndarray
+        Weights for each sampling point
     """
     n_sh = (n_max+1)**2
     filename = "/Womersley/md%02d.%04d" % (n_max, n_sh)
@@ -49,14 +46,18 @@ def hyperinterpolation(n_max):
     if http_data.status == 200:
         file_data = http_data.data.decode()
     else:
-        raise ConnectionError("Connection error. Check your internet connection.")
+        raise ConnectionError("Connection error. Please check your internet \
+                connection.")
 
-    file_data = np.fromstring(file_data, dtype='double', sep=' ').reshape((n_sh, 4))
-
-    rad, theta, phi = cart2sph(file_data[:, 0], file_data[:, 1], file_data[:, 2])
-    rad = np.ones(n_sh)
+    file_data = np.fromstring(file_data,
+                              dtype='double',
+                              sep=' ').reshape((n_sh, 4))
+    coordinates = Coordinates(file_data[:, 0],
+                              file_data[:, 1],
+                              file_data[:, 2])
     weights = file_data[:, 3]
-    return rad, theta, phi, weights
+
+    return coordinates, weights
 
 
 def spherical_t_design(order, n_points=None, symmetric=False):
@@ -72,14 +73,16 @@ def spherical_t_design(order, n_points=None, symmetric=False):
 
     Notes
     -----
-    This function downloads a pre-calculated set of points from Rob Womersley's homepage [2]_
+    This function downloads a pre-calculated set of points from
+    Rob Womersley's homepage [2]_
 
     References
     ----------
 
-    .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned Spherical
-            Designs for Integration and Interpolation on the Two-Sphere,” SIAM Journal on
-            Numerical Analysis, vol. 48, no. 6, pp. 2135–2157, Jan. 2010.
+    .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
+            Spherical Designs for Integration and Interpolation on the
+            Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
+            pp. 2135–2157, Jan. 2010.
     .. [2]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
 
 
@@ -94,16 +97,9 @@ def spherical_t_design(order, n_points=None, symmetric=False):
 
     Returns
     -------
-    rad : ndarray
-        Radius of the sampling points
-    theta : ndarray
-        Elevation angle in the range [0, pi]
-    phi : ndarray
-        Azimuth angle in the range [0, 2 pi]
-
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
     """
-    # n_sh = (n_max+1)**2
-
     n_points = np.int(np.ceil((order + 1)**2 / 2) + 1)
     n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72}
     if order in n_points_exceptions:
@@ -119,17 +115,17 @@ def spherical_t_design(order, n_points=None, symmetric=False):
     if http_data.status == 200:
         file_data = http_data.data.decode()
     elif http_data.status == 404:
-        raise FileNotFoundError("File was not found. Check if the design you are \
-                trying to calculate is a valid t-design.")
+        raise FileNotFoundError("File was not found. Check if the design you \
+                are trying to calculate is a valid t-design.")
     else:
-        raise ConnectionError("Connection error. Check your internet connection.")
+        raise ConnectionError("Connection error. Please check your internet \
+                connection.")
 
-    points = np.fromstring(file_data, dtype=np.double, sep=' ').reshape((n_points, 3)).T
-
-    rad, theta, phi = cart2sph(points[0], points[1], points[2])
-    rad = np.ones(points[0].shape)
-
-    return rad, theta, phi
+    points = np.fromstring(file_data,
+                           dtype=np.double,
+                           sep=' ').reshape((n_points, 3)).T
+    coordinates = Coordinates(points[:, 0], points[:, 1], points[:, 2])
+    return coordinates
 
 
 
@@ -158,6 +154,10 @@ def dodecahedron():
         Elevation angle in the range [0, pi]
     phi : ndarray
         Azimuth angle in the range [0, 2 pi]
+    Returns
+    -------
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
     """
 
     dihedral = 2*np.arcsin(np.cos(np.pi/3)/np.sin(np.pi/5))
@@ -188,20 +188,18 @@ def dodecahedron():
                             phi3 + np.pi/3]), 2)
     rad = np.ones(np.size(theta))
 
-    return rad, theta, phi
+    coordinates = Coordinates.from_spherical(rad, theta, phi)
+    return coordinates
+
 
 def icosahedron():
-    """Generate a sampling based on the center points of the twenty icosahedron faces.
+    """Generate a sampling based on the center points of the twenty \
+            icosahedron faces.
 
     Returns
     -------
-    rad : ndarray
-        Radius of the sampling points
-    theta : ndarray
-        Elevation angle in the range [0, pi]
-    phi : ndarray
-        Azimuth angle in the range [0, 2 pi]
-
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
     """
     gamma_R_r = np.arccos(np.cos(np.pi/3) / np.sin(np.pi/5))
     gamma_R_rho = np.arccos(1/(np.tan(np.pi/5) * np.tan(np.pi/3)))
@@ -215,7 +213,9 @@ def icosahedron():
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi/5, 2)))
 
     rad = np.ones(20)
-    return rad, theta, phi
+    coordinates = Coordinates.from_spherical(rad, theta, phi)
+    return coordinates
+
 
 def equiangular(n_max):
     """Generate an equiangular sampling of the sphere.
@@ -227,15 +227,10 @@ def equiangular(n_max):
 
     Returns
     -------
-    rad : ndarray
-        Radius of the sampling points
-    theta : ndarray
-        Elevation angle in the range [0, pi]
-    phi : ndarray
-        Azimuth angle in the range [0, 2 pi]
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
     weights : ndarray
         Quadrature weights for each point
-
 
     TODO: implement test function and check weights
     """
@@ -254,10 +249,16 @@ def equiangular(n_max):
     L = 2*np.arange(0, n_max + 1) + 1
     factor_phi = 2*np.pi/n_phi
     factor_theta = 2/n_theta
-    factor_sin = 4/np.pi * np.sin(theta_angles) * (1/L @ L[np.newaxis].T @ theta_angles[np.newaxis])
+    factor_sin = 4/np.pi * np.sin(theta_angles) * \
+        (1/L @ L[np.newaxis].T @ theta_angles[np.newaxis])
     weights = np.tile(factor_phi * factor_theta * np.pi/2 * factor_sin, n_phi)
 
-    return rad, theta.reshape(-1), phi.reshape(-1), weights
+    coordinates = Coordinates.from_spherical(rad,
+                                             theta.reshape(-1),
+                                             phi.reshape(-1))
+
+    return coordinates, weights
+
 
 def gaussian(n_max):
     """Generate sampling of the sphere based on the Gaussian quadrature.
@@ -269,12 +270,8 @@ def gaussian(n_max):
 
     Returns
     -------
-    rad : ndarray
-        Radius of the sampling points
-    theta : ndarray
-        Elevation angle in the range [0, pi]
-    phi : ndarray
-        Azimuth angle in the range [0, 2 pi]
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
     weights : ndarray
         Quadrature weights for each point
 
@@ -289,7 +286,12 @@ def gaussian(n_max):
     rad = np.ones(theta.size)
     weights = np.tile(weights*np.pi/(n_max+1), 2*(n_max+1))
 
-    return rad, theta.reshape(-1), phi.reshape(-1), weights
+    coordinates = Coordinates.from_spherical(rad,
+                                             theta.reshape(-1),
+                                             phi.reshape(-1))
+
+    return coordinates, weights
+
 
 def eigenmike_em32():
     """Microphone positions of the Eigenmike em32 by mhacoustics according to the
@@ -302,12 +304,8 @@ def eigenmike_em32():
 
     Returns
     -------
-    rad : ndarray
-        Radius of the sampling points
-    theta : ndarray
-        Elevation angle in the range [0, pi]
-    phi : ndarray
-        Azimuth angle in the range [0, 2 pi]
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
 
     """
     rad = np.ones(32)
@@ -324,7 +322,9 @@ def eigenmike_em32():
                     180.0, 135.0, 111.0, 135.0, 269.0, 270.0,
                     270.0, 271.0]) * np.pi / 180
 
-    return rad, theta, phi
+    coordinates = Coordinates.from_spherical(rad, theta, phi)
+    return coordinates
+
 
 def icosahedron_ke4():
     """Microphone positions of the KE4 spherical microphone array.
@@ -332,12 +332,8 @@ def icosahedron_ke4():
 
     Returns
     -------
-    rad : ndarray, double
-        Radius of the sampling points
-    theta : ndarray, double
-        Elevation angle in the range [0, pi]
-    phi : ndarray, double
-        Azimuth angle in the range [0, 2pi]
+    coordinates : Coordinates
+        Coordinate object containing all sampling points
 
     """
 
@@ -358,5 +354,6 @@ def icosahedron_ke4():
                     3.801856477793762, 3.141592653589793])
 
     rad = np.ones(20) * 0.065
+    coordinates = Coordinates.from_spherical(rad, theta, phi)
 
-    return rad, theta, phi
+    return coordinates
