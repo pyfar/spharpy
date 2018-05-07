@@ -1,7 +1,7 @@
 import matplotlib as mpl
-# Use pdf backend to prevent matplotlib from creating interactive plots
-# This has to be set before the importing matplotlib.pyplot
-mpl.use('pdf')
+mpl.use('agg')
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 import spharpy
 import numpy as np
