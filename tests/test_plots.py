@@ -1,5 +1,7 @@
 import matplotlib as mpl
-mpl.use('Agg')
+mpl.use('agg')
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 import spharpy
 import numpy as np
