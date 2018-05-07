@@ -8,6 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
 import scipy.spatial as sspat
+from scipy.stats import circmean
 
 from spharpy.samplings import sph2cart
 
@@ -44,7 +45,10 @@ def scatter(coordinates):
 
     """
     fig = plt.gcf()
-    ax = fig.add_subplot('111', projection='3d')
+    if 'Axes3D' in fig.axes.__str__():
+        ax = plt.gca()
+    else:
+        ax = plt.gca(projection='3d', aspect='equal')
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -54,7 +58,8 @@ def scatter(coordinates):
     plt.show()
 
 
-def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True):
+def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
+            colorbar=True):
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi
 
@@ -87,17 +92,22 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True):
                                                 coordinates.azimuth)).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
     fig = plt.gcf()
-    ax = fig.add_subplot(111, projection='3d', aspect='equal')
+    if 'Axes3D' in fig.axes.__str__():
+        ax = plt.gca()
+    else:
+        ax = plt.gca(projection='3d', aspect='equal')
 
     if np.iscomplex(data).any() or phase:
         cdata = np.mod(np.angle(data), 2*np.pi)
         cmap = cm.hsv
         vmin = 0
         vmax = 2*np.pi
+        colors = circmean(cdata[tri.triangles], axis=1)
     else:
         cdata = np.abs(data)
         vmin = np.min(cdata)
         vmax = np.max(cdata)
+        colors = np.mean(cdata[tri.triangles], axis=1)
 
     plot = ax.plot_trisurf(tri,
                            z,
@@ -106,10 +116,10 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True):
                            vmin=vmin,
                            vmax=vmax)
 
-    colors = np.mean(cdata[tri.triangles], axis=1)
     plot.set_array(colors)
 
-    fig.colorbar(plot, shrink=0.75, aspect=20)
+    if colorbar:
+        fig.colorbar(plot, shrink=0.75, aspect=20)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
