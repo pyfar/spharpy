@@ -1,4 +1,7 @@
 import matplotlib as mpl
+# Use Agg backend to prevent matplotlib from creating interactive plots. This
+# has to be set before the importing matplotlib.pyplot. Use switch backend in
+# case the wrong backend has already been set.
 mpl.use('agg')
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
