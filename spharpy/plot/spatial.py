@@ -128,6 +128,8 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
     if show:
         plt.show()
 
+    return plot
+
 
 def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
     """
@@ -184,3 +186,5 @@ def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
     cb.set_label('Amplitude')
     if show:
         plt.show()
+
+    return cf
