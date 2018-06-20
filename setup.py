@@ -43,7 +43,7 @@ ext = Extension(name="spharpy.spherical",
 
 setup(
     name='spharpy',
-    version='0.1.0',
+    version='0.1.1',
     description="Python package for spherical array processing.",
     long_description=readme + '\n\n' + history,
     author="Marco Berzborn",
