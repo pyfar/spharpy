@@ -49,7 +49,7 @@ setup(
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
     url='https://git.rwth-aachen.de/mbe/spharpy',
-    packages=find_packages(include=['spharpy']),
+    packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",

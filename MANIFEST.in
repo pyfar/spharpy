@@ -1,4 +1,4 @@
-global-include *.pyx *.pxd *.c *.cpp *.hpp *.h
+global-include *.py *.pyx *.pxd *.c *.cpp *.hpp *.h
 
 include AUTHORS.rst
 include CONTRIBUTING.rst
