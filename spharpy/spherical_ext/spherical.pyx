@@ -11,11 +11,14 @@ from libc.stdlib cimport free
 import cython
 from spharpy.samplings import Coordinates
 
+cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
+    double complex spherical_harmonic(unsigned order, int degree, double theta, double phi);
+    double spherical_harmonic_r(unsigned order, int degree, double theta, double phi);
+    double spherical_harmonic_i(unsigned order, int degree, double theta, double phi);
 cdef extern from "spherical_harmonics.h":
     int pyramid2linear(int order, int degree);
     int linear2pyramid_order(int linear_index);
     int linear2pyramid_degree(int linear_index, unsigned order);
-    double complex spherical_harmonic_function_cpp(unsigned order, int degree, double theta, double phi);
     complex* make_spherical_harmonics_basis(unsigned Nmax, double *theta, double *phi, unsigned npoints);
     double* make_spherical_harmonics_basis_real(unsigned n_max, double *theta, double *phi, unsigned n_points);
 cdef extern from "bessel_functions.h":
@@ -47,8 +50,21 @@ cdef void set_base(cnp.ndarray arr, void *carr):
     cnp.set_array_base(arr, f)
 
 
-def spherical_harmonic_function(int n, int m, double theta, double phi):
-    return spherical_harmonic_function_cpp(n, m, theta, phi)
+def spherical_harmonic_function(unsigned n, int m, double theta, double phi):
+    return spherical_harmonic(n, m, theta, phi)
+
+
+def spherical_harmonic_function_real(unsigned n, int m, double theta, double phi):
+    cdef double Y_nm = 0.0
+    if (m == 0):
+        Y_nm = spherical_harmonic_r(n, m, theta, phi)
+    elif (m > 0):
+        Y_nm = spherical_harmonic_r(n, m, theta, phi) * np.sqrt(2)
+    elif (m < 0):
+        Y_nm = spherical_harmonic_i(n, m, theta, phi) * np.sqrt(2) * (-1)**(m+1)
+
+    return Y_nm * (-1)**m;
+
 
 def nm2acn(n, m):
     """
@@ -180,22 +196,26 @@ def spherical_harmonic_basis(n_max, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
     """
-    cdef unsigned Nmax = <unsigned>n_max
+    # cdef unsigned Nmax = <unsigned>n_max
     if coords.elevation.ndim < 1:
         elevation = coords.elevation[np.newaxis]
         azimuth = coords.azimuth[np.newaxis]
     else:
         elevation = coords.elevation
         azimuth = coords.azimuth
-    cdef cnp.ndarray[double, ndim=1] theta = elevation
-    cdef cnp.ndarray[double, ndim=1] phi = azimuth
-    cdef unsigned n_points = theta.shape[0]
-    cdef int n_coeff = (Nmax+1)*(Nmax+1)
-    cdef complex *mat = make_spherical_harmonics_basis(Nmax, &theta[0], &phi[0], n_points)
-    cdef complex[:, ::1] mv = <complex[:n_points, :n_coeff]>mat
-    cdef cnp.ndarray arr = np.asarray(mv)
-    set_base(arr, mat)
-    return arr
+
+    cdef unsigned n_points = elevation.shape[0]
+    cdef int n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[complex, ndim=2] basis = np.zeros((n_points, n_coeff), dtype=np.complex)
+
+    cdef int aa, ii
+    for aa in range(0, n_points):
+        for ii in range(0, n_coeff):
+            order, degree = acn2nm(ii)
+            basis[aa, ii] = spherical_harmonic_function(<unsigned>order, degree, elevation[aa], azimuth[aa])
+
+    return basis
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
