@@ -39,6 +39,7 @@ cdef class _finalizer:
         if self._data is not NULL:
             free(self._data)
 
+
 cdef void set_base(cnp.ndarray arr, void *carr):
     """
     Set base for underlying memory of numpy arrays
@@ -110,7 +111,7 @@ def nm2acn(n, m):
 
     cdef int idx
     for idx in range(0, n_acn):
-        acn[idx] = pyramid2linear(n[idx], m[idx])
+        acn[idx] = n[idx]**2 + n[idx] + m[idx]
 
     return np.squeeze(acn)
 
@@ -158,8 +159,8 @@ def acn2nm(acn):
 
     cdef int idx
     for idx in range(0, n_acn):
-        n[idx] = linear2pyramid_order(acn[idx])
-        m[idx] = linear2pyramid_degree(acn[idx], n[idx])
+        n[idx] = <int>(np.ceil(np.sqrt(<double>acn[idx] + 1.0)) - 1)
+        m[idx] = acn[idx] - n[idx]**2 - n[idx]
 
     return np.squeeze(n), np.squeeze(m)
 
@@ -272,6 +273,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     cdef cnp.ndarray arr = np.asarray(mv)
     set_base(arr, mat)
     return arr
+
 
 def modal_strength(int n_max,
                    cnp.ndarray[double, ndim=1] kr,
