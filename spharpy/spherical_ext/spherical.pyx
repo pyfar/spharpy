@@ -1,4 +1,7 @@
 # distutils: language = c++
+# distutils: extra_compile_args=-fopenmp
+# distutils: extra_link_args=-fopenmp
+
 # cython: embedsignature = True
 # cython: annotate = True
 """
@@ -13,11 +16,12 @@ from libc.stdlib cimport free
 from libc.math cimport ceil, sqrt
 
 import cython
+from cython.parallel import prange
 
 from spharpy.samplings import Coordinates
 
 cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
-    double complex spherical_harmonic(unsigned order, int degree, double theta, double phi);
+    double complex spherical_harmonic(unsigned order, int degree, double theta, double phi) nogil;
     double spherical_harmonic_r(unsigned order, int degree, double theta, double phi);
     double spherical_harmonic_i(unsigned order, int degree, double theta, double phi);
 cdef extern from "spherical_harmonics.h":
@@ -56,11 +60,11 @@ cdef void set_base(cnp.ndarray arr, void *carr):
     cnp.set_array_base(arr, f)
 
 
-def spherical_harmonic_function(unsigned n, int m, double theta, double phi):
+cdef complex spherical_harmonic_function(unsigned n, int m, double theta, double phi) nogil:
     return spherical_harmonic(n, m, theta, phi)
 
 
-def spherical_harmonic_function_real(unsigned n, int m, double theta, double phi):
+cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, double phi):
     cdef double Y_nm = 0.0
     if (m == 0):
         Y_nm = spherical_harmonic_r(n, m, theta, phi)
@@ -220,8 +224,7 @@ def spherical_harmonic_basis_memview(maxorder, coords):
     # cdef int aa, ii, order, degree
     cdef Py_ssize_t aa, ii, order, degree
     for aa in range(0, n_points):
-        for ii in range(0, n_coeff):
-            # order, degree = acn2nm(ii)
+        for ii in prange(0, n_coeff, nogil=True):
             order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
             degree = ii - order**2 - order
 
