@@ -1,5 +1,6 @@
 # distutils: language = c++
 # cython: embedsignature = True
+# cython: annotate = True
 """
 Spherical extension module docstring
 """
@@ -7,8 +8,12 @@ Spherical extension module docstring
 
 import numpy as np
 cimport numpy as cnp
+
 from libc.stdlib cimport free
+from libc.math cimport ceil, sqrt
+
 import cython
+
 from spharpy.samplings import Coordinates
 
 cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
@@ -96,24 +101,16 @@ def nm2acn(n, m):
         Linear index
 
     """
-    n = np.asarray(n, dtype=np.int32)
-    m = np.asarray(m, dtype=np.int32)
+    n = np.asarray(n, dtype=np.int)
+    m = np.asarray(m, dtype=np.int)
     n_acn = m.size
 
     if not (n.size == m.size):
-        return -1
-    if not n.shape:
-        n = n[np.newaxis]
-    if not m.shape:
-        m = m[np.newaxis]
+        raise ValueError("n and m need to be of the same size")
 
-    cdef cnp.ndarray[int, ndim=1] acn = np.zeros(n_acn, dtype=np.int32)
+    acn = n**2 + n + m
 
-    cdef int idx
-    for idx in range(0, n_acn):
-        acn[idx] = n[idx]**2 + n[idx] + m[idx]
-
-    return np.squeeze(acn)
+    return acn
 
 
 def acn2nm(acn):
@@ -148,21 +145,89 @@ def acn2nm(acn):
         Linear index
 
     """
+    acn = np.asarray(acn, dtype=np.int)
 
-    acn = np.asarray(acn, dtype=np.int32)
-    n_acn = acn.size
-    if not acn.shape:
-        acn = acn[np.newaxis]
+    n = (np.ceil(np.sqrt(acn + 1)) - 1)
+    m = acn - n**2 - n
 
-    cdef cnp.ndarray[int, ndim=1] n = np.zeros(n_acn, dtype=np.int32)
-    cdef cnp.ndarray[int, ndim=1] m = np.zeros(n_acn, dtype=np.int32)
+    n = n.astype(np.int, copy=False)
+    m = m.astype(np.int, copy=False)
 
-    cdef int idx
-    for idx in range(0, n_acn):
-        n[idx] = <int>(np.ceil(np.sqrt(<double>acn[idx] + 1.0)) - 1)
-        m[idx] = acn[idx] - n[idx]**2 - n[idx]
+    return n, m
 
-    return np.squeeze(n), np.squeeze(m)
+
+cdef acn2nm_c(int acn):
+    cdef int n, m
+    n = <int>ceil(sqrt(<double>acn + 1)) - 1
+    m = acn - n**2 - n
+    return n, m
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def spherical_harmonic_basis_memview(maxorder, coords):
+    """
+    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
+    for a set of points given by their elevation and azimuth angles.
+    The spherical harmonic functions are fully normalized (N3D) and include the
+    Condon-Shotley phase term (-1)^m [2]_, [3]_.
+
+    .. math::
+
+        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
+
+    References
+    ----------
+    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [3]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8. Springer, 2015.
+
+
+    Parameters
+    ----------
+    n_max : integer
+        Spherical harmonic order
+    coordinates : Coordinates
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
+
+    Returns
+    -------
+    Y : double, ndarray, matrix
+        Complex spherical harmonic basis matrix
+    """
+    # cdef unsigned Nmax = <unsigned>n_max
+
+    cdef cnp.ndarray[double, ndim=1] elevation
+    cdef cnp.ndarray[double, ndim=1] azimuth
+    cdef int n_max = maxorder
+
+    if coords.elevation.ndim < 1:
+        elevation = coords.elevation[np.newaxis]
+        azimuth = coords.azimuth[np.newaxis]
+    else:
+        elevation = coords.elevation
+        azimuth = coords.azimuth
+
+    cdef Py_ssize_t n_points = elevation.shape[0]
+    cdef Py_ssize_t n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[complex, ndim=2] basis = \
+        np.zeros((n_points, n_coeff), dtype=np.complex)
+    cdef complex[:, ::1] memview_basis = basis
+
+    cdef double[::1] memview_azi = azimuth
+    cdef double[::1] memview_ele = elevation
+
+    # cdef int aa, ii, order, degree
+    cdef Py_ssize_t aa, ii, order, degree
+    for aa in range(0, n_points):
+        for ii in range(0, n_coeff):
+            # order, degree = acn2nm(ii)
+            order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
+            degree = ii - order**2 - order
+
+            memview_basis[aa, ii] = spherical_harmonic_function(order, degree, memview_ele[aa], memview_azi[aa])
+
+    return basis
 
 
 @cython.boundscheck(False)
@@ -205,15 +270,30 @@ def spherical_harmonic_basis(n_max, coords):
         elevation = coords.elevation
         azimuth = coords.azimuth
 
-    cdef unsigned n_points = elevation.shape[0]
-    cdef int n_coeff = (n_max+1)**2
-    cdef cnp.ndarray[complex, ndim=2] basis = np.zeros((n_points, n_coeff), dtype=np.complex)
+    cdef Py_ssize_t n_points = elevation.shape[0]
+    cdef Py_ssize_t n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[complex, ndim=2] basis = \
+        np.zeros((n_points, n_coeff), dtype=np.complex)
+    cdef complex[:, ::1] memview_basis = basis
 
-    cdef int aa, ii
+    cdef double[::1] memview_azi = azimuth
+    cdef double[::1] memview_ele = elevation
+
+    # cdef int aa, ii, order, degree
+    cdef Py_ssize_t aa, ii, order, degree
     for aa in range(0, n_points):
         for ii in range(0, n_coeff):
-            order, degree = acn2nm(ii)
-            basis[aa, ii] = spherical_harmonic_function(<unsigned>order, degree, elevation[aa], azimuth[aa])
+            order, degree = acn2nm_c(ii)
+            # order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
+            # degree = ii - order**2 - order
+
+            memview_basis[aa, ii] = spherical_harmonic_function(order, degree, memview_ele[aa], memview_azi[aa])
+
+    # cdef int aa, ii
+    # for aa in range(0, n_points):
+    #     for ii in range(0, n_coeff):
+    #         order, degree = acn2nm(ii)
+    #         basis[aa, ii] = spherical_harmonic_function(<unsigned>order, degree, elevation[aa], azimuth[aa])
 
     return basis
 
