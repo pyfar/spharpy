@@ -54,6 +54,77 @@ cdef void set_base(cnp.ndarray arr, void *carr):
     cnp.set_array_base(arr, f)
 
 
+def spherical_harmonic_derivative_phi(n, m, theta, phi):
+    """Calculate the derivative of the spherical hamonics with respect to
+    the azimuth angle phi.
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    """
+    if m == 0:
+        res = 0.0
+    else:
+        res = spherical_harmonic_function(n, m, theta, phi) * 1j * m
+
+    return res
+
+
+def spherical_harmonic_derivative_theta(n, m, theta, phi):
+    """Calculate the derivative of the spherical hamonics with respect to
+    the elevation angle theta.
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    Note
+    ----
+
+    This implementation is subject to singularities at the poles due to the
+    1/sin(theta) term.
+
+    """
+    if n == 0:
+        res = 0.0
+    else:
+        first = spherical_harmonic_function(n, m, theta, phi) * (n+1)
+        second = spherical_harmonic_function(n+1, m, theta, phi) \
+                * np.sqrt(n**2-m**2+2*n+1) * np.sqrt(2*n+1) / np.sqrt(2*n + 3)
+
+        res = (-first/np.tan(theta) + second/np.sin(theta))
+
+    return res
+
 
 cdef complex spherical_harmonic_function(unsigned n, int m, double theta, double phi) nogil:
     """Simple wrapper function for the boost spherical harmonic function."""
