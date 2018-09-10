@@ -32,13 +32,18 @@ test_requirements = [
     'cython'
 ]
 
-ext = Extension(name="spharpy.spherical",
-                sources=["./spharpy/spherical_ext/spherical.pyx",
-                         "./spharpy/spherical_ext/spherical_harmonics.cpp",
-                         "./spharpy/spherical_ext/bessel_functions.cpp",
-                         "./spharpy/spherical_ext/special_functions.cpp"],
-                language="c++",
-                include_dirs=[numpy.get_include(), "./spharpy/spherical_ext/"])
+spherical_ext = Extension(name="spharpy.spherical",
+                          sources=["./spharpy/spherical_ext/spherical.pyx",
+                                   "./spharpy/spherical_ext/spherical_harmonics.cpp",
+                                   "./spharpy/spherical_ext/bessel_functions.cpp",
+                                   "./spharpy/spherical_ext/special_functions.cpp"],
+                          language="c++",
+                          include_dirs=[numpy.get_include(), "./spharpy/spherical_ext/"])
+
+special_ext = Extension(name="spharpy.special",
+                        sources=["./spharpy/special/special.pyx"],
+                        language="c++",
+                        include_dirs=[numpy.get_include(), "./spharpy/special/"])
 
 
 setup(
@@ -48,7 +53,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
-    url='https://git.rwth-aachen.de/mbe/spharpy',
+    url='https://git.rwth-aachen.de/mbe/spharpy/',
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
@@ -67,5 +72,5 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     setup_requires=setup_requirements,
-    ext_modules=cythonize(ext)
+    ext_modules=cythonize([spherical_ext, special_ext])
 )
