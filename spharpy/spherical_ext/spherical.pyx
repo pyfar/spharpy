@@ -13,7 +13,7 @@ import numpy as np
 cimport numpy as cnp
 
 from libc.stdlib cimport free
-from libc.math cimport ceil, sqrt
+from libc.math cimport ceil, sqrt, pow
 
 import cython
 from cython.parallel import prange
@@ -22,14 +22,8 @@ from spharpy.samplings import Coordinates
 
 cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
     double complex spherical_harmonic(unsigned order, int degree, double theta, double phi) nogil;
-    double spherical_harmonic_r(unsigned order, int degree, double theta, double phi);
-    double spherical_harmonic_i(unsigned order, int degree, double theta, double phi);
-cdef extern from "spherical_harmonics.h":
-    int pyramid2linear(int order, int degree);
-    int linear2pyramid_order(int linear_index);
-    int linear2pyramid_degree(int linear_index, unsigned order);
-    complex* make_spherical_harmonics_basis(unsigned Nmax, double *theta, double *phi, unsigned npoints);
-    double* make_spherical_harmonics_basis_real(unsigned n_max, double *theta, double *phi, unsigned n_points);
+    double spherical_harmonic_r(unsigned order, int degree, double theta, double phi) nogil;
+    double spherical_harmonic_i(unsigned order, int degree, double theta, double phi) nogil;
 cdef extern from "bessel_functions.h":
     complex *make_modal_strength(unsigned n_max, double *kr, int n_bins, int arraytype);
 cdef extern from "special_functions.h":
@@ -60,20 +54,26 @@ cdef void set_base(cnp.ndarray arr, void *carr):
     cnp.set_array_base(arr, f)
 
 
+
 cdef complex spherical_harmonic_function(unsigned n, int m, double theta, double phi) nogil:
+    """Simple wrapper function for the boost spherical harmonic function."""
     return spherical_harmonic(n, m, theta, phi)
 
 
-cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, double phi):
+cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, double phi) nogil:
+    """Use c math library here for speed and numerical robustness.
+    Using the numpy ** operator instead of the libc pow function yields
+    numeric issues which result in sign errors."""
+
     cdef double Y_nm = 0.0
     if (m == 0):
         Y_nm = spherical_harmonic_r(n, m, theta, phi)
     elif (m > 0):
-        Y_nm = spherical_harmonic_r(n, m, theta, phi) * np.sqrt(2)
+        Y_nm = spherical_harmonic_r(n, m, theta, phi) * sqrt(2)
     elif (m < 0):
-        Y_nm = spherical_harmonic_i(n, m, theta, phi) * np.sqrt(2) * (-1)**(m+1)
+        Y_nm = spherical_harmonic_i(n, m, theta, phi) * sqrt(2) * <double>pow(-1, m+1)
 
-    return Y_nm * (-1)**m;
+    return Y_nm * <double>pow(-1, m)
 
 
 def nm2acn(n, m):
@@ -161,6 +161,8 @@ def acn2nm(acn):
 
 
 cdef acn2nm_c(int acn):
+    """ACN to n, m conversion with c speed. May be dropped since the GIL
+    cannot be released when return variable is a tuple."""
     cdef int n, m
     n = <int>ceil(sqrt(<double>acn + 1)) - 1
     m = acn - n**2 - n
@@ -169,7 +171,7 @@ cdef acn2nm_c(int acn):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def spherical_harmonic_basis_memview(maxorder, coords):
+def spherical_harmonic_basis(int n_max, coords):
     """
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
@@ -199,11 +201,8 @@ def spherical_harmonic_basis_memview(maxorder, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
     """
-    # cdef unsigned Nmax = <unsigned>n_max
-
     cdef cnp.ndarray[double, ndim=1] elevation
     cdef cnp.ndarray[double, ndim=1] azimuth
-    cdef int n_max = maxorder
 
     if coords.elevation.ndim < 1:
         elevation = coords.elevation[np.newaxis]
@@ -221,7 +220,6 @@ def spherical_harmonic_basis_memview(maxorder, coords):
     cdef double[::1] memview_azi = azimuth
     cdef double[::1] memview_ele = elevation
 
-    # cdef int aa, ii, order, degree
     cdef Py_ssize_t aa, ii, order, degree
     for aa in range(0, n_points):
         for ii in prange(0, n_coeff, nogil=True):
@@ -235,75 +233,7 @@ def spherical_harmonic_basis_memview(maxorder, coords):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def spherical_harmonic_basis(n_max, coords):
-    """
-    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
-    for a set of points given by their elevation and azimuth angles.
-    The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term (-1)^m [2]_, [3]_.
-
-    .. math::
-
-        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
-
-    References
-    ----------
-    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [3]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8. Springer, 2015.
-
-
-    Parameters
-    ----------
-    n_max : integer
-        Spherical harmonic order
-    coordinates : Coordinates
-        Coordinate object with sampling points for which the basis matrix is
-        calculated
-
-    Returns
-    -------
-    Y : double, ndarray, matrix
-        Complex spherical harmonic basis matrix
-    """
-    # cdef unsigned Nmax = <unsigned>n_max
-    if coords.elevation.ndim < 1:
-        elevation = coords.elevation[np.newaxis]
-        azimuth = coords.azimuth[np.newaxis]
-    else:
-        elevation = coords.elevation
-        azimuth = coords.azimuth
-
-    cdef Py_ssize_t n_points = elevation.shape[0]
-    cdef Py_ssize_t n_coeff = (n_max+1)**2
-    cdef cnp.ndarray[complex, ndim=2] basis = \
-        np.zeros((n_points, n_coeff), dtype=np.complex)
-    cdef complex[:, ::1] memview_basis = basis
-
-    cdef double[::1] memview_azi = azimuth
-    cdef double[::1] memview_ele = elevation
-
-    # cdef int aa, ii, order, degree
-    cdef Py_ssize_t aa, ii, order, degree
-    for aa in range(0, n_points):
-        for ii in range(0, n_coeff):
-            order, degree = acn2nm_c(ii)
-            # order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
-            # degree = ii - order**2 - order
-
-            memview_basis[aa, ii] = spherical_harmonic_function(order, degree, memview_ele[aa], memview_azi[aa])
-
-    # cdef int aa, ii
-    # for aa in range(0, n_points):
-    #     for ii in range(0, n_coeff):
-    #         order, degree = acn2nm(ii)
-    #         basis[aa, ii] = spherical_harmonic_function(<unsigned>order, degree, elevation[aa], azimuth[aa])
-
-    return basis
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def spherical_harmonic_basis_real(n_max, coords):
+def spherical_harmonic_basis_real(int n_max, coords):
     """
     Calulcates the real valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
@@ -340,22 +270,31 @@ def spherical_harmonic_basis_real(n_max, coords):
 
 
     """
-    cdef unsigned Nmax = <unsigned>n_max
     if coords.elevation.ndim < 1:
         elevation = coords.elevation[np.newaxis]
         azimuth = coords.azimuth[np.newaxis]
     else:
         elevation = coords.elevation
         azimuth = coords.azimuth
-    cdef cnp.ndarray[double, ndim=1] theta = elevation
-    cdef cnp.ndarray[double, ndim=1] phi = azimuth
-    cdef unsigned n_points = theta.shape[0]
-    cdef int n_coeff = (Nmax+1)*(Nmax+1)
-    cdef double *mat = make_spherical_harmonics_basis_real(Nmax, &theta[0], &phi[0], n_points)
-    cdef double[:, ::1] mv = <double[:n_points, :n_coeff]>mat
-    cdef cnp.ndarray arr = np.asarray(mv)
-    set_base(arr, mat)
-    return arr
+
+    cdef Py_ssize_t n_points = elevation.shape[0]
+    cdef Py_ssize_t n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[double, ndim=2] basis = \
+        np.zeros((n_points, n_coeff), dtype=np.double)
+    cdef double[:, ::1] memview_basis = basis
+
+    cdef double[::1] memview_azi = azimuth
+    cdef double[::1] memview_ele = elevation
+
+    cdef Py_ssize_t aa, ii, order, degree
+    for aa in range(0, n_points):
+        for ii in prange(0, n_coeff, nogil=True):
+            order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
+            degree = ii - order**2 - order
+
+            memview_basis[aa, ii] = spherical_harmonic_function_real(order, degree, memview_ele[aa], memview_azi[aa])
+
+    return basis
 
 
 def modal_strength(int n_max,
