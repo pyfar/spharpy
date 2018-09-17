@@ -10,7 +10,13 @@ import numpy as np
 cimport numpy as cnp
 
 from libc.stdlib cimport free
-from libc.math cimport ceil, sqrt, pow
+from libc.math cimport ceil, sqrt, M_PI, exp
+cimport libc.math as cmath
+
+cdef extern from "math.h":
+    double complex pow(double complex arg, double power) nogil
+
+cimport spharpy.special._special as _special
 
 import cython
 from cython.parallel import prange
@@ -139,9 +145,9 @@ cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, do
     elif (m > 0):
         Y_nm = spherical_harmonic_r(n, m, theta, phi) * sqrt(2)
     elif (m < 0):
-        Y_nm = spherical_harmonic_i(n, m, theta, phi) * sqrt(2) * <double>pow(-1, m+1)
+        Y_nm = spherical_harmonic_i(n, m, theta, phi) * sqrt(2) * <double>cmath.pow(-1, m+1)
 
-    return Y_nm * <double>pow(-1, m)
+    return Y_nm * <double>cmath.pow(-1, m)
 
 
 def nm2acn(n, m):
@@ -238,7 +244,7 @@ cdef int acn2m(int acn) nogil:
     """ACN to m conversion with c speed and without global interpreter lock.
     """
     cdef int n = acn2n(acn)
-    cdef int m = acn - <int>pow(n, 2) - n
+    cdef int m = acn - <int>cmath.pow(n, 2) - n
     return m
 
 
@@ -408,13 +414,43 @@ def modal_strength(int n_max,
 
     """
     arraytypes = {'open': 0, 'rigid': 1, 'cardioid': 2}
+    cdef int config = arraytypes.get(arraytype)
     cdef int n_coeff = (n_max+1)**2
     cdef int n_bins = kr.shape[0]
-    cdef complex *mat = make_modal_strength(n_max, &kr[0], n_bins, arraytypes.get(arraytype))
-    cdef complex[:, :, ::1] mv = <complex[:n_bins, :n_coeff, :n_coeff]>mat
-    cdef cnp.ndarray arr = np.asarray(mv)
-    set_base(arr, mat)
-    return arr
+
+    cdef cnp.ndarray[complex, ndim=3] modal_strength = \
+        np.zeros((n_coeff, n_coeff, n_bins), dtype=np.complex)
+    cdef complex[:, :, ::1] mv_modal_strength = modal_strength
+
+    cdef double[::1] mv_kr = kr
+
+    cdef int n, m, acn
+    cdef complex bn
+
+
+    for k in range(0, n_bins):
+        for n in range(0, n_max+1):
+            bn = _modal_strength(n, mv_kr[k], config)
+            for m in range(-n, n+1):
+                acn = n*n + n + m
+                mv_modal_strength[acn, acn, k] = bn
+
+    return modal_strength
+
+
+cdef complex _modal_strength(int n, double kr, int config) nogil:
+    cdef complex modal_strength
+    if config == 0:
+        modal_strength = 4*M_PI*pow(1.0j, n) * _special.sph_bessel(n, kr)
+    elif config == 1:
+        modal_strength = 4*M_PI*pow(1.0j, n-1) / \
+                _special.sph_hankel_2_prime(n, kr) / kr / kr
+    elif config == 2:
+        modal_strength = 4*M_PI*pow(1.0j, n) * \
+                (_special.sph_bessel(n, kr) - 1.0j * _special.sph_bessel_prime(n, kr))
+
+    return modal_strength
+
 
 def aperture_spherical_cap(int n_max,
                            double rad_sphere,
