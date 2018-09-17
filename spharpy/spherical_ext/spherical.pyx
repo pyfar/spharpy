@@ -5,23 +5,18 @@
 Spherical extension module docstring
 """
 
-
 import numpy as np
-cimport numpy as cnp
-
-from libc.stdlib cimport free
-from libc.math cimport ceil, sqrt, M_PI, exp
-cimport libc.math as cmath
-
-cdef extern from "math.h":
-    double complex pow(double complex arg, double power) nogil
-
-cimport spharpy.special._special as _special
-
 import cython
 from cython.parallel import prange
 
 from spharpy.samplings import Coordinates
+
+cimport numpy as cnp
+cimport libc.math as cmath
+cimport spharpy.special._special as _special
+
+cdef extern from "math.h":
+    double complex pow(double complex arg, double power) nogil
 
 cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
     double complex spherical_harmonic(unsigned order, int degree, double theta, double phi) nogil;
@@ -115,9 +110,10 @@ cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, do
     if (m == 0):
         Y_nm = spherical_harmonic_r(n, m, theta, phi)
     elif (m > 0):
-        Y_nm = spherical_harmonic_r(n, m, theta, phi) * sqrt(2)
+        Y_nm = spherical_harmonic_r(n, m, theta, phi) * cmath.sqrt(2)
     elif (m < 0):
-        Y_nm = spherical_harmonic_i(n, m, theta, phi) * sqrt(2) * <double>cmath.pow(-1, m+1)
+        Y_nm = spherical_harmonic_i(n, m, theta, phi) * cmath.sqrt(2) * \
+                <double>cmath.pow(-1, m+1)
 
     return Y_nm * <double>cmath.pow(-1, m)
 
@@ -210,7 +206,7 @@ cdef int acn2n(int acn) nogil:
     """ACN to n conversion with c speed and without global interpreter lock.
     """
     cdef int n
-    n = <int>ceil(sqrt(<double>acn + 1)) - 1
+    n = <int>cmath.ceil(cmath.sqrt(<double>acn + 1)) - 1
 
 cdef int acn2m(int acn) nogil:
     """ACN to m conversion with c speed and without global interpreter lock.
@@ -274,7 +270,7 @@ def spherical_harmonic_basis(int n_max, coords):
     cdef Py_ssize_t aa, ii, order, degree
     for aa in range(0, n_points):
         for ii in prange(0, n_coeff, nogil=True):
-            order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
+            order = <int>(cmath.ceil(cmath.sqrt(<double>ii + 1.0)) - 1)
             degree = ii - order**2 - order
 
             memview_basis[aa, ii] = spherical_harmonic_function(order, degree, memview_ele[aa], memview_azi[aa])
@@ -340,7 +336,7 @@ def spherical_harmonic_basis_real(int n_max, coords):
     cdef Py_ssize_t aa, ii, order, degree
     for aa in range(0, n_points):
         for ii in prange(0, n_coeff, nogil=True):
-            order = <int>(ceil(sqrt(<double>ii + 1.0)) - 1)
+            order = <int>(cmath.ceil(cmath.sqrt(<double>ii + 1.0)) - 1)
             degree = ii - order**2 - order
 
             memview_basis[aa, ii] = spherical_harmonic_function_real(order, degree, memview_ele[aa], memview_azi[aa])
@@ -417,12 +413,12 @@ cdef complex _modal_strength(int n, double kr, int config) nogil:
     plane waves"""
     cdef complex modal_strength
     if config == 0:
-        modal_strength = 4*M_PI*pow(1.0j, n) * _special.sph_bessel(n, kr)
+        modal_strength = 4*cmath.pi*pow(1.0j, n) * _special.sph_bessel(n, kr)
     elif config == 1:
-        modal_strength = 4*M_PI*pow(1.0j, n-1) / \
+        modal_strength = 4*cmath.pi*pow(1.0j, n-1) / \
                 _special.sph_hankel_2_prime(n, kr) / kr / kr
     elif config == 2:
-        modal_strength = 4*M_PI*pow(1.0j, n) * \
+        modal_strength = 4*cmath.pi*pow(1.0j, n) * \
                 (_special.sph_bessel(n, kr) - 1.0j * _special.sph_bessel_prime(n, kr))
 
     return modal_strength
