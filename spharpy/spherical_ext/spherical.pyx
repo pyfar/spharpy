@@ -27,12 +27,6 @@ cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace
     double complex spherical_harmonic(unsigned order, int degree, double theta, double phi) nogil;
     double spherical_harmonic_r(unsigned order, int degree, double theta, double phi) nogil;
     double spherical_harmonic_i(unsigned order, int degree, double theta, double phi) nogil;
-cdef extern from "bessel_functions.h":
-    complex *make_modal_strength(unsigned n_max, double *kr, int n_bins, int arraytype);
-cdef extern from "special_functions.h":
-    double legendre_polynomial(int n, double x);
-    complex sph_hankel_2(int n, double z);
-    complex sph_hankel_2_prime(int n, double z);
 
 
 cdef class _finalizer:
@@ -456,6 +450,8 @@ cdef complex _modal_strength(int n, double kr, int config) nogil:
     return modal_strength
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def aperture_spherical_cap(int n_max,
                            double rad_sphere,
                            double rad_cap):
@@ -492,19 +488,25 @@ def aperture_spherical_cap(int n_max,
 
     cdef double legendre_plus, legendre_minus
 
-    cdef cnp.ndarray[double, ndim=2] aperture = np.zeros((n_sh, n_sh), dtype=np.double)
-    aperture[0,0] = (1-arg)*2*np.pi**2
+    cdef cnp.ndarray[double, ndim=2] aperture = \
+            np.zeros((n_sh, n_sh), dtype=np.double)
+    cdef double[:, ::1] mv_aperture = aperture
 
+    aperture[0,0] = (1-arg)*2*np.pi**2
     cdef int n, m
     for n in range(1, n_max+1):
-        legendre_minus = legendre_polynomial(n-1, arg)
-        legendre_plus = legendre_polynomial(n+1, arg)
+        legendre_minus = _special.legendre_p(n-1, arg)
+        legendre_plus = _special.legendre_p(n+1, arg)
         for m in range(-n, n+1):
             acn = nm2acn(n, m)
-            aperture[acn, acn] = (legendre_minus - legendre_plus) * 4 * np.pi**2 / (2*n+1)
+            aperture[acn, acn] = (legendre_minus - legendre_plus) * \
+                    4 * np.pi**2 / (2*n+1)
 
     return aperture
 
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def radiation_from_sphere(int n_max,
                           double rad_sphere,
                           cnp.ndarray[double, ndim=1] k,
@@ -515,13 +517,17 @@ def radiation_from_sphere(int n_max,
     cdef double c = 343.0
     cdef complex hankel, hankel_prime, radiation_order
     cdef int n_bins = k.shape[0]
-    cdef cnp.ndarray[complex, ndim=3] radiation = np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
+    cdef cnp.ndarray[complex, ndim=3] radiation = \
+            np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
+    cdef complex[:, :, ::1] mv_radiation = radiation
+
+    cdef double[::1] mv_k = k
 
     cdef int n, m, kk
     for kk in range(0, n_bins):
         for n in range(0, n_max+1):
-            hankel = sph_hankel_2(n, k[kk]*distance)
-            hankel_prime = sph_hankel_2_prime(n, k[kk]*rad_sphere)
+            hankel = _special.sph_hankel_2(n, mv_k[kk]*distance)
+            hankel_prime = _special.sph_hankel_2_prime(n, mv_k[kk]*rad_sphere)
             radiation_order = hankel/hankel_prime * 1j * rho * c
             for m in range(-n, n+1):
                 acn = nm2acn(n, m)

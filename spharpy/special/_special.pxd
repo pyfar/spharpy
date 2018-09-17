@@ -5,6 +5,7 @@ cdef extern from "boost/math/special_functions.hpp" namespace "boost::math":
     complex sph_hankel_1(int n, double z) nogil;
     double sph_neumann(int n, double z) nogil;
     double sph_neumann_prime(int n, double z) nogil;
+    double legendre_p(int n, double x) nogil;
 
 
 cdef inline complex sph_hankel_2_prime(int n, double z) nogil:
