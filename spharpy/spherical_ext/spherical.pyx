@@ -376,6 +376,8 @@ def spherical_harmonic_basis_real(int n_max, coords):
     return basis
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def modal_strength(int n_max,
                    cnp.ndarray[double, ndim=1] kr,
                    arraytype='open'):
@@ -419,7 +421,7 @@ def modal_strength(int n_max,
     cdef int n_bins = kr.shape[0]
 
     cdef cnp.ndarray[complex, ndim=3] modal_strength = \
-        np.zeros((n_coeff, n_coeff, n_bins), dtype=np.complex)
+        np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
     cdef complex[:, :, ::1] mv_modal_strength = modal_strength
 
     cdef double[::1] mv_kr = kr
@@ -429,16 +431,18 @@ def modal_strength(int n_max,
 
 
     for k in range(0, n_bins):
-        for n in range(0, n_max+1):
+        for n in prange(0, n_max+1, nogil=True):
             bn = _modal_strength(n, mv_kr[k], config)
             for m in range(-n, n+1):
                 acn = n*n + n + m
-                mv_modal_strength[acn, acn, k] = bn
+                mv_modal_strength[k, acn, acn] = bn
 
-    return modal_strength
+    return np.squeeze(modal_strength)
 
 
 cdef complex _modal_strength(int n, double kr, int config) nogil:
+    """Helper function for the calculation of the modal strength for
+    plane waves"""
     cdef complex modal_strength
     if config == 0:
         modal_strength = 4*M_PI*pow(1.0j, n) * _special.sph_bessel(n, kr)
