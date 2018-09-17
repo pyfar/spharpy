@@ -52,7 +52,9 @@ spherical_ext = Extension(name="spharpy.spherical",
                           language="c++",
                           extra_compile_args=compile_args,
                           extra_link_args=link_args,
-                          include_dirs=[numpy.get_include(), "./spharpy/spherical_ext/"])
+                          include_dirs=[numpy.get_include(),
+                                        "./spharpy/spherical_ext/",
+                                        "./spharpy/special/"])
 
 special_ext = Extension(name="spharpy.special",
                         sources=["./spharpy/special/special.pyx"],
@@ -71,6 +73,9 @@ setup(
     author_email='marco.berzborn@akustik.rwth-aachen.de',
     url='https://git.rwth-aachen.de/mbe/spharpy/',
     packages=find_packages(),
+    package_data = {
+        'spharpy/special/_special': ['spharpy/special/_special.pxd']
+        },
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",

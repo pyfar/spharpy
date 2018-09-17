@@ -14,30 +14,7 @@ from libc.math cimport sqrt, pow
 import cython
 from cython.parallel import prange
 
-cdef extern from "boost/math/special_functions.hpp" namespace "boost::math":
-    double sph_bessel(int n, double z) nogil;
-    double sph_bessel_prime(int n, double z) nogil;
-    complex sph_hankel_2(int n, double z) nogil;
-    complex sph_hankel_1(int n, double z) nogil;
-    double sph_neumann(int n, double z) nogil;
-    double sph_neumann_prime(int n, double z) nogil;
-
-
-cdef complex sph_hankel_2_prime(int n, double z) nogil:
-    """Derivative of the spherical hankel function of second kind.
-    Not defined in the boost libs, therefore defined here."""
-    cdef complex hankel_2_prime
-    hankel_2_prime = sph_hankel_2(n-1, z) - (n+1)/z * sph_hankel_2(n, z)
-    return hankel_2_prime
-
-
-cdef complex sph_hankel_1_prime(int n, double z) nogil:
-    """Derivative of the spherical hankel function of first kind.
-    Not defined in the boost libs, therefore defined here."""
-    cdef complex hankel_1_prime
-    hankel_1_prime = sph_hankel_1(n-1, z) - (n+1)/z * sph_hankel_1(n, z)
-    return hankel_1_prime
-
+cimport spharpy.special._special as _special
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -92,7 +69,7 @@ def spherical_bessel(n, z):
     for idx_points in range(0, n_points):
         for idx_order in prange(0, n_coeff, nogil=True):
             memview_bessel[idx_order, idx_points] = \
-                    sph_bessel(memview_order[idx_order], \
+                    _special.sph_bessel(memview_order[idx_order], \
                     memview_arg[idx_points])
 
     return np.squeeze(bessel)
@@ -155,7 +132,7 @@ def spherical_bessel_derivative(n, z):
     for idx_points in range(0, n_points):
         for idx_order in prange(0, n_coeff, nogil=True):
             memview_bessel[idx_order, idx_points] = \
-                    sph_bessel_prime(memview_order[idx_order], \
+                    _special.sph_bessel_prime(memview_order[idx_order], \
                     memview_arg[idx_points])
 
     return np.squeeze(bessel_prime)
@@ -221,11 +198,11 @@ def spherical_hankel(n, z, kind=2):
         for idx_order in prange(0, n_coeff, nogil=True):
             if hankel_kind == 1:
                 memview_hankel[idx_order, idx_points] = \
-                        sph_hankel_1(memview_order[idx_order], \
+                        _special.sph_hankel_1(memview_order[idx_order], \
                         memview_arg[idx_points])
             elif hankel_kind == 2:
                 memview_hankel[idx_order, idx_points] = \
-                        sph_hankel_2(memview_order[idx_order], \
+                        _special.sph_hankel_2(memview_order[idx_order], \
                         memview_arg[idx_points])
 
     return np.squeeze(hankel)
@@ -294,11 +271,11 @@ def spherical_hankel_derivative(n, z, kind=2):
         for idx_order in prange(0, n_coeff, nogil=True):
             if hankel_kind == 1:
                 memview_hankel[idx_order, idx_points] = \
-                        sph_hankel_1_prime(memview_order[idx_order], \
+                        _special.sph_hankel_1_prime(memview_order[idx_order], \
                         memview_arg[idx_points])
             elif hankel_kind == 2:
                 memview_hankel[idx_order, idx_points] = \
-                        sph_hankel_2_prime(memview_order[idx_order], \
+                        _special.sph_hankel_2_prime(memview_order[idx_order], \
                         memview_arg[idx_points])
 
     return np.squeeze(hankel_prime)
