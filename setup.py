@@ -45,10 +45,7 @@ else:
 
 
 spherical_ext = Extension(name="spharpy.spherical",
-                          sources=["./spharpy/spherical_ext/spherical.pyx",
-                                   "./spharpy/spherical_ext/spherical_harmonics.cpp",
-                                   "./spharpy/spherical_ext/bessel_functions.cpp",
-                                   "./spharpy/spherical_ext/special_functions.cpp"],
+                          sources=["./spharpy/spherical_ext/spherical.pyx"],
                           language="c++",
                           extra_compile_args=compile_args,
                           extra_link_args=link_args,
@@ -61,7 +58,8 @@ special_ext = Extension(name="spharpy.special",
                         language="c++",
                         extra_compile_args=compile_args,
                         extra_link_args=link_args,
-                        include_dirs=[numpy.get_include(), "./spharpy/special/"])
+                        include_dirs=[numpy.get_include(),
+                                      "./spharpy/special/"])
 
 
 setup(

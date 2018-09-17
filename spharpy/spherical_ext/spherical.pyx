@@ -29,28 +29,6 @@ cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace
     double spherical_harmonic_i(unsigned order, int degree, double theta, double phi) nogil;
 
 
-cdef class _finalizer:
-    """
-    Finalizer class that frees memory after array is deleted in python.
-    This is a helper function that is only available inside of Cython.
-    """
-    cdef void *_data
-    def __dealloc__(self):
-        if self._data is not NULL:
-            free(self._data)
-
-
-cdef void set_base(cnp.ndarray arr, void *carr):
-    """
-    Set base for underlying memory of numpy arrays
-    The class _finalizer is used to free memory after array is deleted
-    This is a helper function that is only available inside of Cython.
-    """
-    cdef _finalizer f = _finalizer()
-    f._data = <void*>carr
-    cnp.set_array_base(arr, f)
-
-
 def spherical_harmonic_derivative_phi(n, m, theta, phi):
     """Calculate the derivative of the spherical hamonics with respect to
     the azimuth angle phi.
