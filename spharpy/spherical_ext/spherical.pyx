@@ -1,9 +1,6 @@
 # distutils: language = c++
-# distutils: extra_compile_args=-fopenmp
-# distutils: extra_link_args=-fopenmp
 
 # cython: embedsignature = True
-# cython: annotate = True
 """
 Spherical extension module docstring
 """
@@ -231,13 +228,18 @@ def acn2nm(acn):
     return n, m
 
 
-cdef acn2nm_c(int acn):
-    """ACN to n, m conversion with c speed. May be dropped since the GIL
-    cannot be released when return variable is a tuple."""
-    cdef int n, m
+cdef int acn2n(int acn) nogil:
+    """ACN to n conversion with c speed and without global interpreter lock.
+    """
+    cdef int n
     n = <int>ceil(sqrt(<double>acn + 1)) - 1
-    m = acn - n**2 - n
-    return n, m
+
+cdef int acn2m(int acn) nogil:
+    """ACN to m conversion with c speed and without global interpreter lock.
+    """
+    cdef int n = acn2n(acn)
+    cdef int m = acn - <int>pow(n, 2) - n
+    return m
 
 
 @cython.boundscheck(False)

@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""The setup script."""
+"""The setup script.
+The package uses Cython extension modules. Parallelization using OpenMP is
+currently only supported on Linux using gcc.
+"""
 
+import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
@@ -32,17 +36,29 @@ test_requirements = [
     'cython'
 ]
 
+if sys.platform.startswith('linux'):
+    compile_args = ['-fopenmp']
+    link_args = ['-fopenmp']
+else:
+    compile_args = []
+    link_args = []
+
+
 spherical_ext = Extension(name="spharpy.spherical",
                           sources=["./spharpy/spherical_ext/spherical.pyx",
                                    "./spharpy/spherical_ext/spherical_harmonics.cpp",
                                    "./spharpy/spherical_ext/bessel_functions.cpp",
                                    "./spharpy/spherical_ext/special_functions.cpp"],
                           language="c++",
+                          extra_compile_args=compile_args,
+                          extra_link_args=link_args,
                           include_dirs=[numpy.get_include(), "./spharpy/spherical_ext/"])
 
 special_ext = Extension(name="spharpy.special",
                         sources=["./spharpy/special/special.pyx"],
                         language="c++",
+                        extra_compile_args=compile_args,
+                        extra_link_args=link_args,
                         include_dirs=[numpy.get_include(), "./spharpy/special/"])
 
 
