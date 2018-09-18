@@ -54,3 +54,18 @@ def test_cart2latlon_array():
     np.testing.assert_allclose(rad, rr, atol=1e-15)
     np.testing.assert_allclose(phi, pp, atol=1e-15)
     np.testing.assert_allclose(theta, tt, atol=1e-15)
+
+
+def test_latlon2cart_array():
+    height = np.ones(6)
+    theta = np.array([0, 0, 0, 0, np.pi/2, -np.pi/2])
+    phi = np.array([0, np.pi, np.pi/2, -np.pi/2, 0, 0])
+    xx, yy, zz = samplings.latlon2cart(height, theta, phi)
+
+    x = np.array([1, -1, 0, 0, 0, 0])
+    y = np.array([0, 0, 1, -1, 0, 0])
+    z = np.array([0, 0, 0, 0, 1, -1])
+
+    np.testing.assert_allclose(xx, x, atol=1e-15)
+    np.testing.assert_allclose(yy, y, atol=1e-15)
+    np.testing.assert_allclose(zz, z, atol=1e-15)
