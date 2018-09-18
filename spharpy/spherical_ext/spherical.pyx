@@ -223,7 +223,7 @@ def spherical_harmonic_basis(int n_max, coords):
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term (-1)^m [2]_, [3]_.
+    Condon-Shotley phase term :math:`(-1)^m` [2]_, [3]_.
 
     .. math::
 
@@ -436,30 +436,43 @@ def aperture_spherical_cap(int n_max,
                            double rad_sphere,
                            double rad_cap):
     """
-    Aperture function for a vibrating cap in a rigid sphere.
+    Aperture function for a vibrating cap with radius :math:`r_c` in a rigid
+    sphere with radius :math:`r_s` [5]_, [6]_
 
     .. math::
 
-        A(r, \\alpha) = TODO
+        a_n (r_{s}, \\alpha) =
+        \\begin{cases}
+            \displaystyle \\cos\\left(\\alpha\\right) P_n\\left[ \\cos\\left(\\alpha\\right) \\right] - P_{n-1}\\left[ \\cos\\left(\\alpha\\right) \\right],  & {n>0} \\newline
+            \displaystyle  1 - \\cos(\\alpha),  & {n=0}
+        \\end{cases}
+
+    where :math:`\\alpha = \\arcsin \\left(\\frac{r_c}{r_s} \\right)` is the
+    aperture angle.
 
 
     References
     ----------
-    TODO: Add reference
+    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [6]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+
 
     Parameters
     ----------
-    n : integer, ndarray
-        Spherical harmonic order
-    r : double, ndarray
-        Sphere radius
-    alpha : double
-        Aperture angle
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
+    r_sphere : double, ndarray
+        Radius of the sphere
+    r_cap : double
+        Radius of the vibrating cap
 
     Returns
     -------
     A : double, ndarray
-        Aperture function diagonal matrix
+        Aperture function in diagonal matrix form with shape
+        :math:`[(n_{max}+1)^2~\\times~(n_{max}+1)^2]`
 
     """
     cdef double angle_cap = np.arcsin(rad_cap / rad_sphere)
@@ -490,11 +503,53 @@ def aperture_spherical_cap(int n_max,
 def radiation_from_sphere(int n_max,
                           double rad_sphere,
                           cnp.ndarray[double, ndim=1] k,
-                          double distance):
+                          double distance,
+                          desity_medium=1.2,
+                          speed_of_sound=343.0):
+    """
+    Radiation function in SH for a vibrating sphere including the radiation
+    impedance and the propagation to a arbitrary distance from the sphere.
+
+
+    TODO: This function does not have a test yet.
+
+
+    References
+    ----------
+    .. [7]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [8]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+
+
+    Parameters
+    ----------
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
+    r_sphere : double, ndarray
+        Radius of the sphere
+    k : double, ndarray
+        Wave number
+    distance : double
+        Distance from the origin
+    density_medium : double
+        Density of the medium surrounding the sphere. Default is 1.2 for air.
+    speed_of_sound : double
+        Speed of sound in m/s
+
+    Returns
+    -------
+    R : double, ndarray
+        Radiation function in diagonal matrix form with shape
+        :math:`[K \\times (n_{max}+1)^2~\\times~(n_{max}+1)^2]`
+
+
+
+    """
     cdef int n_sh = (n_max+1)**2
 
-    cdef double rho = 1.2
-    cdef double c = 343.0
+    cdef double rho = desity_medium
+    cdef double c = speed_of_sound
     cdef complex hankel, hankel_prime, radiation_order
     cdef int n_bins = k.shape[0]
     cdef cnp.ndarray[complex, ndim=3] radiation = \
