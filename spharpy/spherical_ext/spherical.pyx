@@ -348,13 +348,19 @@ def spherical_harmonic_basis_real(int n_max, coords):
 @cython.wraparound(False)
 def modal_strength(int n_max,
                    cnp.ndarray[double, ndim=1] kr,
-                   arraytype='open'):
+                   arraytype='rigid'):
     """
     Modal strenght function for microphone arrays.
 
     .. math::
 
-        b(kr) = TODO
+        b(kr) =
+        \\begin{cases}
+            \displaystyle 4\\pi i^n j_n(kr),  & \\text{open} \\newline
+            \displaystyle  4\\pi i^{(n-1)} \\frac{1}{(kr)^2 h_n^\\prime(kr)},  & \\text{rigid} \\newline
+            \displaystyle  4\\pi i^n (j_n(kr) - i j_n^\\prime(kr)),  & \\text{cardioid}
+        \\end{cases}
+
 
     Notes
     -----
