@@ -85,11 +85,11 @@ def cart2sph(x, y, z):
     return rad, theta, phi
 
 def cart2latlon(x, y, z):
-    """Transforms from Cartesian coordinates to latitude and longitude coordinates
+    """Transforms from Cartesian coordinates to Geocentric coordinates
 
     .. math::
 
-        r = \\sqrt{x^2 + y^2 + z^2},
+        h = \\sqrt{x^2 + y^2 + z^2},
 
         \\theta = \\pi/2 - \\arccos(\\frac{z}{r}),
 
@@ -99,6 +99,8 @@ def cart2latlon(x, y, z):
 
         -\\pi < \\phi < \\pi
 
+    where :math:`h` is the heigth, :math:`\\theta` is the latitude angle
+    and :math:`\\phi` is the longitude angle
 
     Parameters
     ----------
@@ -123,3 +125,49 @@ def cart2latlon(x, y, z):
     latitude = np.pi/2 - np.arccos(z/height)
     longitude = np.arctan2(y, x)
     return height, latitude, longitude
+
+
+
+def latlon2cart(height, latitude, longitude):
+    """Transforms from Geocentric coordinates to Cartesian coordinates
+
+    .. math::
+
+        x = h \\cos(\\theta) \\cos(\\phi),
+
+        y = h \\cos(\\theta) \\sin(\\phi),
+
+        z = h \\sin(\\theta)
+
+        -\\pi/2 < \\theta < \\pi/2,
+
+        -\\pi < \\phi < \\pi
+
+    where :math:`h` is the heigth, :math:`\\theta` is the latitude angle
+    and :math:`\\phi` is the longitude angle
+
+    Parameters
+    ----------
+    height : ndarray, number
+        The radius is rendered as height information
+    latitude : ndarray, number
+        Geocentric latitude angle
+    longitude : ndarray, number
+        Geocentric longitude angle
+
+    Returns
+    -------
+    x : ndarray, number
+        x-axis coordinates
+    y : ndarray, number
+        y-axis coordinates
+    z : ndarray, number
+        z-axis coordinates
+
+    """
+
+    x = height * np.cos(latitude) * np.cos(longitude)
+    y = height * np.cos(latitude) * np.sin(longitude)
+    z = height * np.sin(latitude)
+
+    return x, y, z
