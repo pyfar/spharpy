@@ -40,7 +40,7 @@ if sys.platform.startswith('linux'):
     compile_args = ['-fopenmp']
     link_args = ['-fopenmp']
 else:
-    compile_args = []
+    compile_args = ['/openmp']
     link_args = []
 
 
