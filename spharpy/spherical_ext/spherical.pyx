@@ -267,13 +267,14 @@ def spherical_harmonic_basis(int n_max, coords):
     cdef double[::1] memview_azi = azimuth
     cdef double[::1] memview_ele = elevation
 
-    cdef Py_ssize_t aa, ii, order, degree
-    for aa in range(0, n_points):
-        for ii in prange(0, n_coeff, nogil=True):
-            order = <int>(cmath.ceil(cmath.sqrt(<double>ii + 1.0)) - 1)
-            degree = ii - order**2 - order
+    cdef int point, acn, order, degree
+    for point in range(0, n_points):
+        for acn in prange(0, n_coeff, nogil=True):
+            order = <int>(cmath.ceil(cmath.sqrt(<double>acn + 1.0)) - 1)
+            degree = acn - order**2 - order
 
-            memview_basis[aa, ii] = spherical_harmonic_function(order, degree, memview_ele[aa], memview_azi[aa])
+            memview_basis[point, acn] = spherical_harmonic_function( \
+                order, degree, memview_ele[point], memview_azi[point])
 
     return basis
 
@@ -333,13 +334,14 @@ def spherical_harmonic_basis_real(int n_max, coords):
     cdef double[::1] memview_azi = azimuth
     cdef double[::1] memview_ele = elevation
 
-    cdef Py_ssize_t aa, ii, order, degree
-    for aa in range(0, n_points):
-        for ii in prange(0, n_coeff, nogil=True):
-            order = <int>(cmath.ceil(cmath.sqrt(<double>ii + 1.0)) - 1)
-            degree = ii - order**2 - order
+    cdef int point, acn, order, degree
+    for point in range(0, n_points):
+        for acn in prange(0, n_coeff, nogil=True):
+            order = <int>(cmath.ceil(cmath.sqrt(<double>acn + 1.0)) - 1)
+            degree = acn - order**2 - order
 
-            memview_basis[aa, ii] = spherical_harmonic_function_real(order, degree, memview_ele[aa], memview_azi[aa])
+            memview_basis[point, acn] = spherical_harmonic_function_real( \
+                order, degree, memview_ele[point], memview_azi[point])
 
     return basis
 
@@ -392,7 +394,7 @@ def modal_strength(int n_max,
     arraytypes = {'open': 0, 'rigid': 1, 'cardioid': 2}
     cdef int config = arraytypes.get(arraytype)
     cdef int n_coeff = (n_max+1)**2
-    cdef int n_bins = kr.shape[0]
+    cdef int n_bins = <int>kr.shape[0]
 
     cdef cnp.ndarray[complex, ndim=3] modal_strength = \
         np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
@@ -551,7 +553,7 @@ def radiation_from_sphere(int n_max,
     cdef double rho = desity_medium
     cdef double c = speed_of_sound
     cdef complex hankel, hankel_prime, radiation_order
-    cdef int n_bins = k.shape[0]
+    cdef int n_bins = <int>k.shape[0]
     cdef cnp.ndarray[complex, ndim=3] radiation = \
             np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
     cdef complex[:, :, ::1] mv_radiation = radiation
