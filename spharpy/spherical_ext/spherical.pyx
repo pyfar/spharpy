@@ -434,7 +434,7 @@ cdef complex _modal_strength(int n, double kr, int config) nogil:
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def aperture_spherical_cap(int n_max,
+def aperture_vibrating_spherical_cap(int n_max,
                            double rad_sphere,
                            double rad_cap):
     """
