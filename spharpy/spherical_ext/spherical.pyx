@@ -1,54 +1,122 @@
 # distutils: language = c++
+
 # cython: embedsignature = True
 """
 Spherical extension module docstring
 """
 
-
 import numpy as np
-cimport numpy as cnp
-from libc.stdlib cimport free
 import cython
+from cython.parallel import prange
+
 from spharpy.samplings import Coordinates
 
-cdef extern from "spherical_harmonics.h":
-    int pyramid2linear(int order, int degree);
-    int linear2pyramid_order(int linear_index);
-    int linear2pyramid_degree(int linear_index, unsigned order);
-    double complex spherical_harmonic_function_cpp(unsigned order, int degree, double theta, double phi);
-    complex* make_spherical_harmonics_basis(unsigned Nmax, double *theta, double *phi, unsigned npoints);
-    double* make_spherical_harmonics_basis_real(unsigned n_max, double *theta, double *phi, unsigned n_points);
-cdef extern from "bessel_functions.h":
-    complex *make_modal_strength(unsigned n_max, double *kr, int n_bins, int arraytype);
-cdef extern from "special_functions.h":
-    double legendre_polynomial(int n, double x);
-    complex sph_hankel_2(int n, double z);
-    complex sph_hankel_2_prime(int n, double z);
+cimport numpy as cnp
+cimport libc.math as cmath
+cimport spharpy.special._special as _special
+
+cdef extern from "math.h":
+    double complex pow(double complex arg, double power) nogil
+
+cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
+    double complex spherical_harmonic(unsigned order, int degree, double theta, double phi) nogil;
+    double spherical_harmonic_r(unsigned order, int degree, double theta, double phi) nogil;
+    double spherical_harmonic_i(unsigned order, int degree, double theta, double phi) nogil;
 
 
-cdef class _finalizer:
+def spherical_harmonic_derivative_phi(n, m, theta, phi):
+    """Calculate the derivative of the spherical hamonics with respect to
+    the azimuth angle phi.
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
     """
-    Finalizer class that frees memory after array is deleted in python.
-    This is a helper function that is only available inside of Cython.
-    """
-    cdef void *_data
-    def __dealloc__(self):
-        if self._data is not NULL:
-            free(self._data)
+    if m == 0:
+        res = 0.0
+    else:
+        res = spherical_harmonic_function(n, m, theta, phi) * 1j * m
 
-cdef void set_base(cnp.ndarray arr, void *carr):
-    """
-    Set base for underlying memory of numpy arrays
-    The class _finalizer is used to free memory after array is deleted
-    This is a helper function that is only available inside of Cython.
-    """
-    cdef _finalizer f = _finalizer()
-    f._data = <void*>carr
-    cnp.set_array_base(arr, f)
+    return res
 
 
-def spherical_harmonic_function(int n, int m, double theta, double phi):
-    return spherical_harmonic_function_cpp(n, m, theta, phi)
+def spherical_harmonic_derivative_theta(n, m, theta, phi):
+    """Calculate the derivative of the spherical hamonics with respect to
+    the elevation angle theta.
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    Note
+    ----
+
+    This implementation is subject to singularities at the poles due to the
+    1/sin(theta) term.
+
+    """
+    if n == 0:
+        res = 0.0
+    else:
+        first = spherical_harmonic_function(n, m, theta, phi) * (n+1)
+        second = spherical_harmonic_function(n+1, m, theta, phi) \
+                * np.sqrt(n**2-m**2+2*n+1) * np.sqrt(2*n+1) / np.sqrt(2*n + 3)
+
+        res = (-first/np.tan(theta) + second/np.sin(theta))
+
+    return res
+
+
+cdef complex spherical_harmonic_function(unsigned n, int m, double theta, double phi) nogil:
+    """Simple wrapper function for the boost spherical harmonic function."""
+    return spherical_harmonic(n, m, theta, phi)
+
+
+cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, double phi) nogil:
+    """Use c math library here for speed and numerical robustness.
+    Using the numpy ** operator instead of the libc pow function yields
+    numeric issues which result in sign errors."""
+
+    cdef double Y_nm = 0.0
+    if (m == 0):
+        Y_nm = spherical_harmonic_r(n, m, theta, phi)
+    elif (m > 0):
+        Y_nm = spherical_harmonic_r(n, m, theta, phi) * cmath.sqrt(2)
+    elif (m < 0):
+        Y_nm = spherical_harmonic_i(n, m, theta, phi) * cmath.sqrt(2) * \
+                <double>cmath.pow(-1, m+1)
+
+    return Y_nm * <double>cmath.pow(-1, m)
+
 
 def nm2acn(n, m):
     """
@@ -79,24 +147,16 @@ def nm2acn(n, m):
         Linear index
 
     """
-    n = np.asarray(n, dtype=np.int32)
-    m = np.asarray(m, dtype=np.int32)
+    n = np.asarray(n, dtype=np.int)
+    m = np.asarray(m, dtype=np.int)
     n_acn = m.size
 
     if not (n.size == m.size):
-        return -1
-    if not n.shape:
-        n = n[np.newaxis]
-    if not m.shape:
-        m = m[np.newaxis]
+        raise ValueError("n and m need to be of the same size")
 
-    cdef cnp.ndarray[int, ndim=1] acn = np.zeros(n_acn, dtype=np.int32)
+    acn = n**2 + n + m
 
-    cdef int idx
-    for idx in range(0, n_acn):
-        acn[idx] = pyramid2linear(n[idx], m[idx])
-
-    return np.squeeze(acn)
+    return acn
 
 
 def acn2nm(acn):
@@ -131,31 +191,39 @@ def acn2nm(acn):
         Linear index
 
     """
+    acn = np.asarray(acn, dtype=np.int)
 
-    acn = np.asarray(acn, dtype=np.int32)
-    n_acn = acn.size
-    if not acn.shape:
-        acn = acn[np.newaxis]
+    n = (np.ceil(np.sqrt(acn + 1)) - 1)
+    m = acn - n**2 - n
 
-    cdef cnp.ndarray[int, ndim=1] n = np.zeros(n_acn, dtype=np.int32)
-    cdef cnp.ndarray[int, ndim=1] m = np.zeros(n_acn, dtype=np.int32)
+    n = n.astype(np.int, copy=False)
+    m = m.astype(np.int, copy=False)
 
-    cdef int idx
-    for idx in range(0, n_acn):
-        n[idx] = linear2pyramid_order(acn[idx])
-        m[idx] = linear2pyramid_degree(acn[idx], n[idx])
+    return n, m
 
-    return np.squeeze(n), np.squeeze(m)
+
+cdef int acn2n(int acn) nogil:
+    """ACN to n conversion with c speed and without global interpreter lock.
+    """
+    cdef int n
+    n = <int>cmath.ceil(cmath.sqrt(<double>acn + 1)) - 1
+
+cdef int acn2m(int acn) nogil:
+    """ACN to m conversion with c speed and without global interpreter lock.
+    """
+    cdef int n = acn2n(acn)
+    cdef int m = acn - <int>cmath.pow(n, 2) - n
+    return m
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def spherical_harmonic_basis(n_max, coords):
+def spherical_harmonic_basis(int n_max, coords):
     """
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term (-1)^m [2]_, [3]_.
+    Condon-Shotley phase term :math:`(-1)^m` [2]_, [3]_.
 
     .. math::
 
@@ -180,26 +248,40 @@ def spherical_harmonic_basis(n_max, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
     """
-    cdef unsigned Nmax = <unsigned>n_max
+    cdef cnp.ndarray[double, ndim=1] elevation
+    cdef cnp.ndarray[double, ndim=1] azimuth
+
     if coords.elevation.ndim < 1:
         elevation = coords.elevation[np.newaxis]
         azimuth = coords.azimuth[np.newaxis]
     else:
         elevation = coords.elevation
         azimuth = coords.azimuth
-    cdef cnp.ndarray[double, ndim=1] theta = elevation
-    cdef cnp.ndarray[double, ndim=1] phi = azimuth
-    cdef unsigned n_points = theta.shape[0]
-    cdef int n_coeff = (Nmax+1)*(Nmax+1)
-    cdef complex *mat = make_spherical_harmonics_basis(Nmax, &theta[0], &phi[0], n_points)
-    cdef complex[:, ::1] mv = <complex[:n_points, :n_coeff]>mat
-    cdef cnp.ndarray arr = np.asarray(mv)
-    set_base(arr, mat)
-    return arr
+
+    cdef Py_ssize_t n_points = elevation.shape[0]
+    cdef Py_ssize_t n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[complex, ndim=2] basis = \
+        np.zeros((n_points, n_coeff), dtype=np.complex)
+    cdef complex[:, ::1] memview_basis = basis
+
+    cdef double[::1] memview_azi = azimuth
+    cdef double[::1] memview_ele = elevation
+
+    cdef int point, acn, order, degree
+    for point in range(0, n_points):
+        for acn in prange(0, n_coeff, nogil=True):
+            order = <int>(cmath.ceil(cmath.sqrt(<double>acn + 1.0)) - 1)
+            degree = acn - order**2 - order
+
+            memview_basis[point, acn] = spherical_harmonic_function( \
+                order, degree, memview_ele[point], memview_azi[point])
+
+    return basis
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def spherical_harmonic_basis_real(n_max, coords):
+def spherical_harmonic_basis_real(int n_max, coords):
     """
     Calulcates the real valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
@@ -236,32 +318,51 @@ def spherical_harmonic_basis_real(n_max, coords):
 
 
     """
-    cdef unsigned Nmax = <unsigned>n_max
     if coords.elevation.ndim < 1:
         elevation = coords.elevation[np.newaxis]
         azimuth = coords.azimuth[np.newaxis]
     else:
         elevation = coords.elevation
         azimuth = coords.azimuth
-    cdef cnp.ndarray[double, ndim=1] theta = elevation
-    cdef cnp.ndarray[double, ndim=1] phi = azimuth
-    cdef unsigned n_points = theta.shape[0]
-    cdef int n_coeff = (Nmax+1)*(Nmax+1)
-    cdef double *mat = make_spherical_harmonics_basis_real(Nmax, &theta[0], &phi[0], n_points)
-    cdef double[:, ::1] mv = <double[:n_points, :n_coeff]>mat
-    cdef cnp.ndarray arr = np.asarray(mv)
-    set_base(arr, mat)
-    return arr
 
+    cdef Py_ssize_t n_points = elevation.shape[0]
+    cdef Py_ssize_t n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[double, ndim=2] basis = \
+        np.zeros((n_points, n_coeff), dtype=np.double)
+    cdef double[:, ::1] memview_basis = basis
+
+    cdef double[::1] memview_azi = azimuth
+    cdef double[::1] memview_ele = elevation
+
+    cdef int point, acn, order, degree
+    for point in range(0, n_points):
+        for acn in prange(0, n_coeff, nogil=True):
+            order = <int>(cmath.ceil(cmath.sqrt(<double>acn + 1.0)) - 1)
+            degree = acn - order**2 - order
+
+            memview_basis[point, acn] = spherical_harmonic_function_real( \
+                order, degree, memview_ele[point], memview_azi[point])
+
+    return basis
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def modal_strength(int n_max,
                    cnp.ndarray[double, ndim=1] kr,
-                   arraytype='open'):
+                   arraytype='rigid'):
     """
     Modal strenght function for microphone arrays.
 
     .. math::
 
-        b(kr) = TODO
+        b(kr) =
+        \\begin{cases}
+            \displaystyle 4\\pi i^n j_n(kr),  & \\text{open} \\newline
+            \displaystyle  4\\pi i^{(n-1)} \\frac{1}{(kr)^2 h_n^\\prime(kr)},  & \\text{rigid} \\newline
+            \displaystyle  4\\pi i^n (j_n(kr) - i j_n^\\prime(kr)),  & \\text{cardioid}
+        \\end{cases}
+
 
     Notes
     -----
@@ -291,42 +392,89 @@ def modal_strength(int n_max,
 
     """
     arraytypes = {'open': 0, 'rigid': 1, 'cardioid': 2}
+    cdef int config = arraytypes.get(arraytype)
     cdef int n_coeff = (n_max+1)**2
-    cdef int n_bins = kr.shape[0]
-    cdef complex *mat = make_modal_strength(n_max, &kr[0], n_bins, arraytypes.get(arraytype))
-    cdef complex[:, :, ::1] mv = <complex[:n_bins, :n_coeff, :n_coeff]>mat
-    cdef cnp.ndarray arr = np.asarray(mv)
-    set_base(arr, mat)
-    return arr
+    cdef int n_bins = <int>kr.shape[0]
 
-def aperture_spherical_cap(int n_max,
+    cdef cnp.ndarray[complex, ndim=3] modal_strength = \
+        np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
+    cdef complex[:, :, ::1] mv_modal_strength = modal_strength
+
+    cdef double[::1] mv_kr = kr
+
+    cdef int n, m, acn
+    cdef complex bn
+
+
+    for k in range(0, n_bins):
+        for n in prange(0, n_max+1, nogil=True):
+            bn = _modal_strength(n, mv_kr[k], config)
+            for m in range(-n, n+1):
+                acn = n*n + n + m
+                mv_modal_strength[k, acn, acn] = bn
+
+    return np.squeeze(modal_strength)
+
+
+cdef complex _modal_strength(int n, double kr, int config) nogil:
+    """Helper function for the calculation of the modal strength for
+    plane waves"""
+    cdef complex modal_strength
+    if config == 0:
+        modal_strength = 4*cmath.pi*pow(1.0j, n) * _special.sph_bessel(n, kr)
+    elif config == 1:
+        modal_strength = 4*cmath.pi*pow(1.0j, n-1) / \
+                _special.sph_hankel_2_prime(n, kr) / kr / kr
+    elif config == 2:
+        modal_strength = 4*cmath.pi*pow(1.0j, n) * \
+                (_special.sph_bessel(n, kr) - 1.0j * _special.sph_bessel_prime(n, kr))
+
+    return modal_strength
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def aperture_vibrating_spherical_cap(int n_max,
                            double rad_sphere,
                            double rad_cap):
     """
-    Aperture function for a vibrating cap in a rigid sphere.
+    Aperture function for a vibrating cap with radius :math:`r_c` in a rigid
+    sphere with radius :math:`r_s` [5]_, [6]_
 
     .. math::
 
-        A(r, \\alpha) = TODO
+        a_n (r_{s}, \\alpha) =
+        \\begin{cases}
+            \displaystyle \\cos\\left(\\alpha\\right) P_n\\left[ \\cos\\left(\\alpha\\right) \\right] - P_{n-1}\\left[ \\cos\\left(\\alpha\\right) \\right],  & {n>0} \\newline
+            \displaystyle  1 - \\cos(\\alpha),  & {n=0}
+        \\end{cases}
+
+    where :math:`\\alpha = \\arcsin \\left(\\frac{r_c}{r_s} \\right)` is the
+    aperture angle.
 
 
     References
     ----------
-    TODO: Add reference
+    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [6]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+
 
     Parameters
     ----------
-    n : integer, ndarray
-        Spherical harmonic order
-    r : double, ndarray
-        Sphere radius
-    alpha : double
-        Aperture angle
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
+    r_sphere : double, ndarray
+        Radius of the sphere
+    r_cap : double
+        Radius of the vibrating cap
 
     Returns
     -------
     A : double, ndarray
-        Aperture function diagonal matrix
+        Aperture function in diagonal matrix form with shape
+        :math:`[(n_{max}+1)^2~\\times~(n_{max}+1)^2]`
 
     """
     cdef double angle_cap = np.arcsin(rad_cap / rad_sphere)
@@ -335,36 +483,88 @@ def aperture_spherical_cap(int n_max,
 
     cdef double legendre_plus, legendre_minus
 
-    cdef cnp.ndarray[double, ndim=2] aperture = np.zeros((n_sh, n_sh), dtype=np.double)
-    aperture[0,0] = (1-arg)*2*np.pi**2
+    cdef cnp.ndarray[double, ndim=2] aperture = \
+            np.zeros((n_sh, n_sh), dtype=np.double)
+    cdef double[:, ::1] mv_aperture = aperture
 
+    aperture[0,0] = (1-arg)*2*np.pi**2
     cdef int n, m
     for n in range(1, n_max+1):
-        legendre_minus = legendre_polynomial(n-1, arg)
-        legendre_plus = legendre_polynomial(n+1, arg)
+        legendre_minus = _special.legendre_p(n-1, arg)
+        legendre_plus = _special.legendre_p(n+1, arg)
         for m in range(-n, n+1):
             acn = nm2acn(n, m)
-            aperture[acn, acn] = (legendre_minus - legendre_plus) * 4 * np.pi**2 / (2*n+1)
+            aperture[acn, acn] = (legendre_minus - legendre_plus) * \
+                    4 * np.pi**2 / (2*n+1)
 
     return aperture
 
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def radiation_from_sphere(int n_max,
                           double rad_sphere,
                           cnp.ndarray[double, ndim=1] k,
-                          double distance):
+                          double distance,
+                          desity_medium=1.2,
+                          speed_of_sound=343.0):
+    """
+    Radiation function in SH for a vibrating sphere including the radiation
+    impedance and the propagation to a arbitrary distance from the sphere.
+
+
+    TODO: This function does not have a test yet.
+
+
+    References
+    ----------
+    .. [7]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [8]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+
+
+    Parameters
+    ----------
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
+    r_sphere : double, ndarray
+        Radius of the sphere
+    k : double, ndarray
+        Wave number
+    distance : double
+        Distance from the origin
+    density_medium : double
+        Density of the medium surrounding the sphere. Default is 1.2 for air.
+    speed_of_sound : double
+        Speed of sound in m/s
+
+    Returns
+    -------
+    R : double, ndarray
+        Radiation function in diagonal matrix form with shape
+        :math:`[K \\times (n_{max}+1)^2~\\times~(n_{max}+1)^2]`
+
+
+
+    """
     cdef int n_sh = (n_max+1)**2
 
-    cdef double rho = 1.2
-    cdef double c = 343.0
+    cdef double rho = desity_medium
+    cdef double c = speed_of_sound
     cdef complex hankel, hankel_prime, radiation_order
-    cdef int n_bins = k.shape[0]
-    cdef cnp.ndarray[complex, ndim=3] radiation = np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
+    cdef int n_bins = <int>k.shape[0]
+    cdef cnp.ndarray[complex, ndim=3] radiation = \
+            np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
+    cdef complex[:, :, ::1] mv_radiation = radiation
+
+    cdef double[::1] mv_k = k
 
     cdef int n, m, kk
     for kk in range(0, n_bins):
         for n in range(0, n_max+1):
-            hankel = sph_hankel_2(n, k[kk]*distance)
-            hankel_prime = sph_hankel_2_prime(n, k[kk]*rad_sphere)
+            hankel = _special.sph_hankel_2(n, mv_k[kk]*distance)
+            hankel_prime = _special.sph_hankel_2_prime(n, mv_k[kk]*rad_sphere)
             radiation_order = hankel/hankel_prime * 1j * rho * c
             for m in range(-n, n+1):
                 acn = nm2acn(n, m)

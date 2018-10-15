@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""The setup script."""
+"""The setup script.
+The package uses Cython extension modules. Parallelization using OpenMP is
+currently only supported on Linux using gcc.
+"""
 
+import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
@@ -32,13 +36,30 @@ test_requirements = [
     'cython'
 ]
 
-ext = Extension(name="spharpy.spherical",
-                sources=["./spharpy/spherical_ext/spherical.pyx",
-                         "./spharpy/spherical_ext/spherical_harmonics.cpp",
-                         "./spharpy/spherical_ext/bessel_functions.cpp",
-                         "./spharpy/spherical_ext/special_functions.cpp"],
-                language="c++",
-                include_dirs=[numpy.get_include(), "./spharpy/spherical_ext/"])
+if sys.platform.startswith('linux'):
+    compile_args = ['-fopenmp']
+    link_args = ['-fopenmp']
+else:
+    compile_args = ['/openmp']
+    link_args = []
+
+
+spherical_ext = Extension(name="spharpy.spherical",
+                          sources=["./spharpy/spherical_ext/spherical.pyx"],
+                          language="c++",
+                          extra_compile_args=compile_args,
+                          extra_link_args=link_args,
+                          include_dirs=[numpy.get_include(),
+                                        "./spharpy/spherical_ext/",
+                                        "./spharpy/special/"])
+
+special_ext = Extension(name="spharpy.special",
+                        sources=["./spharpy/special/special.pyx"],
+                        language="c++",
+                        extra_compile_args=compile_args,
+                        extra_link_args=link_args,
+                        include_dirs=[numpy.get_include(),
+                                      "./spharpy/special/"])
 
 
 setup(
@@ -48,8 +69,11 @@ setup(
     long_description=readme + '\n\n' + history,
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
-    url='https://git.rwth-aachen.de/mbe/spharpy',
+    url='https://git.rwth-aachen.de/mbe/spharpy/',
     packages=find_packages(),
+    package_data = {
+        'spharpy/special/_special': ['spharpy/special/_special.pxd']
+        },
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
@@ -67,5 +91,5 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     setup_requires=setup_requirements,
-    ext_modules=cythonize(ext)
+    ext_modules=cythonize([spherical_ext, special_ext])
 )
