@@ -1,5 +1,6 @@
 import numpy as np
 from spharpy.samplings.helpers import sph2cart
+from scipy.spatial import cKDTree
 
 class Coordinates(object):
     """Container class for coordinates in a three-dimensional space, allowing
@@ -189,3 +190,51 @@ class Coordinates(object):
     def n_points(self):
         """Return number of points stored in the object"""
         return self.x.size
+
+    def find_nearest_point(self, point):
+        """Find the closest Coordinate point to a given Point.
+        The search for the nearest point is performed using the scipy
+        cKDTree implementation.
+
+        Parameters
+        ----------
+        point : Coordinates
+            Point to find nearest neighboring Coordinate
+
+        Returns
+        -------
+        distance : ndarray, double
+            Distance between the point and it's closes neighbor
+        index : int
+            Index of the closest point.
+
+        """
+        kdtree = cKDTree(self.cartesian.T)
+        distance, index = kdtree.query(point.cartesian.T)
+
+        return distance, index
+
+    def __repr__(self):
+        """repr for Coordinate class
+
+        """
+        return "Coordinates at:\nx = {}\ny = {}\nz = {}".format(self.x,
+                                                                self.y,
+                                                                self.z)
+
+    def __getitem__(self, index):
+        """Return Coordinates at index
+        """
+        return Coordinates(self._x[index], self._y[index], self._z[index])
+
+    def __setitem__(self, index, item):
+        """Set Coordinates at index
+        """
+        self._x[index] = item._x
+        self._y[index] = item._y
+        self._z[index] = item._z
+
+    def __len__(self):
+        """Length of the object which is the number of points stored.
+        """
+        return self.n_points

@@ -184,7 +184,6 @@ def test_getter_spherical():
     y = np.array([0, 1, 0, 1], dtype=np.float64)
     z = np.array([0, 0, 1, 1], dtype=np.float64)
 
-
     rad, theta, phi = cart2sph(x, y, z)
 
     coords = Coordinates(x, y, z)
@@ -207,6 +206,33 @@ def test_setter_spherical():
 
 
 def test_n_points():
-    coords = Coordinates([1,0], [1,1], [0,1])
+    coords = Coordinates([1, 0], [1, 1], [0, 1])
     assert coords.n_points == 2
 
+
+def test_find_nearest():
+    coords = Coordinates([1, 0], [1, 1], [0, 1])
+    point = Coordinates(1, 1, 0)
+
+    dist, idx = coords.find_nearest_point(point)
+
+    assert idx == 0
+
+
+def test_len():
+    coords = Coordinates([1, 0], [1, 1], [0, 1])
+    assert len(coords) == 2
+
+
+def test_getitem():
+    coords = Coordinates([1, 0], [1, 1], [0, 1])
+    getcoords = coords[0]
+    npt.assert_allclose(np.squeeze(getcoords.cartesian), np.array([1, 1, 0]))
+
+
+def test_setitem():
+    coords = Coordinates([0, 0], [1, 1], [0, 1])
+    setcoords = Coordinates(1, 1, 0)
+    coords[0] = setcoords
+    npt.assert_allclose(np.squeeze(coords.cartesian),
+                        np.array([[1, 0], [1, 1], [0, 1]]))
