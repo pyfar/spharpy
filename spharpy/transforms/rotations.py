@@ -51,3 +51,27 @@ def rotation_z_axis(n_max, angle):
     rotation_phi = np.exp(-1j*angle*m)
 
     return np.diag(rotation_phi)
+
+def rotation_z_axis_real(n_max, angle):
+    """Rotation of spherical harmonic coeffiecients around the z-axis
+    by a given angle. The rotation is performed such that positive angles result
+    in a counter clockwise rotation of the data [1]_.
+    """
+    acn = np.arange(0, (n_max + 1) ** 2)
+    n, m = spharpy.spherical.acn2nm(acn)
+    acn_reverse_degree = n ** 2 + n - m
+
+    rotation_phi = np.zeros(((n_max + 1) ** 2, (n_max + 1) ** 2))
+    mask = m == 0
+    rotation_phi[acn[mask], acn[mask]] = 1.0
+
+    mask_pos = m > 0
+    mask_neg = m < 0
+    rotation_phi[acn[mask_pos], acn[mask_pos]] = np.cos(np.abs(m[mask_pos]) * angle)
+    rotation_phi[acn[mask_neg], acn[mask_neg]] = np.cos(np.abs(m[mask_neg]) * angle)
+
+    # non diagonal
+    rotation_phi[acn[mask_pos], acn_reverse_degree[mask_pos]] = -np.sin(np.abs(m[mask_pos]) * angle)
+    rotation_phi[acn[mask_neg], acn_reverse_degree[mask_neg]] = np.sin(np.abs(m[mask_neg]) * angle)
+
+    return rotation_phi
