@@ -4,7 +4,7 @@ Collection of sampling schemes for the sphere
 
 import urllib3
 import numpy as np
-from spharpy.samplings.coordinates import Coordinates
+from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 
 
 def hyperinterpolation(n_max):
@@ -52,18 +52,18 @@ def hyperinterpolation(n_max):
     file_data = np.fromstring(file_data,
                               dtype='double',
                               sep=' ').reshape((n_sh, 4))
-    coordinates = Coordinates(file_data[:, 0],
+    sampling = SamplingSphere(file_data[:, 0],
                               file_data[:, 1],
                               file_data[:, 2])
-    weights = file_data[:, 3]
+    sampling.weights = file_data[:, 3]
 
-    return coordinates, weights
+    return sampling
 
 
-def spherical_t_design(order, n_points=None, symmetric=False):
+def spherical_t_design(degree, n_points=None, symmetric=False):
     """Return the sampling positions for a spherical t-design [1]_ .
 
-    For a given order t
+    For a given degree t
 
     .. math::
 
@@ -88,8 +88,8 @@ def spherical_t_design(order, n_points=None, symmetric=False):
 
     Parameters
     ----------
-    order : integer
-        T-design order
+    degree : integer
+        T-design degree
     n_points : integer, optional
         Number of sampling points
     symmetric : boolean
@@ -100,12 +100,12 @@ def spherical_t_design(order, n_points=None, symmetric=False):
     coordinates : Coordinates
         Coordinate object containing all sampling points
     """
-    n_points = np.int(np.ceil((order + 1)**2 / 2) + 1)
+    n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
     n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72}
-    if order in n_points_exceptions:
-        n_points = n_points_exceptions[order]
+    if degree in n_points_exceptions:
+        n_points = n_points_exceptions[degree]
 
-    filename = "sf%03d.%05d" % (order, n_points)
+    filename = "sf%03d.%05d" % (degree, n_points)
     url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/SF29-Nov-2012/"
     fileurl = url + filename
 
@@ -124,8 +124,8 @@ def spherical_t_design(order, n_points=None, symmetric=False):
     points = np.fromstring(file_data,
                            dtype=np.double,
                            sep=' ').reshape((n_points, 3)).T
-    coordinates = Coordinates(points[:, 0], points[:, 1], points[:, 2])
-    return coordinates
+    sampling = SamplingSphere.from_array(points)
+    return sampling
 
 
 
@@ -188,8 +188,8 @@ def dodecahedron():
                             phi3 + np.pi/3]), 2)
     rad = np.ones(np.size(theta))
 
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
-    return coordinates
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
+    return sampling
 
 
 def icosahedron():
@@ -213,8 +213,8 @@ def icosahedron():
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi/5, 2)))
 
     rad = np.ones(20)
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
-    return coordinates
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
+    return sampling
 
 
 def equiangular(n_max):
@@ -253,11 +253,11 @@ def equiangular(n_max):
         (1/L @ L[np.newaxis].T @ theta_angles[np.newaxis])
     weights = np.tile(factor_phi * factor_theta * np.pi/2 * factor_sin, n_phi)
 
-    coordinates = Coordinates.from_spherical(rad,
+    sampling = SamplingSphere.from_spherical(rad,
                                              theta.reshape(-1),
                                              phi.reshape(-1))
-
-    return coordinates, weights
+    sampling.weights = weights
+    return sampling
 
 
 def gaussian(n_max):
@@ -286,11 +286,11 @@ def gaussian(n_max):
     rad = np.ones(theta.size)
     weights = np.tile(weights*np.pi/(n_max+1), 2*(n_max+1))
 
-    coordinates = Coordinates.from_spherical(rad,
+    sampling = SamplingSphere.from_spherical(rad,
                                              theta.reshape(-1),
                                              phi.reshape(-1))
-
-    return coordinates, weights
+    sampling.weights = weights
+    return sampling
 
 
 def eigenmike_em32():
@@ -322,8 +322,8 @@ def eigenmike_em32():
                     180.0, 135.0, 111.0, 135.0, 269.0, 270.0,
                     270.0, 271.0]) * np.pi / 180
 
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
-    return coordinates
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
+    return sampling
 
 
 def icosahedron_ke4():
@@ -354,6 +354,6 @@ def icosahedron_ke4():
                     3.801856477793762, 3.141592653589793])
 
     rad = np.ones(20) * 0.065
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
 
-    return coordinates
+    return sampling
