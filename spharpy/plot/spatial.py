@@ -151,9 +151,11 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     ax = fig.add_subplot(111, projection='3d')
 
     # plot the unit sphere for reference (optional)
-    phi = np.linspace(0, 2 * np.pi, 100)
-    theta = np.linspace(0, np.pi, 100)
-    x, y, z = sph2cart(np.ones(100), theta, phi)
+    u = np.linspace(0, 2 * np.pi, 100)
+    v = np.linspace(0, np.pi, 100)
+    x = np.outer(np.cos(u), np.sin(v))
+    y = np.outer(np.sin(u), np.sin(v))
+    z = np.outer(np.ones(np.size(u)), np.cos(v))
     ax.plot_surface(x, y, z, color='y', alpha=0.1)
 
     ax.scatter(points[:, 0], points[:, 1], points[:, 2], c='r')
