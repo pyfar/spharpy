@@ -324,4 +324,4 @@ def test_sph_voronoi():
                       [-7.45355992e-01,  5.77350269e-01,  3.33333333e-01]])
 
     sv = s.spherical_voronoi()
-    npt.assert_allclose(sv.vertices, verts)
+    npt.assert_allclose(sv.vertices, verts, atol=1e-8)
