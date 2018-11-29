@@ -30,10 +30,8 @@ def hyperinterpolation(n_max):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
-    weights : ndarray
-        Weights for each sampling point
+    sampling: SamplingSphere
+        SamplingSphere object containing all sampling points
     """
     n_sh = (n_max+1)**2
     filename = "/Womersley/md%02d.%04d" % (n_max, n_sh)
@@ -97,8 +95,8 @@ def spherical_t_design(degree, n_points=None, symmetric=False):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
     """
     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
     n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72}
@@ -156,8 +154,8 @@ def dodecahedron():
         Azimuth angle in the range [0, 2 pi]
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
     """
 
     dihedral = 2*np.arcsin(np.cos(np.pi/3)/np.sin(np.pi/5))
@@ -198,8 +196,8 @@ def icosahedron():
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
     """
     gamma_R_r = np.arccos(np.cos(np.pi/3) / np.sin(np.pi/5))
     gamma_R_rho = np.arccos(1/(np.tan(np.pi/5) * np.tan(np.pi/3)))
@@ -227,12 +225,9 @@ def equiangular(n_max):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
-    weights : ndarray
-        Quadrature weights for each point
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
-    TODO: implement test function and check weights
     """
     n_theta = np.round((n_max+1)*2)
     n_phi = n_theta
@@ -270,10 +265,8 @@ def gaussian(n_max):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
-    weights : ndarray
-        Quadrature weights for each point
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
     """
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
@@ -304,8 +297,8 @@ def eigenmike_em32():
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
     """
     rad = np.ones(32)
@@ -332,8 +325,8 @@ def icosahedron_ke4():
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
     """
 
