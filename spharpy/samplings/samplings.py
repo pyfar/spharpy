@@ -5,7 +5,8 @@ Collection of sampling schemes for the sphere
 import urllib3
 import numpy as np
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
-
+import spharpy
+import py_eqsp as eqsp
 
 def hyperinterpolation(n_max):
     """Gives the points of a Hyperinterpolation sampling grid
@@ -58,7 +59,7 @@ def hyperinterpolation(n_max):
     return sampling
 
 
-def spherical_t_design(degree, n_points=None, symmetric=False):
+def spherical_t_design(n_max):
     """Return the sampling positions for a spherical t-design [1]_ .
 
     For a given degree t
@@ -67,7 +68,7 @@ def spherical_t_design(degree, n_points=None, symmetric=False):
 
         L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
 
-    points will be generated, except for t = 3, 5, 7, 9, 11.
+    points will be generated, except for t = 3, 5, 7, 9, 11, 15.
 
     Notes
     -----
@@ -98,8 +99,13 @@ def spherical_t_design(degree, n_points=None, symmetric=False):
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
     """
+    n_sh = (n_max+1)**2
+    if n_sh == 9:
+        degree = 4
+    else:
+        degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72}
+    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
     if degree in n_points_exceptions:
         n_points = n_points_exceptions[degree]
 
@@ -348,5 +354,121 @@ def icosahedron_ke4():
 
     rad = np.ones(20) * 0.065
     sampling = SamplingSphere.from_spherical(rad, theta, phi)
+
+    return sampling
+
+
+def equalarea(n_max, condition_num=2.5):
+    """Sampling based on partitioning into faces with equal area [1]_.
+
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    condition_num : double
+        Desired maximum condition number of the spherical harmonic basis matrix
+    n_points : int, optional
+        Number of points to start the condition number optimization. If set to
+        None n_points will be (n_max+1)**2
+
+    Returns
+    -------
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
+
+    References
+    ----------
+    .. [1]  P. Leopardi, “A partition of the unit sphere into regions of equal
+            area and small diameter,” Electronic Transactions on Numerical
+            Analysis, vol. 25, no. 12, pp. 309–327, 2006.
+
+    """
+    n_points = (n_max+1)**2
+
+    while True:
+        point_set = eqsp.point_set(2, n_points)
+        sampling = SamplingSphere(point_set[0], point_set[1], point_set[2])
+
+        if condition_num != np.inf:
+            Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
+            cond = np.linalg.cond(Y)
+            if cond < condition_num:
+                break
+        else:
+            break
+        n_points += 1
+
+    sampling.n_max = n_max
+    return sampling
+
+
+def spiral_points(n_max, condition_num=2.5, n_points=None):
+    """Sampling based on a spiral distribution of points on a sphere [1]_.
+
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    condition_num : double
+        Desired maximum condition number of the spherical harmonic basis matrix
+    n_points : int, optional
+        Number of points to start the condition number optimization. If set to
+        None n_points will be (n_max+1)**2
+
+    Returns
+    -------
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
+
+    References
+    ----------
+
+    .. [1]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
+            Energy on the Sphere,” Mathematical Research Letters, vol. 1,
+            no. 6, pp. 647–662, 1994.
+
+    """
+    if n_points is None:
+        n_points = (n_max+1)**2
+
+    def _spiral_points(n_points):
+        """Helper function doing the actual calculation of the points"""
+        r = np.zeros( n_points)
+        h = np.zeros( n_points)
+        theta = np.zeros( n_points)
+        phi = np.zeros( n_points)
+
+        p = 1/2
+        a = 1 - 2*p/(n_points-3)
+        b = p*(n_points+1)/(n_points-3)
+        r[0] = 0
+        theta[0] = np.pi
+        phi[0] = 0
+        # Then for k stepping by 1 from 2 to n-1:
+        for k in range(1, n_points-1):
+            kStrich = a*k + b
+            h[k] = -1 + 2*(kStrich-1)/(n_points-1)
+            r[k] = np.sqrt(1-h[k]**2)
+            theta[k] = np.arccos(h[k])
+            phi[k] = np.mod((phi[k-1]) + 3.6/np.sqrt(n_points)*2/(r[k-1]+r[k]), 2*np.pi)
+        # Finally:
+        theta[n_points-1] = 0
+        phi[n_points-1] = 0
+
+        return theta, phi
+
+    while True:
+        theta, phi = _spiral_points(n_points)
+        sampling = SamplingSphere.from_spherical(np.ones(n_points), theta, phi)
+        if condition_num != np.inf:
+            Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
+            cond = np.linalg.cond(Y)
+            if cond < condition_num:
+                break
+        else:
+            break
+        n_points += 1
+
+    sampling.n_max = n_max
 
     return sampling

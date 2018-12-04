@@ -48,3 +48,13 @@ def test_em32():
 def test_icosahedron_ke4():
     sampling = samplings.icosahedron_ke4()
     assert isinstance(sampling, SamplingSphere)
+
+
+def test_equalarea():
+    sampling = samplings.equalarea(2)
+    assert isinstance(sampling, SamplingSphere)
+
+
+def test_spiral_points():
+    sampling = samplings.spiral_points(2)
+    assert isinstance(sampling, SamplingSphere)
