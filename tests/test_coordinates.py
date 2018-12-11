@@ -3,10 +3,9 @@ import numpy.testing as npt
 from pytest import raises
 
 import spharpy
-from spharpy.samplings.coordinates import Coordinates
+from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 from spharpy.samplings import sph2cart, cart2sph, cart2latlon
 
-from spharpy.samplings.coordinates import SamplingSphere
 
 def test_coordinates_init():
     coords = Coordinates()
@@ -299,29 +298,4 @@ def test_setter_n_max():
     assert sampling._n_max == n_max
 
 
-def test_sph_voronoi():
-    s = spharpy.samplings.coordinates.SamplingSphere.from_coordinates(
-            spharpy.samplings.dodecahedron())
-    verts = np.array([[ 8.72677996e-01, -3.56822090e-01,  3.33333333e-01],
-                      [ 3.33333333e-01, -5.77350269e-01,  7.45355992e-01],
-                      [ 7.45355992e-01, -5.77350269e-01, -3.33333333e-01],
-                      [ 8.72677996e-01,  3.56822090e-01,  3.33333333e-01],
-                      [-8.72677996e-01, -3.56822090e-01, -3.33333333e-01],
-                      [-1.27322004e-01, -9.34172359e-01,  3.33333333e-01],
-                      [-7.45355992e-01, -5.77350269e-01,  3.33333333e-01],
-                      [ 1.27322004e-01, -9.34172359e-01, -3.33333333e-01],
-                      [-3.33333333e-01, -5.77350269e-01, -7.45355992e-01],
-                      [-8.72677996e-01,  3.56822090e-01, -3.33333333e-01],
-                      [ 0.00000000e+00,  0.00000000e+00, -1.00000000e+00],
-                      [ 6.66666667e-01, -1.91105568e-16, -7.45355992e-01],
-                      [ 7.45355992e-01,  5.77350269e-01, -3.33333333e-01],
-                      [-3.33333333e-01,  5.77350269e-01, -7.45355992e-01],
-                      [ 1.27322004e-01,  9.34172359e-01, -3.33333333e-01],
-                      [-6.66666667e-01,  2.46373130e-16,  7.45355992e-01],
-                      [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00],
-                      [ 3.33333333e-01,  5.77350269e-01,  7.45355992e-01],
-                      [-1.27322004e-01,  9.34172359e-01,  3.33333333e-01],
-                      [-7.45355992e-01,  5.77350269e-01,  3.33333333e-01]])
 
-    sv = s.spherical_voronoi()
-    npt.assert_allclose(sv.vertices, verts, atol=1e-8)
