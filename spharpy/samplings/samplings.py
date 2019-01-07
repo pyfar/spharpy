@@ -6,7 +6,8 @@ import urllib3
 import numpy as np
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 import spharpy
-import py_eqsp as eqsp
+
+from ._eqsp import point_set as eq_point_set
 
 def hyperinterpolation(n_max):
     """Gives the points of a Hyperinterpolation sampling grid
@@ -386,7 +387,7 @@ def equalarea(n_max, condition_num=2.5):
     n_points = (n_max+1)**2
 
     while True:
-        point_set = eqsp.point_set(2, n_points)
+        point_set = eq_point_set(2, n_points)
         sampling = SamplingSphere(point_set[0], point_set[1], point_set[2])
 
         if condition_num != np.inf:
