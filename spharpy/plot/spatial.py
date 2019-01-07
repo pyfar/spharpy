@@ -11,7 +11,7 @@ from matplotlib import cm
 import scipy.spatial as sspat
 from scipy.stats import circmean
 
-from spharpy.samplings import sph2cart
+from spharpy.samplings import sph2cart, spherical_voronoi
 
 
 def set_aspect_equal_3d(ax):
@@ -143,7 +143,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
         the voronoi diagram
 
     """
-    sv = sampling.spherical_voronoi(round_decimals=round_decimals)
+    sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
 
@@ -166,6 +166,8 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
         polygon.set_facecolor((1, 1, 1, 0.))
 
         ax.add_collection3d(polygon)
+
+    ax.set_aspect('equal')
 
     set_aspect_equal_3d(ax)
 

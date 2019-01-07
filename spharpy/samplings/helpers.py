@@ -221,7 +221,7 @@ def calculate_sampling_weights(sampling, round_decimals=12):
         Sampling weights
 
     """
-    sv = sampling.spherical_voronoi(round_decimals=round_decimals)
+    sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
 
     unique_verts, idx_uni = np.unique(
