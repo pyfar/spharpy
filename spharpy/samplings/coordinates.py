@@ -241,9 +241,11 @@ class Coordinates(object):
         """repr for Coordinate class
 
         """
-        return "Coordinates at:\nx = {}\ny = {}\nz = {}".format(self.x,
-                                                                self.y,
-                                                                self.z)
+        if self.n_points == 1:
+            repr_string = "Coordinates of 1 point"
+        else:
+            repr_string = "Coordinates of {} points".format(self.n_points)
+        return repr_string
 
     def __getitem__(self, index):
         """Return Coordinates at index
@@ -388,8 +390,8 @@ class SamplingSphere(Coordinates):
     def __repr__(self):
         """repr for SamplingSphere class
         """
-        return "Sampling points at:\nx = {}\ny = {}\nz = {}".format(self.x,
-                                                                    self.y,
-                                                                    self.z)
-
-
+        if self.n_points == 1:
+            repr_string = "Sampling with {} point".format(self.n_points)
+        else:
+            repr_string = "Sampling with {} points".format(self.n_points)
+        return repr_string
