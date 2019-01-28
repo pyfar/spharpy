@@ -17,3 +17,5 @@ twine
 cryptography
 PyYAML
 pytest-runner
+numpydoc
+sphinx_rtd_theme
