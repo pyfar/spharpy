@@ -22,7 +22,7 @@ def test_balloon_plot_abs():
 
 def test_balloon_plot_phase():
     n_max = 1
-    coords = spharpy.samplings.hyperinterpolation(10)[0]
+    coords = spharpy.samplings.hyperinterpolation(10)
     doa = spharpy.samplings.Coordinates(1, 0, 0)
     y_vec = spharpy.spherical.spherical_harmonic_basis_real(n_max, doa)
     basis = spharpy.spherical.spherical_harmonic_basis_real(n_max, coords)
@@ -32,7 +32,7 @@ def test_balloon_plot_phase():
 
 def test_contour_plot():
     n_max = 1
-    coords = spharpy.samplings.hyperinterpolation(10)[0]
+    coords = spharpy.samplings.hyperinterpolation(10)
     doa = spharpy.samplings.Coordinates(1, 0, 0)
     y_vec = spharpy.spherical.spherical_harmonic_basis_real(n_max, doa)
     basis = spharpy.spherical.spherical_harmonic_basis_real(n_max, coords)

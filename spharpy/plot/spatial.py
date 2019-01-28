@@ -5,12 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import cm
 
 import scipy.spatial as sspat
 from scipy.stats import circmean
 
-from spharpy.samplings import sph2cart
+from spharpy.samplings import sph2cart, spherical_voronoi
 
 
 def set_aspect_equal_3d(ax):
@@ -129,6 +130,50 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
         plt.show()
 
     return plot
+
+def voronoi_cells_sphere(sampling, round_decimals=13):
+    """Plot the Voronoi cells of a Voronoi tesselation on a sphere.
+
+    Parameters
+    ----------
+    sampling : SamplingSphere
+        Sampling as SamplingSphere object
+    round_decimals : int
+        Decimals to be rounded to for eliminating duplicate points in
+        the voronoi diagram
+
+    """
+    sv = spherical_voronoi(sampling, round_decimals=round_decimals)
+    sv.sort_vertices_of_regions()
+    points = sampling.cartesian.T
+
+    fig = plt.gcf()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # plot the unit sphere for reference (optional)
+    u = np.linspace(0, 2 * np.pi, 100)
+    v = np.linspace(0, np.pi, 100)
+    x = np.outer(np.cos(u), np.sin(v))
+    y = np.outer(np.sin(u), np.sin(v))
+    z = np.outer(np.ones(np.size(u)), np.cos(v))
+    ax.plot_surface(x, y, z, color='y', alpha=0.1)
+
+    ax.scatter(points[:, 0], points[:, 1], points[:, 2], c='r')
+
+    for region in sv.regions:
+        polygon = Poly3DCollection([sv.vertices[region]], alpha=0.5, facecolor=None)
+        polygon.set_edgecolor((0, 0, 0, 1))
+        polygon.set_facecolor((1, 1, 1, 0.))
+
+        ax.add_collection3d(polygon)
+
+    ax.set_aspect('equal')
+
+    set_aspect_equal_3d(ax)
+
+    ax.set_xlabel('x[m]')
+    ax.set_ylabel('y[m]')
+    ax.set_zlabel('z[m]')
 
 
 def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):

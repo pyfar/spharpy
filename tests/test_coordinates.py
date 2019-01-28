@@ -2,8 +2,10 @@ import numpy as np
 import numpy.testing as npt
 from pytest import raises
 
-from spharpy.samplings.coordinates import Coordinates
+import spharpy
+from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 from spharpy.samplings import sph2cart, cart2sph, cart2latlon
+
 
 def test_coordinates_init():
     coords = Coordinates()
@@ -40,6 +42,30 @@ def test_coordinates_init_from_spherical():
     coords = Coordinates.from_spherical(rad, theta, phi)
     # use atol here because of numerical rounding issues introduced in
     # the coordinate conversion
+    npt.assert_allclose(coords._x, x, atol=1e-15)
+    npt.assert_allclose(coords._y, y, atol=1e-15)
+    npt.assert_allclose(coords._z, z, atol=1e-15)
+
+def test_coordinates_init_from_array_spherical():
+    rad = [1., 1., 1., 1.]
+    ele = [np.pi/2, np.pi/2, 0, np.pi/2]
+    azi = [0, np.pi/2, 0, np.pi/4]
+
+    points = np.array([rad, ele, azi])
+    coords = Coordinates.from_array(points, coordinate_system='spherical')
+
+    npt.assert_allclose(coords.radius, rad, atol=1e-15)
+    npt.assert_allclose(coords.elevation, ele, atol=1e-15)
+    npt.assert_allclose(coords.azimuth, azi, atol=1e-15)
+
+def test_coordinates_init_from_array_cartesian():
+    x = [1, 0, 0, 0]
+    y = [0, 1, 0, 0]
+    z = [0, 0, 1, 0]
+
+    points = np.array([x, y, z])
+    coords = Coordinates.from_array(points)
+
     npt.assert_allclose(coords._x, x, atol=1e-15)
     npt.assert_allclose(coords._y, y, atol=1e-15)
     npt.assert_allclose(coords._z, z, atol=1e-15)
@@ -236,3 +262,40 @@ def test_setitem():
     coords[0] = setcoords
     npt.assert_allclose(np.squeeze(coords.cartesian),
                         np.array([[1, 0], [1, 1], [0, 1]]))
+
+
+def test_sampling_sphere_init():
+    sampling = SamplingSphere()
+    assert isinstance(sampling, SamplingSphere)
+
+
+def test_sampling_sphere_init_value():
+    sampling = SamplingSphere(1, 0, 0, 0)
+    assert isinstance(sampling, SamplingSphere)
+
+
+def sampling_cube():
+    """Helper function returning a cube sampling"""
+    x = [1, -1, 0, 0, 0, 0]
+    y = [0, 0, 1, -1, 0, 0]
+    z = [0, 0, 0, 0, 1, -1]
+
+    return x, y, z
+
+def test_getter_n_max():
+    x, y, z = sampling_cube()
+    n_max = 1
+    sampling = SamplingSphere(x, y, z, n_max)
+
+    assert sampling.n_max == n_max
+
+def test_setter_n_max():
+    x, y, z = sampling_cube()
+    n_max = 1
+    sampling = SamplingSphere(x, y, z, 0)
+
+    sampling.n_max = n_max
+    assert sampling._n_max == n_max
+
+
+

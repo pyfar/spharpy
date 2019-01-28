@@ -39,6 +39,9 @@ test_requirements = [
 if sys.platform.startswith('linux'):
     compile_args = ['-fopenmp']
     link_args = ['-fopenmp']
+elif sys.platform.startswith('darwin'):
+    compile_args = ['-fopenmp', '-stdlib=libc++']
+    link_args = []
 else:
     compile_args = ['/openmp']
     link_args = []

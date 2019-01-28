@@ -4,8 +4,10 @@ Collection of sampling schemes for the sphere
 
 import urllib3
 import numpy as np
-from spharpy.samplings.coordinates import Coordinates
+from spharpy.samplings.coordinates import Coordinates, SamplingSphere
+import spharpy
 
+from ._eqsp import point_set as eq_point_set
 
 def hyperinterpolation(n_max):
     """Gives the points of a Hyperinterpolation sampling grid
@@ -30,10 +32,8 @@ def hyperinterpolation(n_max):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
-    weights : ndarray
-        Weights for each sampling point
+    sampling: SamplingSphere
+        SamplingSphere object containing all sampling points
     """
     n_sh = (n_max+1)**2
     filename = "/Womersley/md%02d.%04d" % (n_max, n_sh)
@@ -52,24 +52,24 @@ def hyperinterpolation(n_max):
     file_data = np.fromstring(file_data,
                               dtype='double',
                               sep=' ').reshape((n_sh, 4))
-    coordinates = Coordinates(file_data[:, 0],
+    sampling = SamplingSphere(file_data[:, 0],
                               file_data[:, 1],
                               file_data[:, 2])
-    weights = file_data[:, 3]
+    sampling.weights = file_data[:, 3]
 
-    return coordinates, weights
+    return sampling
 
 
-def spherical_t_design(order, n_points=None, symmetric=False):
+def spherical_t_design(n_max):
     """Return the sampling positions for a spherical t-design [1]_ .
 
-    For a given order t
+    For a given degree t
 
     .. math::
 
         L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
 
-    points will be generated, except for t = 3, 5, 7, 9, 11.
+    points will be generated, except for t = 3, 5, 7, 9, 11, 15.
 
     Notes
     -----
@@ -88,8 +88,8 @@ def spherical_t_design(order, n_points=None, symmetric=False):
 
     Parameters
     ----------
-    order : integer
-        T-design order
+    degree : integer
+        T-design degree
     n_points : integer, optional
         Number of sampling points
     symmetric : boolean
@@ -97,15 +97,20 @@ def spherical_t_design(order, n_points=None, symmetric=False):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
     """
-    n_points = np.int(np.ceil((order + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72}
-    if order in n_points_exceptions:
-        n_points = n_points_exceptions[order]
+    n_sh = (n_max+1)**2
+    if n_sh == 9:
+        degree = 4
+    else:
+        degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
+    n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
+    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
+    if degree in n_points_exceptions:
+        n_points = n_points_exceptions[degree]
 
-    filename = "sf%03d.%05d" % (order, n_points)
+    filename = "sf%03d.%05d" % (degree, n_points)
     url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/SF29-Nov-2012/"
     fileurl = url + filename
 
@@ -124,8 +129,8 @@ def spherical_t_design(order, n_points=None, symmetric=False):
     points = np.fromstring(file_data,
                            dtype=np.double,
                            sep=' ').reshape((n_points, 3)).T
-    coordinates = Coordinates(points[:, 0], points[:, 1], points[:, 2])
-    return coordinates
+    sampling = SamplingSphere.from_array(points)
+    return sampling
 
 
 
@@ -156,8 +161,8 @@ def dodecahedron():
         Azimuth angle in the range [0, 2 pi]
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
     """
 
     dihedral = 2*np.arcsin(np.cos(np.pi/3)/np.sin(np.pi/5))
@@ -188,8 +193,8 @@ def dodecahedron():
                             phi3 + np.pi/3]), 2)
     rad = np.ones(np.size(theta))
 
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
-    return coordinates
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
+    return sampling
 
 
 def icosahedron():
@@ -198,8 +203,8 @@ def icosahedron():
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
     """
     gamma_R_r = np.arccos(np.cos(np.pi/3) / np.sin(np.pi/5))
     gamma_R_rho = np.arccos(1/(np.tan(np.pi/5) * np.tan(np.pi/3)))
@@ -213,8 +218,8 @@ def icosahedron():
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi/5, 2)))
 
     rad = np.ones(20)
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
-    return coordinates
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
+    return sampling
 
 
 def equiangular(n_max):
@@ -227,12 +232,9 @@ def equiangular(n_max):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
-    weights : ndarray
-        Quadrature weights for each point
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
-    TODO: implement test function and check weights
     """
     n_theta = np.round((n_max+1)*2)
     n_phi = n_theta
@@ -253,11 +255,11 @@ def equiangular(n_max):
         (1/L @ L[np.newaxis].T @ theta_angles[np.newaxis])
     weights = np.tile(factor_phi * factor_theta * np.pi/2 * factor_sin, n_phi)
 
-    coordinates = Coordinates.from_spherical(rad,
+    sampling = SamplingSphere.from_spherical(rad,
                                              theta.reshape(-1),
                                              phi.reshape(-1))
-
-    return coordinates, weights
+    sampling.weights = weights
+    return sampling
 
 
 def gaussian(n_max):
@@ -270,10 +272,8 @@ def gaussian(n_max):
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
-    weights : ndarray
-        Quadrature weights for each point
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
     """
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
@@ -286,11 +286,11 @@ def gaussian(n_max):
     rad = np.ones(theta.size)
     weights = np.tile(weights*np.pi/(n_max+1), 2*(n_max+1))
 
-    coordinates = Coordinates.from_spherical(rad,
+    sampling = SamplingSphere.from_spherical(rad,
                                              theta.reshape(-1),
                                              phi.reshape(-1))
-
-    return coordinates, weights
+    sampling.weights = weights
+    return sampling
 
 
 def eigenmike_em32():
@@ -304,8 +304,8 @@ def eigenmike_em32():
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
     """
     rad = np.ones(32)
@@ -322,8 +322,8 @@ def eigenmike_em32():
                     180.0, 135.0, 111.0, 135.0, 269.0, 270.0,
                     270.0, 271.0]) * np.pi / 180
 
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
-    return coordinates
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
+    return sampling
 
 
 def icosahedron_ke4():
@@ -332,8 +332,8 @@ def icosahedron_ke4():
 
     Returns
     -------
-    coordinates : Coordinates
-        Coordinate object containing all sampling points
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
 
     """
 
@@ -354,6 +354,122 @@ def icosahedron_ke4():
                     3.801856477793762, 3.141592653589793])
 
     rad = np.ones(20) * 0.065
-    coordinates = Coordinates.from_spherical(rad, theta, phi)
+    sampling = SamplingSphere.from_spherical(rad, theta, phi)
 
-    return coordinates
+    return sampling
+
+
+def equalarea(n_max, condition_num=2.5):
+    """Sampling based on partitioning into faces with equal area [1]_.
+
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    condition_num : double
+        Desired maximum condition number of the spherical harmonic basis matrix
+    n_points : int, optional
+        Number of points to start the condition number optimization. If set to
+        None n_points will be (n_max+1)**2
+
+    Returns
+    -------
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
+
+    References
+    ----------
+    .. [1]  P. Leopardi, “A partition of the unit sphere into regions of equal
+            area and small diameter,” Electronic Transactions on Numerical
+            Analysis, vol. 25, no. 12, pp. 309–327, 2006.
+
+    """
+    n_points = (n_max+1)**2
+
+    while True:
+        point_set = eq_point_set(2, n_points)
+        sampling = SamplingSphere(point_set[0], point_set[1], point_set[2])
+
+        if condition_num != np.inf:
+            Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
+            cond = np.linalg.cond(Y)
+            if cond < condition_num:
+                break
+        else:
+            break
+        n_points += 1
+
+    sampling.n_max = n_max
+    return sampling
+
+
+def spiral_points(n_max, condition_num=2.5, n_points=None):
+    """Sampling based on a spiral distribution of points on a sphere [1]_.
+
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    condition_num : double
+        Desired maximum condition number of the spherical harmonic basis matrix
+    n_points : int, optional
+        Number of points to start the condition number optimization. If set to
+        None n_points will be (n_max+1)**2
+
+    Returns
+    -------
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
+
+    References
+    ----------
+
+    .. [1]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
+            Energy on the Sphere,” Mathematical Research Letters, vol. 1,
+            no. 6, pp. 647–662, 1994.
+
+    """
+    if n_points is None:
+        n_points = (n_max+1)**2
+
+    def _spiral_points(n_points):
+        """Helper function doing the actual calculation of the points"""
+        r = np.zeros( n_points)
+        h = np.zeros( n_points)
+        theta = np.zeros( n_points)
+        phi = np.zeros( n_points)
+
+        p = 1/2
+        a = 1 - 2*p/(n_points-3)
+        b = p*(n_points+1)/(n_points-3)
+        r[0] = 0
+        theta[0] = np.pi
+        phi[0] = 0
+        # Then for k stepping by 1 from 2 to n-1:
+        for k in range(1, n_points-1):
+            kStrich = a*k + b
+            h[k] = -1 + 2*(kStrich-1)/(n_points-1)
+            r[k] = np.sqrt(1-h[k]**2)
+            theta[k] = np.arccos(h[k])
+            phi[k] = np.mod((phi[k-1]) + 3.6/np.sqrt(n_points)*2/(r[k-1]+r[k]), 2*np.pi)
+        # Finally:
+        theta[n_points-1] = 0
+        phi[n_points-1] = 0
+
+        return theta, phi
+
+    while True:
+        theta, phi = _spiral_points(n_points)
+        sampling = SamplingSphere.from_spherical(np.ones(n_points), theta, phi)
+        if condition_num != np.inf:
+            Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
+            cond = np.linalg.cond(Y)
+            if cond < condition_num:
+                break
+        else:
+            break
+        n_points += 1
+
+    sampling.n_max = n_max
+
+    return sampling

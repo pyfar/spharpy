@@ -3,6 +3,7 @@
 import pytest
 import numpy as np
 import spharpy.samplings as samplings
+from spharpy.samplings import spherical_voronoi
 
 def test_sph2cart():
     rad, theta, phi = 1, np.pi/2, 0
@@ -69,3 +70,31 @@ def test_latlon2cart_array():
     np.testing.assert_allclose(xx, x, atol=1e-15)
     np.testing.assert_allclose(yy, y, atol=1e-15)
     np.testing.assert_allclose(zz, z, atol=1e-15)
+
+
+def test_sph_voronoi():
+    s = samplings.coordinates.SamplingSphere.from_coordinates(
+            samplings.dodecahedron())
+    verts = np.array([[ 8.72677996e-01, -3.56822090e-01,  3.33333333e-01],
+                      [ 3.33333333e-01, -5.77350269e-01,  7.45355992e-01],
+                      [ 7.45355992e-01, -5.77350269e-01, -3.33333333e-01],
+                      [ 8.72677996e-01,  3.56822090e-01,  3.33333333e-01],
+                      [-8.72677996e-01, -3.56822090e-01, -3.33333333e-01],
+                      [-1.27322004e-01, -9.34172359e-01,  3.33333333e-01],
+                      [-7.45355992e-01, -5.77350269e-01,  3.33333333e-01],
+                      [ 1.27322004e-01, -9.34172359e-01, -3.33333333e-01],
+                      [-3.33333333e-01, -5.77350269e-01, -7.45355992e-01],
+                      [-8.72677996e-01,  3.56822090e-01, -3.33333333e-01],
+                      [ 0.00000000e+00,  0.00000000e+00, -1.00000000e+00],
+                      [ 6.66666667e-01, -1.91105568e-16, -7.45355992e-01],
+                      [ 7.45355992e-01,  5.77350269e-01, -3.33333333e-01],
+                      [-3.33333333e-01,  5.77350269e-01, -7.45355992e-01],
+                      [ 1.27322004e-01,  9.34172359e-01, -3.33333333e-01],
+                      [-6.66666667e-01,  2.46373130e-16,  7.45355992e-01],
+                      [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00],
+                      [ 3.33333333e-01,  5.77350269e-01,  7.45355992e-01],
+                      [-1.27322004e-01,  9.34172359e-01,  3.33333333e-01],
+                      [-7.45355992e-01,  5.77350269e-01,  3.33333333e-01]])
+
+    sv = spherical_voronoi(s)
+    np.testing.assert_allclose(sv.vertices, verts, atol=1e-8)

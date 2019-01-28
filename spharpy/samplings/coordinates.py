@@ -153,6 +153,29 @@ class Coordinates(object):
         x, y, z = sph2cart(radius, elevation, azimuth)
         return Coordinates(x, y, z)
 
+    @classmethod
+    def from_array(cls, values, coordinate_system='cartesian'):
+        """Create a Coordinates class object from a set of points given as
+        numpy array
+
+        Parameters
+        ----------
+        values : double, ndarray
+            Array with shape Nx3 where N is the number of points.
+        coordinate_system : string
+            Coordinate convention of the given values.
+            Can be Cartesian or spherical coordinates.
+        """
+        coords = Coordinates()
+        if coordinate_system == 'cartesian':
+            coords.cartesian = values
+        elif coordinate_system == 'spherical':
+            coords.spherical = values
+        else:
+            return ValueError("This coordinate system is not supported.")
+
+        return coords
+
     @property
     def latitude(self):
         """The latitude angle as used in geospatial coordinates."""
@@ -204,7 +227,7 @@ class Coordinates(object):
         Returns
         -------
         distance : ndarray, double
-            Distance between the point and it's closes neighbor
+            Distance between the point and it's closest neighbor
         index : int
             Index of the closest point.
 
@@ -218,9 +241,11 @@ class Coordinates(object):
         """repr for Coordinate class
 
         """
-        return "Coordinates at:\nx = {}\ny = {}\nz = {}".format(self.x,
-                                                                self.y,
-                                                                self.z)
+        if self.n_points == 1:
+            repr_string = "Coordinates of 1 point"
+        else:
+            repr_string = "Coordinates of {} points".format(self.n_points)
+        return repr_string
 
     def __getitem__(self, index):
         """Return Coordinates at index
@@ -230,11 +255,143 @@ class Coordinates(object):
     def __setitem__(self, index, item):
         """Set Coordinates at index
         """
-        self._x[index] = item._x
-        self._y[index] = item._y
-        self._z[index] = item._z
+        self.x[index] = item.x
+        self.y[index] = item.y
+        self.z[index] = item.z
 
     def __len__(self):
         """Length of the object which is the number of points stored.
         """
         return self.n_points
+
+
+class SamplingSphere(Coordinates):
+    """Class for samplings on a sphere"""
+
+    def __init__(self, x=None, y=None, z=None, n_max=None, weights=None):
+        """Init for sampling class
+        """
+        Coordinates.__init__(self, x, y, z)
+        if n_max is not None:
+            self._n_max = np.int(n_max)
+        else:
+            self._n_max = None
+
+        if weights is not None:
+            if len(x) != len(weights):
+                raise ValueError("The number of weights has to be equal to \
+                        the number of sampling points.")
+            self._weights = np.asarray(weights, dtype=np.double)
+        else:
+            self._weights = None
+
+    @property
+    def n_max(self):
+        """Spherical harmonic order."""
+        return self._n_max
+
+    @n_max.setter
+    def n_max(self, value):
+        self._n_max = np.int(value)
+
+    @property
+    def weights(self):
+        """Sampling weights for numeric integration."""
+        return self._weights
+
+    @weights.setter
+    def weights(self, weights):
+        if len(weights) != self.n_points:
+            raise ValueError("The number of weights has to be equal to \
+                    the number of sampling points.")
+        self._weights = np.asarray(weights, dtype=np.double)
+
+    @classmethod
+    def from_coordinates(cls, coords, n_max=None, weights=None):
+        """Generate a spherical sampling object from a coordinates object
+
+        Parameters
+        ----------
+        coords : Coordinates
+            Coordinate object
+
+        Returns
+        -------
+        sampling : SamplingSphere
+            Sampling on a sphere
+
+        """
+        return SamplingSphere(coords.x, coords.y, coords.z,
+                              n_max=n_max, weights=weights)
+
+    @classmethod
+    def from_cartesian(cls, x, y, z, n_max=None, weights=None):
+        """Create a Coordinates class object from a set of points in the
+        Cartesian coordinate system.
+
+        Parameters
+        ----------
+        x : ndarray, double
+            x-coordinate
+        y : ndarray, double
+            y-coordinate
+        z : ndarray, double
+            z-coordinate
+        """
+        return SamplingSphere(x, y, z, n_max, weights)
+
+    @classmethod
+    def from_spherical(cls, radius, elevation, azimuth,
+            n_max=None, weights=None):
+        """Create a Coordinates class object from a set of points in the
+        spherical coordinate system.
+
+        Parameters
+        ----------
+        radius : ndarray, double
+            The radius for each point
+        elevation : ndarray, double
+            The elevation angle in radians
+        azimuth : ndarray, double
+            The azimuth angle in radians
+        """
+        radius = np.asarray(radius, dtype=np.double)
+        elevation = np.asarray(elevation, dtype=np.double)
+        azimuth = np.asarray(azimuth, dtype=np.double)
+        x, y, z = sph2cart(radius, elevation, azimuth)
+        return SamplingSphere(x, y, z, n_max, weights)
+
+
+    @classmethod
+    def from_array(cls, values, n_max=None, weights=None,
+            coordinate_system='cartesian'):
+        """Create a Coordinates class object from a set of points given as
+        numpy array
+
+        Parameters
+        ----------
+        values : double, ndarray
+            Array with shape Nx3 where N is the number of points.
+        coordinate_system : string
+            Coordinate convention of the given values.
+            Can be Cartesian or spherical coordinates.
+        """
+        coords = SamplingSphere(n_max=n_max, weights=weights)
+        if coordinate_system == 'cartesian':
+            coords.cartesian = values
+        elif coordinate_system == 'spherical':
+            coords.spherical = values
+        else:
+            return ValueError("This coordinate system is not supported.")
+
+        return coords
+
+
+    def __repr__(self):
+        """repr for SamplingSphere class
+        """
+        if self.n_points == 1:
+            repr_string = "Sampling with {} point".format(self.n_points)
+        else:
+            repr_string = "Sampling with {} points".format(self.n_points)
+        return repr_string

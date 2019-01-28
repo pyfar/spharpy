@@ -27,7 +27,7 @@ def test_spherical_harmonic():
 
     basis = sh.spherical_harmonic_basis(Nmax, coords)
 
-    np.testing.assert_allclose(Y, basis)
+    np.testing.assert_allclose(Y, basis, atol=1e-13)
 
 def test_spherical_harmonics_real():
     n_max = 10
@@ -38,7 +38,7 @@ def test_spherical_harmonics_real():
 
     reference = read_2d_matrix_from_csv('./tests/data/sh_basis_real.csv')
     basis = sh.spherical_harmonic_basis_real(n_max, coords)
-    np.testing.assert_allclose(basis, reference)
+    np.testing.assert_allclose(basis, reference, atol=1e-13)
 
 def test_orthogonality():
     """
