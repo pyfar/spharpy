@@ -13,6 +13,7 @@ from spharpy.samplings import Coordinates
 
 cimport numpy as cnp
 cimport libc.math as cmath
+cimport libc.stdlib as cstdlib
 cimport spharpy.special._special as _special
 
 cdef extern from "math.h":
@@ -47,12 +48,51 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
         Spherical harmonic derivative
 
     """
-    if m == 0:
+    if m == 0 or n == 0:
         res = 0.0
     else:
         res = spherical_harmonic_function(n, m, theta, phi) * 1j * m
 
     return res
+
+
+def spherical_harmonic_gradient_phi(n, m, theta, phi):
+    """Calculate the derivative of the spherical hamonics with respect to
+    the azimuth angle phi divided by sin(theta)
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    """
+    if m == 0:
+        res = 0.0
+    else:
+        factor = np.sqrt((2*n+1)/(2*n-1))/2
+        exp_phi = np.exp(1j*phi)
+        first = np.sqrt((n+m)*(n+m-1)) * exp_phi * spherical_harmonic_function(n-1, m-1, theta, phi)
+        second = np.sqrt((n-m) * (n-m-1)) / exp_phi * spherical_harmonic_function(n-1, m+1, theta, phi)
+        Ynm_sin_theta = (-1) * factor * (first + second)
+        res = Ynm_sin_theta * 1j
+
+
+
+    return res, first, second, factor
+
 
 
 def spherical_harmonic_derivative_theta(n, m, theta, phi):
@@ -87,18 +127,30 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
     if n == 0:
         res = 0.0
     else:
-        first = spherical_harmonic_function(n, m, theta, phi) * (n+1)
-        second = spherical_harmonic_function(n+1, m, theta, phi) \
-                * np.sqrt(n**2-m**2+2*n+1) * np.sqrt(2*n+1) / np.sqrt(2*n + 3)
+        # exp_phi = cmath.exp(1j*phi)
+        exp_phi = np.exp(1j*phi)
+        first = np.sqrt((n-m+1) * (n+m)) * exp_phi * spherical_harmonic_function(n, m-1, theta, phi)
+        second = np.sqrt((n-m) * (n+m+1)) / exp_phi * spherical_harmonic_function(n, m+1, theta, phi)
 
-        res = (-first/np.tan(theta) + second/np.sin(theta))
+        res = (first-second)/2 * (-1)
+
+        # first = spherical_harmonic_function(n, m, theta, phi) * (n+1)
+        # second = spherical_harmonic_function(n+1, m, theta, phi) \
+        #         * np.sqrt(n**2-m**2+2*n+1) * np.sqrt(2*n+1) / np.sqrt(2*n + 3)
+        #
+        # res = (-first/np.tan(theta) + second/np.sin(theta))
 
     return res
 
 
 cdef complex spherical_harmonic_function(unsigned n, int m, double theta, double phi) nogil:
     """Simple wrapper function for the boost spherical harmonic function."""
-    return spherical_harmonic(n, m, theta, phi)
+    cdef complex res
+    if cstdlib.abs(m) > n:
+        res = 0
+    else:
+        res = spherical_harmonic(n, m, theta, phi)
+    return res
 
 
 cdef double spherical_harmonic_function_real(unsigned n, int m, double theta, double phi) nogil:
