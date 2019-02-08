@@ -19,6 +19,9 @@ cimport spharpy.special._special as _special
 cdef extern from "math.h":
     double complex pow(double complex arg, double power) nogil
 
+cdef extern from "complex.h":
+    double complex cexp(double complex)
+
 cdef extern from "boost/math/special_functions/spherical_harmonic.hpp" namespace "boost::math":
     double complex spherical_harmonic(unsigned order, int degree, double theta, double phi) nogil;
     double spherical_harmonic_r(unsigned order, int degree, double theta, double phi) nogil;
@@ -89,9 +92,7 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
         Ynm_sin_theta = (-1) * factor * (first + second)
         res = Ynm_sin_theta * 1j
 
-
-
-    return res, first, second, factor
+    return res
 
 
 

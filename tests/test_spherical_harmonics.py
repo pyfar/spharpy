@@ -10,8 +10,10 @@ sys.path.append('./')
 
 import pytest
 import spharpy.spherical as sh
+import spharpy.samplings as samplings
 from spharpy.samplings import Coordinates
 import numpy as np
+import numpy.testing as npt
 
 def test_spherical_harmonic():
     Nmax = 1
@@ -56,3 +58,44 @@ def test_orthogonality():
     fact = 4*np.pi/(n_max+1)**2
     orth = np.diagonal(fact * inner)
     np.testing.assert_allclose(orth, np.ones(n_points))
+
+
+def test_spherical_harmonic_derivative_phi():
+    n = 2
+    m = 1
+    sampling = samplings.equalarea(50, condition_num=np.inf)
+    Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
+    for idx in range(0, sampling.n_points):
+        Y_diff_phi[idx] = sh.spherical_harmonic_derivative_phi(
+                n, m, sampling.elevation[idx], sampling.azimuth[idx])
+
+    ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
+    ref = ref_file[0] + 1j*ref_file[1]
+    npt.assert_allclose(ref, Y_diff_phi)
+
+
+def test_spherical_harmonic_gradient_phi():
+    n = 2
+    m = 1
+    sampling = samplings.equalarea(50, condition_num=np.inf)
+    Y_grad_phi = np.zeros((sampling.n_points), dtype=np.complex)
+    for idx in range(0, sampling.n_points):
+        Y_grad_phi[idx] = sh.spherical_harmonic_gradient_phi(
+                n, m, sampling.elevation[idx], sampling.azimuth[idx])
+    ref_file = np.loadtxt('./tests/data/Y_grad_phi.csv', delimiter=',')
+    ref = ref_file[0] + 1j*ref_file[1]
+    npt.assert_allclose(ref, Y_grad_phi)
+
+
+def test_spherical_harmonic_derivative_theta():
+    n = 2
+    m = 1
+    sampling = samplings.equalarea(50, condition_num=np.inf)
+    Y_diff_theta = np.zeros((sampling.n_points), dtype=np.complex)
+    for idx in range(0, sampling.n_points):
+        Y_diff_theta[idx] = sh.spherical_harmonic_derivative_theta(
+                n, m, sampling.elevation[idx], sampling.azimuth[idx])
+
+    ref_file = np.loadtxt('./tests/data/Y_diff_theta.csv', delimiter=',')
+    ref = ref_file[0] + 1j*ref_file[1]
+    npt.assert_allclose(ref, Y_diff_theta)
