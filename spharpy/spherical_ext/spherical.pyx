@@ -98,6 +98,70 @@ def spherical_harmonic_basis_gradient(int n_max, coords):
     return grad_theta, grad_phi
 
 
+def spherical_harmonic_normalization_full(int n, int m):
+    if m>n:
+        factor = 0
+    else:
+        factor = _special.tgamma_delta_ratio((n-m+1), (2*m))
+        factor *= (2*n+1)/(4*np.pi)
+        if m != 0:
+            factor *= 2
+        factor = cmath.sqrt(factor)
+    return factor
+
+
+def spherical_harmonic_function_derivative_theta_real(
+        unsigned n,
+        int m,
+        double theta,
+        double phi
+        ):
+    m_abs = np.abs(m)
+    if n == 0:
+        res = 0
+    else:
+
+        first = (n+m_abs)*(n-np.abs(m+1)) * _special.legendre_p(n, np.abs(m-1), np.cos(theta)) * (-1)**(m-1)
+        second = _special.legendre_p(n, m_abs+1, np.cos(theta)) * (-1)**(m+1)
+        legendre_diff = 0.5*(first - second)
+
+        N_nm = spherical_harmonic_normalization_full(n, m_abs)
+
+        if m<0:
+            phi_term = np.sin(m_abs*phi)
+        else:
+            phi_term = np.cos(m_abs*phi)
+
+        res = N_nm * legendre_diff * phi_term
+
+    return res
+
+
+def spherical_harmonic_function_grad_phi_real(
+        int n,
+        int m,
+        double theta,
+        double phi
+        ):
+    m_abs = np.abs(m)
+    if m == 0:
+        res = 0
+    else:
+        first = (n+m_abs)*(n+np.abs(m-1)) * _special.legendre_p(n-1, np.abs(m-1), np.cos(theta)) * (-1)**(m-1)
+        second = _special.legendre_p(n-1, m_abs+1, np.cos(theta)) * (-1)**(m+1)
+        legendre_diff = 0.5*(first + second)
+        N_nm = spherical_harmonic_normalization_full(n, m_abs)
+
+        if m<0:
+            phi_term = np.cos(m_abs*phi)
+        else:
+            phi_term = -np.sin(m_abs*phi)
+
+        res = N_nm * legendre_diff * phi_term
+
+    return res
+
+
 def spherical_harmonic_function_derivative_phi( \
         int n, int m, double theta, double phi):
     """Calculate the derivative of the spherical hamonics with respect to
