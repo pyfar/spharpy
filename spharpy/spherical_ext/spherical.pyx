@@ -189,15 +189,15 @@ def spherical_harmonic_function_derivative_theta_real(
     if n == 0:
         res = 0
     else:
-        if n < np.abs(m-1):
+        if n < np.abs(m_abs-1):
             first = 0
         else:
-            first = (n+m)*(n-m+1) * _special.legendre_p(n, m-1, np.cos(theta))
+            first = (n+m_abs)*(n-m_abs+1) * _special.legendre_p_no_cs_phase(n, m_abs-1, np.cos(theta))
 
-        if n < np.abs(m+1):
+        if n < np.abs(m_abs+1):
             second = 0
         else:
-            second = _special.legendre_p(n, m+1, np.cos(theta))
+            second = _special.legendre_p_no_cs_phase(n, m_abs+1, np.cos(theta))
 
         legendre_diff = 0.5*(first - second)
 
@@ -206,7 +206,7 @@ def spherical_harmonic_function_derivative_theta_real(
         if m<0:
             phi_term = np.sin(m_abs*phi)
         else:
-            phi_term = np.cos(m_abs*phi) * (-1)**m
+            phi_term = np.cos(m_abs*phi)
 
         res = N_nm * legendre_diff * phi_term
     res = <double>res
@@ -224,24 +224,22 @@ def spherical_harmonic_function_gradient_phi_real(
     if m == 0:
         res = 0
     else:
-        # first = (n+m_abs)*(n+np.abs(m-1)) * _special.legendre_p(n-1, np.abs(m-1), np.cos(theta)) * (-1)**(m_abs-1)
-
-        if n-1 < np.abs(m-1):
+        if n-1 < np.abs(m_abs-1):
             first = 0
         else:
-            first = (n+m)*(n+m-1) * _special.legendre_p(n-1, m-1, np.cos(theta))
+            first = (n+m_abs)*(n+m_abs-1) * _special.legendre_p_no_cs_phase(n-1, m_abs-1, np.cos(theta))
 
-        if n-1 < np.abs(m+1):
+        if n-1 < np.abs(m_abs+1):
             second = 0
         else:
-            second = _special.legendre_p(n-1, m+1, np.cos(theta))
+            second = _special.legendre_p_no_cs_phase(n-1, m_abs+1, np.cos(theta))
         legendre_diff = 0.5*(first + second)
         N_nm = spherical_harmonic_normalization_full(n, m_abs)
 
         if m<0:
-            phi_term = np.cos(m_abs*phi) * m_abs/m
+            phi_term = np.cos(m_abs*phi)
         else:
-            phi_term = -np.sin(m_abs*phi) * (-1)**m * m_abs/m
+            phi_term = -np.sin(m_abs*phi)
 
         res = N_nm * legendre_diff * phi_term
     res = <double>res

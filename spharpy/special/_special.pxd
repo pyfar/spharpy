@@ -26,3 +26,15 @@ cdef inline complex sph_hankel_1_prime(int n, double z) nogil:
     cdef complex hankel_1_prime
     hankel_1_prime = sph_hankel_1(n-1, z) - (n+1)/z * sph_hankel_1(n, z)
     return hankel_1_prime
+
+
+cdef inline double legendre_p_no_cs_phase(int n, int m, double x) nogil:
+    """The associated Legendre functions without the Condon-Shortley phase
+    term (-1)^m.
+    """
+    cdef double legendre = legendre_p(n, m, x)
+
+    if m&1:
+        legendre = -legendre
+
+    return legendre
