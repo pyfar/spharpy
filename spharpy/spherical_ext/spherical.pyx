@@ -97,6 +97,75 @@ def spherical_harmonic_basis_gradient(int n_max, coords):
 
     return grad_theta, grad_phi
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def spherical_harmonic_basis_gradient_real(int n_max, coords):
+    """
+    TODO: correct docstring. This just copy and paste from SH basis
+    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
+    for a set of points given by their elevation and azimuth angles.
+    The spherical harmonic functions are fully normalized (N3D) and include the
+    Condon-Shotley phase term :math:`(-1)^m` [2]_.
+
+    .. math::
+
+        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
+
+    References
+    ----------
+    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+
+
+    Parameters
+    ----------
+    n_max : integer
+        Spherical harmonic order
+    coordinates : Coordinates
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
+
+    Returns
+    -------
+    Y : double, ndarray, matrix
+        Complex spherical harmonic basis matrix
+    """
+    cdef cnp.ndarray[double, ndim=1] elevation
+    cdef cnp.ndarray[double, ndim=1] azimuth
+
+    if coords.elevation.ndim < 1:
+        elevation = coords.elevation[np.newaxis]
+        azimuth = coords.azimuth[np.newaxis]
+    else:
+        elevation = coords.elevation
+        azimuth = coords.azimuth
+
+    cdef Py_ssize_t n_points = elevation.shape[0]
+    cdef Py_ssize_t n_coeff = (n_max+1)**2
+    cdef cnp.ndarray[double, ndim=2] grad_theta = \
+        np.zeros((n_points, n_coeff), dtype=np.double)
+    cdef cnp.ndarray[double, ndim=2] grad_phi = \
+        np.zeros((n_points, n_coeff), dtype=np.double)
+    cdef double[:, ::1] memview_theta = grad_theta
+    cdef double[:, ::1] memview_phi = grad_phi
+
+    cdef double[::1] memview_azi = azimuth
+    cdef double[::1] memview_ele = elevation
+
+    cdef int point, acn, order, degree
+    for point in range(0, n_points):
+        for acn in range(0, n_coeff):
+            order = <int>(cmath.ceil(cmath.sqrt(<double>acn + 1.0)) - 1)
+            degree = acn - order**2 - order
+
+            memview_theta[point, acn] = \
+                <double>spherical_harmonic_function_derivative_theta_real( \
+                order, degree, memview_ele[point], memview_azi[point])
+            memview_phi[point, acn] = \
+                <double>spherical_harmonic_function_gradient_phi_real( \
+                order, degree, memview_ele[point], memview_azi[point])
+
+    return grad_theta, grad_phi
+
 
 def spherical_harmonic_normalization_full(int n, int m):
     if m>n:
@@ -116,13 +185,20 @@ def spherical_harmonic_function_derivative_theta_real(
         double theta,
         double phi
         ):
-    m_abs = np.abs(m)
+    cdef unsigned m_abs = np.abs(m)
     if n == 0:
         res = 0
     else:
+        if n < np.abs(m-1):
+            first = 0
+        else:
+            first = (n+m)*(n-m+1) * _special.legendre_p(n, m-1, np.cos(theta))
 
-        first = (n+m_abs)*(n-np.abs(m+1)) * _special.legendre_p(n, np.abs(m-1), np.cos(theta)) * (-1)**(m-1)
-        second = _special.legendre_p(n, m_abs+1, np.cos(theta)) * (-1)**(m+1)
+        if n < np.abs(m+1):
+            second = 0
+        else:
+            second = _special.legendre_p(n, m+1, np.cos(theta))
+
         legendre_diff = 0.5*(first - second)
 
         N_nm = spherical_harmonic_normalization_full(n, m_abs)
@@ -130,34 +206,45 @@ def spherical_harmonic_function_derivative_theta_real(
         if m<0:
             phi_term = np.sin(m_abs*phi)
         else:
-            phi_term = np.cos(m_abs*phi)
+            phi_term = np.cos(m_abs*phi) * (-1)**m
 
         res = N_nm * legendre_diff * phi_term
+    res = <double>res
 
     return res
 
 
-def spherical_harmonic_function_grad_phi_real(
+def spherical_harmonic_function_gradient_phi_real(
         int n,
         int m,
         double theta,
         double phi
         ):
-    m_abs = np.abs(m)
+    cdef unsigned m_abs = np.abs(m)
     if m == 0:
         res = 0
     else:
-        first = (n+m_abs)*(n+np.abs(m-1)) * _special.legendre_p(n-1, np.abs(m-1), np.cos(theta)) * (-1)**(m-1)
-        second = _special.legendre_p(n-1, m_abs+1, np.cos(theta)) * (-1)**(m+1)
+        # first = (n+m_abs)*(n+np.abs(m-1)) * _special.legendre_p(n-1, np.abs(m-1), np.cos(theta)) * (-1)**(m_abs-1)
+
+        if n-1 < np.abs(m-1):
+            first = 0
+        else:
+            first = (n+m)*(n+m-1) * _special.legendre_p(n-1, m-1, np.cos(theta))
+
+        if n-1 < np.abs(m+1):
+            second = 0
+        else:
+            second = _special.legendre_p(n-1, m+1, np.cos(theta))
         legendre_diff = 0.5*(first + second)
         N_nm = spherical_harmonic_normalization_full(n, m_abs)
 
         if m<0:
-            phi_term = np.cos(m_abs*phi)
+            phi_term = np.cos(m_abs*phi) * m_abs/m
         else:
-            phi_term = -np.sin(m_abs*phi)
+            phi_term = -np.sin(m_abs*phi) * (-1)**m * m_abs/m
 
         res = N_nm * legendre_diff * phi_term
+    res = <double>res
 
     return res
 
