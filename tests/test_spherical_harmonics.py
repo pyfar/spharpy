@@ -113,3 +113,48 @@ def test_spherical_harmonic_basis_gradient():
     ref_file = np.loadtxt('./tests/data/Y_grad_phi.csv', delimiter=',')
     ref_phi = ref_file[0] + 1j*ref_file[1]
     npt.assert_allclose(ref_phi, Y_grad_phi[:, acn])
+
+
+# def test_spherical_harmonic_derivative_phi_real():
+#     n = 5
+#     m = 1
+#     sampling = samplings.equalarea(50, condition_num=np.inf)
+#     Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
+#     for idx in range(0, sampling.n_points):
+#         Y_diff_phi[idx] = sh.spherical_harmonic_function_derivative_phi(
+#                 n, m, sampling.elevation[idx], sampling.azimuth[idx])
+#
+#     ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
+#     ref = ref_file[0] + 1j*ref_file[1]
+#     npt.assert_allclose(ref, Y_diff_phi)
+
+
+def test_spherical_harmonic_gradient_phi_real():
+    n = 5
+    sampling = samplings.equalarea(30, condition_num=np.inf)
+    Y_grad_phi = sh.spherical_harmonic_basis_gradient_real(n, sampling)[1]
+
+    ref = np.loadtxt('./tests/data/Y_grad_phi_real.csv', delimiter=',')
+    npt.assert_allclose(ref, Y_grad_phi, atol=1e-15)
+
+
+def test_spherical_harmonic_derivative_theta_real():
+    n = 5
+    sampling = samplings.equalarea(30, condition_num=np.inf)
+    Y_diff_theta = sh.spherical_harmonic_basis_gradient_real(n, sampling)[0]
+
+    ref = np.loadtxt('./tests/data/Y_diff_theta_real.csv', delimiter=',')
+    npt.assert_allclose(ref, Y_diff_theta, atol=1e-15)
+
+
+def test_spherical_harmonic_basis_gradient_real():
+    n = 5
+    sampling = samplings.equalarea(30, condition_num=np.inf)
+    Y_diff_theta, Y_grad_phi = \
+        sh.spherical_harmonic_basis_gradient(n, sampling)
+
+    ref_theta = np.loadtxt('./tests/data/Y_diff_theta_real.csv', delimiter=',')
+    npt.assert_allclose(ref_theta, Y_diff_theta, atol=1e-15)
+
+    ref_phi = np.loadtxt('./tests/data/Y_grad_phi_real.csv', delimiter=',')
+    npt.assert_allclose(ref_phi, Y_grad_phi)
