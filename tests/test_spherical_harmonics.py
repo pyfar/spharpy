@@ -151,7 +151,7 @@ def test_spherical_harmonic_basis_gradient_real():
     n = 5
     sampling = samplings.equalarea(30, condition_num=np.inf)
     Y_diff_theta, Y_grad_phi = \
-        sh.spherical_harmonic_basis_gradient(n, sampling)
+        sh.spherical_harmonic_basis_gradient_real(n, sampling)
 
     ref_theta = np.loadtxt('./tests/data/Y_diff_theta_real.csv', delimiter=',')
     npt.assert_allclose(ref_theta, Y_diff_theta, atol=1e-15)
