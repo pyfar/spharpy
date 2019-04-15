@@ -305,11 +305,11 @@ def spherical_bessel_zeros(n_max, n_zeros):
     def func(x, n):
         return spspecial.spherical_jn(n, x)
 
-    zerosj = np.zeros((n_max+1, n_zeros), dtype=np.float)
+    zerosj = np.zeros((n_max+1, n_zeros), dtype=np.double)
     zerosj[0] = np.arange(1, n_zeros+1)*np.pi
     points = np.arange(1, n_zeros+n_max+1)*np.pi
 
-    roots = np.zeros(n_zeros+n_max, dtype=np.float)
+    roots = np.zeros(n_zeros+n_max, dtype=np.double)
     for i in range(1,n_max+1):
         for j in range(n_zeros+n_max-i):
             roots[j] = brentq(func, points[j], points[j+1], (i,), maxiter=5000)

@@ -6,9 +6,9 @@ from spharpy.samplings import Coordinates
 
 def interior_stabilization_points(kr_max, resolution_factor=1):
     """ Find points inside the interior domain of an open  spherical microphone
-    array that stabilize the array array response at the eigenfrequencies of the array.
-    The algorithm is based on _[1] and implemented following the Matlab code provided
-    by Gilles Chardon on his homepage at _[2].
+    array that stabilize the array array response at the eigenfrequencies of
+    the array. The algorithm is based on _[1] and implemented following the
+    Matlab code provided by Gilles Chardon on his homepage at _[2].
     The stabilization points are independent of the sampling of the sphere
     and can therefore be combined with arbitrary spherical samplings.
 
@@ -28,14 +28,13 @@ def interior_stabilization_points(kr_max, resolution_factor=1):
 
     References
     ----------
-    .. [1]  G. Chardon, W. Kreuzer, und M. Noisternig, „Design of spatial microphone arrays for
-            sound field interpolation“, IEEE Journal of Selected Topics in Signal Processing
+    .. [1]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial
+            microphone arrays for sound field interpolation", IEEE Journal of
+            Selected Topics in Signal Processing
     .. [2]  https://gilleschardon.fr/jstsp_array/
 
     """
-    eigenfreqs = find_eigenfrequencies(kr_max)
-    mults = np.arange(0, 2*len(eigenfreqs))
-    x, y, z = find_interior_points(eigenfreqs, mults, resolution_factor=resolution_factor)
+    x, y, z = find_interior_points(kr_max, resolution_factor=resolution_factor)
 
     sampling_interior = Coordinates(x, y, z)
 
@@ -56,10 +55,70 @@ def find_eigenfrequencies(kr_max):
         if roots.size != 0:
             eigenfrequencies.append(roots)
 
-    return eigenfrequencies
+    mults = np.arange(1, 2*len(eigenfrequencies))
+
+    return eigenfrequencies, mults
+
+
+def calculate_eigenspaces(kr_max, theta, phi, rad):
+    """Calculate the eigenspaces for the corresponding eigenfrequencies of
+    the sphere
+
+    Parameters
+    ----------
+    k_max : float
+        The largest wave number to be included
+    theta : array, float
+        Azimuth angle
+    phi : array, float
+        Elevation angle
+    rad : array, float
+        Radius
+
+    Returns
+    -------
+    eigenspaces : list, ndarray, float
+        List containing all eigenspaces
+
+    """
+    eigenfrequencies, mults = find_eigenfrequencies(kr_max)
+
+    subspaces = []
+    for u in range(len(eigenfrequencies)):
+        for root in eigenfrequencies[u]:
+            subspaces.append(sph_modes_matrix(u, root, theta, phi, rad))
+
+    return subspaces, mults
 
 
 def sph_modes_matrix(n_max, k, theta, phi, rad):
+    """Build the matrix containing all spherical harmonic modes of the domain
+    inside an open sphere for a specific order n_max.
+
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    k : float
+        Wave number
+    theta : array, float
+        Azimuth angle
+    phi : array, float
+        Elevation angle
+    rad : array, float
+        Radius
+
+    Returns
+    -------
+    modes : array, float
+        A matrix with dimension [(...) x (2*n_max+1)] containing all spherical
+        harmonic modes.
+
+    Note
+    ----
+    This function returns only coefficients for one order, but all degrees.
+
+    """
     n_coefficients = 2*n_max+1
     meshgrid_shape = theta.shape
     B = spspecial.spherical_jn(n_max, rad.flatten()*k) * 4*np.pi * (1j)**n_max
@@ -80,32 +139,20 @@ def ball_dot(S1, S2, radius, phi):
     return d
 
 
-def find_interior_points(roots, mults, resolution_factor=1):
-    idx_sel = []
+def find_interior_points(k_max, resolution_factor=1):
+    resolution = 50 * resolution_factor
 
-    resolution_theta = 100 * resolution_factor
-    resolution_phi = 50 * resolution_factor
-    resolution_rad = 50 * resolution_factor
-
-    vec_theta = np.linspace(0, 2 * np.pi, resolution_theta)
-    vec_phi = np.linspace(0, np.pi, resolution_phi)
-    vec_rad = np.linspace(0, 1, resolution_rad)
+    vec_theta = np.linspace(0, 2 * np.pi, resolution*2)
+    vec_phi = np.linspace(0, np.pi, resolution)
+    vec_rad = np.linspace(0, 1, resolution)
 
     phi, theta, rad = np.meshgrid(vec_phi, vec_theta, vec_rad)
+    meshgrid_shape = (resolution*2, resolution, resolution)
 
-    meshgrid_shape = (resolution_theta, resolution_phi, resolution_rad)
-
+    subspaces, mults = calculate_eigenspaces(k_max, theta, phi, rad)
     max_mult = mults.max()
 
-    N = len(roots)
-    subspaces = []
-
-    for u in range(N):
-        z = roots[u]
-        for v in range(z.size):
-            subspaces.append(sph_modes_matrix(u, z[v], theta, phi, rad))
-
-    #     set_trace()
+    idx_sel = []
     for w in range(0, max_mult):
         maxes = np.ones((*meshgrid_shape, len(subspaces))) * 1e3
 
@@ -116,21 +163,25 @@ def find_interior_points(roots, mults, resolution_factor=1):
                 for v in range(0, subspaces[idx_space].shape[3]):
                     vector = subspaces[idx_space][:, :, :, v]
                     for www in range(0, v):
-                        vector = vector - ball_dot(subspaces[idx_space][:, :, :, www], vector, rad, phi) * \
-                                 subspaces[idx_space][:, :, :, www]
-                    vector = vector / np.sqrt(np.abs(ball_dot(vector, vector, rad, phi)))
+                        vector = vector - ball_dot(
+                                        subspaces[idx_space][:, :, :, www],
+                                        vector,
+                                        rad,
+                                        phi) * \
+                                    subspaces[idx_space][:, :, :, www]
+                    vector = vector / np.sqrt(np.abs(ball_dot(vector,
+                                                              vector,
+                                                              rad,
+                                                              phi)))
 
                     subspaces[idx_space][:, :, :, v] = vector
                     maxes[:, :, :, idx_space] += np.abs(vector) ** 2
 
         minmax = np.min(maxes, axis=3)
-        # print("------------------------------------------------------")
-        # print("--- Max min {}".format(np.max(minmax)))
-        # print("------------------------------------------------------")
         argmax = np.argmax(minmax)
         argmax_unravel = np.unravel_index(argmax, meshgrid_shape)
-
         idx_sel.append(argmax)
+
         for idx_space in range(0, len(subspaces)):
             if subspaces[idx_space].shape[3] <= 1:
                 subspaces[idx_space] = np.array([[[[]]]])
@@ -142,13 +193,15 @@ def find_interior_points(roots, mults, resolution_factor=1):
                     vend = subspaces[idx_space][:, :, :, www].copy()
                     value_end = vend[argmax_unravel]
 
-                subspaces[idx_space][:, :, :, www] = subspaces[idx_space][:, :, :, -1]
+                subspaces[idx_space][:, :, :, www] = \
+                    subspaces[idx_space][:, :, :, -1]
                 subspaces[idx_space][:, :, :, -1] = vend
 
                 for v in range(0, subspaces[idx_space].shape[3] - 1):
                     vv = subspaces[idx_space][:, :, :, v]
                     value_vv = vv[argmax_unravel]
-                    subspaces[idx_space][:, :, :, v] = vv - vend / value_end * value_vv
+                    subspaces[idx_space][:, :, :, v] = \
+                        vv - vend / value_end * value_vv
 
                 subspaces[idx_space] = subspaces[idx_space][:, :, :, :-1]
 
