@@ -9,6 +9,48 @@ import spharpy
 
 from ._eqsp import point_set as eq_point_set
 
+def cube_equidistant(n_points):
+    """Create a cuboid sampling with equidistant spacings in x, y, and z.
+    The cube will have dimensions 1 x 1 x 1
+
+    Parameters
+    ----------
+    n_points : int, tuple
+        Number of points in the sampling. If a single value is given, the number
+        of sampling positions will be the same in every axis. If a tuple is
+        given, the number of points will be set as (n_x, n_y, n_z)
+
+    Returns
+    -------
+    sampling : Coordinates
+        Sampling positions as Coordinate object
+
+    """
+    if np.size(n_points) == 1:
+        n_x = n_points
+        n_y = n_points
+        n_z = n_points
+    elif np.size(n_points) == 3:
+        n_x = n_points[0]
+        n_y = n_points[1]
+        n_z = n_points[2]
+    else:
+        raise ValueError("The number of points needs to be either an integer \
+                or a tuple with 3 elements.")
+
+    x = np.linspace(-1, 1, n_x)
+    y = np.linspace(-1, 1, n_y)
+    z = np.linspace(-1, 1, n_z)
+
+    x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
+
+    sampling = Coordinates(x_grid.flatten(),
+                           y_grid.flatten(),
+                           z_grid.flatten())
+
+    return sampling
+
+
 def hyperinterpolation(n_max):
     """Gives the points of a Hyperinterpolation sampling grid
     after Sloan and Womersley [1]_.

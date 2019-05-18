@@ -6,6 +6,17 @@ import spharpy.samplings as samplings
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 
 
+def test_cube_equidistant():
+    n_points = 3
+    coords = samplings.cube_equidistant(n_points)
+    x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3)
+    y = np.hstack((np.ones(9) * -1, np.zeros(9), np.ones(9)))
+    z = np.tile(np.array([-1, 0, 1]), 9)
+    np.testing.assert_allclose(x, coords.x)
+    np.testing.assert_allclose(y, coords.y)
+    np.testing.assert_allclose(z, coords.z)
+
+
 def test_hyperinterpolation():
     n_max = 1
     sampling = samplings.hyperinterpolation(n_max)
