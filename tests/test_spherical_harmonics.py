@@ -31,6 +31,21 @@ def test_spherical_harmonic():
 
     np.testing.assert_allclose(Y, basis, atol=1e-13)
 
+
+def test_spherical_harmonic_n10():
+    Nmax = 10
+    theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
+    phi = np.array([0, np.pi/2, 0], dtype='double')
+
+    with patch.multiple(Coordinates, azimuth=phi, elevation=theta) as patched_vals:
+        coords = Coordinates()
+
+        Y = np.genfromtxt('./tests/data/sh_basis_cplx_n10.csv', delimiter=',', dtype=np.complex)
+        basis = sh.spherical_harmonic_basis(Nmax, coords)
+
+        np.testing.assert_allclose(Y, basis, atol=1e-13)
+
+
 def test_spherical_harmonics_real():
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype='double')
