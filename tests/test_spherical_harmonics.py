@@ -7,11 +7,13 @@ from filehandling import read_2d_matrix_from_csv
 
 sys.path.append('./')
 
+from unittest.mock import patch
 
-import pytest
+
 import spharpy.spherical as sh
 from spharpy.samplings import Coordinates
 import numpy as np
+
 
 def test_spherical_harmonic():
     Nmax = 1
@@ -44,15 +46,34 @@ def test_orthogonality():
     """
     Check if the orthonormality condition of the spherical harmonics is fulfilled
     """
-    n_max = 3
+    n_max = 82
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype='double')
     phi = np.array([0, np.pi/2, 0, np.pi/4], dtype='double')
     n_points = phi.size
-    rad = np.ones(n_points)
-    coords = Coordinates.from_spherical(rad, theta, phi)
-    basis = sh.spherical_harmonic_basis(n_max, coords)
 
-    inner = (basis @ np.conjugate(basis.T))
-    fact = 4*np.pi/(n_max+1)**2
-    orth = np.diagonal(fact * inner)
-    np.testing.assert_allclose(orth, np.ones(n_points))
+    with patch.multiple(Coordinates, azimuth=phi, elevation=theta) as patched_vals:
+        coords = Coordinates()
+        basis = sh.spherical_harmonic_basis(n_max, coords)
+
+        inner = (basis @ np.conjugate(basis.T))
+        fact = 4 * np.pi / (n_max + 1) ** 2
+        orth = np.diagonal(fact * inner)
+        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
+
+def test_orthogonality_real():
+    """
+    Check if the orthonormality condition of the reavl valued spherical harmonics is fulfilled
+    """
+    n_max = 82
+    theta = np.array([np.pi / 2, np.pi / 2, 0, np.pi / 2], dtype='double')
+    phi = np.array([0, np.pi / 2, 0, np.pi / 4], dtype='double')
+    n_points = phi.size
+
+    with patch.multiple(Coordinates, azimuth=phi, elevation=theta) as patched_vals:
+        coords = Coordinates()
+        basis = sh.spherical_harmonic_basis_real(n_max, coords)
+
+        inner = (basis @ np.conjugate(basis.T))
+        fact = 4 * np.pi / (n_max + 1) ** 2
+        orth = np.diagonal(fact * inner)
+        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
