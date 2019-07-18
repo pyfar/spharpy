@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.special as special
+import spharpy.special as _special
 
 
 def acn2nm(acn):
@@ -275,25 +276,18 @@ def modal_strength(n_max,
     return np.squeeze(modal_strength_mat)
 
 
-def spherical_hn(n, z, kind=2):
-    if kind == 1:
-        hankel = special.hankel1(n+0.5, z)
-    elif kind == 2:
-        hankel = special.hankel2(n+0.5, z)
-    return np.sqrt(np.pi/2/z) * hankel
-
-
 def _modal_strength(n, kr, config):
     """Helper function for the calculation of the modal strength for
     plane waves"""
     if config == 0:
         ms = 4*np.pi*pow(1.0j, n) * special.spherical_jn(n, kr)
-    # elif config == 1:
-    #     modal_strength = 4*np.pi*pow(1.0j, n-1) / \
-    #             _special.sph_hankel_2_prime(n, kr) / (kr)**2
-    # elif config == 2:
-    #     modal_strength = 4*np.pi*pow(1.0j, n) * \
-    #             (special.spherical_jn(n, kr) - 1.0j * _special.sph_bessel_prime(n, kr))
+    elif config == 1:
+        ms = 4*np.pi*pow(1.0j, n-1) / \
+            _special.spherical_hankel(n, kr, derivative=True) / (kr)**2
+    elif config == 2:
+        ms = 4*np.pi*pow(1.0j, n) * \
+            (special.spherical_jn(n, kr) - \
+            1.0j * special.spherical_jn(n, kr, derivative=True))
     else:
         raise ValueError("Invalid configuration.")
 

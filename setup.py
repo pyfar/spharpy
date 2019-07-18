@@ -47,13 +47,13 @@ else:
     link_args = []
 
 
-special_ext = Extension(name="spharpy.special",
-                        sources=["./spharpy/special/special.pyx"],
-                        language="c++",
-                        extra_compile_args=compile_args,
-                        extra_link_args=link_args,
-                        include_dirs=[numpy.get_include(),
-                                      "./spharpy/special/"])
+# special_ext = Extension(name="spharpy.special",
+#                         sources=["./spharpy/special/special.pyx"],
+#                         language="c++",
+#                         extra_compile_args=compile_args,
+#                         extra_link_args=link_args,
+#                         include_dirs=[numpy.get_include(),
+#                                       "./spharpy/special/"])
 
 
 setup(
@@ -65,9 +65,9 @@ setup(
     author_email='marco.berzborn@akustik.rwth-aachen.de',
     url='https://git.rwth-aachen.de/mbe/spharpy/',
     packages=find_packages(),
-    package_data = {
-        'spharpy/special/_special': ['spharpy/special/_special.pxd']
-        },
+    # package_data = {
+    #     'spharpy/special/_special': ['spharpy/special/_special.pxd']
+    #     },
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
@@ -84,6 +84,5 @@ setup(
     ],
     test_suite='tests',
     tests_require=test_requirements,
-    setup_requires=setup_requirements,
-    ext_modules=cythonize([special_ext])
+    setup_requires=setup_requirements
 )
