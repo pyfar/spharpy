@@ -47,15 +47,6 @@ else:
     link_args = []
 
 
-spherical_ext = Extension(name="spharpy.spherical",
-                          sources=["./spharpy/spherical_ext/spherical.pyx"],
-                          language="c++",
-                          extra_compile_args=compile_args,
-                          extra_link_args=link_args,
-                          include_dirs=[numpy.get_include(),
-                                        "./spharpy/spherical_ext/",
-                                        "./spharpy/special/"])
-
 special_ext = Extension(name="spharpy.special",
                         sources=["./spharpy/special/special.pyx"],
                         language="c++",
@@ -94,5 +85,5 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     setup_requires=setup_requirements,
-    ext_modules=cythonize([spherical_ext, special_ext])
+    ext_modules=cythonize([special_ext])
 )
