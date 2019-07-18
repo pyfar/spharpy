@@ -60,77 +60,77 @@ def hyperinterpolation(n_max):
     return sampling
 
 
-def spherical_t_design(n_max):
-    """Return the sampling positions for a spherical t-design [1]_ .
-
-    For a given degree t
-
-    .. math::
-
-        L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
-
-    points will be generated, except for t = 3, 5, 7, 9, 11, 15.
-
-    Notes
-    -----
-    This function downloads a pre-calculated set of points from
-    Rob Womersley's homepage [2]_
-
-    References
-    ----------
-
-    .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
-            Spherical Designs for Integration and Interpolation on the
-            Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
-            pp. 2135–2157, Jan. 2010.
-    .. [2]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
-
-
-    Parameters
-    ----------
-    degree : integer
-        T-design degree
-    n_points : integer, optional
-        Number of sampling points
-    symmetric : boolean
-        Return symmetric (antipodal) t-designs
-
-    Returns
-    -------
-    sampling : SamplingSphere
-        SamplingSphere object containing all sampling points
-    """
-    n_sh = (n_max+1)**2
-    if n_sh == 9:
-        degree = 4
-    else:
-        degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
-    n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
-    if degree in n_points_exceptions:
-        n_points = n_points_exceptions[degree]
-
-    filename = "sf%03d.%05d" % (degree, n_points)
-    url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/SF29-Nov-2012/"
-    fileurl = url + filename
-
-    http = urllib3.PoolManager()
-    http_data = http.urlopen('GET', fileurl)
-
-    if http_data.status == 200:
-        file_data = http_data.data.decode()
-    elif http_data.status == 404:
-        raise FileNotFoundError("File was not found. Check if the design you \
-                are trying to calculate is a valid t-design.")
-    else:
-        raise ConnectionError("Connection error. Please check your internet \
-                connection.")
-
-    points = np.fromstring(file_data,
-                           dtype=np.double,
-                           sep=' ').reshape((n_points, 3)).T
-    sampling = SamplingSphere.from_array(points)
-    return sampling
+# def spherical_t_design(n_max):
+#     """Return the sampling positions for a spherical t-design [1]_ .
+#
+#     For a given degree t
+#
+#     .. math::
+#
+#         L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
+#
+#     points will be generated, except for t = 3, 5, 7, 9, 11, 15.
+#
+#     Notes
+#     -----
+#     This function downloads a pre-calculated set of points from
+#     Rob Womersley's homepage [2]_
+#
+#     References
+#     ----------
+#
+#     .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
+#             Spherical Designs for Integration and Interpolation on the
+#             Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
+#             pp. 2135–2157, Jan. 2010.
+#     .. [2]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+#
+#
+#     Parameters
+#     ----------
+#     degree : integer
+#         T-design degree
+#     n_points : integer, optional
+#         Number of sampling points
+#     symmetric : boolean
+#         Return symmetric (antipodal) t-designs
+#
+#     Returns
+#     -------
+#     sampling : SamplingSphere
+#         SamplingSphere object containing all sampling points
+#     """
+#     n_sh = (n_max+1)**2
+#     if n_sh == 9:
+#         degree = 4
+#     else:
+#         degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
+#     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
+#     n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
+#     if degree in n_points_exceptions:
+#         n_points = n_points_exceptions[degree]
+#
+#     filename = "sf%03d.%05d" % (degree, n_points)
+#     url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/SF29-Nov-2012/"
+#     fileurl = url + filename
+#
+#     http = urllib3.PoolManager()
+#     http_data = http.urlopen('GET', fileurl)
+#
+#     if http_data.status == 200:
+#         file_data = http_data.data.decode()
+#     elif http_data.status == 404:
+#         raise FileNotFoundError("File was not found. Check if the design you \
+#                 are trying to calculate is a valid t-design.")
+#     else:
+#         raise ConnectionError("Connection error. Please check your internet \
+#                 connection.")
+#
+#     points = np.fromstring(file_data,
+#                            dtype=np.double,
+#                            sep=' ').reshape((n_points, 3)).T
+#     sampling = SamplingSphere.from_array(points)
+#     return sampling
 
 
 
