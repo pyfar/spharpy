@@ -36,8 +36,13 @@ def test_spherical_harmonic_n10():
     Nmax = 10
     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
     phi = np.array([0, np.pi/2, 0], dtype='double')
+    n_points = len(theta)
 
-    with patch.multiple(Coordinates, azimuth=phi, elevation=theta) as patched_vals:
+    with patch.multiple(
+            Coordinates,
+            azimuth=phi,
+            elevation=theta,
+            n_points=n_points) as patched_vals:
         coords = Coordinates()
 
         Y = np.genfromtxt('./tests/data/sh_basis_cplx_n10.csv', delimiter=',', dtype=np.complex)
@@ -57,6 +62,7 @@ def test_spherical_harmonics_real():
     basis = sh.spherical_harmonic_basis_real(n_max, coords)
     np.testing.assert_allclose(basis, reference, atol=1e-13)
 
+
 def test_orthogonality():
     """
     Check if the orthonormality condition of the spherical harmonics is fulfilled
@@ -65,8 +71,13 @@ def test_orthogonality():
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype='double')
     phi = np.array([0, np.pi/2, 0, np.pi/4], dtype='double')
     n_points = phi.size
+    n_points = len(theta)
 
-    with patch.multiple(Coordinates, azimuth=phi, elevation=theta) as patched_vals:
+    with patch.multiple(
+            Coordinates,
+            azimuth=phi,
+            elevation=theta,
+            n_points=n_points) as patched_vals:
         coords = Coordinates()
         basis = sh.spherical_harmonic_basis(n_max, coords)
 
@@ -74,6 +85,7 @@ def test_orthogonality():
         fact = 4 * np.pi / (n_max + 1) ** 2
         orth = np.diagonal(fact * inner)
         np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
+
 
 def test_orthogonality_real():
     """
@@ -84,7 +96,11 @@ def test_orthogonality_real():
     phi = np.array([0, np.pi / 2, 0, np.pi / 4], dtype='double')
     n_points = phi.size
 
-    with patch.multiple(Coordinates, azimuth=phi, elevation=theta) as patched_vals:
+    with patch.multiple(
+            Coordinates,
+            azimuth=phi,
+            elevation=theta,
+            n_points=n_points) as patched_vals:
         coords = Coordinates()
         basis = sh.spherical_harmonic_basis_real(n_max, coords)
 
