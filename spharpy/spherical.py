@@ -213,3 +213,88 @@ def sph_harm_real(n, m, theta, phi):
         Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * np.float(-1)**(m+1)
 
     return Y_nm * (np.float(-1)**(m))
+
+
+def modal_strength(n_max,
+                   kr,
+                   arraytype='rigid'):
+    r"""
+    Modal strenght function for microphone arrays.
+
+    .. math::
+
+        b(kr) =
+        \\begin{cases}
+            \displaystyle 4\\pi i^n j_n(kr),  & \\text{open} \\newline
+            \displaystyle  4\\pi i^{(n-1)} \\frac{1}{(kr)^2 h_n^\\prime(kr)},  & \\text{rigid} \\newline
+            \displaystyle  4\\pi i^n (j_n(kr) - i j_n^\\prime(kr)),  & \\text{cardioid}
+        \\end{cases}
+
+
+    Notes
+    -----
+    This implementation uses the second order Hankel function, see [4]_ for an
+    overview of the corresponding sign conventions.
+
+    References
+    ----------
+    .. [4]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and Time
+            Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
+
+
+    Parameters
+    ----------
+    n : integer, ndarray
+        Spherical harmonic order
+    kr : double, ndarray
+        Wave number * radius
+    arraytype : string
+        Array configuration. Can be a microphones mounted on a rigid sphere,
+        on a virtual open sphere or cardioid microphones on an open sphere.
+
+    Returns
+    -------
+    B : double, ndarray
+        Modal strength diagonal matrix
+
+    """
+    arraytypes = {'open': 0, 'rigid': 1, 'cardioid': 2}
+    config = arraytypes.get(arraytype)
+    n_coeff = (n_max+1)**2
+    n_bins = kr.shape[0]
+
+    modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
+
+    for k in range(0, n_bins):
+        for n in range(0, n_max+1):
+            bn = _modal_strength(n, kr[k], config)
+            for m in range(-n, n+1):
+                acn = n*n + n + m
+                modal_strength_mat[k, acn, acn] = bn
+
+    return np.squeeze(modal_strength_mat)
+
+
+def spherical_hn(n, z, kind=2):
+    if kind == 1:
+        hankel = special.hankel1(n+0.5, z)
+    elif kind == 2:
+        hankel = special.hankel2(n+0.5, z)
+    return np.sqrt(np.pi/2/z) * hankel
+
+
+def _modal_strength(n, kr, config):
+    """Helper function for the calculation of the modal strength for
+    plane waves"""
+    if config == 0:
+        ms = 4*np.pi*pow(1.0j, n) * special.spherical_jn(n, kr)
+    # elif config == 1:
+    #     modal_strength = 4*np.pi*pow(1.0j, n-1) / \
+    #             _special.sph_hankel_2_prime(n, kr) / (kr)**2
+    # elif config == 2:
+    #     modal_strength = 4*np.pi*pow(1.0j, n) * \
+    #             (special.spherical_jn(n, kr) - 1.0j * _special.sph_bessel_prime(n, kr))
+    else:
+        raise ValueError("Invalid configuration.")
+
+    return ms
