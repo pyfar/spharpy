@@ -57,3 +57,40 @@ def _spherical_hankel_derivative(n, z, kind):
         (n+1)/z * _spherical_hankel(n, z, kind)
 
     return hankel
+
+
+def sph_harm_real(n, m, theta, phi):
+    """Real valued spherical harmonic function of order n and degree m evaluated
+    at the angles theta and phi.
+
+    Parameters
+    ----------
+    n : unsigned int
+        The spherical harmonic order
+    m : int
+        The spherical harmonic degree
+    theta : ndarray, double
+        The elevation angle
+    phi : ndarray, double
+        The azimuth angle
+
+    Returns
+    -------
+    Y_nm : ndarray, double
+        The real valued spherial harmonic of order n and degree m
+
+    """
+    # careful here, scipy uses phi as the elevation angle and
+    # theta as the azimuth angle
+    Y_nm_cplx = _spspecial.sph_harm(m, n, phi, theta)
+
+    if m == 0:
+        Y_nm = np.real(Y_nm_cplx)
+    elif m > 0:
+        Y_nm = np.real(Y_nm_cplx) * np.sqrt(2)
+    elif m < 0:
+        Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * np.float(-1)**(m+1)
+
+    Y_nm *= (np.float(-1)**(m))
+
+    return Y_nm

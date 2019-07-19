@@ -176,44 +176,13 @@ def spherical_harmonic_basis_real(n_max, coords):
 
     for acn in range(0, n_coeff):
         order, degree = acn2nm(acn)
-        basis[:, acn] = sph_harm_real(
+        basis[:, acn] = _special.sph_harm_real(
             order,
             degree,
             coords.elevation,
             coords.azimuth)
 
     return basis
-
-
-def sph_harm_real(n, m, theta, phi):
-    """Real valued spherical harmonic function.
-    TODO: Move this to a new special function module
-
-    Parameters
-    ----------
-    n : TODO
-    m : TODO
-    theta : TODO
-    phi : TODO
-
-    Returns
-    -------
-    TODO
-
-    """
-
-    # careful here, scipy uses phi as the elevation angle and
-    # theta as the azimuth angle
-    Y_nm_cplx = special.sph_harm(m, n, phi, theta)
-
-    if m == 0:
-        Y_nm = np.real(Y_nm_cplx)
-    elif m > 0:
-        Y_nm = np.real(Y_nm_cplx) * np.sqrt(2)
-    elif m < 0:
-        Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * np.float(-1)**(m+1)
-
-    return Y_nm * (np.float(-1)**(m))
 
 
 def modal_strength(n_max,
