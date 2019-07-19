@@ -4,7 +4,7 @@ import spharpy.special as _special
 
 
 def acn2nm(acn):
-    """
+    r"""
     Calculate the spherical harmonic order n and degree m for a linear
     coefficient index, according to the Ambisonics Channel Convention [1]_.
 
@@ -260,3 +260,65 @@ def _modal_strength(n, kr, config):
         raise ValueError("Invalid configuration.")
 
     return ms
+
+
+def aperture_vibrating_spherical_cap(
+        n_max,
+        rad_sphere,
+        rad_cap):
+    r"""
+    Aperture function for a vibrating cap with radius :math:`r_c` in a rigid
+    sphere with radius :math:`r_s` [5]_, [6]_
+
+    .. math::
+
+        a_n (r_{s}, \\alpha) =
+        \\begin{cases}
+            \displaystyle \\cos\\left(\\alpha\\right) P_n\\left[ \\cos\\left(\\alpha\\right) \\right] - P_{n-1}\\left[ \\cos\\left(\\alpha\\right) \\right],  & {n>0} \\newline
+            \displaystyle  1 - \\cos(\\alpha),  & {n=0}
+        \\end{cases}
+
+    where :math:`\\alpha = \\arcsin \\left(\\frac{r_c}{r_s} \\right)` is the
+    aperture angle.
+
+
+    References
+    ----------
+    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [6]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+
+
+    Parameters
+    ----------
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
+    r_sphere : double, ndarray
+        Radius of the sphere
+    r_cap : double
+        Radius of the vibrating cap
+
+    Returns
+    -------
+    A : double, ndarray
+        Aperture function in diagonal matrix form with shape
+        :math:`[(n_{max}+1)^2~\\times~(n_{max}+1)^2]`
+
+    """
+    angle_cap = np.arcsin(rad_cap / rad_sphere)
+    arg = np.cos(angle_cap)
+    n_sh = (n_max+1)**2
+
+    aperture = np.zeros((n_sh, n_sh), dtype=np.double)
+
+    aperture[0, 0] = (1-arg)*2*np.pi**2
+    for n in range(1, n_max+1):
+        legendre_minus = special.legendre(n-1)(arg)
+        legendre_plus = special.legendre(n+1)(arg)
+        for m in range(-n, n+1):
+            acn = nm2acn(n, m)
+            aperture[acn, acn] = (legendre_minus - legendre_plus) * \
+                    4 * np.pi**2 / (2*n+1)
+
+    return aperture
