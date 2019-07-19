@@ -49,12 +49,11 @@ def scatter(coordinates):
     if 'Axes3D' in fig.axes.__str__():
         ax = plt.gca()
     else:
-        ax = plt.gca(projection='3d', aspect='equal')
+        ax = plt.gca(projection='3d')
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
-    ax.set_aspect('equal')
     set_aspect_equal_3d(ax)
     plt.show()
 
@@ -96,7 +95,7 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
     if 'Axes3D' in fig.axes.__str__():
         ax = plt.gca()
     else:
-        ax = plt.gca(projection='3d', aspect='equal')
+        ax = plt.gca(projection='3d')
 
     if np.iscomplex(data).any() or phase:
         cdata = np.mod(np.angle(data), 2*np.pi)
@@ -166,8 +165,6 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
         polygon.set_facecolor((1, 1, 1, 0.))
 
         ax.add_collection3d(polygon)
-
-    ax.set_aspect('equal')
 
     set_aspect_equal_3d(ax)
 
