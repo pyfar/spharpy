@@ -1,9 +1,44 @@
+"""
+Subpackage implementing or wrapping special functions required in the
+spharpy package.
+"""
+
+from itertools import count
 import numpy as np
 import scipy.special as _spspecial
-from itertools import count
 
 
 def spherical_bessel(n, z, derivative=False):
+    """
+    Spherical bessel function of order n evaluated at z.
+
+    .. math::
+
+        j_n(z) = \\sqrt{\\frac{\\pi}{2z}} J_{n+\\frac{1}{2}} (z)
+
+    Parameters
+    ----------
+    n : int, ndarray
+        Order of the spherical bessel function
+    z : double, ndarray
+        Argument of the spherical bessel function. Has to be real valued.
+    derivative : bool
+        Return the derivative of the spherical Bessel function
+
+
+    Returns
+    -------
+    jn : double, ndarray
+        Spherical bessel function. Array with dimensions [N x Z], where N is
+        the number of elements in n and Z is the number of elements in z.
+
+    Note
+    ----
+    This is a wrapper around the Scipy implementation of the spherical Bessel
+    function.
+
+    """
+
     ufunc = _spspecial.spherical_jn
     n = np.asarray(n, dtype=np.int)
     z = np.asarray(z, dtype=np.double)
@@ -20,7 +55,32 @@ def spherical_bessel(n, z, derivative=False):
 
 
 def spherical_hankel(n, z, kind=2, derivative=False):
-    if kind not in (1,2):
+    """
+    Spherical Hankel function of order n evaluated at z.
+
+    .. math::
+
+        j_n(z) = \\sqrt{\\frac{\\pi}{2z}} J_{n+\\frac{1}{2}} (z)
+
+    Parameters
+    ----------
+    n : int, ndarray
+        Order of the spherical bessel function
+    z : double, ndarray
+        Argument of the spherical bessel function. Has to be real valued.
+
+    Returns
+    -------
+    hn : double, ndarray
+        Spherical bessel function. Array with dimensions [N x Z], where N is
+        the number of elements in n and Z is the number of elements in z.
+
+    Note
+    ----
+    This is based on the Hankel functions implemented in the scipy package.
+    """
+
+    if kind not in (1, 2):
         raise ValueError("The spherical hankel function can \
             only be of first or second kind.")
 
