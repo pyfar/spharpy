@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""The setup script.
-The package uses Cython extension modules. Parallelization using OpenMP is
-currently only supported on Linux using gcc.
+"""
+The setup script.
 """
 
 import sys
 from setuptools import setup, find_packages
-from setuptools.extension import Extension
-from Cython.Build import cythonize
 import numpy
 
 with open('README.rst') as readme_file:
@@ -20,7 +17,6 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'numpy>=1.10',
-    'cython',
     'scipy',
     'urllib3',
     'matplotlib'
@@ -28,32 +24,11 @@ requirements = [
 
 setup_requirements = [
     'pytest-runner',
-    'cython'
 ]
 
 test_requirements = [
     'pytest',
-    'cython'
 ]
-
-if sys.platform.startswith('linux'):
-    compile_args = ['-fopenmp']
-    link_args = ['-fopenmp']
-elif sys.platform.startswith('darwin'):
-    compile_args = ['-fopenmp', '-stdlib=libc++']
-    link_args = []
-else:
-    compile_args = ['/openmp']
-    link_args = []
-
-
-# special_ext = Extension(name="spharpy.special",
-#                         sources=["./spharpy/special/special.pyx"],
-#                         language="c++",
-#                         extra_compile_args=compile_args,
-#                         extra_link_args=link_args,
-#                         include_dirs=[numpy.get_include(),
-#                                       "./spharpy/special/"])
 
 
 setup(
@@ -65,9 +40,6 @@ setup(
     author_email='marco.berzborn@akustik.rwth-aachen.de',
     url='https://git.rwth-aachen.de/mbe/spharpy/',
     packages=find_packages(),
-    # package_data = {
-    #     'spharpy/special/_special': ['spharpy/special/_special.pxd']
-    #     },
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
