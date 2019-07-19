@@ -322,3 +322,65 @@ def aperture_vibrating_spherical_cap(
                     4 * np.pi**2 / (2*n+1)
 
     return aperture
+
+
+def radiation_from_sphere(
+        n_max,
+        rad_sphere,
+        k,
+        distance,
+        density_medium=1.2,
+        speed_of_sound=343.0):
+    r"""
+    Radiation function in SH for a vibrating sphere including the radiation
+    impedance and the propagation to a arbitrary distance from the sphere.
+
+
+    TODO: This function does not have a test yet.
+
+
+    References
+    ----------
+    .. [7]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [8]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+
+
+    Parameters
+    ----------
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
+    r_sphere : double, ndarray
+        Radius of the sphere
+    k : double, ndarray
+        Wave number
+    distance : double
+        Distance from the origin
+    density_medium : double
+        Density of the medium surrounding the sphere. Default is 1.2 for air.
+    speed_of_sound : double
+        Speed of sound in m/s
+
+    Returns
+    -------
+    R : double, ndarray
+        Radiation function in diagonal matrix form with shape
+        :math:`[K \\times (n_{max}+1)^2~\\times~(n_{max}+1)^2]`
+
+    """
+    n_sh = (n_max+1)**2
+
+    n_bins = k.shape[0]
+    radiation = np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
+
+
+    for n in range(0, n_max+1):
+        hankel = _special.spherical_hankel(n, k*distance, kind=2)
+        hankel_prime = _special.spherical_hankel(n, k*rad_sphere, kind=2, derivative=True)
+        radiation_order = hankel/hankel_prime * 1j * density_medium * speed_of_sound
+        for m in range(-n, n+1):
+            acn = nm2acn(n, m)
+            radiation[:, acn, acn] = radiation_order
+
+    return radiation
