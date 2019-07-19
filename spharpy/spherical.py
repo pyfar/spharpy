@@ -266,12 +266,11 @@ def modal_strength(n_max,
 
     modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
 
-    for k in range(0, n_bins):
-        for n in range(0, n_max+1):
-            bn = _modal_strength(n, kr[k], config)
-            for m in range(-n, n+1):
-                acn = n*n + n + m
-                modal_strength_mat[k, acn, acn] = bn
+    for n in range(0, n_max+1):
+        bn = _modal_strength(n, kr, config)
+        for m in range(-n, n+1):
+            acn = n*n + n + m
+            modal_strength_mat[:, acn, acn] = bn
 
     return np.squeeze(modal_strength_mat)
 
@@ -280,14 +279,14 @@ def _modal_strength(n, kr, config):
     """Helper function for the calculation of the modal strength for
     plane waves"""
     if config == 0:
-        ms = 4*np.pi*pow(1.0j, n) * special.spherical_jn(n, kr)
+        ms = 4*np.pi*pow(1.0j, n) * _special.spherical_bessel(n, kr)
     elif config == 1:
         ms = 4*np.pi*pow(1.0j, n-1) / \
             _special.spherical_hankel(n, kr, derivative=True) / (kr)**2
     elif config == 2:
         ms = 4*np.pi*pow(1.0j, n) * \
-            (special.spherical_jn(n, kr) - \
-            1.0j * special.spherical_jn(n, kr, derivative=True))
+            (_special.spherical_bessel(n, kr) - \
+            1.0j * _special.spherical_bessel(n, kr, derivative=True))
     else:
         raise ValueError("Invalid configuration.")
 

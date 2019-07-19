@@ -14,7 +14,7 @@ def spherical_bessel(n, z, derivative=False):
         for idx, order in zip(count(), n):
             bessel[idx, :] = ufunc(order, z, derivative=derivative)
     else:
-        bessel = ufunc(order, z, derivative=derivative)
+        bessel = ufunc(n, z, derivative=derivative)
 
     return bessel
 
