@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.testing as npt
-from pytest import raises
+import pytest
 
 import spharpy
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
@@ -11,18 +11,21 @@ def test_coordinates_init():
     coords = Coordinates()
     assert isinstance(coords, Coordinates)
 
+
 def test_coordinates_init_val():
 
     coords = Coordinates(1, 0, 0)
     assert isinstance(coords, Coordinates)
 
+
 def test_coordinates_init_incomplete():
     x = [1, 2]
     y = 1
     z = 1
-    with raises(ValueError, \
-            message="Input arrays need to have same dimensions."):
+    with pytest.raises(ValueError):
         Coordinates(x, y, z)
+        pytest.fail("Input arrays need to have same dimensions.")
+
 
 def test_coordinates_init_from_cartesian():
     x = 1
