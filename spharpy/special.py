@@ -154,3 +154,108 @@ def sph_harm_real(n, m, theta, phi):
     Y_nm *= (np.float(-1)**(m))
 
     return Y_nm
+
+
+def spherical_harmonic_function_derivative_phi(n, m, theta, phi):
+    """Calculate the derivative of the spherical harmonics with respect to
+    the azimuth angle phi.
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    """
+    if m == 0 or n == 0:
+        res = np.zeros(phi.shape, dtype=np.complex)
+    else:
+        res = _spspecial.sph_harm(m, n, phi, theta) * 1j * m
+
+    return res
+
+
+def spherical_harmonic_function_gradient_phi(n, m, theta, phi):
+    """Calculate the derivative of the spherical harmonics with respect to
+    the azimuth angle phi divided by sin(theta)
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    """
+    if m == 0:
+        res = np.zeros(theta.shape, dtype=np.complex)
+    else:
+        factor = np.sqrt((2*n+1)/(2*n-1))/2
+        exp_phi = np.exp(1j*phi)
+        first = np.sqrt((n+m)*(n+m-1)) * exp_phi * \
+            _spspecial.sph_harm(m-1, n-1, phi, theta)
+        second = np.sqrt((n-m) * (n-m-1)) / exp_phi * \
+            _spspecial.sph_harm(m+1, n-1, phi, theta)
+        Ynm_sin_theta = (-1) * factor * (first + second)
+        res = Ynm_sin_theta * 1j
+
+    return res
+
+
+def spherical_harmonic_function_derivative_theta(n, m, theta, phi):
+    """Calculate the derivative of the spherical harmonics with respect to
+    the elevation angle theta.
+
+    Parameters
+    ----------
+
+    n : int
+        Spherical harmonic order
+    m : int
+        Spherical harmonic degree
+    theta : double
+        Elevation angle 0 < theta < pi
+    phi : double
+        Azimuth angle 0 < phi < 2*pi
+
+    Returns
+    -------
+
+    sh_diff : complex double
+        Spherical harmonic derivative
+
+    """
+    if n == 0:
+        res = np.zeros(theta.shape, dtype=np.complex)
+    else:
+        exp_phi = np.exp(1j*phi)
+        first = np.sqrt((n-m+1) * (n+m)) * exp_phi * \
+            _spspecial.sph_harm(m-1, n, phi, theta)
+        second = np.sqrt((n-m) * (n+m+1)) / exp_phi * \
+            _spspecial.sph_harm(m+1, n, phi, theta)
+        res = (first-second)/2 * (-1)
+
+    return res
