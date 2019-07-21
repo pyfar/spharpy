@@ -119,6 +119,40 @@ def _spherical_hankel_derivative(n, z, kind):
     return hankel
 
 
+def spherical_harmonic(n, m, theta, phi):
+    """The spherical harmonics of order n and degree m.
+
+    n : unsigned int
+        The spherical harmonic order
+    m : int
+        The spherical harmonic degree
+    theta : ndarray, double
+        The elevation angle
+    phi : ndarray, double
+        The azimuth angle
+
+    Returns
+    -------
+    Y_nm : ndarray, double
+        The complex valued spherial harmonic of order n and degree m
+
+    Note
+    ----
+    This function wraps the spherical harmonic implementation from scipy.
+    The only difference is that we return zeros instead of nan values
+    if $n < \|m\|$.
+
+    """
+    theta = np.asarray(theta, dtype=np.double)
+    phi = np.asarray(phi, dtype=np.double)
+
+    if n < np.abs(m):
+        sph_harm = np.zeros(theta.shape)
+    else:
+        sph_harm = _spspecial.sph_harm(m, n, phi, theta)
+    return sph_harm
+
+
 def sph_harm_real(n, m, theta, phi):
     """Real valued spherical harmonic function of order n and degree m evaluated
     at the angles theta and phi.
@@ -182,7 +216,7 @@ def spherical_harmonic_function_derivative_phi(n, m, theta, phi):
     if m == 0 or n == 0:
         res = np.zeros(phi.shape, dtype=np.complex)
     else:
-        res = _spspecial.sph_harm(m, n, phi, theta) * 1j * m
+        res = spherical_harmonic(n, m, theta, phi) * 1j * m
 
     return res
 
@@ -216,9 +250,9 @@ def spherical_harmonic_function_gradient_phi(n, m, theta, phi):
         factor = np.sqrt((2*n+1)/(2*n-1))/2
         exp_phi = np.exp(1j*phi)
         first = np.sqrt((n+m)*(n+m-1)) * exp_phi * \
-            _spspecial.sph_harm(m-1, n-1, phi, theta)
+            spherical_harmonic(n-1, m-1, theta, phi)
         second = np.sqrt((n-m) * (n-m-1)) / exp_phi * \
-            _spspecial.sph_harm(m+1, n-1, phi, theta)
+            spherical_harmonic(n-1, m+1, theta, phi)
         Ynm_sin_theta = (-1) * factor * (first + second)
         res = Ynm_sin_theta * 1j
 
@@ -253,9 +287,9 @@ def spherical_harmonic_function_derivative_theta(n, m, theta, phi):
     else:
         exp_phi = np.exp(1j*phi)
         first = np.sqrt((n-m+1) * (n+m)) * exp_phi * \
-            _spspecial.sph_harm(m-1, n, phi, theta)
+            spherical_harmonic(n, m-1, theta, phi)
         second = np.sqrt((n-m) * (n+m+1)) / exp_phi * \
-            _spspecial.sph_harm(m+1, n, phi, theta)
+            spherical_harmonic(n, m+1, theta, phi)
         res = (first-second)/2 * (-1)
 
     return res
