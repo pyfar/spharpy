@@ -293,3 +293,45 @@ def spherical_harmonic_function_derivative_theta(n, m, theta, phi):
         res = (first-second)/2 * (-1)
 
     return res
+
+
+def legendre_coefficients(order):
+    """Calculate the coefficients of a Legendre polynomial of the
+    specified order.
+
+    Parameters
+    ----------
+    order : int
+        The order of the polynomial
+
+    Returns
+    -------
+    coefficients : ndarray, double
+        The coefficients of the polynomial
+
+    """
+    leg = np.polynomial.legendre.Legendre.basis(order)
+    coefficients = np.polynomial.legendre.leg2poly(leg.coef)
+
+    return coefficients
+
+
+def chebyshev_coefficients(order):
+    """Calculate the coefficients of a Chebyshev polynomial of the
+    specified order.
+
+    Parameters
+    ----------
+    order : int
+        The order of the polynomial
+
+    Returns
+    -------
+    coefficients : ndarray, double
+        The coefficients of the polynomial
+
+    """
+    cheb = np.polynomial.chebyshev.Chebyshev.basis(order)
+    coefficients = np.polynomial.chebyshev.cheb2poly(cheb.coef)
+
+    return coefficients
