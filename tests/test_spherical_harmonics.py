@@ -112,18 +112,18 @@ def test_orthogonality_real():
         np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
 
 
-def test_spherical_harmonic_derivative_phi():
-    n = 2
-    m = 1
-    sampling = samplings.equalarea(50, condition_num=np.inf)
-    Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
-    for idx in range(0, sampling.n_points):
-        Y_diff_phi[idx] = sh.spherical_harmonic_function_derivative_phi(
-                n, m, sampling.elevation[idx], sampling.azimuth[idx])
-
-    ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
-    ref = ref_file[0] + 1j*ref_file[1]
-    npt.assert_allclose(ref, Y_diff_phi)
+# def test_spherical_harmonic_derivative_phi():
+#     n = 2
+#     m = 1
+#     sampling = samplings.equalarea(50, condition_num=np.inf)
+#     Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
+#     for idx in range(0, sampling.n_points):
+#         Y_diff_phi[idx] = sh.spherical_harmonic_function_derivative_phi(
+#                 n, m, sampling.elevation[idx], sampling.azimuth[idx])
+#
+#     ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
+#     ref = ref_file[0] + 1j*ref_file[1]
+#     npt.assert_allclose(ref, Y_diff_phi)
 
 
 def test_spherical_harmonic_gradient_phi():

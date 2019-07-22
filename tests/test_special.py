@@ -3,12 +3,11 @@ Tests for special functions
 """
 
 import pytest
-import spharpy.special as special
+from spharpy import special
+from spharpy import samplings
 
 import numpy as np
 import numpy.testing as npt
-
-import csv
 
 
 def genfromtxt_complex(filename, delimiter=','):
@@ -105,3 +104,20 @@ class TestHankelPrime(object):
         res = special.spherical_hankel(n, z, kind=1, derivative=True)
         truth = genfromtxt_complex('./tests/data/hankel_1_diff.csv', delimiter=',')
         npt.assert_allclose(res, truth)
+
+
+def test_spherical_harmonic_derivative_phi():
+    n = 2
+    m = 1
+    sampling = samplings.equalarea(50, condition_num=np.inf)
+    Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
+    for idx in range(0, sampling.n_points):
+        Y_diff_phi[idx] = special.spherical_harmonic_function_derivative_phi(
+                n, m, sampling.elevation[idx], sampling.azimuth[idx])
+
+    ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
+    ref = ref_file[0] + 1j*ref_file[1]
+    npt.assert_allclose(ref, Y_diff_phi)
+
+
+
