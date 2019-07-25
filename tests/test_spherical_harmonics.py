@@ -210,3 +210,24 @@ def test_spherical_harmonic_basis_gradient_real():
 
     ref_phi = np.loadtxt('./tests/data/Y_grad_phi_real.csv', delimiter=',')
     npt.assert_allclose(ref_phi, Y_grad_phi)
+
+# def test_spherical_harmonic_grad_theta_real():
+#     n = 2
+#     m = 1
+#     Nmax = 10
+#     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
+#     phi = np.array([0, np.pi/2, 0], dtype='double')
+#     n_points = len(theta)
+#
+#     with patch.multiple(
+#             Coordinates,
+#             azimuth=phi,
+#             elevation=theta,
+#             n_points=n_points) as patched_vals:
+#         coords = Coordinates()
+#
+#         Y = np.genfromtxt('./tests/data/sh_basis_cplx_n10.csv', delimiter=',', dtype=np.complex)
+#         basis = sh.spherical_harmonic_basis(Nmax, coords)
+#
+#         np.testing.assert_allclose(Y, basis, atol=1e-13)
+#

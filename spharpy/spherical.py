@@ -236,6 +236,57 @@ def spherical_harmonic_basis_real(n_max, coords):
     return basis
 
 
+def spherical_harmonic_basis_gradient_real(n_max, coords):
+    r"""
+    TODO: correct docstring. This just copy and paste from SH basis
+    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
+    for a set of points given by their elevation and azimuth angles.
+    The spherical harmonic functions are fully normalized (N3D) and include the
+    Condon-Shotley phase term :math:`(-1)^m` [2]_.
+
+    .. math::
+
+        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
+
+    References
+    ----------
+    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+
+
+    Parameters
+    ----------
+    n_max : integer
+        Spherical harmonic order
+    coordinates : Coordinates
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
+
+    Returns
+    -------
+    Y : double, ndarray, matrix
+        Complex spherical harmonic basis matrix
+
+    """
+    n_points = coords.n_points
+    n_coeff = (n_max+1)**2
+    theta = coords.elevation
+    phi = coords.azimuth
+    grad_theta = np.zeros((n_points, n_coeff), dtype=np.double)
+    grad_phi = np.zeros((n_points, n_coeff), dtype=np.double)
+
+    for acn in range(0, n_coeff):
+        n, m = acn2nm(acn)
+
+        grad_theta[:, acn] = \
+            _special.spherical_harmonic_function_derivative_theta_real(
+                n, m, theta, phi)
+        grad_phi[:, acn] = \
+            _special.spherical_harmonic_function_grad_phi_real(
+                n, m, theta, phi)
+
+    return grad_theta, grad_phi
+
+
 def modal_strength(n_max,
                    kr,
                    arraytype='rigid'):

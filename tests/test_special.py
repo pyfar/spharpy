@@ -120,4 +120,23 @@ def test_spherical_harmonic_derivative_phi():
     npt.assert_allclose(ref, Y_diff_phi)
 
 
-
+# def test_spherical_harmonic_gradient_phi_real():
+#     n = 2
+#     m = 1
+#     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
+#     phi = np.array([0, np.pi/2, 0], dtype='double')
+#     n_points = len(theta)
+#
+#     actual = special.spherical_harmonic_function_grad_phi_real(n, m, theta, phi)
+#     assert np.any(actual)
+#
+#
+# def test_spherical_harmonic_gradient_theta_real():
+#     n = 2
+#     m = 1
+#     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
+#     phi = np.array([0, np.pi/2, 0], dtype='double')
+#     n_points = len(theta)
+#
+#     actual = special.spherical_harmonic_function_derivative_theta_real(n, m, theta, phi)
+#     assert actual

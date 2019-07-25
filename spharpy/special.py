@@ -51,6 +51,10 @@ def spherical_bessel(n, z, derivative=False):
     else:
         bessel = ufunc(n, z, derivative=derivative)
 
+    if bessel.ndim <= 1:
+        bessel = np.squeeze(bessel)
+
+
     return bessel
 
 
@@ -98,6 +102,9 @@ def spherical_hankel(n, z, kind=2, derivative=False):
             hankel[idx, :] = ufunc(order, z, kind)
     else:
         hankel = ufunc(n, z, kind)
+
+    if hankel.ndim <= 1:
+        hankel = np.squeeze(hankel)
 
     return hankel
 
@@ -291,6 +298,206 @@ def spherical_harmonic_function_derivative_theta(n, m, theta, phi):
         second = np.sqrt((n-m) * (n+m+1)) / exp_phi * \
             spherical_harmonic(n, m+1, theta, phi)
         res = (first-second)/2 * (-1)
+
+    return res
+
+
+def legendre_function(n, m, z, cs_phase=True):
+    r"""Legendre function of order n and degree m with argument z.
+
+    .. math::
+
+        P_n^m(z)
+
+    Parameters
+    ----------
+    n : int
+        The order
+    m : int
+        The degree
+    z : ndarray, double
+        The argument as an array
+    cs_phase : bool, optional
+        Whether to use include the Condon-Shotley phase term (-1)^m or not
+
+    Returns
+    -------
+    legendre : ndarray, double
+        The Legendre function
+
+    Note
+    ----
+    This will return zeros if $|m| > n$.
+
+    """
+    z = np.atleast_1d(z)
+
+    if np.abs(m) > n:
+        legendre = np.zeros(z.shape)
+    else:
+        legendre = np.zeros(z.shape)
+        for idx, arg in zip(count(), z):
+            leg, _ = _spspecial.lpmn(m, n, arg)
+            if np.mod(m, 2) != 0 and not cs_phase:
+                legendre[idx] = -leg[-1, -1]
+            else:
+                legendre[idx] = leg[-1, -1]
+    return legendre
+
+
+def spherical_harmonic_normalization(n, m, norm='full'):
+    r"""The normalization factor for real valued spherical harmonics.
+
+    .. math::
+
+        N_n^m = \sqrt(\frac{4\pi}{2n+1}\frac{(n-m)!}{(n+m)!})
+
+    Parameters
+    ----------
+    n : int
+        The spherical harmonic order.
+    m : int
+        The spherical harmonic degree.
+    norm : 'full', optional
+        Normalization to use.
+
+    Returns
+    -------
+    norm : double
+        The normalization factor.
+
+
+    """
+    if np.abs(m) > n:
+        factor = 0.0
+    else:
+        if norm == 'full':
+            z = n+m+1
+            factor = _spspecial.poch(z, -2*m)
+            factor *= (2*n+1)/(4*np.pi)
+            if int(m) != 0:
+                factor *= 2
+            factor = np.sqrt(factor)
+        else:
+            raise ValueError("Unknown normalization.")
+    return factor
+
+
+def spherical_harmonic_function_derivative_theta_real(n, m, theta, phi):
+    r"""The derivative of the real valued spherical harmonics with respect
+    to the elevation angle $\theta$.
+
+    Parameters
+    ----------
+    n : int
+        The spherical harmonic order.
+    m : int
+        The spherical harmonic degree.
+    theta : ndarray, double
+        The elevation angle
+    phi : ndarray, double
+        The azimuth angle
+
+
+    Returns
+    -------
+    derivative : ndarray, double
+        The derivative
+
+    Note
+    ----
+    This implementation neglects the Condon-Shotley phase term.
+
+    """
+
+    m_abs = np.abs(m)
+    if n == 0:
+        res = np.zeros(theta.shape, dtype=np.double)
+    else:
+        first = (n+m_abs)*(n-m_abs+1) * \
+            legendre_function(
+                n,
+                m_abs-1,
+                np.cos(theta),
+                cs_phase=False) #* np.float(-1)**(m-1)
+        second = legendre_function(
+            n,
+            m_abs+1,
+            np.cos(theta),
+            cs_phase=False) #* np.float(-1)**(m+1)
+        legendre_diff = 0.5*(first - second)
+
+        N_nm = spherical_harmonic_normalization(n, m_abs)
+
+        if m < 0:
+            phi_term = np.sin(m_abs*phi)
+        else:
+            phi_term = np.cos(m_abs*phi)
+
+        res = N_nm * legendre_diff * phi_term
+
+    return res
+
+
+def spherical_harmonic_function_grad_phi_real(n, m, theta, phi):
+    r"""The gradient of the real valued spherical harmonics with respect
+    to the azimuth angle $\phi$.
+
+    Parameters
+    ----------
+    n : int
+        The spherical harmonic order.
+    m : int
+        The spherical harmonic degree.
+    theta : ndarray, double
+        The elevation angle
+    phi : ndarray, double
+        The azimuth angle
+
+
+    Returns
+    -------
+    derivative : ndarray, double
+        The derivative
+
+    Note
+    ----
+    This implementation neglects the Condon-Shotley phase term.
+
+    References
+    ----------
+    .. [1]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
+
+
+
+    """
+    m_abs = np.abs(m)
+    if m == 0:
+        res = np.zeros(theta.shape, dtype=np.double)
+    else:
+        first = (n+m_abs)*(n+m_abs-1) * \
+            legendre_function(
+                n-1,
+                m_abs-1,
+                np.cos(theta),
+                cs_phase=False)
+        second = legendre_function(
+            n-1,
+            m_abs+1,
+            np.cos(theta),
+            cs_phase=False)
+        legendre_diff = 0.5*(first + second)
+        N_nm = spherical_harmonic_normalization(n, m_abs)
+
+        if m < 0:
+            phi_term = np.cos(m_abs*phi)
+        else:
+            phi_term = -np.sin(m_abs*phi)
+
+        res = N_nm * legendre_diff * phi_term
 
     return res
 
