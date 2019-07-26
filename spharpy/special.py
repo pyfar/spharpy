@@ -9,12 +9,12 @@ import scipy.special as _spspecial
 
 
 def spherical_bessel(n, z, derivative=False):
-    """
+    r"""
     Spherical bessel function of order n evaluated at z.
 
     .. math::
 
-        j_n(z) = \\sqrt{\\frac{\\pi}{2z}} J_{n+\\frac{1}{2}} (z)
+        j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)
 
     Parameters
     ----------
@@ -59,12 +59,12 @@ def spherical_bessel(n, z, derivative=False):
 
 
 def spherical_hankel(n, z, kind=2, derivative=False):
-    """
+    r"""
     Spherical Hankel function of order n evaluated at z.
 
     .. math::
 
-        j_n(z) = \\sqrt{\\frac{\\pi}{2z}} J_{n+\\frac{1}{2}} (z)
+        j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)
 
     Parameters
     ----------
@@ -140,7 +140,7 @@ def spherical_harmonic(n, m, theta, phi):
 
     Returns
     -------
-    Y_nm : ndarray, double
+    spherical_harmonic : ndarray, double
         The complex valued spherial harmonic of order n and degree m
 
     Note
@@ -161,8 +161,27 @@ def spherical_harmonic(n, m, theta, phi):
 
 
 def sph_harm_real(n, m, theta, phi):
-    """Real valued spherical harmonic function of order n and degree m evaluated
-    at the angles theta and phi.
+    r"""Real valued spherical harmonic function of order n and degree m
+    evaluated at the angles theta and phi.
+    The spherical harmonic functions are fully normalized (N3D) and follow
+    the AmbiX phase convention [1]_.
+
+    .. math::
+
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi} \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+        \begin{cases}
+            \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
+            \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
+        \end{cases}
+
+    References
+    ----------
+    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1–11, 2011.
+
+
 
     Parameters
     ----------
@@ -177,7 +196,7 @@ def sph_harm_real(n, m, theta, phi):
 
     Returns
     -------
-    Y_nm : ndarray, double
+    spherical_harmonic : ndarray, double
         The real valued spherial harmonic of order n and degree m
 
     """
@@ -350,7 +369,7 @@ def spherical_harmonic_normalization(n, m, norm='full'):
 
     .. math::
 
-        N_n^m = \sqrt(\frac{4\pi}{2n+1}\frac{(n-m)!}{(n+m)!})
+        N_n^m = \sqrt{\frac{2n+1}{4\pi}\frac{(n-m)!}{(n+m)!}}
 
     Parameters
     ----------

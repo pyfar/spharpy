@@ -10,16 +10,17 @@ def acn2nm(acn):
 
     .. math::
 
-        n = \\lfloor \\sqrt{acn + 1} \\rfloor - 1
+        n = \lfloor \sqrt{acn + 1} \rfloor - 1
 
         m = acn - n^2 -n
 
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A Suggested Ambisonics
-            Format (revised by F. Zotter),” International Symposium on Ambisonics and Spherical
-            Acoustics, vol. 3, pp. 1–11, 2011.
+    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1–11, 2011.
 
 
     Parameters
@@ -57,9 +58,10 @@ def nm2acn(n, m):
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A Suggested Ambisonics
-            Format (revised by F. Zotter),” International Symposium on Ambisonics and Spherical
-            Acoustics, vol. 3, pp. 1–11, 2011.
+    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1–11, 2011.
 
 
     Parameters
@@ -88,7 +90,7 @@ def nm2acn(n, m):
 
 
 def spherical_harmonic_basis(n_max, coords):
-    """
+    r"""
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
@@ -96,12 +98,13 @@ def spherical_harmonic_basis(n_max, coords):
 
     .. math::
 
-        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi} \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
 
     References
     ----------
     .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [3]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8. Springer, 2015.
+    .. [3]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
+            Springer, 2015.
 
 
     Parameters
@@ -135,19 +138,21 @@ def spherical_harmonic_basis(n_max, coords):
 
 def spherical_harmonic_basis_gradient(n_max, coords):
     r"""
-    TODO: correct docstring. This just copy and paste from SH basis
-    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
-    for a set of points given by their elevation and azimuth angles.
+    Calulcates the gradient on the unit sphere of the complex valued spherical
+    harmonic basis matrix of order N for a set of points given by their
+    elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [2]_.
+    Condon-Shotley phase term :math:`(-1)^m` [2]_. This implementation avoids
+    singularities at the poles using identities derived in [5]_.
 
-    .. math::
-
-        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
 
     References
     ----------
     .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [9]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
 
 
     Parameters
@@ -160,8 +165,11 @@ def spherical_harmonic_basis_gradient(n_max, coords):
 
     Returns
     -------
-    Y : double, ndarray, matrix
-        Complex spherical harmonic basis matrix
+    grad_elevation : double, ndarray, matrix
+        Gradient with regard to the elevation angle.
+    grad_azimuth : double, ndarray, matrix
+        Gradient with regard to the azimuth angle.
+
 
     """
     n_points = coords.n_points
@@ -193,17 +201,18 @@ def spherical_harmonic_basis_real(n_max, coords):
 
     .. math::
 
-        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\\cos \\theta)
-        \\begin{cases}
-            \displaystyle \\cos(|m|\\phi),  & \\text{if $m \\ge 0$} \\newline
-            \displaystyle \\sin(|m|\\phi) ,  & \\text{if $m < 0$}
-        \\end{cases}
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi} \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+        \begin{cases}
+            \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
+            \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
+        \end{cases}
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A Suggested Ambisonics
-            Format (revised by F. Zotter),” International Symposium on Ambisonics and Spherical
-            Acoustics, vol. 3, pp. 1–11, 2011.
+    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1–11, 2011.
 
 
     Parameters
@@ -238,20 +247,24 @@ def spherical_harmonic_basis_real(n_max, coords):
 
 def spherical_harmonic_basis_gradient_real(n_max, coords):
     r"""
-    TODO: correct docstring. This just copy and paste from SH basis
-    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
-    for a set of points given by their elevation and azimuth angles.
-    The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [2]_.
+    Calulcates the gradient on the unit sphere of the real valued spherical
+    harmonic basis matrix of order N for a set of points given by their
+    elevation and azimuth angles.
+    The spherical harmonic functions are fully normalized (N3D) and follow
+    the AmbiX phase convention [1]_. This implementation avoids
+    singularities at the poles using identities derived in [5]_.
 
-    .. math::
-
-        Y_n^m(\\theta, \\phi) = \\sqrt{\\frac{2n+1}{4\\pi} \\frac{(n-m)!}{(n+m)!}} P_n^m(\\cos \\theta) e^{i m \\phi}
 
     References
     ----------
-    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-
+    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1–11, 2011.
+    .. [9]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
 
     Parameters
     ----------
@@ -296,11 +309,11 @@ def modal_strength(n_max,
     .. math::
 
         b(kr) =
-        \\begin{cases}
-            \displaystyle 4\\pi i^n j_n(kr),  & \\text{open} \\newline
-            \displaystyle  4\\pi i^{(n-1)} \\frac{1}{(kr)^2 h_n^\\prime(kr)},  & \\text{rigid} \\newline
-            \displaystyle  4\\pi i^n (j_n(kr) - i j_n^\\prime(kr)),  & \\text{cardioid}
-        \\end{cases}
+        \begin{cases}
+            \displaystyle 4\pi i^n j_n(kr),  & \text{open} \newline
+            \displaystyle  4\pi i^{(n-1)} \frac{1}{(kr)^2 h_n^\prime(kr)},  & \text{rigid} \newline
+            \displaystyle  4\pi i^n (j_n(kr) - i j_n^\prime(kr)),  & \text{cardioid}
+        \end{cases}
 
 
     Notes
@@ -310,8 +323,8 @@ def modal_strength(n_max,
 
     References
     ----------
-    .. [4]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and Time
-            Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
+    .. [4]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+            Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
 
 
     Parameters
@@ -374,13 +387,13 @@ def aperture_vibrating_spherical_cap(
 
     .. math::
 
-        a_n (r_{s}, \\alpha) =
-        \\begin{cases}
-            \displaystyle \\cos\\left(\\alpha\\right) P_n\\left[ \\cos\\left(\\alpha\\right) \\right] - P_{n-1}\\left[ \\cos\\left(\\alpha\\right) \\right],  & {n>0} \\newline
-            \displaystyle  1 - \\cos(\\alpha),  & {n=0}
-        \\end{cases}
+        a_n (r_{s}, \alpha) =
+        \begin{cases}
+            \displaystyle \cos\left(\alpha\right) P_n\left[ \cos\left(\alpha\right) \right] - P_{n-1}\left[ \cos\left(\alpha\right) \right],  & {n>0} \newline
+            \displaystyle  1 - \cos(\alpha),  & {n=0}
+        \end{cases}
 
-    where :math:`\\alpha = \\arcsin \\left(\\frac{r_c}{r_s} \\right)` is the
+    where :math:`\alpha = \arcsin \left(\frac{r_c}{r_s} \right)` is the
     aperture angle.
 
 
@@ -405,7 +418,7 @@ def aperture_vibrating_spherical_cap(
     -------
     A : double, ndarray
         Aperture function in diagonal matrix form with shape
-        :math:`[(n_{max}+1)^2~\\times~(n_{max}+1)^2]`
+        :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
@@ -468,7 +481,7 @@ def radiation_from_sphere(
     -------
     R : double, ndarray
         Radiation function in diagonal matrix form with shape
-        :math:`[K \\times (n_{max}+1)^2~\\times~(n_{max}+1)^2]`
+        :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
     """
     n_sh = (n_max+1)**2
