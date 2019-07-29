@@ -160,7 +160,7 @@ def spherical_harmonic(n, m, theta, phi):
     return sph_harm
 
 
-def sph_harm_real(n, m, theta, phi):
+def spherical_harmonic_real(n, m, theta, phi):
     r"""Real valued spherical harmonic function of order n and degree m
     evaluated at the angles theta and phi.
     The spherical harmonic functions are fully normalized (N3D) and follow
@@ -216,7 +216,7 @@ def sph_harm_real(n, m, theta, phi):
     return Y_nm
 
 
-def spherical_harmonic_function_derivative_phi(n, m, theta, phi):
+def spherical_harmonic_derivative_phi(n, m, theta, phi):
     """Calculate the derivative of the spherical harmonics with respect to
     the azimuth angle phi.
 
@@ -247,7 +247,7 @@ def spherical_harmonic_function_derivative_phi(n, m, theta, phi):
     return res
 
 
-def spherical_harmonic_function_gradient_phi(n, m, theta, phi):
+def spherical_harmonic_gradient_phi(n, m, theta, phi):
     """Calculate the derivative of the spherical harmonics with respect to
     the azimuth angle phi divided by sin(theta)
 
@@ -285,7 +285,7 @@ def spherical_harmonic_function_gradient_phi(n, m, theta, phi):
     return res
 
 
-def spherical_harmonic_function_derivative_theta(n, m, theta, phi):
+def spherical_harmonic_derivative_theta(n, m, theta, phi):
     """Calculate the derivative of the spherical harmonics with respect to
     the elevation angle theta.
 
@@ -402,7 +402,7 @@ def spherical_harmonic_normalization(n, m, norm='full'):
     return factor
 
 
-def spherical_harmonic_function_derivative_theta_real(n, m, theta, phi):
+def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
     r"""The derivative of the real valued spherical harmonics with respect
     to the elevation angle $\theta$.
 
@@ -438,12 +438,12 @@ def spherical_harmonic_function_derivative_theta_real(n, m, theta, phi):
                 n,
                 m_abs-1,
                 np.cos(theta),
-                cs_phase=False) #* np.float(-1)**(m-1)
+                cs_phase=False)
         second = legendre_function(
             n,
             m_abs+1,
             np.cos(theta),
-            cs_phase=False) #* np.float(-1)**(m+1)
+            cs_phase=False)
         legendre_diff = 0.5*(first - second)
 
         N_nm = spherical_harmonic_normalization(n, m_abs)
@@ -458,7 +458,7 @@ def spherical_harmonic_function_derivative_theta_real(n, m, theta, phi):
     return res
 
 
-def spherical_harmonic_function_grad_phi_real(n, m, theta, phi):
+def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     r"""The gradient of the real valued spherical harmonics with respect
     to the azimuth angle $\phi$.
 
@@ -489,7 +489,6 @@ def spherical_harmonic_function_grad_phi_real(n, m, theta, phi):
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
-
 
 
     """

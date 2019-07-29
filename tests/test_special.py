@@ -112,7 +112,7 @@ def test_spherical_harmonic_derivative_phi():
     sampling = samplings.equalarea(50, condition_num=np.inf)
     Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
     for idx in range(0, sampling.n_points):
-        Y_diff_phi[idx] = special.spherical_harmonic_function_derivative_phi(
+        Y_diff_phi[idx] = special.spherical_harmonic_derivative_phi(
                 n, m, sampling.elevation[idx], sampling.azimuth[idx])
 
     ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')

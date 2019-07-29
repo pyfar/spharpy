@@ -127,11 +127,11 @@ def spherical_harmonic_basis(n_max, coords):
 
     for acn in range(0, n_coeff):
         order, degree = acn2nm(acn)
-        basis[:, acn] = special.sph_harm(
-            degree,
+        basis[:, acn] = _special.spherical_harmonic(
             order,
-            coords.azimuth,
-            coords.elevation)
+            degree,
+            coords.elevation,
+            coords.azimuth)
 
     return basis
 
@@ -183,10 +183,10 @@ def spherical_harmonic_basis_gradient(n_max, coords):
         n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
-            _special.spherical_harmonic_function_derivative_theta(
+            _special.spherical_harmonic_derivative_theta(
                 n, m, theta, phi)
         grad_phi[:, acn] = \
-            _special.spherical_harmonic_function_gradient_phi(
+            _special.spherical_harmonic_gradient_phi(
                 n, m, theta, phi)
 
     return grad_theta, grad_phi
@@ -236,7 +236,7 @@ def spherical_harmonic_basis_real(n_max, coords):
 
     for acn in range(0, n_coeff):
         order, degree = acn2nm(acn)
-        basis[:, acn] = _special.sph_harm_real(
+        basis[:, acn] = _special.spherical_harmonic_real(
             order,
             degree,
             coords.elevation,
@@ -291,10 +291,10 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
         n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
-            _special.spherical_harmonic_function_derivative_theta_real(
+            _special.spherical_harmonic_derivative_theta_real(
                 n, m, theta, phi)
         grad_phi[:, acn] = \
-            _special.spherical_harmonic_function_grad_phi_real(
+            _special.spherical_harmonic_gradient_phi_real(
                 n, m, theta, phi)
 
     return grad_theta, grad_phi
