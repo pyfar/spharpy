@@ -8,6 +8,8 @@ Extension module for special functions
 
 import numpy as np
 cimport numpy as cnp
+import scipy.special as spspecial
+from scipy.optimize import brentq
 
 from libc.math cimport sqrt, pow
 
@@ -279,3 +281,39 @@ def spherical_hankel_derivative(n, z, kind=2):
                         memview_arg[idx_points])
 
     return np.squeeze(hankel_prime)
+
+
+def spherical_bessel_zeros(n_max, n_zeros):
+    """Compute the zeros of the spherical bessel function.
+    This function will always start at order zero which is equal
+    to sin(x)/x and iteratively compute the roots for higher orders.
+    The roots are computed using Brents algorith from scipy.
+
+    Parameters
+    ----------
+    n_max : int
+        The order of the spherical bessel function
+    n_zeros : int
+        The number of roots to be computed
+
+    Returns
+    -------
+    roots : ndarray, double
+        The roots of the spherical bessel function
+
+    """
+    def func(x, n):
+        return spspecial.spherical_jn(n, x)
+
+    zerosj = np.zeros((n_max+1, n_zeros), dtype=np.double)
+    zerosj[0] = np.arange(1, n_zeros+1)*np.pi
+    points = np.arange(1, n_zeros+n_max+1)*np.pi
+
+    roots = np.zeros(n_zeros+n_max, dtype=np.double)
+    for i in range(1,n_max+1):
+        for j in range(n_zeros+n_max-i):
+            roots[j] = brentq(func, points[j], points[j+1], (i,), maxiter=5000)
+        points = roots
+        zerosj[i, :n_zeros] = roots[:n_zeros]
+
+    return zerosj
