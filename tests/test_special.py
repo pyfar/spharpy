@@ -106,37 +106,129 @@ class TestHankelPrime(object):
         npt.assert_allclose(res, truth)
 
 
+def test_spherical_harmonic_derivative_theta():
+    n_max = 5
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
+
+    desired_all = np.genfromtxt(
+        './tests/data/Y_grad_ele.csv',
+        dtype=np.complex,
+        delimiter=',')
+
+    for acn in range((n_max+1)**2):
+        n = int((np.ceil(np.sqrt(acn + 1)) - 1))
+        m = int(acn - n**2 - n)
+
+        actual = special.spherical_harmonic_derivative_theta(n, m, theta, phi)
+        desired = desired_all[:, acn]
+
+        npt.assert_allclose(actual, desired, rtol=1e-10)
+
+
 def test_spherical_harmonic_derivative_phi():
-    n = 2
-    m = 1
-    sampling = samplings.equalarea(50, condition_num=np.inf)
-    Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
-    for idx in range(0, sampling.n_points):
-        Y_diff_phi[idx] = special.spherical_harmonic_derivative_phi(
-                n, m, sampling.elevation[idx], sampling.azimuth[idx])
+    n_max = 5
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
 
-    ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
-    ref = ref_file[0] + 1j*ref_file[1]
-    npt.assert_allclose(ref, Y_diff_phi)
+    desired_all = np.genfromtxt(
+        './tests/data/Y_diff_azi.csv',
+        dtype=np.complex,
+        delimiter=',')
+
+    for acn in range((n_max+1)**2):
+        n = int((np.ceil(np.sqrt(acn + 1)) - 1))
+        m = int(acn - n**2 - n)
+
+        actual = special.spherical_harmonic_derivative_phi(n, m, theta, phi)
+        desired = desired_all[:, acn]
+
+        npt.assert_allclose(actual, desired, rtol=1e-10)
 
 
-# def test_spherical_harmonic_gradient_phi_real():
-#     n = 2
-#     m = 1
-#     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
-#     phi = np.array([0, np.pi/2, 0], dtype='double')
-#     n_points = len(theta)
-#
-#     actual = special.spherical_harmonic_function_grad_phi_real(n, m, theta, phi)
-#     assert np.any(actual)
-#
-#
-# def test_spherical_harmonic_gradient_theta_real():
-#     n = 2
-#     m = 1
-#     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
-#     phi = np.array([0, np.pi/2, 0], dtype='double')
-#     n_points = len(theta)
-#
-#     actual = special.spherical_harmonic_function_derivative_theta_real(n, m, theta, phi)
-#     assert actual
+def test_spherical_harmonic_gradient_phi():
+    n_max = 5
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
+
+    desired_all = np.genfromtxt(
+        './tests/data/Y_grad_azi.csv',
+        dtype=np.complex,
+        delimiter=',')
+
+    for acn in range((n_max+1)**2):
+        n = int((np.ceil(np.sqrt(acn + 1)) - 1))
+        m = int(acn - n**2 - n)
+
+        actual = special.spherical_harmonic_gradient_phi(n, m, theta, phi)
+        desired = desired_all[:, acn]
+
+        npt.assert_allclose(actual, desired, rtol=1e-10)
+
+
+def test_spherical_harmonic_derivative_theta_real():
+    n_max = 5
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
+
+    desired_all = np.genfromtxt(
+        './tests/data/Y_grad_real_ele.csv',
+        dtype=np.double,
+        delimiter=',')
+
+    for acn in range((n_max+1)**2):
+        n = int((np.ceil(np.sqrt(acn + 1)) - 1))
+        m = int(acn - n**2 - n)
+
+        actual = special.spherical_harmonic_derivative_theta_real(
+            n, m, theta, phi)
+        desired = desired_all[:, acn]
+
+        npt.assert_allclose(actual, desired, rtol=1e-10)
+
+
+def test_spherical_harmonic_derivative_phi_real():
+    n_max = 5
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
+
+    desired_all = np.genfromtxt(
+        './tests/data/Y_diff_real_azi.csv',
+        dtype=np.double,
+        delimiter=',')
+
+    for acn in range((n_max+1)**2):
+        n = int((np.ceil(np.sqrt(acn + 1)) - 1))
+        m = int(acn - n**2 - n)
+
+        actual = special.spherical_harmonic_derivative_phi_real(
+            n, m, theta, phi)
+        desired = desired_all[:, acn]
+
+        npt.assert_allclose(actual, desired, rtol=1e-10)
+
+
+def test_spherical_harmonic_gradient_phi_real():
+    n_max = 5
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
+
+    desired_all = np.genfromtxt(
+        './tests/data/Y_grad_real_azi.csv',
+        dtype=np.double,
+        delimiter=',')
+
+    for acn in range((n_max+1)**2):
+        n = int((np.ceil(np.sqrt(acn + 1)) - 1))
+        m = int(acn - n**2 - n)
+
+        actual = special.spherical_harmonic_gradient_phi_real(n, m, theta, phi)
+        desired = desired_all[:, acn]
+
+        npt.assert_allclose(actual, desired, rtol=1e-10)

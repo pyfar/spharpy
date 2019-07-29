@@ -126,108 +126,59 @@ def test_orthogonality_real():
 #     npt.assert_allclose(ref, Y_diff_phi)
 
 
-def test_spherical_harmonic_gradient_phi():
-    n = 2
-    m = 1
-    sampling = samplings.equalarea(50, condition_num=np.inf)
-    acn = sh.nm2acn(n, m)
-    Y_grad_phi = sh.spherical_harmonic_basis_gradient(n, sampling)[1]
-
-    ref_file = np.loadtxt('./tests/data/Y_grad_phi.csv', delimiter=',')
-    ref = ref_file[0] + 1j*ref_file[1]
-    npt.assert_allclose(ref, Y_grad_phi[:, acn])
-
-
-def test_spherical_harmonic_derivative_theta():
-    n = 2
-    m = 1
-    sampling = samplings.equalarea(50, condition_num=np.inf)
-    acn = sh.nm2acn(n, m)
-    Y_diff_theta = sh.spherical_harmonic_basis_gradient(n, sampling)[0]
-
-    ref_file = np.loadtxt('./tests/data/Y_diff_theta.csv', delimiter=',')
-    ref = ref_file[0] + 1j*ref_file[1]
-    npt.assert_allclose(ref, Y_diff_theta[:, acn])
-
-
 def test_spherical_harmonic_basis_gradient():
-    n = 2
-    m = 1
-    sampling = samplings.equalarea(50, condition_num=np.inf)
-    acn = sh.nm2acn(n, m)
-    Y_diff_theta, Y_grad_phi = \
-        sh.spherical_harmonic_basis_gradient(n, sampling)
+    n_max = 15
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
 
-    ref_file = np.loadtxt('./tests/data/Y_diff_theta.csv', delimiter=',')
-    ref_theta = ref_file[0] + 1j*ref_file[1]
-    npt.assert_allclose(ref_theta, Y_diff_theta[:, acn])
+    with patch.multiple(
+            Coordinates,
+            azimuth=phi,
+            elevation=theta,
+            n_points=n_points):
+        coords = Coordinates()
 
-    ref_file = np.loadtxt('./tests/data/Y_grad_phi.csv', delimiter=',')
-    ref_phi = ref_file[0] + 1j*ref_file[1]
-    npt.assert_allclose(ref_phi, Y_grad_phi[:, acn])
+        grad_ele, grad_azi = \
+            sh.spherical_harmonic_basis_gradient(n_max, coords)
 
+        desire_ele = np.genfromtxt(
+            './tests/data/Y_grad_ele.csv',
+            dtype=np.complex,
+            delimiter=',')
+        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10)
 
-# def test_spherical_harmonic_derivative_phi_real():
-#     n = 5
-#     m = 1
-#     sampling = samplings.equalarea(50, condition_num=np.inf)
-#     Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
-#     for idx in range(0, sampling.n_points):
-#         Y_diff_phi[idx] = sh.spherical_harmonic_function_derivative_phi(
-#                 n, m, sampling.elevation[idx], sampling.azimuth[idx])
-#
-#     ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
-#     ref = ref_file[0] + 1j*ref_file[1]
-#     npt.assert_allclose(ref, Y_diff_phi)
-
-
-def test_spherical_harmonic_gradient_phi_real():
-    n = 5
-    sampling = samplings.equalarea(30, condition_num=np.inf)
-    Y_grad_phi = sh.spherical_harmonic_basis_gradient_real(n, sampling)[1]
-
-    ref = np.loadtxt('./tests/data/Y_grad_phi_real.csv', delimiter=',')
-    npt.assert_allclose(ref, Y_grad_phi, atol=1e-15)
-
-
-def test_spherical_harmonic_derivative_theta_real():
-    n = 5
-    sampling = samplings.equalarea(30, condition_num=np.inf)
-    Y_diff_theta = sh.spherical_harmonic_basis_gradient_real(n, sampling)[0]
-
-    ref = np.loadtxt('./tests/data/Y_diff_theta_real.csv', delimiter=',')
-    npt.assert_allclose(ref, Y_diff_theta, atol=1e-15)
+        desire_azi = np.genfromtxt(
+            './tests/data/Y_grad_azi.csv',
+            dtype=np.complex,
+            delimiter=',')
+        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10)
 
 
 def test_spherical_harmonic_basis_gradient_real():
-    n = 5
-    sampling = samplings.equalarea(30, condition_num=np.inf)
-    Y_diff_theta, Y_grad_phi = \
-        sh.spherical_harmonic_basis_gradient_real(n, sampling)
+    n_max = 15
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
+    phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
+    n_points = np.size(theta)
 
-    ref_theta = np.loadtxt('./tests/data/Y_diff_theta_real.csv', delimiter=',')
-    npt.assert_allclose(ref_theta, Y_diff_theta, atol=1e-15)
+    with patch.multiple(
+            Coordinates,
+            azimuth=phi,
+            elevation=theta,
+            n_points=n_points):
+        coords = Coordinates()
 
-    ref_phi = np.loadtxt('./tests/data/Y_grad_phi_real.csv', delimiter=',')
-    npt.assert_allclose(ref_phi, Y_grad_phi)
+        grad_ele, grad_azi = \
+            sh.spherical_harmonic_basis_gradient_real(n_max, coords)
 
-# def test_spherical_harmonic_grad_theta_real():
-#     n = 2
-#     m = 1
-#     Nmax = 10
-#     theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
-#     phi = np.array([0, np.pi/2, 0], dtype='double')
-#     n_points = len(theta)
-#
-#     with patch.multiple(
-#             Coordinates,
-#             azimuth=phi,
-#             elevation=theta,
-#             n_points=n_points) as patched_vals:
-#         coords = Coordinates()
-#
-#         Y = np.genfromtxt('./tests/data/sh_basis_cplx_n10.csv', delimiter=',', dtype=np.complex)
-#         basis = sh.spherical_harmonic_basis(Nmax, coords)
-#
-#         np.testing.assert_allclose(Y, basis, atol=1e-13)
-#
+        desire_ele = np.genfromtxt(
+            './tests/data/Y_grad_real_ele.csv',
+            dtype=np.complex,
+            delimiter=',')
+        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10)
+
+        desire_azi = np.genfromtxt(
+            './tests/data/Y_grad_real_azi.csv',
+            dtype=np.complex,
+            delimiter=',')
+        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10)
