@@ -458,6 +458,50 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
     return res
 
 
+def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
+    r"""The derivative of the real valued spherical harmonics with respect
+    to the azimuth angle $\phi$.
+
+    Parameters
+    ----------
+    n : int
+        The spherical harmonic order.
+    m : int
+        The spherical harmonic degree.
+    theta : ndarray, double
+        The elevation angle
+    phi : ndarray, double
+        The azimuth angle
+
+
+    Returns
+    -------
+    derivative : ndarray, double
+        The derivative
+
+    Note
+    ----
+    This implementation neglects the Condon-Shotley phase term.
+
+    """
+    m_abs = np.abs(m)
+    if m == 0:
+        res = np.zeros(theta.shape, dtype=np.double)
+    else:
+        legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
+        N_nm = spherical_harmonic_normalization(n, m_abs)
+
+        if m < 0:
+            phi_term = np.cos(m_abs*phi) * m_abs
+        else:
+            phi_term = -np.sin(m_abs*phi) * m_abs
+
+        res = N_nm * legendre * phi_term
+
+    return res
+
+
+
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     r"""The gradient of the real valued spherical harmonics with respect
     to the azimuth angle $\phi$.
