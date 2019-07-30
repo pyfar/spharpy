@@ -1,7 +1,12 @@
 """
 Plot functions for spatial data
 """
+
+from packaging import version
+
 import numpy as np
+
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 from mpl_toolkits.mplot3d import Axes3D
@@ -50,10 +55,15 @@ def scatter(coordinates):
         ax = plt.gca()
     else:
         ax = plt.gca(projection='3d')
+
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
+
+    if version.parse(mpl.__version__) < version.parse('3.1.0'):
+        ax.set_aspect('equal')
+
     set_aspect_equal_3d(ax)
     plt.show()
 
@@ -92,10 +102,20 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
                                                 coordinates.azimuth)).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
     fig = plt.gcf()
-    if 'Axes3D' in fig.axes.__str__():
-        ax = plt.gca()
+
+    if colorbar:
+        gs = fig.add_gridspec(
+            2,
+            2,
+            width_ratios=[1, 0.05],
+            height_ratios=[1, 0.05])
+        ax = fig.add_subplot(gs[0, 0], projection='3d')
+        cax = fig.add_subplot(gs[0, 1])
     else:
-        ax = plt.gca(projection='3d')
+        if 'Axes3D' in fig.axes.__str__():
+            ax = plt.gca()
+        else:
+            ax = plt.gca(projection='3d')
 
     if np.iscomplex(data).any() or phase:
         cdata = np.mod(np.angle(data), 2*np.pi)
@@ -109,6 +129,9 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
         vmax = np.max(cdata)
         colors = np.mean(cdata[tri.triangles], axis=1)
 
+    if version.parse(mpl.__version__) < version.parse('3.1.0'):
+        ax.set_aspect('equal')
+
     plot = ax.plot_trisurf(tri,
                            z,
                            cmap=cmap,
@@ -118,17 +141,19 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
 
     plot.set_array(colors)
 
+    set_aspect_equal_3d(ax)
+
     if colorbar:
-        fig.colorbar(plot, shrink=0.75, aspect=20)
+        plt.colorbar(plot, cax=cax)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-    set_aspect_equal_3d(ax)
     if show:
         plt.show()
 
     return plot
+
 
 def voronoi_cells_sphere(sampling, round_decimals=13):
     """Plot the Voronoi cells of a Voronoi tesselation on a sphere.
@@ -148,6 +173,8 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
 
     fig = plt.gcf()
     ax = fig.add_subplot(111, projection='3d')
+    if version.parse(mpl.__version__) < version.parse('3.1.0'):
+        ax.set_aspect('equal')
 
     # plot the unit sphere for reference (optional)
     u = np.linspace(0, 2 * np.pi, 100)
