@@ -7,7 +7,6 @@ The setup script.
 
 import sys
 from setuptools import setup, find_packages
-import numpy
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
