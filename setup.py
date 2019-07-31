@@ -67,7 +67,7 @@ special_ext = Extension(name="spharpy.special",
 
 setup(
     name='spharpy',
-    version='0.1.2',
+    version='0.2.0',
     description="Python package for spherical array processing.",
     long_description=readme + '\n\n' + history,
     author="Marco Berzborn",
