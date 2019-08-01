@@ -68,7 +68,78 @@ def scatter(coordinates):
     plt.show()
 
 
-def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
+def _triangulation_sphere(sampling, data):
+    """Triangulation for data points sampled on a spherical surface.
+
+    Parameters
+    ----------
+    sampling : Coordinates
+        Coordinate object for which the triangulation is calculated
+    data : array, shape(n_points)
+        Sampled data
+
+    Returns
+    -------
+    triangulation : matplotlib Triangulation
+
+    """
+    x, y, z = sph2cart(
+        np.abs(data),
+        sampling.elevation,
+        sampling.azimuth)
+    hull = sspat.ConvexHull(
+        np.asarray(sph2cart(
+            np.ones(sampling.n_points),
+            sampling.elevation,
+            sampling.azimuth)).T)
+    tri = mtri.Triangulation(x, y, triangles=hull.simplices)
+
+    return tri, z
+
+
+def _balloon_color_data(tri, data, itype):
+    """Return the data array that is to be mapped to the colormap of the
+    balloon.
+
+    Parameters
+    ----------
+    tri : Triangulation
+        The matplotlib triangulation for the sphere
+    data : ndarray, double, complex double
+        The data array
+    itype : 'magnitude', 'phase'
+        Whether to plot magnitude levels or the phase.
+
+
+    Returns
+    -------
+    color_data : ndarray, double
+        The data array for the colormap.
+    vmin : double
+        The minimum of the color data
+
+    vmax : double
+        The maximum of the color data
+
+
+    """
+    if itype == 'phase':
+        cdata = np.mod(np.angle(data), 2*np.pi)
+        vmin = 0
+        vmax = 2*np.pi
+        colors = circmean(cdata[tri.triangles], axis=1)
+    elif itype == 'magnitude':
+        cdata = np.abs(data)
+        vmin = np.min(cdata)
+        vmax = np.max(cdata)
+        colors = np.mean(cdata[tri.triangles], axis=1)
+    else:
+        raise ValueError("Invalid type of data mapping.")
+
+    return colors, vmin, vmax
+
+
+def balloon_wireframe(coordinates, data, cmap=None, phase=False, show=True,
             colorbar=True):
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi
@@ -93,14 +164,7 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
     show : boolean, optional
         Wheter to show the figure or not
     """
-    n_points = coordinates.n_points
-    x, y, z = sph2cart(np.abs(data),
-                       coordinates.elevation,
-                       coordinates.azimuth)
-    hull = sspat.ConvexHull(np.asarray(sph2cart(np.ones(n_points),
-                                                coordinates.elevation,
-                                                coordinates.azimuth)).T)
-    tri = mtri.Triangulation(x, y, triangles=hull.simplices)
+    tri, z = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
     if colorbar:
@@ -118,16 +182,106 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
             ax = plt.gca(projection='3d')
 
     if np.iscomplex(data).any() or phase:
-        cdata = np.mod(np.angle(data), 2*np.pi)
-        cmap = cm.hsv
-        vmin = 0
-        vmax = 2*np.pi
-        colors = circmean(cdata[tri.triangles], axis=1)
+        itype = 'phase'
+        if cmap is None:
+            cmap = cm.hsv
     else:
-        cdata = np.abs(data)
-        vmin = np.min(cdata)
-        vmax = np.max(cdata)
-        colors = np.mean(cdata[tri.triangles], axis=1)
+        itype = 'magnitude'
+        if cmap is None:
+            cmap = cm.viridis
+
+    cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+
+    if version.parse(mpl.__version__) < version.parse('3.1.0'):
+        ax.set_aspect('equal')
+
+    plot = ax.plot_trisurf(tri,
+                           z,
+                           # cmap=cmap,
+                           antialiased=True,
+                           vmin=vmin,
+                           vmax=vmax)
+
+    cnorm = plt.Normalize(vmin, vmax)
+    cmap_colors = cmap(cnorm(cdata))
+
+    cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
+
+    plot.set_edgecolors(cmap_colors)
+
+    set_aspect_equal_3d(ax)
+    plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
+
+    if colorbar:
+        plt.colorbar(cmappable, cax=cax)
+
+    ax.set_xlabel('x[m]')
+    ax.set_ylabel('y[m]')
+    ax.set_zlabel('z[m]')
+
+    plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
+
+    if show:
+        plt.show()
+
+    plot.set_facecolor([0.9, 0.9, 0.9, 0.9])
+
+    return plot
+
+
+def balloon(coordinates, data, cmap=None, phase=False, show=True,
+            colorbar=True):
+    """Plot data on the surface of a sphere defined by the coordinate angles
+    theta and phi
+
+    Note
+    ----
+    When plotting the phase encoded in the colormap, the function will switch
+    to the HSV colormap and ignore the user input for the cmap input variable.
+
+    Parameters
+    ----------
+    coordinates : Coordinates
+        Coordinates defining a sphere
+    data : ndarray, double
+        Data for each angle, must have size corresponding to the number of
+        points given in coordinates.
+    cmap : matplotlib colomap, optional
+        Colormap for the plot, see matplotlib.cm
+    phase : boolean, optional
+        Encode the phase of the data in the colormap. This option will be
+        activated by default of the data is complex valued.
+    show : boolean, optional
+        Wheter to show the figure or not
+    """
+    tri, z = _triangulation_sphere(coordinates, data)
+    fig = plt.gcf()
+
+    if colorbar:
+        gs = fig.add_gridspec(
+            2,
+            2,
+            width_ratios=[1, 0.05],
+            height_ratios=[1, 0.05])
+        ax = fig.add_subplot(gs[0, 0], projection='3d')
+        cax = fig.add_subplot(gs[0, 1])
+    else:
+        if 'Axes3D' in fig.axes.__str__():
+            ax = plt.gca()
+        else:
+            ax = plt.gca(projection='3d')
+
+    if np.iscomplex(data).any() or phase:
+        itype = 'phase'
+        if cmap is None:
+            cmap = cm.hsv
+    else:
+        itype = 'magnitude'
+        if cmap is None:
+            cmap = cm.viridis
+
+    cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+
 
     if version.parse(mpl.__version__) < version.parse('3.1.0'):
         ax.set_aspect('equal')
@@ -139,7 +293,7 @@ def balloon(coordinates, data, cmap=cm.viridis, phase=False, show=True,
                            vmin=vmin,
                            vmax=vmax)
 
-    plot.set_array(colors)
+    plot.set_array(cdata)
 
     set_aspect_equal_3d(ax)
 
