@@ -354,6 +354,93 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     ax.set_zlabel('z[m]')
 
 
+import cartopy.crs as ccrs
+
+
+def contour_map(
+        coordinates,
+        data,
+        projection=ccrs.Mollweide(),
+        limits=None,
+        cmap=cm.viridis,
+        show=True):
+    """
+    Plot the map projection of data points sampled on a spherical surface.
+    The data has to be real.
+
+    Notes
+    -----
+    In case limits are given, all out of bounds data will be clipped to the
+    respective limit.
+
+    Parameters
+    ----------
+    latitude: ndarray, double
+        Geodetic latitude angle of the map, must be in [-pi/2, pi/2]
+    longitude: ndarray, double
+        Geodetic longitude angle of the map, must be in [-pi, pi]
+    data: ndarray, double
+        Data for each angle, must have size corresponding to the number of
+        points given in coordinates.
+    show : boolean, optional
+        Wheter to show the figure or not
+
+    """
+    lat_deg = coordinates.latitude * 180/np.pi
+    lon_deg = coordinates.longitude * 180/np.pi
+    fig = plt.gcf()
+    proj = projection
+
+    x, y, _ = proj.transform_points(ccrs.PlateCarree(), lon_deg, lat_deg).T
+
+
+    mask = np.invert(np.logical_or(np.isinf(x), np.isinf(y)))
+    x = np.compress(mask, x)
+    y = np.compress(mask, y)
+
+    ax = plt.axes(projection=proj)
+
+    ax.set_xlabel('Longitude [$^\\circ$]')
+    ax.set_ylabel('Latitude [$^\\circ$]')
+
+    # cf = ax.tripcolor(x, y, (data), cmap=cmap)
+
+
+    cf = ax.tricontourf(x, y, (data), cmap=cmap)
+    cf = ax.tricontour(x, y, (data), colors='k')
+
+    # ax.relim()
+    # ax.autoscale_view()
+
+    # extend = 'neither'
+    # if limits is None:
+    #     limits = (data.min(), data.max())
+    # else:
+    #     mask_min = data < limits[0]
+    #     data[mask_min] = limits[0]
+    #     mask_max = data > limits[1]
+    #     data[mask_max] = limits[1]
+    #     if np.any(mask_max) & np.any(mask_min):
+    #         extend = 'both'
+    #     elif np.any(mask_max) & ~np.any(mask_min):
+    #         extend = 'max'
+    #     elif ~np.any(mask_max) & np.any(mask_min):
+    #         extend = 'min'
+
+    # ax.tricontour(lon_deg, lat_deg, data, linewidths=0.5, colors='k',
+    #               vmin=limits[0], vmax=limits[1], extend=extend)
+    # cf = ax.tricontourf(lon_deg, lat_deg, data, cmap=cmap,
+    #                     vmin=limits[0], vmax=limits[1], extend=extend)
+    #
+    # plt.grid(True)
+    # cb = fig.colorbar(cf, ax=ax)
+    # cb.set_label('Amplitude')
+    if show:
+        plt.show()
+
+    return cf
+
+
 def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
     """
     Plot the map projection of data points sampled on a spherical surface.
