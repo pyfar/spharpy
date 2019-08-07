@@ -1,12 +1,64 @@
 import numpy as np
+import scipy.spatial as sspat
+
+def greens_function_plane_wave(
+        source_points,
+        receiver_points,
+        wave_number,
+        gradient=False):
+    """The matrix describing the propagation of a plane wave from a direction
+    of arrival defined by the azimuth and elevation angles of the source points
+    to the receiver points
+
+    Parameters
+    ----------
+    source_points : Coordinates
+        The source points defining the direction of incidence for the plane
+        wave. Note that the radius on which the source is positioned has no
+        relevance.
+    receiver_points : Coordinates
+        The receiver points.
+    wave_number : double
+        The wave number of the wave
+    speed_of_sound : double
+        The speed of sound
+    gradient : bool
+        If True, the gradient will be returned as well
 
 
-def greens_function(source, receivers, k):
+    Returns
+    -------
+    M : ndarray, complex, shape(n_receiver, n_sources)
+        The plane wave propagation matrix
+
+    """
+    e_doa = source_points.cartesian / \
+        np.linalg.norm(source_points.cartesian, axis=0)
+    k_vec = np.squeeze(wave_number*e_doa)
+
+    # avoid using the complex exponential since it's slower than sin and cos
+    arg = receiver_points.cartesian.T @ k_vec
+    plane_wave_matrix = np.cos(arg) + 1j*np.sin(arg)
+
+    if not gradient:
+        return plane_wave_matrix
+    else:
+        plane_wave_gradient_matrix_x = (plane_wave_matrix * 1j*k_vec[0])
+        plane_wave_gradient_matrix_y = (plane_wave_matrix * 1j*k_vec[1])
+        plane_wave_gradient_matrix_z = (plane_wave_matrix * 1j*k_vec[2])
+        return plane_wave_matrix, \
+            [plane_wave_gradient_matrix_x,
+             plane_wave_gradient_matrix_y,
+             plane_wave_gradient_matrix_z]
+
+
+
+def greens_function_point_source(sources, receivers, k, gradient=False):
     """Green's function in matrix form
 
     .. math::
 
-        G(k) = \\frac{e^{-k\\|\\mathbf{r_s} - \\mathbf{r_r}\\|}}{4 \\pi \\|\\mathbf{r_s} - \\mathbf{r_r}\\|}
+        G(k) = \\frac{e^{k\\|\\mathbf{r_s} - \\mathbf{r_r}\\|}}{4 \\pi \\|\\mathbf{r_s} - \\mathbf{r_r}\\|}
 
     Parameters
     ----------
@@ -23,40 +75,33 @@ def greens_function(source, receivers, k):
         Green's function
 
     """
-    R_vec = receivers.cartesian - source.cartesian
-    R = np.linalg.norm(R_vec, axis=0)
-    G = np.exp(-1j*k*R)/R/4/np.pi
-    return G
+    # R_vec =
+    # R_vec = receivers.cartesian - source.cartesian
+    # R = np.linalg.norm(R_vec, axis=0)
+    dist = sspat.distance.cdist(receivers.cartesian.T, sources.cartesian.T)
+    dist = np.squeeze(dist)
+    cexp = np.cos(k*dist) + 1j*np.sin(k*dist)
+    G = cexp/dist/4/np.pi
 
+    if not gradient:
+        return G
+    else:
+        lambda_cdiff = lambda u, v: (u-v)
+        diff_x = sspat.distance.cdist(
+            np.atleast_2d(receivers.x).T,
+            np.atleast_2d(sources.x).T,
+            lambda_cdiff)
+        diff_y = sspat.distance.cdist(
+            np.atleast_2d(receivers.y).T,
+            np.atleast_2d(sources.y).T,
+            lambda_cdiff)
+        diff_z = sspat.distance.cdist(
+            np.atleast_2d(receivers.z).T,
+            np.atleast_2d(sources.z).T,
+            lambda_cdiff)
 
-def greens_function_gradient(source, receivers, k):
-    """Gradient of Green's function in Cartesian coordinates.
+        G_dx = G/dist * diff_x * (1j-1/dist)
+        G_dy = G/dist * diff_y * (1j-1/dist)
+        G_dz = G/dist * diff_z * (1j-1/dist)
 
-    .. math::
-
-        \\nabla G(k)
-
-        G(k) = \\frac{e^{-k\\|\\mathbf{r_s} - \\mathbf{r_r}\\|}}{4 \\pi \\|\\mathbf{r_s} - \\mathbf{r_r}\\|}
-
-
-    Parameters
-    ----------
-    source : Coordinates
-        source points as Coordinates object
-    receivers : Coordinates
-        receiver points as Coordinates object
-    k : ndarray, double
-        wave number
-
-    Returns
-    -------
-    grad_G : ndarray, double
-        Gradient of Green's function
-
-    """
-    R_vec = receivers.cartesian - source.cartesian
-    R = np.linalg.norm(R_vec, axis=0)
-    outer = np.exp(-1j * k * R) / (4*np.pi*R**2) * (-1j*k - 1/R)
-    inner = R_vec
-    grad_G = inner @ np.diag(outer)
-    return grad_G
+        return G, (G_dx, G_dy, G_dz)
