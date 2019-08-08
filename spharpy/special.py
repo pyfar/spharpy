@@ -184,7 +184,7 @@ def spherical_harmonic(n, m, theta, phi):
     ----
     This function wraps the spherical harmonic implementation from scipy.
     The only difference is that we return zeros instead of nan values
-    if $n < \|m\|$.
+    if $n < |m|$.
 
     """
     theta = np.asarray(theta, dtype=np.double)
@@ -363,7 +363,10 @@ def legendre_function(n, m, z, cs_phase=True):
 
     .. math::
 
-        P_n^m(z)
+        P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n{z}
+
+    where the Condon-Shotley phase term $(-1)^m$ is dropped when cs_phase=False
+    is used.
 
     Parameters
     ----------
@@ -379,11 +382,14 @@ def legendre_function(n, m, z, cs_phase=True):
     Returns
     -------
     legendre : ndarray, double
-        The Legendre function
+        The Legendre function. This will return zeros if $|m| > n$.
 
     Note
     ----
-    This will return zeros if $|m| > n$.
+    This is a wrapper for the Legendre function implementation from scipy. The
+    scipy implementation uses the Condon-Shotley phase. Therefore, the sign
+    needs to be flipped here for uneven degrees when dropping the
+    Condon-Shotley phase.
 
     """
     z = np.atleast_1d(z)
@@ -414,8 +420,9 @@ def spherical_harmonic_normalization(n, m, norm='full'):
         The spherical harmonic order.
     m : int
         The spherical harmonic degree.
-    norm : 'full', optional
-        Normalization to use.
+    norm : 'full', 'semi', optional
+        Normalization to use. Can be either fully normalzied on the sphere or
+        semi-normalized.
 
     Returns
     -------
@@ -431,6 +438,12 @@ def spherical_harmonic_normalization(n, m, norm='full'):
             z = n+m+1
             factor = _spspecial.poch(z, -2*m)
             factor *= (2*n+1)/(4*np.pi)
+            if int(m) != 0:
+                factor *= 2
+            factor = np.sqrt(factor)
+        elif norm == 'semi':
+            z = n+m+1
+            factor = _spspecial.poch(z, -2*m)
             if int(m) != 0:
                 factor *= 2
             factor = np.sqrt(factor)
@@ -462,7 +475,7 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
 
     Note
     ----
-    This implementation neglects the Condon-Shotley phase term.
+    This implementation does not include the Condon-Shotley phase term.
 
     """
 
@@ -518,7 +531,7 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
 
     Note
     ----
-    This implementation neglects the Condon-Shotley phase term.
+    This implementation does not include the Condon-Shotley phase term.
 
     """
     m_abs = np.abs(m)
@@ -536,7 +549,6 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
         res = N_nm * legendre * phi_term
 
     return res
-
 
 
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
@@ -562,7 +574,7 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
 
     Note
     ----
-    This implementation neglects the Condon-Shotley phase term.
+    This implementation does not include the Condon-Shotley phase term.
 
     References
     ----------
@@ -570,7 +582,6 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
-
 
     """
     m_abs = np.abs(m)
