@@ -52,7 +52,7 @@ def spherical_bessel(n, z, derivative=False):
     else:
         bessel = ufunc(n, z, derivative=derivative)
 
-    if bessel.ndim <= 1:
+    if z.ndim <= 1 or n.ndim <= 1:
         bessel = np.squeeze(bessel)
 
 
@@ -140,7 +140,7 @@ def spherical_hankel(n, z, kind=2, derivative=False):
     else:
         hankel = ufunc(n, z, kind)
 
-    if hankel.ndim <= 1:
+    if z.ndim <= 1 or n.ndim <= 1:
         hankel = np.squeeze(hankel)
 
     return hankel
