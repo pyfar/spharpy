@@ -12,6 +12,7 @@ import matplotlib.tri as mtri
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import cm
+from matplotlib import colors
 
 import scipy.spatial as sspat
 from scipy.stats import circmean
@@ -133,16 +134,27 @@ def _balloon_color_data(tri, data, itype):
         vmin = np.min(cdata)
         vmax = np.max(cdata)
         colors = np.mean(cdata[tri.triangles], axis=1)
+    elif itype == 'amplitude':
+        vmin = np.min(data)
+        vmax = np.max(data)
+        colors = np.mean(data[tri.triangles], axis=1)
     else:
         raise ValueError("Invalid type of data mapping.")
 
     return colors, vmin, vmax
 
 
-def balloon_wireframe(coordinates, data, cmap=None, phase=False, show=True,
-            colorbar=True):
+def pcolor_sphere(
+        coordinates,
+        data,
+        cmap=None,
+        colorbar=True,
+        show=True,
+        phase=False,
+        *args,
+        **kwargs):
     """Plot data on the surface of a sphere defined by the coordinate angles
-    theta and phi
+    theta and phi. The data array will be mapped onto the surface of a sphere.
 
     Note
     ----
@@ -162,7 +174,97 @@ def balloon_wireframe(coordinates, data, cmap=None, phase=False, show=True,
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
     show : boolean, optional
-        Wheter to show the figure or not
+        Whether to show the figure or not
+
+    """
+    tri, z = _triangulation_sphere(coordinates, np.ones_like(data))
+    fig = plt.gcf()
+
+    if colorbar:
+        gs = fig.add_gridspec(
+            2,
+            2,
+            width_ratios=[1, 0.05],
+            height_ratios=[1, 0.05])
+        ax = fig.add_subplot(gs[0, 0], projection='3d')
+        cax = fig.add_subplot(gs[0, 1])
+    else:
+        if 'Axes3D' in fig.axes.__str__():
+            ax = plt.gca()
+        else:
+            ax = plt.gca(projection='3d')
+
+    if np.iscomplex(data).any() or phase:
+        itype = 'phase'
+        if cmap is None:
+            cmap = cm.hsv
+    else:
+        itype = 'amplitude'
+        if cmap is None:
+            cmap = cm.viridis
+
+    cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+
+    if version.parse(mpl.__version__) < version.parse('3.1.0'):
+        ax.set_aspect('equal')
+
+    plot = ax.plot_trisurf(tri,
+                           z,
+                           cmap=cmap,
+                           antialiased=True,
+                           vmin=vmin,
+                           vmax=vmax)
+
+    plot.set_array(cdata)
+
+    set_aspect_equal_3d(ax)
+
+    if colorbar:
+        plt.colorbar(plot, cax=cax)
+
+    ax.set_xlabel('x[m]')
+    ax.set_ylabel('y[m]')
+    ax.set_zlabel('z[m]')
+
+    ax.set_proj_type('ortho')
+
+    if show:
+        plt.show()
+
+    return plot
+
+
+def balloon_wireframe(
+        coordinates,
+        data,
+        cmap=None,
+        phase=False,
+        show=True,
+        colorbar=True):
+    """Plot data on a sphere defined by the coordinate angles
+    theta and phi. The magnitude information is mapped onto the radius of the
+    sphere. The colormap represents either the phase or the magnitude of the
+    data array.
+
+    Note
+    ----
+    When plotting the phase encoded in the colormap, the function will switch
+    to the HSV colormap and ignore the user input for the cmap input variable.
+
+    Parameters
+    ----------
+    coordinates : Coordinates
+        Coordinates defining a sphere
+    data : ndarray, double
+        Data for each angle, must have size corresponding to the number of
+        points given in coordinates.
+    cmap : matplotlib colomap, optional
+        Colormap for the plot, see matplotlib.cm
+    phase : boolean, optional
+        Encode the phase of the data in the colormap. This option will be
+        activated by default of the data is complex valued.
+    show : boolean, optional
+        Whether to show the figure or not
     """
     tri, z = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
@@ -220,6 +322,7 @@ def balloon_wireframe(coordinates, data, cmap=None, phase=False, show=True,
     ax.set_zlabel('z[m]')
 
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
+    ax.set_proj_type('ortho')
 
     if show:
         plt.show()
@@ -229,10 +332,20 @@ def balloon_wireframe(coordinates, data, cmap=None, phase=False, show=True,
     return plot
 
 
-def balloon(coordinates, data, cmap=None, phase=False, show=True,
-            colorbar=True):
-    """Plot data on the surface of a sphere defined by the coordinate angles
-    theta and phi
+def balloon(
+        coordinates,
+        data,
+        cmap=None,
+        phase=False,
+        show=True,
+        colorbar=True,
+        *args,
+        **kwargs):
+    """Plot data on a sphere defined by the coordinate angles theta and phi.
+    The magnitude information is mapped onto the radius of the sphere.
+    The colormap represents either the phase or the magnitude of the
+    data array.
+
 
     Note
     ----
@@ -282,7 +395,6 @@ def balloon(coordinates, data, cmap=None, phase=False, show=True,
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-
     if version.parse(mpl.__version__) < version.parse('3.1.0'):
         ax.set_aspect('equal')
 
@@ -290,8 +402,10 @@ def balloon(coordinates, data, cmap=None, phase=False, show=True,
                            z,
                            cmap=cmap,
                            antialiased=True,
-                           vmin=vmin,
-                           vmax=vmax)
+                           # vmin=vmin,
+                           # vmax=vmax,
+                           *args,
+                           **kwargs)
 
     plot.set_array(cdata)
 
@@ -303,6 +417,9 @@ def balloon(coordinates, data, cmap=None, phase=False, show=True,
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
+
+    ax.set_proj_type('ortho')
+
     if show:
         plt.show()
 
@@ -352,6 +469,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
+    ax.set_proj_type('ortho')
 
 
 def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
@@ -411,3 +529,20 @@ def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
         plt.show()
 
     return cf
+
+
+class MidpointNormalize(colors.Normalize):
+    """Colormap norm with a defined midpoint. Useful for normalization of
+    colormaps representing deviations from a defined midpoint.
+    Taken from the official matplotlib documentation at
+    https://matplotlib.org/users/colormapnorms.html
+    """
+    def __init__(self, vmin=None, vmax=None, midpoint=0., clip=False):
+        self.midpoint = midpoint
+        colors.Normalize.__init__(self, vmin, vmax, clip)
+
+    def __call__(self, value, clip=None):
+        # I'm ignoring masked values and all kinds of edge cases to make a
+        # simple example...
+        x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
+        return np.ma.masked_array(np.interp(value, x, y))
