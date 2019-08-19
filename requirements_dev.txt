@@ -19,3 +19,4 @@ PyYAML
 pytest-runner
 numpydoc
 sphinx_rtd_theme
+cartopy

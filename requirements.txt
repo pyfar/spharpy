@@ -5,3 +5,4 @@ pytest
 urllib3
 cython
 matplotlib
+cartopy
