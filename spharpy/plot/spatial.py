@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import cm
 from matplotlib import colors
 
-import cartopy.crs as ccrs
+
 
 import scipy.spatial as sspat
 from scipy.stats import circmean
@@ -542,6 +542,12 @@ def _project_sphere_sampling(latitude, longitude, projection):
         Array with the y coordinates on the map
 
     """
+    try:
+        import cartopy.crs as ccrs
+    except ImportError:
+        raise ImportError('You will need the cartopy package for this. \
+            Try installing via conda.')
+
     x, y, _ = projection.transform_points(
         ccrs.PlateCarree(), longitude, latitude).T
 
@@ -555,7 +561,7 @@ def _project_sphere_sampling(latitude, longitude, projection):
 def pcolor_map(
         coordinates,
         data,
-        projection=ccrs.Mollweide(),
+        projection='default',
         limits=None,
         cmap=cm.viridis,
         show=True):
@@ -581,6 +587,13 @@ def pcolor_map(
         Wheter to show the figure or not
 
     """
+    try:
+        import cartopy.crs as ccrs
+    except ImportError:
+        raise ImportError('You will need the cartopy package for this. \
+            Try installing via conda.')
+    if projection == 'default':
+        projection = ccrs.Mollweide()
     fig = plt.gcf()
 
     lat_deg = coordinates.latitude * 180/np.pi
@@ -623,7 +636,7 @@ def pcolor_map(
 def contour_map(
         coordinates,
         data,
-        projection=ccrs.Mollweide(),
+        projection='default',
         limits=None,
         cmap=cm.viridis,
         show=True):
@@ -649,6 +662,14 @@ def contour_map(
         Wheter to show the figure or not
 
     """
+    try:
+        import cartopy.crs as ccrs
+    except ImportError:
+        raise ImportError('You will need the cartopy package for this. \
+            Try installing via conda.')
+    if projection == 'default':
+        projection = ccrs.Mollweide()
+
     fig = plt.gcf()
 
     lat_deg = coordinates.latitude * 180/np.pi
