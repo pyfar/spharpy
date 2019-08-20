@@ -100,7 +100,7 @@ def _triangulation_sphere(sampling, data):
     return tri, z
 
 
-def interpolate_data_on_sphere(sampling, data, overlap=np.pi*0.25):
+def interpolate_data_on_sphere(sampling, data, overlap=np.pi*0.25, refine=True):
     """Linear interpolator for data on a spherical surface. The interpolator
     exploits that the data on the sphere is periodic with regard to the
     elevation and azimuth angle. The data is periodically extended to a
@@ -143,6 +143,14 @@ def interpolate_data_on_sphere(sampling, data, overlap=np.pi*0.25):
     data = np.concatenate((data, data[mask]))
 
     tri = mtri.Triangulation(lons, lats)
+
+    if refine:
+        refiner = mtri.UniformTriRefiner(tri)
+        tri, data = refiner.refine_field(
+            data,
+            triinterpolator=mtri.LinearTriInterpolator(tri, data),
+            subdiv=3)
+
     interpolator = mtri.LinearTriInterpolator(tri, data)
 
     return interpolator
@@ -684,7 +692,7 @@ def pcolor_map(
 def contour_map(
         coordinates,
         data,
-        projection='default',
+        projection='mollweide',
         limits=None,
         cmap=cm.viridis,
         show=True):
@@ -710,31 +718,63 @@ def contour_map(
         Wheter to show the figure or not
 
     """
-    try:
-        import cartopy.crs as ccrs
-    except ImportError:
-        raise ImportError('You will need the cartopy package for this. \
-            Try installing via conda.')
-    if projection == 'default':
-        projection = ccrs.Mollweide()
+    # try:
+    #     import cartopy.crs as ccrs
+    # except ImportError:
+    #     raise ImportError('You will need the cartopy package for this. \
+    #         Try installing via conda.')
+    # if projection == 'default':
+    #     projection = ccrs.Mollweide()
 
     fig = plt.gcf()
 
-    lat_deg = coordinates.latitude * 180/np.pi
-    lon_deg = coordinates.longitude * 180/np.pi
-    x, y = _project_sphere_sampling(lat_deg, lon_deg, projection)
+    # lat_deg = coordinates.latitude * 180/np.pi
+    # lon_deg = coordinates.longitude * 180/np.pi
+    # x, y = _project_sphere_sampling(lat_deg, lon_deg, projection)
+    res = int(np.ceil(np.sqrt(coordinates.n_points)))
+    # res = 30
+    res = 100
+
+    xi, yi = np.meshgrid(
+        np.linspace(-np.pi, np.pi, res*2),
+        np.linspace(-np.pi/2, np.pi/2, res))
+
+    interp = interpolate_data_on_sphere(coordinates, data)
+    zi = interp(xi, yi)
+
     ax = plt.axes(projection=projection)
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 
-    cf = _combined_contour(x, y, data, limits, cmap, ax)
+    extend = 'neither'
+    if limits is None:
+        limits = (zi.min(), zi.max())
+    else:
+        mask_min = zi < limits[0]
+        data[mask_min] = limits[0]
+        mask_max = zi > limits[1]
+        data[mask_max] = limits[1]
+        if np.any(mask_max) & np.any(mask_min):
+            extend = 'both'
+        elif np.any(mask_max) & ~np.any(mask_min):
+            extend = 'max'
+        elif ~np.any(mask_max) & np.any(mask_min):
+            extend = 'min'
 
-    ax.relim()
-    ax.autoscale_view()
+    ax.contour(xi, yi, zi, linewidths=0.5, colors='k',
+                  vmin=limits[0], vmax=limits[1], extend=extend)
+    cf = ax.pcolormesh(xi, yi, zi, cmap=cmap,
+                        vmin=limits[0], vmax=limits[1])
+
+    # cf = _combined_contour(xi, yi, zi, limits, cmap, ax)
+
+    # ax.relim()
+    # ax.autoscale_view()
 
     # ax.gridlines(projection, draw_labels=False)
-    ax.gridlines(draw_labels=True, x_inline=True)
+    # ax.gridlines(draw_labels=True, x_inline=True)
+    plt.grid(True)
     cb = fig.colorbar(cf, ax=ax)
     cb.set_label('Amplitude')
     if show:
