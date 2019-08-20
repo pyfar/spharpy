@@ -19,7 +19,7 @@ from matplotlib import colors
 import scipy.spatial as sspat
 from scipy.stats import circmean
 
-from spharpy.samplings import sph2cart, spherical_voronoi
+from spharpy.samplings import sph2cart, spherical_voronoi, latlon2cart, Coordinates
 
 
 def set_aspect_equal_3d(ax):
@@ -98,6 +98,54 @@ def _triangulation_sphere(sampling, data):
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
 
     return tri, z
+
+
+def interpolate_data_on_sphere(sampling, data, overlap=np.pi*0.25):
+    """Linear interpolator for data on a spherical surface. The interpolator
+    exploits that the data on the sphere is periodic with regard to the
+    elevation and azimuth angle. The data is periodically extended to a
+    specified overlap angle before interpolation.
+
+    Parameters
+    ----------
+    sampling : Coordinates
+        The coordinates at which the data is sampled.
+    data : ndarray, double
+        The sampled data points.
+
+    Returns
+    -------
+    interp : LinearTriInterpolator
+        The interpolator object.
+
+    """
+    lats = sampling.latitude
+    lons = sampling.longitude
+
+    mask = lons > np.pi - overlap
+    lons = np.concatenate((lons, lons[mask] - np.pi*2))
+    lats = np.concatenate((lats, lats[mask]))
+    data = np.concatenate((data, data[mask]))
+
+    mask = lons < -np.pi + overlap
+    lons = np.concatenate((lons, lons[mask] + np.pi*2))
+    lats = np.concatenate((lats, lats[mask]))
+    data = np.concatenate((data, data[mask]))
+
+    mask = lats > np.pi/2 - overlap
+    lons = np.concatenate((lons, lons[mask]))
+    lats = np.concatenate((lats, lats[mask] - np.pi))
+    data = np.concatenate((data, data[mask]))
+
+    mask = lats < -np.pi/2 + overlap
+    lons = np.concatenate((lons, lons[mask]))
+    lats = np.concatenate((lats, lats[mask] + np.pi))
+    data = np.concatenate((data, data[mask]))
+
+    tri = mtri.Triangulation(lons, lats)
+    interpolator = mtri.LinearTriInterpolator(tri, data)
+
+    return interpolator
 
 
 def _balloon_color_data(tri, data, itype):
@@ -685,7 +733,8 @@ def contour_map(
     ax.relim()
     ax.autoscale_view()
 
-    ax.gridlines()
+    # ax.gridlines(projection, draw_labels=False)
+    ax.gridlines(draw_labels=True, x_inline=True)
     cb = fig.colorbar(cf, ax=ax)
     cb.set_label('Amplitude')
     if show:
