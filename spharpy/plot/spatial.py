@@ -579,41 +579,6 @@ def _combined_contour(x, y, data, limits, cmap, ax):
     return cf
 
 
-def _project_sphere_sampling(latitude, longitude, projection):
-    """Transform the latitude and longitude angles to their corresponding
-    x and y coordinates on a map using the specified map projection.
-
-    Parameters
-    ----------
-    latitude: ndarray, double
-        Geodetic latitude angle of the map in degrees, must be in [-180, 180]
-    longitude: ndarray, double
-        Geodetic longitude angle of the map in degrees, must be in [-90, 90]
-
-    Returns
-    -------
-    x : ndarray, double
-        Array with the x coordinates on the map
-    y : ndarray, double
-        Array with the y coordinates on the map
-
-    """
-    try:
-        import cartopy.crs as ccrs
-    except ImportError:
-        raise ImportError('You will need the cartopy package for this. \
-            Try installing via conda.')
-
-    x, y, _ = projection.transform_points(
-        ccrs.PlateCarree(), longitude, latitude).T
-
-    mask = np.invert(np.logical_or(np.isinf(x), np.isinf(y)))
-    x = np.compress(mask, x)
-    y = np.compress(mask, y)
-
-    return x, y
-
-
 def pcolor_map(
         coordinates,
         data,
