@@ -733,7 +733,7 @@ def contour_map(
     # x, y = _project_sphere_sampling(lat_deg, lon_deg, projection)
     res = int(np.ceil(np.sqrt(coordinates.n_points)))
     # res = 30
-    res = 100
+    # res = 100
 
     xi, yi = np.meshgrid(
         np.linspace(-np.pi, np.pi, res*2),
@@ -764,7 +764,7 @@ def contour_map(
 
     ax.contour(xi, yi, zi, linewidths=0.5, colors='k',
                   vmin=limits[0], vmax=limits[1], extend=extend)
-    cf = ax.pcolormesh(xi, yi, zi, cmap=cmap,
+    cf = ax.pcolormesh(xi, yi, zi, cmap=cmap, shading='gouraud',
                         vmin=limits[0], vmax=limits[1])
 
     # cf = _combined_contour(xi, yi, zi, limits, cmap, ax)
