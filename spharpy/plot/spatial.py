@@ -617,10 +617,12 @@ def _project_sphere_sampling(latitude, longitude, projection):
 def pcolor_map(
         coordinates,
         data,
-        projection='default',
+        projection='mollweide',
         limits=None,
         cmap=cm.viridis,
-        show=True):
+        show=True,
+        refine=False,
+        **kwargs):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -643,18 +645,20 @@ def pcolor_map(
         Wheter to show the figure or not
 
     """
-    try:
-        import cartopy.crs as ccrs
-    except ImportError:
-        raise ImportError('You will need the cartopy package for this. \
-            Try installing via conda.')
-    if projection == 'default':
-        projection = ccrs.Mollweide()
+    tri = mtri.Triangulation(coordinates.longitude, coordinates.latitude)
+    if refine is not None:
+        if isinstance(refine, int):
+            subdiv = refine
+        else:
+            subdiv = 2
+        refiner = mtri.UniformTriRefiner(tri)
+        tri, data = refiner.refine_field(
+            data,
+            triinterpolator=mtri.LinearTriInterpolator(tri, data),
+            subdiv=subdiv)
+
     fig = plt.gcf()
 
-    lat_deg = coordinates.latitude * 180/np.pi
-    lon_deg = coordinates.longitude * 180/np.pi
-    x, y = _project_sphere_sampling(lat_deg, lon_deg, projection)
     ax = plt.axes(projection=projection)
 
     ax.set_xlabel('Longitude [$^\\circ$]')
@@ -675,12 +679,10 @@ def pcolor_map(
         elif ~np.any(mask_max) & np.any(mask_min):
             extend = 'min'
 
-    cf = ax.tripcolor(x, y, data, cmap=cmap, vmin=limits[0], vmax=limits[1])
+    cf = ax.tripcolor(
+        tri, data, cmap=cmap, vmin=limits[0], vmax=limits[1], **kwargs)
 
-    ax.relim()
-    ax.autoscale_view()
-
-    ax.gridlines()
+    plt.grid(True)
     cb = fig.colorbar(cf, ax=ax, extend=extend)
     cb.set_label('Amplitude')
     if show:
@@ -718,22 +720,9 @@ def contour_map(
         Wheter to show the figure or not
 
     """
-    # try:
-    #     import cartopy.crs as ccrs
-    # except ImportError:
-    #     raise ImportError('You will need the cartopy package for this. \
-    #         Try installing via conda.')
-    # if projection == 'default':
-    #     projection = ccrs.Mollweide()
-
     fig = plt.gcf()
 
-    # lat_deg = coordinates.latitude * 180/np.pi
-    # lon_deg = coordinates.longitude * 180/np.pi
-    # x, y = _project_sphere_sampling(lat_deg, lon_deg, projection)
     res = int(np.ceil(np.sqrt(coordinates.n_points)))
-    # res = 30
-    # res = 100
 
     xi, yi = np.meshgrid(
         np.linspace(-np.pi, np.pi, res*2),
@@ -767,13 +756,6 @@ def contour_map(
     cf = ax.pcolormesh(xi, yi, zi, cmap=cmap, shading='gouraud',
                         vmin=limits[0], vmax=limits[1])
 
-    # cf = _combined_contour(xi, yi, zi, limits, cmap, ax)
-
-    # ax.relim()
-    # ax.autoscale_view()
-
-    # ax.gridlines(projection, draw_labels=False)
-    # ax.gridlines(draw_labels=True, x_inline=True)
     plt.grid(True)
     cb = fig.colorbar(cf, ax=ax)
     cb.set_label('Amplitude')
