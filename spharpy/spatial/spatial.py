@@ -8,7 +8,8 @@ def greens_function_plane_wave(
         gradient=False):
     """The matrix describing the propagation of a plane wave from a direction
     of arrival defined by the azimuth and elevation angles of the source points
-    to the receiver points
+    to the receiver points. The phase sign convention reflects a direction of
+    arrival from the source position.
 
     Parameters
     ----------
@@ -54,11 +55,14 @@ def greens_function_plane_wave(
 
 
 def greens_function_point_source(sources, receivers, k, gradient=False):
-    """Green's function in matrix form
+    r"""Green's function for point sources in free space in matrix form. The
+    phase sign convention corresponds to a direction of propagation away from
+    the source at position $r_s$.
 
     .. math::
 
-        G(k) = \\frac{e^{k\\|\\mathbf{r_s} - \\mathbf{r_r}\\|}}{4 \\pi \\|\\mathbf{r_s} - \\mathbf{r_r}\\|}
+        G(k) = \\frac{e^{- k\\|\\mathbf{r_s} - \\mathbf{r_r}\\|}}
+            {4 \\pi \\|\\mathbf{r_s} - \\mathbf{r_r}\\|}
 
     Parameters
     ----------
@@ -75,12 +79,9 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
         Green's function
 
     """
-    # R_vec =
-    # R_vec = receivers.cartesian - source.cartesian
-    # R = np.linalg.norm(R_vec, axis=0)
     dist = sspat.distance.cdist(receivers.cartesian.T, sources.cartesian.T)
     dist = np.squeeze(dist)
-    cexp = np.cos(k*dist) + 1j*np.sin(k*dist)
+    cexp = np.cos(k*dist) - 1j*np.sin(k*dist)
     G = cexp/dist/4/np.pi
 
     if not gradient:
@@ -100,8 +101,8 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
             np.atleast_2d(sources.z).T,
             lambda_cdiff)
 
-        G_dx = G/dist * diff_x * (1j-1/dist)
-        G_dy = G/dist * diff_y * (1j-1/dist)
-        G_dz = G/dist * diff_z * (1j-1/dist)
+        G_dx = G/dist * np.squeeze(diff_x) * (-1j-1/dist)
+        G_dy = G/dist * np.squeeze(diff_y) * (-1j-1/dist)
+        G_dz = G/dist * np.squeeze(diff_z) * (-1j-1/dist)
 
         return G, (G_dx, G_dy, G_dz)
