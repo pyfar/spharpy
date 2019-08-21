@@ -1,24 +1,33 @@
+image: python
+
 stages:
-    - build
-    - test
+- test
+- build
 
 before_script:
-    - apt-get update
-    - DEBIAN_FRONTEND=noninteractive apt-get install -qq libboost-all-dev python3 python3-dev python3-pip python3-tk libfreetype6-dev libpng-dev
-    - pip3 install -r requirements_dev.txt
+- curl -O https://bootstrap.pypa.io/get-pip.py
+- python get-pip.py
+- pip install -r requirements_dev.txt
 
+python35:
+    image: python:3.5
+    stage: test
+    script: tox -e py35
 
+python36:
+    image: python:3.6
+    stage: test
+    script: tox -e py36
+
+python37:
+    image: python:3.7
+    stage: test
+    script: tox -e py37
 
 build:
-    stage: build
-    script:
-    - python3 setup.py build_ext --inplace
-
-
-test:
-    stage: test
-    script:
-    - python3 setup.py build_ext --inplace
-    - tox
-    dependencies:
-    - build
+  stage: build
+  script: tox -e build
+  artifacts:
+    paths:
+    - dist/
+    expire_in: 1 week

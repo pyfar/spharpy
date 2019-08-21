@@ -9,6 +9,48 @@ import spharpy
 
 from ._eqsp import point_set as eq_point_set
 
+def cube_equidistant(n_points):
+    """Create a cuboid sampling with equidistant spacings in x, y, and z.
+    The cube will have dimensions 1 x 1 x 1
+
+    Parameters
+    ----------
+    n_points : int, tuple
+        Number of points in the sampling. If a single value is given, the number
+        of sampling positions will be the same in every axis. If a tuple is
+        given, the number of points will be set as (n_x, n_y, n_z)
+
+    Returns
+    -------
+    sampling : Coordinates
+        Sampling positions as Coordinate object
+
+    """
+    if np.size(n_points) == 1:
+        n_x = n_points
+        n_y = n_points
+        n_z = n_points
+    elif np.size(n_points) == 3:
+        n_x = n_points[0]
+        n_y = n_points[1]
+        n_z = n_points[2]
+    else:
+        raise ValueError("The number of points needs to be either an integer \
+                or a tuple with 3 elements.")
+
+    x = np.linspace(-1, 1, n_x)
+    y = np.linspace(-1, 1, n_y)
+    z = np.linspace(-1, 1, n_z)
+
+    x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
+
+    sampling = Coordinates(x_grid.flatten(),
+                           y_grid.flatten(),
+                           z_grid.flatten())
+
+    return sampling
+
+
 def hyperinterpolation(n_max):
     """Gives the points of a Hyperinterpolation sampling grid
     after Sloan and Womersley [1]_.
@@ -60,77 +102,77 @@ def hyperinterpolation(n_max):
     return sampling
 
 
-def spherical_t_design(n_max):
-    """Return the sampling positions for a spherical t-design [1]_ .
-
-    For a given degree t
-
-    .. math::
-
-        L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
-
-    points will be generated, except for t = 3, 5, 7, 9, 11, 15.
-
-    Notes
-    -----
-    This function downloads a pre-calculated set of points from
-    Rob Womersley's homepage [2]_
-
-    References
-    ----------
-
-    .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
-            Spherical Designs for Integration and Interpolation on the
-            Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
-            pp. 2135–2157, Jan. 2010.
-    .. [2]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
-
-
-    Parameters
-    ----------
-    degree : integer
-        T-design degree
-    n_points : integer, optional
-        Number of sampling points
-    symmetric : boolean
-        Return symmetric (antipodal) t-designs
-
-    Returns
-    -------
-    sampling : SamplingSphere
-        SamplingSphere object containing all sampling points
-    """
-    n_sh = (n_max+1)**2
-    if n_sh == 9:
-        degree = 4
-    else:
-        degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
-    n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
-    if degree in n_points_exceptions:
-        n_points = n_points_exceptions[degree]
-
-    filename = "sf%03d.%05d" % (degree, n_points)
-    url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/SF29-Nov-2012/"
-    fileurl = url + filename
-
-    http = urllib3.PoolManager()
-    http_data = http.urlopen('GET', fileurl)
-
-    if http_data.status == 200:
-        file_data = http_data.data.decode()
-    elif http_data.status == 404:
-        raise FileNotFoundError("File was not found. Check if the design you \
-                are trying to calculate is a valid t-design.")
-    else:
-        raise ConnectionError("Connection error. Please check your internet \
-                connection.")
-
-    points = np.fromstring(file_data,
-                           dtype=np.double,
-                           sep=' ').reshape((n_points, 3)).T
-    sampling = SamplingSphere.from_array(points)
-    return sampling
+# def spherical_t_design(n_max):
+#     """Return the sampling positions for a spherical t-design [1]_ .
+#
+#     For a given degree t
+#
+#     .. math::
+#
+#         L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
+#
+#     points will be generated, except for t = 3, 5, 7, 9, 11, 15.
+#
+#     Notes
+#     -----
+#     This function downloads a pre-calculated set of points from
+#     Rob Womersley's homepage [2]_
+#
+#     References
+#     ----------
+#
+#     .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
+#             Spherical Designs for Integration and Interpolation on the
+#             Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
+#             pp. 2135–2157, Jan. 2010.
+#     .. [2]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+#
+#
+#     Parameters
+#     ----------
+#     degree : integer
+#         T-design degree
+#     n_points : integer, optional
+#         Number of sampling points
+#     symmetric : boolean
+#         Return symmetric (antipodal) t-designs
+#
+#     Returns
+#     -------
+#     sampling : SamplingSphere
+#         SamplingSphere object containing all sampling points
+#     """
+#     n_sh = (n_max+1)**2
+#     if n_sh == 9:
+#         degree = 4
+#     else:
+#         degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
+#     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
+#     n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
+#     if degree in n_points_exceptions:
+#         n_points = n_points_exceptions[degree]
+#
+#     filename = "sf%03d.%05d" % (degree, n_points)
+#     url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/SF29-Nov-2012/"
+#     fileurl = url + filename
+#
+#     http = urllib3.PoolManager()
+#     http_data = http.urlopen('GET', fileurl)
+#
+#     if http_data.status == 200:
+#         file_data = http_data.data.decode()
+#     elif http_data.status == 404:
+#         raise FileNotFoundError("File was not found. Check if the design you \
+#                 are trying to calculate is a valid t-design.")
+#     else:
+#         raise ConnectionError("Connection error. Please check your internet \
+#                 connection.")
+#
+#     points = np.fromstring(file_data,
+#                            dtype=np.double,
+#                            sep=' ').reshape((n_points, 3)).T
+#     sampling = SamplingSphere.from_array(points)
+#     return sampling
 
 
 
