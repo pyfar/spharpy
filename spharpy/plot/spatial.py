@@ -100,7 +100,11 @@ def _triangulation_sphere(sampling, data):
     return tri, z
 
 
-def interpolate_data_on_sphere(sampling, data, overlap=np.pi*0.25, refine=True):
+def interpolate_data_on_sphere(
+        sampling,
+        data,
+        overlap=np.pi*0.25,
+        refine=False):
     """Linear interpolator for data on a spherical surface. The interpolator
     exploits that the data on the sphere is periodic with regard to the
     elevation and azimuth angle. The data is periodically extended to a
@@ -662,7 +666,9 @@ def contour_map(
         projection='mollweide',
         limits=None,
         cmap=cm.viridis,
-        show=True):
+        colorbar=True,
+        show=True,
+        levels=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -696,7 +702,8 @@ def contour_map(
     interp = interpolate_data_on_sphere(coordinates, data)
     zi = interp(xi, yi)
 
-    ax = plt.axes(projection=projection)
+    # ax = plt.axes(projection=projection)
+    ax = plt.gca(projection=projection)
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -706,24 +713,25 @@ def contour_map(
         limits = (zi.min(), zi.max())
     else:
         mask_min = zi < limits[0]
-        data[mask_min] = limits[0]
+        zi[mask_min] = limits[0]
         mask_max = zi > limits[1]
-        data[mask_max] = limits[1]
-        if np.any(mask_max) & np.any(mask_min):
+        zi[mask_max] = limits[1]
+        if np.any(mask_max) and np.any(mask_min):
             extend = 'both'
-        elif np.any(mask_max) & ~np.any(mask_min):
+        elif np.any(mask_max) and not np.any(mask_min):
             extend = 'max'
-        elif ~np.any(mask_max) & np.any(mask_min):
+        elif not np.any(mask_max) and np.any(mask_min):
             extend = 'min'
 
-    ax.contour(xi, yi, zi, linewidths=0.5, colors='k',
-                  vmin=limits[0], vmax=limits[1], extend=extend)
+    ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
+               vmin=limits[0], vmax=limits[1], extend=extend)
     cf = ax.pcolormesh(xi, yi, zi, cmap=cmap, shading='gouraud',
-                        vmin=limits[0], vmax=limits[1])
+                       vmin=limits[0], vmax=limits[1])
 
     plt.grid(True)
-    cb = fig.colorbar(cf, ax=ax)
-    cb.set_label('Amplitude')
+    if colorbar:
+        cb = fig.colorbar(cf, ax=ax, ticks=levels)
+        cb.set_label('Amplitude')
     if show:
         plt.show()
 
