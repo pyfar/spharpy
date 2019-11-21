@@ -23,10 +23,10 @@ def test_hyperinterpolation():
     assert sampling.radius.size == (n_max+1)**2
 
 
-# def test_spherical_t_design():
-#     order = 2
-#     coords = samplings.spherical_t_design(order)
-#     assert isinstance(coords, SamplingSphere)
+def test_spherical_t_design():
+    order = 2
+    coords = samplings.spherical_t_design(order)
+    assert isinstance(coords, SamplingSphere)
 
 
 def test_dodecahedron():
