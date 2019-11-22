@@ -103,20 +103,22 @@ def hyperinterpolation(n_max):
 
 
 def spherical_t_design(n_max):
-    """Return the sampling positions for a spherical t-design [1]_ .
-
-    For a given degree t
+    r"""Return the sampling positions for a spherical t-design [1]_ .
+    For a spherical harmonic order N, a t-Design of degree `:math: t=2N` is
+    required [2]_. For a given degree t
 
     .. math::
 
-        L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
+        L = \lceil \frac{(t+1)^2}{2} \rceil+1,
 
-    points will be generated, except for t = 3, 5, 7, 9, 11, 15.
+    points will be generated, except for t = 3, 5, 7, 9, 11, 13, and 15.
+    T-designs allow for a inverse spherical harmonic transform matrix
+    calculated as `:math: D = \frac{4\pi}{L} \mathbf{Y}^\mathrm{H}`.
 
     Notes
     -----
     This function downloads a pre-calculated set of points from
-    Rob Womersley's homepage [2]_ .
+    Rob Womersley's homepage [3]_ .
 
     References
     ----------
@@ -125,7 +127,10 @@ def spherical_t_design(n_max):
             Spherical Designs for Integration and Interpolation on the
             Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
             pp. 2135–2157, Jan. 2010.
-    .. [2]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+    .. [2]  F. Zotter, M. Frank, and A. Sontacchi, “The Virtual T-Design
+            Ambisonics-Rig Using VBAP,” in Proceedings on the Congress on
+            Sound and Vibration, 2010.
+    .. [3]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
 
 
     Parameters
@@ -142,13 +147,10 @@ def spherical_t_design(n_max):
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
     """
-    n_sh = (n_max+1)**2
-    if n_sh == 9:
-        degree = 4
-    else:
-        degree = np.int(np.ceil(np.sqrt(2*(n_sh-1)) - 1))
+
+    degree = 2*n_max
     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 15:128}
+    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 13:98, 15:128}
     if degree in n_points_exceptions:
         n_points = n_points_exceptions[degree]
 
@@ -169,9 +171,10 @@ def spherical_t_design(n_max):
         raise ConnectionError("Connection error. Please check your internet \
                 connection.")
 
-    points = np.fromstring(file_data,
-                           dtype=np.double,
-                           sep=' ').reshape((n_points, 3)).T
+    points = np.fromstring(
+        file_data,
+        dtype=np.double,
+        sep=' ').reshape((n_points, 3)).T
     sampling = SamplingSphere.from_array(points)
 
     return sampling
