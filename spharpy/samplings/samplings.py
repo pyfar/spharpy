@@ -102,10 +102,11 @@ def hyperinterpolation(n_max):
     return sampling
 
 
-def spherical_t_design(n_max):
+def spherical_t_design(n_max, criterion='const_energy'):
     r"""Return the sampling positions for a spherical t-design [1]_ .
-    For a spherical harmonic order N, a t-Design of degree `:math: t=2N` is
-    required [2]_. For a given degree t
+    For a spherical harmonic order N, a t-Design of degree `:math: t=2N` for
+    constant energy or `:math: t=2N+1` additionally ensuring a constant angular
+    spread of energy is required [2]_. For a given degree t
 
     .. math::
 
@@ -137,10 +138,9 @@ def spherical_t_design(n_max):
     ----------
     degree : integer
         T-design degree
-    n_points : integer, optional
-        Number of sampling points
-    symmetric : boolean
-        Return symmetric (antipodal) t-designs
+    criterion : 'const_energy', 'const_angular_spread'
+        Design criterion ensuring only a constant energy or additionally
+        constant angular spread of energy
 
     Returns
     -------
