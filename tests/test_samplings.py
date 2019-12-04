@@ -1,7 +1,8 @@
 """ Tests for spatial sampling functions """
 
-import pytest
 import numpy as np
+import pytest
+
 import spharpy.samplings as samplings
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 
@@ -23,10 +24,24 @@ def test_hyperinterpolation():
     assert sampling.radius.size == (n_max+1)**2
 
 
-def test_spherical_t_design():
+def test_spherical_t_design_const_e():
     order = 2
-    coords = samplings.spherical_t_design(order)
+    coords = samplings.spherical_t_design(
+        order, criterion='const_energy')
     assert isinstance(coords, SamplingSphere)
+
+
+def test_spherical_t_design_const_angle():
+    order = 2
+    coords = samplings.spherical_t_design(
+        order, criterion='const_angular_spread')
+    assert isinstance(coords, SamplingSphere)
+
+
+def test_spherical_t_design_invalid():
+    order = 2
+    with pytest.raises(ValueError, match='Invalid design'):
+        samplings.spherical_t_design(order, criterion='bla')
 
 
 def test_dodecahedron():

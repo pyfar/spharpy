@@ -116,6 +116,19 @@ def spherical_t_design(n_max, criterion='const_energy'):
     T-designs allow for a inverse spherical harmonic transform matrix
     calculated as `:math: D = \frac{4\pi}{L} \mathbf{Y}^\mathrm{H}`.
 
+    Parameters
+    ----------
+    degree : integer
+        T-design degree
+    criterion : 'const_energy', 'const_angular_spread'
+        Design criterion ensuring only a constant energy or additionally
+        constant angular spread of energy
+
+    Returns
+    -------
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
+
     Notes
     -----
     This function downloads a pre-calculated set of points from
@@ -133,22 +146,14 @@ def spherical_t_design(n_max, criterion='const_energy'):
             Sound and Vibration, 2010.
     .. [3]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
 
-
-    Parameters
-    ----------
-    degree : integer
-        T-design degree
-    criterion : 'const_energy', 'const_angular_spread'
-        Design criterion ensuring only a constant energy or additionally
-        constant angular spread of energy
-
-    Returns
-    -------
-    sampling : SamplingSphere
-        SamplingSphere object containing all sampling points
     """
+    if criterion == 'const_energy':
+        degree = 2*n_max
+    elif criterion == 'const_angular_spread':
+        degree = 2*n_max + 1
+    else:
+        raise ValueError("Invalid design criterion.")
 
-    degree = 2*n_max
     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
     n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 13:98, 15:128}
     if degree in n_points_exceptions:
