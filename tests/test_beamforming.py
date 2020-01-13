@@ -22,3 +22,11 @@ def test_dolph_cheby_sidelobe():
 
     truth = np.loadtxt('tests/data/dolph_cheby_sidelobe.csv', delimiter=',')
     npt.assert_allclose(d_nm, truth)
+
+
+def test_re_max():
+    N = 7
+    g_nm = spharpy.beamforming.rE_max_weights(N)
+
+    truth = np.loadtxt('tests/data/re_max_weights.csv', delimiter=',')
+    npt.assert_allclose(g_nm, truth)
