@@ -124,7 +124,7 @@ def test_spherical_harmonic_derivative_theta():
         actual = special.spherical_harmonic_derivative_theta(n, m, theta, phi)
         desired = desired_all[:, acn]
 
-        npt.assert_allclose(actual, desired, rtol=1e-10)
+        npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_derivative_phi():
@@ -145,7 +145,7 @@ def test_spherical_harmonic_derivative_phi():
         actual = special.spherical_harmonic_derivative_phi(n, m, theta, phi)
         desired = desired_all[:, acn]
 
-        npt.assert_allclose(actual, desired, rtol=1e-10)
+        npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_gradient_phi():
@@ -166,7 +166,7 @@ def test_spherical_harmonic_gradient_phi():
         actual = special.spherical_harmonic_gradient_phi(n, m, theta, phi)
         desired = desired_all[:, acn]
 
-        npt.assert_allclose(actual, desired, rtol=1e-10)
+        npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_derivative_theta_real():
@@ -188,7 +188,7 @@ def test_spherical_harmonic_derivative_theta_real():
             n, m, theta, phi)
         desired = desired_all[:, acn]
 
-        npt.assert_allclose(actual, desired, rtol=1e-10)
+        npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_derivative_phi_real():
@@ -210,7 +210,7 @@ def test_spherical_harmonic_derivative_phi_real():
             n, m, theta, phi)
         desired = desired_all[:, acn]
 
-        npt.assert_allclose(actual, desired, rtol=1e-10)
+        npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_gradient_phi_real():
@@ -231,4 +231,4 @@ def test_spherical_harmonic_gradient_phi_real():
         actual = special.spherical_harmonic_gradient_phi_real(n, m, theta, phi)
         desired = desired_all[:, acn]
 
-        npt.assert_allclose(actual, desired, rtol=1e-10)
+        npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)

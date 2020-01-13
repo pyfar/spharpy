@@ -109,21 +109,7 @@ def test_orthogonality_real():
         inner = (basis @ np.conjugate(basis.T))
         fact = 4 * np.pi / (n_max + 1) ** 2
         orth = np.diagonal(fact * inner)
-        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
-
-
-# def test_spherical_harmonic_derivative_phi():
-#     n = 2
-#     m = 1
-#     sampling = samplings.equalarea(50, condition_num=np.inf)
-#     Y_diff_phi = np.zeros((sampling.n_points), dtype=np.complex)
-#     for idx in range(0, sampling.n_points):
-#         Y_diff_phi[idx] = sh.spherical_harmonic_function_derivative_phi(
-#                 n, m, sampling.elevation[idx], sampling.azimuth[idx])
-#
-#     ref_file = np.loadtxt('./tests/data/Y_diff_phi.csv', delimiter=',')
-#     ref = ref_file[0] + 1j*ref_file[1]
-#     npt.assert_allclose(ref, Y_diff_phi)
+        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15, atol=1e-10)
 
 
 def test_spherical_harmonic_basis_gradient():
@@ -146,13 +132,13 @@ def test_spherical_harmonic_basis_gradient():
             './tests/data/Y_grad_ele.csv',
             dtype=np.complex,
             delimiter=',')
-        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10)
+        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
 
         desire_azi = np.genfromtxt(
             './tests/data/Y_grad_azi.csv',
             dtype=np.complex,
             delimiter=',')
-        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10)
+        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_basis_gradient_real():
@@ -175,10 +161,10 @@ def test_spherical_harmonic_basis_gradient_real():
             './tests/data/Y_grad_real_ele.csv',
             dtype=np.complex,
             delimiter=',')
-        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10)
+        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
 
         desire_azi = np.genfromtxt(
             './tests/data/Y_grad_real_azi.csv',
             dtype=np.complex,
             delimiter=',')
-        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10)
+        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
