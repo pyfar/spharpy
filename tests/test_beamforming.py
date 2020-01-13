@@ -30,3 +30,11 @@ def test_re_max():
 
     truth = np.loadtxt('tests/data/re_max_weights.csv', delimiter=',')
     npt.assert_allclose(g_nm, truth)
+
+
+def test_max_front_back():
+    N = 7
+    f_nm = spharpy.beamforming.maximum_front_back_ratio_weights(N)
+
+    truth = np.loadtxt('tests/data/max_front_back_weights.csv', delimiter=',')
+    npt.assert_allclose(f_nm, truth)
