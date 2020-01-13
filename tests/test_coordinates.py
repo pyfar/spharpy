@@ -301,4 +301,11 @@ def test_setter_n_max():
     assert sampling._n_max == n_max
 
 
+def test_merge():
+    s1 = Coordinates(1, 0, 0)
+    s2 = Coordinates(0, 2, 0)
 
+    s1.merge(s2)
+
+    truth = np.array([[1, 0], [0, 2], [0, 0]])
+    npt.assert_allclose(truth, s1.cartesian)

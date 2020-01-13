@@ -214,6 +214,16 @@ class Coordinates(object):
         """Return number of points stored in the object"""
         return self.x.size
 
+
+    def merge(self, other):
+        """Merge another coordinates objects into this object."""
+        data = np.concatenate(
+            (self.cartesian, other.cartesian),
+            axis=-1
+        )
+        self.cartesian = data
+
+
     def find_nearest_point(self, point):
         """Find the closest Coordinate point to a given Point.
         The search for the nearest point is performed using the scipy
