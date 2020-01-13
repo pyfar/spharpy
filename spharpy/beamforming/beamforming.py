@@ -1,8 +1,10 @@
 import numpy as np
 import numpy.polynomial as poly
-from scipy.special import factorial
 from scipy.linalg import eig
+from scipy.special import factorial
+
 import spharpy
+
 
 def dolph_chebyshev_weights(
         n_max,
@@ -27,7 +29,13 @@ def dolph_chebyshev_weights(
     Returns
     -------
     weigths : ndarray, double
-        A array containing the weight coefficients $d_nm$.
+        An array containing the weight coefficients $d_nm$.
+
+    References
+    ----------
+    ..  [1] A. Koretz and B. Rafaely, “Dolph-Chebyshev beampattern design for
+        spherical arrays,” IEEE Transactions on Signal Processing, vol. 57,
+        no. 6, pp. 2417–2420, 2009.
 
     """
     M = 2*n_max
@@ -75,10 +83,15 @@ def rE_max_weights(n_max):
     Returns
     -------
     weights : ndarray, double
-        An array containing the weight coefficients
+        An array containing the weight coefficients.
+
+    References
+    ----------
+    ..  [2] J. Daniel, J.-B. Rault, and J.-D. Polack, “Ambisonics Encoding of
+        Other Audio Formats for Multiple Listening Conditions,” in 105th
+        Convention of the Audio Engineering Society, 1998, vol. 3.
 
     """
-
     leg = poly.legendre.Legendre.basis(n_max+1)
     P_n = poly.legendre.leg2poly(leg.coef)
     P_n_root = poly.legendre.legroots(leg.coef)
@@ -105,13 +118,17 @@ def maximum_front_back_ratio_weights(n_max):
     Returns
     -------
     weigths : ndarray, double
+        An array containing the weight coefficients
 
     Note
     ----
-    The weights are calculated from a eigenvalue problem
+    The weights are calculated from an eigenvalue problem
+
+    References
+    ----------
+    [3] B. Rafaely, Fundamentals of Spherical Array Processing, Springer, 2015.
 
     """
-
     P_N = np.zeros((n_max+1, n_max+1))
     for n in range(n_max+1):
         P_N[0:n+1, n] = _legendre_coefficients(n)
