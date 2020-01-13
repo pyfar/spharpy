@@ -97,4 +97,8 @@ def test_sph_voronoi():
                       [-7.45355992e-01,  5.77350269e-01,  3.33333333e-01]])
 
     sv = spherical_voronoi(s)
-    np.testing.assert_allclose(sv.vertices, verts, atol=1e-8)
+    np.testing.assert_allclose(
+        np.sort(np.sum(verts, axis=-1)),
+        np.sort(np.sum(sv.vertices, axis=-1)),
+        atol=1e-6,
+        rtol=1e-6)
