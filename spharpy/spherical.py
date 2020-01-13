@@ -449,10 +449,11 @@ def radiation_from_sphere(
     r"""
     Radiation function in SH for a vibrating sphere including the radiation
     impedance and the propagation to a arbitrary distance from the sphere.
-
+    The sign and phase conventions result in a positive pressure response for
+    a positive cap velocity with the intensity vector pointing away from the
+    source.
 
     TODO: This function does not have a test yet.
-
 
     References
     ----------
@@ -486,14 +487,16 @@ def radiation_from_sphere(
     """
     n_sh = (n_max+1)**2
 
+    k = np.atleast_1d(k)
     n_bins = k.shape[0]
     radiation = np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
 
-
     for n in range(0, n_max+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
-        hankel_prime = _special.spherical_hankel(n, k*rad_sphere, kind=2, derivative=True)
-        radiation_order = hankel/hankel_prime * 1j * density_medium * speed_of_sound
+        hankel_prime = _special.spherical_hankel(
+            n, k*rad_sphere, kind=2, derivative=True)
+        radiation_order = -1j * hankel/hankel_prime * \
+            density_medium * speed_of_sound
         for m in range(-n, n+1):
             acn = nm2acn(n, m)
             radiation[:, acn, acn] = radiation_order
