@@ -4,6 +4,7 @@ from scipy.linalg import eig
 from scipy.special import factorial
 
 import spharpy
+import spharpy.special as special
 
 
 def dolph_chebyshev_weights(
@@ -49,11 +50,11 @@ def dolph_chebyshev_weights(
     else:
         raise ValueError("This design criterion is not available.")
 
-    t_2N = _chebyshev_coefficients(2*n_max)
+    t_2N = special.chebyshev_coefficients(2*n_max)
 
     P_N = np.zeros((n_max+1, n_max+1))
     for n in range(n_max+1):
-        P_N[0:n+1, n] = _legendre_coefficients(n)
+        P_N[0:n+1, n] = special.legendre_coefficients(n)
 
     d_n = np.zeros(n_max+1);
     for n in range(n_max+1):
@@ -131,7 +132,7 @@ def maximum_front_back_ratio_weights(n_max):
     """
     P_N = np.zeros((n_max+1, n_max+1))
     for n in range(n_max+1):
-        P_N[0:n+1, n] = _legendre_coefficients(n)
+        P_N[0:n+1, n] = special.legendre_coefficients(n)
 
     Ann = np.zeros((n_max+1, n_max+1))
     Bnn = np.zeros((n_max+1, n_max+1))
@@ -155,45 +156,3 @@ def maximum_front_back_ratio_weights(n_max):
     weights = spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
 
     return weights
-
-
-def _legendre_coefficients(order):
-    """Calculate the coefficients of a Legendre polynomial of the
-    specified order.
-
-    Parameters
-    ----------
-    order : int
-        The order of the polynomial
-
-    Returns
-    -------
-    coefficients : ndarray, double
-        The coefficients of the polynomial
-
-    """
-    leg = np.polynomial.legendre.Legendre.basis(order)
-    coefficients = np.polynomial.legendre.leg2poly(leg.coef)
-
-    return coefficients
-
-
-def _chebyshev_coefficients(order):
-    """Calculate the coefficients of a Chebyshev polynomial of the
-    specified order.
-
-    Parameters
-    ----------
-    order : int
-        The order of the polynomial
-
-    Returns
-    -------
-    coefficients : ndarray, double
-        The coefficients of the polynomial
-
-    """
-    cheb = np.polynomial.chebyshev.Chebyshev.basis(order)
-    coefficients = np.polynomial.chebyshev.cheb2poly(cheb.coef)
-
-    return coefficients
