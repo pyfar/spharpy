@@ -142,17 +142,17 @@ def maximum_front_back_ratio_weights(n_max):
             temp = 0
             for q in range(0, n+1):
                 for l in range(0, n_dash+1):
-                    temp += 1/(q+l+1) * P_N[n, q] * P_N[n_dash, l]
+                    temp += 1/(q+l+1) * P_N[q, n] * P_N[l, n_dash]
             Ann[n, n_dash] = temp * const
 
             temp = 0
             for q in range(0, n+1):
                 for l in range(0, n_dash+1):
-                    temp += (-1)**(q+l)/(q+l+1) * P_N[n, q] * P_N[n_dash, l]
+                    temp += ((-1)**(q+l))/(q+l+1) * P_N[q, n] * P_N[l, n_dash]
             Bnn[n, n_dash] = temp * const
 
     eigenvals, eigenvectors = eig(Ann, Bnn)
-    f_n = eigenvectors[:, np.argmax(np.abs(eigenvals))]
+    f_n = eigenvectors[:, np.argmax(np.real(eigenvals))]
     weights = spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
 
     return weights
