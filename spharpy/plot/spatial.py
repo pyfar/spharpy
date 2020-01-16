@@ -136,16 +136,6 @@ def interpolate_data_on_sphere(
     lats = np.concatenate((lats, lats[mask]))
     data = np.concatenate((data, data[mask]))
 
-    mask = lats > np.pi/2 - overlap
-    lons = np.concatenate((lons, lons[mask]))
-    lats = np.concatenate((lats, lats[mask] - np.pi))
-    data = np.concatenate((data, data[mask]))
-
-    mask = lats < -np.pi/2 + overlap
-    lons = np.concatenate((lons, lons[mask]))
-    lats = np.concatenate((lats, lats[mask] + np.pi))
-    data = np.concatenate((data, data[mask]))
-
     tri = mtri.Triangulation(lons, lats)
 
     if refine:
