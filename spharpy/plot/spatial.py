@@ -450,8 +450,8 @@ def balloon(
                            z,
                            cmap=cmap,
                            antialiased=True,
-                           # vmin=vmin,
-                           # vmax=vmax,
+                           vmin=vmin,
+                           vmax=vmax,
                            *args,
                            **kwargs)
 
