@@ -245,7 +245,7 @@ def pcolor_sphere(
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
-            cmap = cm.hsv
+            cmap = phase_twilight()
     else:
         itype = 'amplitude'
         if cmap is None:
@@ -334,7 +334,7 @@ def balloon_wireframe(
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
-            cmap = cm.hsv
+            cmap = phase_twilight()
     else:
         itype = 'magnitude'
         if cmap is None:
@@ -356,6 +356,7 @@ def balloon_wireframe(
     cmap_colors = cmap(cnorm(cdata))
 
     cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
+    cmappable.set_array(np.linspace(vmin, vmax, cdata.size))
 
     plot.set_edgecolors(cmap_colors)
 
@@ -435,7 +436,7 @@ def balloon(
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
-            cmap = cm.hsv
+            cmap = phase_twilight()
     else:
         itype = 'magnitude'
         if cmap is None:
