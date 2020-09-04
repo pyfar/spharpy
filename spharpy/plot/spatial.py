@@ -156,9 +156,8 @@ def _balloon_color_data(tri, data, itype):
         The matplotlib triangulation for the sphere
     data : ndarray, double, complex double
         The data array
-    itype : 'magnitude', 'phase'
+    itype : 'magnitude', 'phase', 'amplitude'
         Whether to plot magnitude levels or the phase.
-
 
     Returns
     -------
