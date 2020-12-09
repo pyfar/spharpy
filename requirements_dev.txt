@@ -6,7 +6,7 @@ urllib3
 cython
 matplotlib
 pip
-bumpversion
+bump2version
 wheel
 watchdog
 flake8
