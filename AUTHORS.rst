@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Marco Berzborn <marco.berzborn@akustik.rwth-aachen.de>
+* Marco Berzborn - Institute of Technical Acoustics <marco.berzborn@akustik.rwth-aachen.de>
 
 Contributors
 ------------
