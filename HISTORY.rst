@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.1 (2020-12-09)
+------------------
+* Update equal area partitioning documentation
+
+
 0.3.0 (2020-09-04)
 ------------------
 * Removed C extensions for spherical harmonics and special functions
