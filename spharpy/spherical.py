@@ -343,15 +343,13 @@ def modal_strength(n_max,
         Modal strength diagonal matrix
 
     """
-    arraytypes = {'open': 0, 'rigid': 1, 'cardioid': 2}
-    config = arraytypes.get(arraytype)
     n_coeff = (n_max+1)**2
     n_bins = kr.shape[0]
 
     modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
 
     for n in range(0, n_max+1):
-        bn = _modal_strength(n, kr, config)
+        bn = _modal_strength(n, kr, arraytype)
         for m in range(-n, n+1):
             acn = n*n + n + m
             modal_strength_mat[:, acn, acn] = bn
@@ -362,15 +360,15 @@ def modal_strength(n_max,
 def _modal_strength(n, kr, config):
     """Helper function for the calculation of the modal strength for
     plane waves"""
-    if config == 0:
+    if config == 'open':
         ms = 4*np.pi*pow(1.0j, n) * _special.spherical_bessel(n, kr)
-    elif config == 1:
-        ms = 4*np.pi*pow(1.0j, n-1) / \
+    elif config == 'rigid':
+        ms = 4*np.pi*pow(1.0j, n+1) / \
             _special.spherical_hankel(n, kr, derivative=True) / (kr)**2
-    elif config == 2:
+    elif config == 'cardioid':
         ms = 4*np.pi*pow(1.0j, n) * \
-            (_special.spherical_bessel(n, kr) - \
-            1.0j * _special.spherical_bessel(n, kr, derivative=True))
+            (_special.spherical_bessel(n, kr) -
+                1.0j * _special.spherical_bessel(n, kr, derivative=True))
     else:
         raise ValueError("Invalid configuration.")
 
