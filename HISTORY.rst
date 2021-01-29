@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.2 (2021-01-29)
+------------------
+* Bugfix in modal strength calculation for rigid spheres
+
+
 0.3.1 (2020-12-09)
 ------------------
 * Update equal area partitioning documentation
