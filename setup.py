@@ -5,7 +5,6 @@
 The setup script.
 """
 
-import sys
 from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
@@ -53,10 +52,12 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     test_suite='tests',
     tests_require=test_requirements,
-    setup_requires=setup_requirements
+    setup_requires=setup_requirements,
+    python_requires='>=3.6'
 )
