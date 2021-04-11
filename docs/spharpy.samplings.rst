@@ -1,8 +1,6 @@
 spharpy.samplings
 =================
 
-Module contents
----------------
 
 .. automodule:: spharpy.samplings
    :members:
