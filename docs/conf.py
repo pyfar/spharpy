@@ -38,6 +38,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'sphinx.ext.autosummary',
+              'autodocsumm',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -84,6 +85,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# summary of modules
+autodoc_default_options = {'autosummary': True}
 
 # -- Options for HTML output -------------------------------------------
 
@@ -163,6 +166,3 @@ texinfo_documents = [
      'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
