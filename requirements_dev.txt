@@ -18,4 +18,5 @@ cryptography
 PyYAML
 pytest-runner
 numpydoc
-sphinx_rtd_theme
+insipid-sphinx-theme
+autodocsumm
