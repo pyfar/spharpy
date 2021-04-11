@@ -1,5 +1,5 @@
-Getting Started
-===============
+spharpy
+=======
 
 .. toctree::
    :maxdepth: 2
