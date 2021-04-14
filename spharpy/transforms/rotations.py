@@ -4,8 +4,7 @@ Rotation/Translation operations for data in the spherical harmonic domains
 
 import numpy as np
 import spharpy
-from numpy.math import factorial
-from scipy.special import eval_jacobi
+from scipy.special import eval_jacobi, factorial
 
 
 def rotation_z_axis(n_max, angle):
