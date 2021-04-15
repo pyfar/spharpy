@@ -5,6 +5,18 @@ Rotation/Translation operations for data in the spherical harmonic domains
 import numpy as np
 import spharpy
 from scipy.special import eval_jacobi, factorial
+from scipy.spatial.transform import Rotation
+
+
+
+# class RotationSH(Rotation):
+
+#     def __init__(self, *args, **kwargs) -> None:
+#         super().__init__(*args, **kwargs)
+#             return self
+
+#     def as_spherical_harmonic(real=True):
+
 
 
 def rotation_z_axis(n_max, angle):
@@ -44,7 +56,7 @@ def rotation_z_axis(n_max, angle):
     >>> sh_vec = np.array([0, 1, 0, 0])
     >>> Y_nm = spharpy.spherical.spherical_harmonic_basis(n_max, theta, phi)
     >>> rotMat = spharpy.transforms.rotation_z_axis(n_max, np.pi/2)
-    >>> sh_vec_rotated =  rotMat @ sh_vec
+    >>> sh_vec_rotated = rotMat @ sh_vec
     """
 
     acn = np.arange(0, (n_max+1)**2)
@@ -122,6 +134,8 @@ def wigner_d_rotation(n_max, alpha, beta, gamma):
                 rot_beta = wigner_d_function(n, m_dash, m, beta)
                 rot_gamma = np.exp(-1j*m*gamma)
                 R[row, column] = rot_alpha * rot_beta * rot_gamma
+
+    return R
 
 
 def wigner_d_function(n, m_dash, m, beta):
