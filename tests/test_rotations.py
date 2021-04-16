@@ -79,7 +79,7 @@ def test_rotation_sh_basis_z_axis_real():
 
 def test_wigner_d_rot_real():
     euler_angles = []
-    n_max = 2
+    n_max = 5
     euler_angles = np.deg2rad(np.array([90., 45., -90.]))
     D = spharpy.transforms.wigner_d_rotation_real(
         n_max, euler_angles[0], euler_angles[1], euler_angles[2])
@@ -91,7 +91,7 @@ def test_wigner_d_rot_real():
         n_max, Coordinates(0, 1, 0)))
     sh_vec_rotated = D @ sh_vec
 
-    np.testing.assert_allclose(sh_vec_rotated, reference)
+    np.testing.assert_allclose(sh_vec_rotated, reference, atol=1e-10)
 
     rot_angle_z = np.pi/4
     D = spharpy.transforms.wigner_d_rotation_real(
@@ -106,7 +106,7 @@ def test_wigner_d_rot_real():
 
 def test_wigner_d_rot():
     euler_angles = []
-    n_max = 2
+    n_max = 5
     euler_angles = np.deg2rad(np.array([90., 45., -90.]))
     D = spharpy.transforms.wigner_d_rotation(
         n_max, euler_angles[0], euler_angles[1], euler_angles[2])
