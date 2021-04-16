@@ -138,6 +138,57 @@ def wigner_d_rotation(n_max, alpha, beta, gamma):
     return R
 
 
+def wigner_d_rotation_real(n_max, alpha, beta, gamma):
+    """
+    Rotation Matrix for real Spherical Harmonics as defined in
+    Blanco et al., Evaluation of the rotation matrices in the basis of real
+    spherical harmonics, eq.(47)
+    """
+
+    n_sh = (n_max+1)**2
+    R = np.zeros((n_sh, n_sh), dtype=np.double)
+
+    for row_acn in np.arange(0, (n_max+1)**2):
+        for col_acn in np.arange(0, (n_max+1)**2):
+            n, m = spharpy.spherical.acn2nm(col_acn)
+            n_dash, m_dash = spharpy.spherical.acn2nm(row_acn)
+            if n == n_dash:
+                d_l_1 = wigner_d_function(n, np.abs(m_dash), np.abs(m), beta)
+                d_l_2 = wigner_d_function(n, np.abs(m), -np.abs(m_dash), beta)
+                R[row_acn, col_acn] = \
+                    sign(m_dash) * Phi(m, alpha) * Phi(m_dash, gamma) * (d_l_1 + (-1)**int(m) * d_l_2)/2 \
+                    - sign(m) * Phi(-m, alpha) * Phi(-m_dash, gamma) * (d_l_1 - (-1)**int(m) * d_l_2)/2
+    return R
+
+
+def sign(x):
+    """
+    Returns sign of x, differs from numpy definition for x=0
+    """
+    if x < 0:
+        sign = -1
+    else:
+        sign = 1
+
+    return sign
+
+
+def Phi(m, angle):
+    """
+    Rotation Matrix around z-axis for real Spherical Harmonics as defined in
+    Blanco et al., Evaluation of the rotation matrices in the basis of real
+    spherical harmonics, eq.(8)
+    """
+    if m > 0:
+        phi = np.sqrt(2)*np.cos(m*angle)
+    elif m == 0:
+        phi = 1
+    elif m < 0:
+        phi = np.sqrt(2)*np.sin(np.abs(m)*angle)
+
+    return phi
+
+
 def wigner_d_function(n, m_dash, m, beta):
     """Wigner-D function
 

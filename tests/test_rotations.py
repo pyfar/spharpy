@@ -72,3 +72,57 @@ def test_rotation_sh_basis_z_axis_real():
     sh_vec_rotated = np.squeeze(rot_mat @ sh_vec_x.T)
 
     np.testing.assert_almost_equal(sh_vec_rotated, reference)
+
+
+def test_wigner_d_rot_real():
+    euler_angles = []
+    n_max = 2
+    euler_angles = np.deg2rad(np.array([90., 45., -90.]))
+    D = spharpy.transforms.wigner_d_rotation_real(
+        n_max, euler_angles[0], euler_angles[1], euler_angles[2])
+
+    reference = np.squeeze(spharpy.spherical.spherical_harmonic_basis_real(
+            n_max, Coordinates(0, 1, 1)))
+
+    sh_vec = np.squeeze(spharpy.spherical.spherical_harmonic_basis_real(
+        n_max, Coordinates(0, 1, 0)))
+    sh_vec_rotated = D @ sh_vec
+
+    np.testing.assert_allclose(sh_vec_rotated, reference)
+
+    rot_angle_z = np.pi/4
+    D = spharpy.transforms.wigner_d_rotation_real(
+        n_max, rot_angle_z, 0, 0)
+
+    rot_mat = spharpy.transforms.rotation_z_axis_real(n_max, rot_angle_z)
+
+    np.testing.assert_allclose(D, rot_mat, atol=1e-7)
+
+    pass
+
+
+def test_wigner_d_rot():
+    euler_angles = []
+    n_max = 2
+    euler_angles = np.deg2rad(np.array([90., 45., -90.]))
+    D = spharpy.transforms.wigner_d_rotation(
+        n_max, euler_angles[0], euler_angles[1], euler_angles[2])
+
+    reference = np.squeeze(spharpy.spherical.spherical_harmonic_basis(
+            n_max, Coordinates(0, 1, 1)))
+
+    sh_vec = np.squeeze(spharpy.spherical.spherical_harmonic_basis(
+        n_max, Coordinates(0, 1, 0)))
+    sh_vec_rotated = D @ sh_vec
+
+    np.testing.assert_allclose(sh_vec_rotated, reference)
+
+    rot_angle_z = np.pi/4
+    D = spharpy.transforms.wigner_d_rotation(
+        n_max, rot_angle_z, 0, 0)
+
+    rot_mat = spharpy.transforms.rotation_z_axis(n_max, rot_angle_z)
+
+    np.testing.assert_allclose(D, rot_mat.T, atol=1e-7)
+
+    pass
