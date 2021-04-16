@@ -123,6 +123,6 @@ def test_wigner_d_rot():
 
     rot_mat = spharpy.transforms.rotation_z_axis(n_max, rot_angle_z)
 
-    np.testing.assert_allclose(D, rot_mat.T, atol=1e-7)
+    np.testing.assert_allclose(D, rot_mat, atol=1e-7)
 
     pass
