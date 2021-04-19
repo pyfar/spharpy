@@ -8,17 +8,6 @@ from scipy.special import eval_jacobi, factorial
 from scipy.spatial.transform import Rotation
 
 
-
-# class RotationSH(Rotation):
-
-#     def __init__(self, *args, **kwargs) -> None:
-#         super().__init__(*args, **kwargs)
-#             return self
-
-#     def as_spherical_harmonic(real=True):
-
-
-
 def rotation_z_axis(n_max, angle):
     """Rotation matrix for complex spherical harmonics around the z-axis
     by a given angle. The rotation is performed such that positive angles
@@ -58,7 +47,7 @@ def rotation_z_axis(n_max, angle):
     """
 
     acn = np.arange(0, (n_max+1)**2)
-    n, m = spharpy.spherical.acn2nm(acn)[1]
+    m = spharpy.spherical.acn2nm(acn)[1]
     rotation_phi = np.exp(-1j*angle*m)
 
     return np.diag(rotation_phi)
