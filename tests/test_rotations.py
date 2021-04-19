@@ -176,3 +176,18 @@ def test_RotationSH():
     np.testing.assert_allclose(
         rot.as_spherical_harmonic(type='real'),
         reference, atol=1e-10)
+
+    rot_mat_z_spat = np.array([
+        [0, -1, 0],
+        [1, 0, 0],
+        [0, 0, 1]])
+    rot = RotationSH.from_matrix(n_max, rot_mat_z_spat)
+    np.testing.assert_allclose(
+        rot.as_spherical_harmonic(type='real'),
+        reference, atol=1e-7)
+
+    mrp = [0, 0, np.tan(np.pi/2/4)]
+    rot = RotationSH.from_mrp(n_max, mrp)
+    np.testing.assert_allclose(
+        rot.as_spherical_harmonic(type='real'),
+        reference, atol=1e-7)

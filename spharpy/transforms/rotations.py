@@ -57,6 +57,18 @@ class RotationSH(Rotation):
         cls.n_max = n_max
         return cls
 
+    @classmethod
+    def from_matrix(cls, n_max, matrix, **kwargs):
+        cls = super(RotationSH, cls).from_matrix(matrix, **kwargs)
+        cls.n_max = n_max
+        return cls
+
+    @classmethod
+    def from_mrp(cls, n_max, mrp, **kwargs):
+        cls = super(RotationSH, cls).from_mrp(mrp, **kwargs)
+        cls.n_max = n_max
+        return cls
+
     @property
     def n_max(self):
         """The spherical harmonic order used for spherical harmonic rotation
