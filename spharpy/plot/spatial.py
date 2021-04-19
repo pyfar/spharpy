@@ -14,6 +14,8 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from packaging import version
 from scipy.stats import circmean
 
+from .cmap import phase_twilight
+
 from spharpy.samplings import (Coordinates, latlon2cart, sph2cart,
                                spherical_voronoi)
 
@@ -780,35 +782,3 @@ class MidpointNormalize(colors.Normalize):
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
         return np.ma.masked_array(np.interp(value, x, y))
-
-
-def phase_twilight(lut=512):
-    r"""
-    Cyclic colormap for phase plots. Assuming angles in the
-    interval [0, $2\pi$], 0 radians (+1) will be red, while $\pi$ radians (-1)
-    will be represented in blue.
-
-    Parameters
-    ----------
-    lut : int (512)
-        Number of entries in the look up table for interpolation
-
-    Returns
-    -------
-    cmap : ListedColormap
-        Matplotlib ListedColormap object
-
-    Note
-    ----
-    The function implements a shifted version of the twilight colormap from
-    matplotlib >= 3.0
-    """
-    lut = int(np.ceil(lut/4)*4)
-    twilight = cm.get_cmap('twilight', lut=lut)
-
-    twilight_r_colors = np.array(twilight.reversed().colors)
-
-    roll_by = int(lut/4)
-    phase_colors = np.roll(twilight_r_colors, -roll_by, axis=0)
-
-    return ListedColormap(phase_colors)

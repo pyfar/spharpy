@@ -2,6 +2,7 @@ import numpy as np
 from spharpy.samplings.helpers import sph2cart
 from scipy.spatial import cKDTree
 
+
 class Coordinates(object):
     """Container class for coordinates in a three-dimensional space, allowing
     for compact representation and convenient conversion into spherical as well
@@ -11,20 +12,11 @@ class Coordinates(object):
     a set of points in spherical coordinates, please use the
     Coordinates.from_spherical() method.
 
-    Attributes
-    ----------
-    x : ndarray, double
-        x-coordinate
-    y : ndarray, double
-        y-coordinate
-    z : ndarray, double
-        z-coordinate
-
     """
     def __init__(self, x=None, y=None, z=None):
         """Init coordinates container
 
-        Attributes
+        Parameters
         ----------
         x : ndarray, double
             x-coordinate
