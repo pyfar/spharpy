@@ -5,6 +5,8 @@ import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
 from spharpy.samplings import Coordinates
 import spharpy
+from spharpy.transforms import RotationSH
+import pytest
 
 
 def test_rotation_matrix_z_axis_complex():
@@ -128,4 +130,49 @@ def test_wigner_d_rot():
 
     np.testing.assert_allclose(D, rot_mat, atol=1e-7)
 
-    pass
+
+def test_RotationSH():
+    n_max = 4
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = RotationSH.from_rotvec(n_max, rot_vec)
+
+    assert rot._n_max == n_max
+
+    n_max = 2
+    rot.n_max = n_max
+    assert rot._n_max == n_max
+    assert rot.n_max == n_max
+
+    with pytest.raises(ValueError):
+        rot.n_max = -1
+
+    D_Rot = rot.as_spherical_harmonic(type='real')
+
+    reference = np.array([
+        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, np.cos(rot_angle_z), 0, np.sin(rot_angle_z), 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, -np.sin(rot_angle_z), 0, np.cos(rot_angle_z), 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, np.cos(2*rot_angle_z), 0, 0, 0, np.sin(2*rot_angle_z)],
+        [0, 0, 0, 0, 0, np.cos(rot_angle_z), 0, np.sin(rot_angle_z), 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, -np.sin(rot_angle_z), 0, np.cos(rot_angle_z), 0],
+        [0, 0, 0, 0, -np.sin(2*rot_angle_z), 0, 0, 0, np.cos(2*rot_angle_z)]])
+
+    np.testing.assert_allclose(D_Rot, reference, atol=1e-10)
+
+    rot = RotationSH.from_rotvec(n_max, [0, 0, 90], degrees=True)
+    np.testing.assert_allclose(
+        rot.as_spherical_harmonic(type='real'),
+        reference, atol=1e-10)
+
+    rot = RotationSH.from_euler(n_max, 'zyz', [0, 0, 90], degrees=True)
+    np.testing.assert_allclose(
+        rot.as_spherical_harmonic(type='real'),
+        reference, atol=1e-10)
+
+    rot = RotationSH.from_quat(n_max, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
+    np.testing.assert_allclose(
+        rot.as_spherical_harmonic(type='real'),
+        reference, atol=1e-10)

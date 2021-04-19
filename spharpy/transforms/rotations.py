@@ -37,8 +37,23 @@ class RotationSH(Rotation):
         self._n_max = int(n_max)
 
     @classmethod
-    def from_rotvec(cls, n_max, rotvec, *args, **kwargs):
+    def from_rotvec(cls, n_max, rotvec, degrees=False, *args, **kwargs):
+        if degrees:
+            rotvec = np.deg2rad(rotvec)
+
         cls = super(RotationSH, cls).from_rotvec(rotvec, *args, **kwargs)
+        cls.n_max = n_max
+        return cls
+
+    @classmethod
+    def from_euler(cls, n_max, axes, angles, **kwargs):
+        cls = super(RotationSH, cls).from_euler(axes, angles, **kwargs)
+        cls.n_max = n_max
+        return cls
+
+    @classmethod
+    def from_quat(cls, n_max, quat, **kwargs):
+        cls = super(RotationSH, cls).from_quat(quat, **kwargs)
         cls.n_max = n_max
         return cls
 
