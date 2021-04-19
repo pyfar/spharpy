@@ -105,14 +105,14 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring.
 3. The pull request should work for Python >=3.6. Check
-   https://travis-ci.com/pyfar/pyfar/pull_requests
+   https://travis-ci.com/mberz/spharpy/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 
 Testing Guidelines
 -----------------------
-Pyfar uses test-driven development based on `three steps <https://martinfowler.com/bliki/TestDrivenDevelopment.html>`_ and `continuous integration <https://en.wikipedia.org/wiki/Continuous_integration>`_ to test and monitor the code.
-In the following, you'll find a guideline. Note: these instructions are not generally applicable outside of pyfar.
+Spharpy uses test-driven development based on `three steps <https://martinfowler.com/bliki/TestDrivenDevelopment.html>`_ and `continuous integration <https://en.wikipedia.org/wiki/Continuous_integration>`_ to test and monitor the code.
+In the following, you'll find a guideline. Note: these instructions are not generally applicable outside of spharpy.
 
 - The main tool used for testing is `pytest <https://docs.pytest.org/en/stable/index.html>`_.
 - All tests are located in the *tests/* folder.
@@ -149,13 +149,12 @@ Optional fields that are often used are
 
 Here are a few tips to make things run smoothly
 
-- Use the tags ``:py:func:``, ``:py:mod:``, and ``:py:class:`` to reference pyfar functions, modules, and classes: For example ``:py:func:`~spharpy.plot.balloon``` for a link that displays only the function name.
+- Use the tags ``:py:func:``, ``:py:mod:``, and ``:py:class:`` to reference functions, modules, and classes: For example ``:py:func:`~spharpy.plot.balloon``` for a link that displays only the function name.
 - Code snippets and values as well as external modules, classes, functions are marked by double ticks \`\` to appear in mono spaced font, e.g., ``x=3`` or ``spharpy.transforms.RotationSH``.
 - Parameters, returns, and attributes are marked by single ticks \` to appear as emphasized text, e.g., *unit*.
 - Use ``[#]_`` and ``.. [#]`` to get automatically numbered footnotes.
 - Do not use footnotes in the short summary. Only use footnotes in the extended summary if there is a short summary. Otherwise, it messes with the auto-footnotes.
-- If a method or class takes or returns pyfar objects for example write ``parameter_name : Signal``. This will create a link to the ``pyfar.Signal`` class.
-- Plots can be included in by using the prefix ``.. plot::`` followed by an empty line and an indented block containing the code for the plot. See `pyfar.plot.line.time.py` for examples.
+- Plots can be included in by using the prefix ``.. plot::`` followed by an empty line and an indented block containing the code for the plot. See `spharpy.plot` for examples.
 
 See the `Sphinx homepage <https://www.sphinx-doc.org>`_ for more information.
 
