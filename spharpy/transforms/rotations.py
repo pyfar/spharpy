@@ -8,6 +8,121 @@ from scipy.special import eval_jacobi, factorial
 from scipy.spatial.transform import Rotation
 
 
+class RotationSH(Rotation):
+    """Class for rotations of coordinates and data.
+
+    Parameters
+    ----------
+    Rotation : RotationSH
+
+    """
+
+    def __init__(self, quad, n_max=0, *args, **kwargs):
+        """Initialize
+
+        Parameters
+        ----------
+        n_max : int
+            The spherical harmonic order
+
+        Returns
+        -------
+        RotationSH
+            The rotation object with spherical harmonic order n_max.
+
+        """
+        super().__init__(quad, *args, **kwargs)
+        if n_max < 0:
+            raise ValueError("The order needs to be a positive value.")
+        self._n_max = int(n_max)
+
+    @classmethod
+    def from_rotvec(cls, n_max, rotvec, *args, **kwargs):
+        cls = super(RotationSH, cls).from_rotvec(rotvec, *args, **kwargs)
+        cls.n_max = n_max
+        return cls
+
+    @property
+    def n_max(self):
+        """The spherical harmonic order used for spherical harmonic rotation
+        matrices.
+        """
+        return self._n_max
+
+    @n_max.setter
+    def n_max(self, value):
+        """Set the spherical harmonic order
+
+        Parameters
+        ----------
+        value : int
+            The spherical harmonic order used for spherical harmonic rotation
+        matrices.
+        """
+        if value < 0:
+            raise ValueError("The order needs to be a positive value.")
+        self._n_max = value
+
+    def as_spherical_harmonic(self, type='real'):
+        """Export the rotation operations as a spherical harmonic rotation
+        matrices. Supports complex and real-valued spherical harmonics.
+
+        Parameters
+        ----------
+        real : string, optional
+            Spherical harmonic definition. Can either be 'complex' or 'real',
+            by default 'real' is used.
+
+        Returns
+        -------
+        array, complex or float
+            Stack of block-diagonal rotation matrices.
+        """
+        euler_angles = np.atleast_2d(self.as_euler('zyz'))
+        n_matrices = euler_angles.shape[0]
+
+        n_sh = (self.n_max+1)**2
+        if type == 'real':
+            dtype = np.double
+            rot_func = wigner_d_rotation_real
+        elif type == 'complex':
+            dtype = complex
+            rot_func = wigner_d_rotation
+        else:
+            raise ValueError("Invalid spherical harmonic type {}".format(type))
+
+        D = np.zeros((n_matrices, n_sh, n_sh), dtype=dtype)
+
+        for idx, angles in enumerate(euler_angles):
+            D[idx, :, :] = rot_func(
+                self.n_max, angles[0], angles[1], angles[2])
+
+        return np.squeeze(D)
+
+    def apply(self, coefficients, type='real'):
+        """Apply the rotation to a set of spherical harmonic coefficients
+
+        Parameters
+        ----------
+        coefficients : array, complex
+            Set of spherical harmonic coefficients with dimension (n_max+1)**2
+
+        Returns
+        -------
+        array, complex
+            The rotated data
+        """
+        D = self.as_spherical_harmonic(type=type)
+        if D.ndim > 2:
+            M = np.diag(np.ones((self.n_max+1)**2))
+            for d in D:
+                M = M @ d
+        else:
+            M = D
+
+        return M @ coefficients
+
+
 def rotation_z_axis(n_max, angle):
     """Rotation matrix for complex spherical harmonics around the z-axis
     by a given angle. The rotation is performed such that positive angles
