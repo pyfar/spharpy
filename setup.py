@@ -36,7 +36,7 @@ setup(
     name='spharpy',
     version='0.3.2',
     description="Python package for spherical array processing.",
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
     url='https://git.rwth-aachen.de/mbe/spharpy/',
