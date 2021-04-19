@@ -20,7 +20,7 @@ from scipy.spatial.transform import Rotation
 
 
 def rotation_z_axis(n_max, angle):
-    """Rotation of spherical harmonic coeffiecients around the z-axis
+    """Rotation matrix for complex spherical harmonics around the z-axis
     by a given angle. The rotation is performed such that positive angles
     result in a counter clockwise rotation of the data [1]_.
 
@@ -37,8 +37,8 @@ def rotation_z_axis(n_max, angle):
 
     Returns
     -------
-    rotation_matrix : ndarray
-        Rotation matrix evaluated for the specified angle
+    array, complex
+        Diagonal rotation matrix evaluated for the specified angle
 
     References
     ----------
@@ -47,6 +47,39 @@ def rotation_z_axis(n_max, angle):
             helmholtz equation,” vol. 25, no. 4, pp. 1344–1381, 2003.
 
 
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import spharpy
+    >>> n_max = 1
+    >>> sh_vec = np.array([0, 1, 0, 0])
+    >>> rotMat = spharpy.transforms.rotation_z_axis(n_max, np.pi/2)
+    >>> sh_vec_rotated = rotMat @ sh_vec
+    """
+
+    acn = np.arange(0, (n_max+1)**2)
+    n, m = spharpy.spherical.acn2nm(acn)[1]
+    rotation_phi = np.exp(-1j*angle*m)
+
+    return np.diag(rotation_phi)
+
+
+def rotation_z_axis_real(n_max, angle):
+    """Rotation matrix for real-valued spherical harmonics around the z-axis
+    by a given angle. The rotation is performed such that positive angles
+    result in a counter clockwise rotation of the data [1]_.
+
+    Parameters
+    ----------
+    n_max : integer
+        Spherical harmonic order
+    angle : number
+        Rotation angle in radians `[0, 2 \\pi]`
+
+    Returns
+    -------
+    rotation_matrix : ndarray
+        Block-diagonal Rotation matrix evaluated for the specified angle.
 
     Examples
     --------
@@ -54,22 +87,9 @@ def rotation_z_axis(n_max, angle):
     >>> import spharpy
     >>> n_max = 1
     >>> sh_vec = np.array([0, 1, 0, 0])
-    >>> Y_nm = spharpy.spherical.spherical_harmonic_basis(n_max, theta, phi)
-    >>> rotMat = spharpy.transforms.rotation_z_axis(n_max, np.pi/2)
+    >>> rotMat = spharpy.transforms.rotation_z_axis_real(n_max, np.pi/2)
     >>> sh_vec_rotated = rotMat @ sh_vec
-    """
 
-    acn = np.arange(0, (n_max+1)**2)
-    n, m = spharpy.spherical.acn2nm(acn)
-    rotation_phi = np.exp(-1j*angle*m)
-
-    return np.diag(rotation_phi)
-
-
-def rotation_z_axis_real(n_max, angle):
-    """Rotation of spherical harmonic coeffiecients around the z-axis
-    by a given angle. The rotation is performed such that positive angles
-    result in a counter clockwise rotation of the data [1]_.
     """
     acn = np.arange(0, (n_max + 1) ** 2)
     n, m = spharpy.spherical.acn2nm(acn)
@@ -96,7 +116,15 @@ def rotation_z_axis_real(n_max, angle):
 
 
 def wigner_d_rotation(n_max, alpha, beta, gamma):
-    """Wigner-D rotation matrix
+    r"""Wigner-D rotation matrix for Euler rotations by angles
+    (\alpha, \beta, \gamma) around the (z,y,z)-axes. The rotation is
+    performed such that positive angles result in a counter clockwise rotation
+    of the data.
+
+    .. math::
+
+        D_{m^\dash,m}^n(\alpha, \beta, \gamma) =
+        e^{-im^\dash\alpha} d_{m^\dash,m}^n(\beta) e^{-im\gamma}
 
     Parameters
     ----------
@@ -111,8 +139,18 @@ def wigner_d_rotation(n_max, alpha, beta, gamma):
 
     Returns
     -------
-    array
+    array, complex
         Block diagonal rotation matrix
+
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import spharpy
+    >>> n_max = 1
+    >>> sh_vec = np.array([0, 0, 1, 0])
+    >>> rotMat = spharpy.transforms.wigner_d_rotation(n_max, 0, np.pi/4, 0)
+    >>> sh_vec_rotated = rotMat @ sh_vec
 
     References
     ----------
@@ -139,12 +177,45 @@ def wigner_d_rotation(n_max, alpha, beta, gamma):
 
 
 def wigner_d_rotation_real(n_max, alpha, beta, gamma):
-    """
-    Rotation Matrix for real Spherical Harmonics as defined in
-    Blanco et al., Evaluation of the rotation matrices in the basis of real
-    spherical harmonics, eq.(47)
-    """
+    r"""Wigner-D rotation matrix for Euler rotations for real-valued spherical
+    harmonics by angles (\alpha, \beta, \gamma) around the (z,y,z)-axes.
+    The rotation is performed such that positive angles result in a counter
+    clockwise rotation of the data.
 
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    alpha : float
+        First z-axis rotation angle
+    beta : float
+        Y-axis rotation angle
+    gamma : float
+        Second z-axis rotation angle
+
+    Returns
+    -------
+    array, float
+        Block diagonal rotation matrix
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import spharpy
+    >>> n_max = 1
+    >>> sh_vec = np.array([0, 0, 1, 0])
+    >>> rotMat = spharpy.transforms.wigner_d_rotation_real(
+    >>>     n_max, 0, np.pi/4, 0)
+    >>> sh_vec_rotated = rotMat @ sh_vec
+
+    References
+    ----------
+    .. [#]  M. A. Blanco, M. Flórez, and M. Bermejo, “Evaluation of the
+            rotation matrices in the basis of real spherical harmonics,”
+            Journal of Molecular Structure: THEOCHEM,  vol. 419, no. 1–3,
+            pp. 19–27, Dec. 1997, doi: 10.1016/S0166-1280(97)00185-1.
+
+    """
     n_sh = (n_max+1)**2
     R = np.zeros((n_sh, n_sh), dtype=np.double)
 
@@ -153,15 +224,20 @@ def wigner_d_rotation_real(n_max, alpha, beta, gamma):
             n, m = spharpy.spherical.acn2nm(col_acn)
             n_dash, m_dash = spharpy.spherical.acn2nm(row_acn)
             if n == n_dash:
+                # minus beta opposite rotation direction
                 d_l_1 = wigner_d_function(n, np.abs(m_dash), np.abs(m), -beta)
                 d_l_2 = wigner_d_function(n, np.abs(m), -np.abs(m_dash), -beta)
+
                 R[row_acn, col_acn] = \
-                    sign(m_dash) * Phi(m, alpha) * Phi(m_dash, gamma) * (d_l_1 + (-1)**int(m) * d_l_2)/2 \
-                    - sign(m) * Phi(-m, alpha) * Phi(-m_dash, gamma) * (d_l_1 - (-1)**int(m) * d_l_2)/2
+                    _sign(m_dash) * _Phi(m, alpha) * _Phi(m_dash, gamma) * \
+                    (d_l_1 + (-1)**int(m) * d_l_2)/2 \
+                    - _sign(m) * _Phi(-m, alpha) * _Phi(-m_dash, gamma) * \
+                    (d_l_1 - (-1)**int(m) * d_l_2)/2
+
     return R
 
 
-def sign(x):
+def _sign(x):
     """
     Returns sign of x, differs from numpy definition for x=0
     """
@@ -173,7 +249,7 @@ def sign(x):
     return sign
 
 
-def Phi(m, angle):
+def _Phi(m, angle):
     """
     Rotation Matrix around z-axis for real Spherical Harmonics as defined in
     Blanco et al., Evaluation of the rotation matrices in the basis of real
@@ -184,33 +260,30 @@ def Phi(m, angle):
     elif m == 0:
         phi = 1
     elif m < 0:
+        # minus due to differing phase convention
         phi = -np.sqrt(2)*np.sin(np.abs(m)*angle)
-        # phi = np.sqrt(2)*np.sin(np.abs(m)*angle)*(-1.)**(m+1)
 
     return phi
 
 
 def wigner_d_function(n, m_dash, m, beta):
-    """Wigner-D function
+    r"""Wigner-d function for rotations around the y-axis as defined in [#]_.
 
     Parameters
     ----------
     n : int
         order
-    m_dash :
+    m_dash : int
         degree
-    m : [type]
+    m : int
         degree
     beta : float
         Rotation angle
 
     Returns
     -------
-    [type]
-        [description]
-
-    Parameters
-    ----------
+    float
+        Wigner-d symbol
 
     References
     ----------
