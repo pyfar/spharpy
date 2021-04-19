@@ -14,7 +14,7 @@ Use pip to install spharpy
 
     $ pip install spharpy
 
-(Python versions >= 3.6 are required)
+(Python versions >= 3.7 are required)
 
 
 Getting Started
