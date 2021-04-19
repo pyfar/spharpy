@@ -1,5 +1,1 @@
-=======
-SPHARPY
-=======
-
-Package for SPHerical ARray processing in PYthon.
+.. include:: ../README.rst
