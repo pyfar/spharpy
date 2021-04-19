@@ -7,8 +7,8 @@ from spharpy.samplings import Coordinates
 def interior_stabilization_points(kr_max, resolution_factor=1):
     """ Find points inside the interior domain of an open  spherical microphone
     array that stabilize the array array response at the eigenfrequencies of
-    the array. The algorithm is based on _[1] and implemented following the
-    Matlab code provided by Gilles Chardon on his homepage at _[2].
+    the array. The algorithm is based on [7]_ and implemented following the
+    Matlab code provided by Gilles Chardon on his homepage at [8]_.
     The stabilization points are independent of the sampling of the sphere
     and can therefore be combined with arbitrary spherical samplings.
 
@@ -28,10 +28,10 @@ def interior_stabilization_points(kr_max, resolution_factor=1):
 
     References
     ----------
-    .. [1]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial
+    .. [7]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial
             microphone arrays for sound field interpolation", IEEE Journal of
             Selected Topics in Signal Processing
-    .. [2]  https://gilleschardon.fr/jstsp_array/
+    .. [8]  https://gilleschardon.fr/jstsp_array/
 
     """
     x, y, z = find_interior_points(kr_max, resolution_factor=resolution_factor)
