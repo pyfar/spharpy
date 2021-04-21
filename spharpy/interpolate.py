@@ -4,12 +4,19 @@ import numpy as np
 
 class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
     """Smooth bivariate spline approximation in spherical coordinates.
+    The implementation uses the method proposed by Dierckx [#]_.
 
     Note
     ----
     This is a wrapper for scipy's SmoothSphereBivariateSpline only using
     Coordinates objects as container for the azimuth and elevation angles.
     For detailed information see scipy's documentation.
+
+    References
+    ----------
+    .. [#] P. Dierckx, “Algorithms for smoothing data on the sphere with
+           tensor product splines,” p. 24, 1984.
+
     """
     def __init__(self, sampling, data, w=None, s=1e-4, eps=1e-16):
         """
