@@ -6,6 +6,7 @@ Modules
 
    spharpy.beamforming
    spharpy.indexing
+   spharpy.interpolate
    spharpy.plot
    spharpy.samplings
    spharpy.spatial
