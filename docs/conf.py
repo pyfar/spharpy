@@ -38,6 +38,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
               'autodocsumm',
               ]
 
@@ -87,6 +88,12 @@ todo_include_todos = False
 
 # summary of modules
 autodoc_default_options = {'autosummary': True}
+
+# intersphinx mapping
+intersphinx_mapping = {
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None)}
 
 # -- Options for HTML output -------------------------------------------
 
