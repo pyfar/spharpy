@@ -8,6 +8,7 @@ from . import plot
 from . import indexing
 from . import transforms
 from . import beamforming
+from . import interpolate
 
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     'indexing',
     'transforms',
     'beamforming',
+    'interpolate'
 ]
