@@ -102,7 +102,8 @@ def interpolate_data_on_sphere(
         sampling,
         data,
         overlap=np.pi*0.25,
-        refine=False):
+        refine=False,
+        interpolator='linear'):
     """Linear interpolator for data on a spherical surface. The interpolator
     exploits that the data on the sphere is periodic with regard to the
     elevation and azimuth angle. The data is periodically extended to a
@@ -114,11 +115,23 @@ def interpolate_data_on_sphere(
         The coordinates at which the data is sampled.
     data : ndarray, double
         The sampled data points.
+    overlap : float, (pi/4)
+        The overlap for the periodic extension in azimuth angle, given in
+        radians
+    refine : bool (False)
+        Refine the mesh before interpolating
+    interpolator : linear, cubic
+        The interpolation method to be used
 
     Returns
     -------
-    interp : LinearTriInterpolator
+    interp : LinearTriInterpolator, CubicTriInterpolator
         The interpolator object.
+
+    Note
+    ----
+    Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
+    are used.
 
     """
     lats = sampling.latitude
@@ -143,7 +156,12 @@ def interpolate_data_on_sphere(
             triinterpolator=mtri.LinearTriInterpolator(tri, data),
             subdiv=3)
 
-    interpolator = mtri.LinearTriInterpolator(tri, data)
+    if interpolator == 'linear':
+        interpolator = mtri.LinearTriInterpolator(tri, data)
+    elif interpolator == 'cubic':
+        interpolator = mtri.CubicTriInterpolator(tri, data, kind='mind_E')
+    else:
+        raise ValueError("Please give a valid interpolation method.")
 
     return interpolator
 
