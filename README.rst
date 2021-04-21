@@ -20,7 +20,7 @@ Python versions >= 3.7 are required
 Getting Started
 ===============
 
-Check out the `example notebooks`_ - also available on `mybinder`_ - for a tour of basic functionality and
+Check out the `example notebooks`_ - also available on `mybinder.org`_ - for a tour of basic functionality and
 `read the docs`_ for the complete documentation.
 
 
@@ -32,5 +32,5 @@ Refer to the `contribution guidelines`_ for more information.
 
 .. _contribution guidelines: https://github.com/mberz/spharpy/blob/main/CONTRIBUTING.rst
 .. _example notebooks: https://github.com/mberz/spharpy/blob/main/examples
-.. _mybinder: https://mybinder.org/v2/gh/mberz/spharpy/
+.. _mybinder.org: https://mybinder.org/v2/gh/mberz/spharpy/main?filepath=examples/
 .. _read the docs: https://spharpy.readthedocs.io/en/latest
