@@ -1,6 +1,7 @@
 import numpy as np
 from spharpy.samplings.helpers import sph2cart
 from scipy.spatial import cKDTree
+import pyfar
 
 
 class Coordinates(object):
@@ -264,6 +265,22 @@ class Coordinates(object):
         """
         return self.n_points
 
+    def to_pyfar(self):
+        """Export to a pyfar Coordinates object.
+
+        Returns
+        -------
+        pyfar.Coordinates
+            The equivalent pyfar class object.
+        """
+        return pyfar.Coordinates(
+            self.x,
+            self.y,
+            self.z,
+            domain='cart',
+            convention='right',
+            unit='met')
+
 
 class SamplingSphere(Coordinates):
     """Class for samplings on a sphere"""
@@ -339,8 +356,7 @@ class SamplingSphere(Coordinates):
 
     @classmethod
     def from_spherical(
-            cls, radius, elevation, azimuth,
-            n_max=None, weights=None):
+            cls, radius, elevation, azimuth, n_max=None, weights=None):
         """Create a Coordinates class object from a set of points in the
         spherical coordinate system.
 
@@ -392,3 +408,18 @@ class SamplingSphere(Coordinates):
         else:
             repr_string = "Sampling with {} points".format(self.n_points)
         return repr_string
+
+    def to_pyfar(self):
+
+        """Export to a pyfar Coordinates object.
+
+        Returns
+        -------
+        pyfar.Coordinates
+            The equivalent pyfar class object.
+        """
+        pyfar_coords = super().to_pyfar()
+        pyfar_coords.weights = self.weights / np.linalg.norm(self.weights)
+        pyfar_coords.sh_order = self.n_max
+
+        return pyfar_coords
