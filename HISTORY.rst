@@ -2,6 +2,10 @@
 History
 =======
 
+0.3.3 (2021-01-13)
+------------------
+* Replace broken link in hyperinterpolation sampling download.
+
 0.3.2 (2021-01-29)
 ------------------
 * Bugfix in modal strength calculation for rigid spheres
