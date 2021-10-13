@@ -50,7 +50,7 @@ jobs:
     steps:
       - run:
           name: upgrade
-         command: pip install --upgrade pip
+          command: pip install --upgrade pip
       - checkout
       - python/install-packages:
           pkg-manager: pip
