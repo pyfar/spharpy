@@ -78,11 +78,11 @@ def hyperinterpolation(n_max):
         SamplingSphere object containing all sampling points
     """
     n_sh = (n_max+1)**2
-    filename = "/Womersley/md%02d.%04d" % (n_max, n_sh)
-    url = "http://www.ita-toolbox.org/Griddata"
+    filename = "md%03d.%05d" % (n_max, n_sh)
+    url = "https://web.maths.unsw.edu.au/~rsw/Sphere/S2Pts/MD/"
     fileurl = url + filename
 
-    http = urllib3.PoolManager()
+    http = urllib3.PoolManager(cert_reqs=False)
     http_data = http.urlopen('GET', fileurl)
 
     if http_data.status == 200:
@@ -91,12 +91,12 @@ def hyperinterpolation(n_max):
         raise ConnectionError("Connection error. Please check your internet \
                 connection.")
 
-    file_data = np.fromstring(file_data,
-                              dtype='double',
-                              sep=' ').reshape((n_sh, 4))
-    sampling = SamplingSphere(file_data[:, 0],
-                              file_data[:, 1],
-                              file_data[:, 2])
+    file_data = np.fromstring(
+        file_data, dtype='double', sep=' ').reshape((n_sh, 4))
+    sampling = SamplingSphere(
+        file_data[:, 0],
+        file_data[:, 1],
+        file_data[:, 2])
     sampling.weights = file_data[:, 3]
 
     return sampling
