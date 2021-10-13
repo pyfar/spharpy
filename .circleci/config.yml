@@ -36,9 +36,6 @@ jobs:
       version: <<parameters.version>>
 
     steps:
-      - run:
-          name: Upgrade pip
-          command: pip install --upgrade pip
       - checkout
       - python/install-packages:
           pkg-manager: pip
@@ -59,7 +56,6 @@ workflows:
           matrix:
             parameters:
               version:
-                - "3.6"
                 - "3.7"
                 - "3.8"
 
