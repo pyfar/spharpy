@@ -33,7 +33,7 @@ jobs:
         type: string
     executor:
       name: python-docker
-      version = <<parameters.version>>
+      version: <<parameters.version>>
 
     # These next lines defines a Docker executors: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of the convenience images from CircleCI's Developer Hub
