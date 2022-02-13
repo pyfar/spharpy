@@ -46,6 +46,22 @@ jobs:
           # This assumes pytest is installed via the install-package step above
           command: pytest
 
+  test_pypi_publish:
+    docker:
+      - image: circleci/python:3.9
+    steps:
+      - checkout  # checkout source code to working directory
+      - python/install-packages:
+          pkg-manager: pip
+          # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
+          pip-dependency-file: requirements_dev.txt
+      - run:
+          command: |  # create whl, install twine and publish to Test PyPI
+            python setup.py sdist bdist_wheel
+            sudo pip install pipenv
+            pipenv install twine
+            pipenv run twine upload --repository testpypi dist/*
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -58,4 +74,13 @@ workflows:
               version:
                 - "3.7"
                 - "3.8"
-
+                - "3.9"
+      - test_pypi_publish:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore: /.*/
+            # only act on version tags
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*$/
