@@ -47,8 +47,15 @@ jobs:
           command: pytest
 
   test_pypi_publish:
-    docker:
-      - image: circleci/python:3.9
+    parameters:
+      version:
+        description: "version tag"
+        default: "latest"
+        type: string
+    executor:
+      name: python-docker
+      version: <<parameters.version>>
+
     steps:
       - checkout  # checkout source code to working directory
       - python/install-packages:
