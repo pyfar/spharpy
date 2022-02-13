@@ -56,6 +56,7 @@ jobs:
           # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
           pip-dependency-file: requirements_dev.txt
       - run:
+          name: deploy
           command: |  # create whl, install twine and publish to Test PyPI
             python setup.py sdist bdist_wheel
             sudo pip install pipenv
@@ -68,7 +69,7 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build-and-test:
+      - build_and_test:
           matrix:
             parameters:
               version:
@@ -76,8 +77,12 @@ workflows:
                 - "3.8"
                 - "3.9"
       - test_pypi_publish:
+          matrix:
+            parameters:
+              version:
+                - "3.9"
           requires:
-            - build-and-test
+            - build_and_test
           filters:
             branches:
               ignore: /.*/
