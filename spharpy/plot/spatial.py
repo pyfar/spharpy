@@ -8,16 +8,15 @@ import matplotlib.tri as mtri
 import numpy as np
 import scipy.spatial as sspat
 from matplotlib import cm, colors
-from matplotlib.colors import ListedColormap
 from mpl_toolkits.mplot3d import Axes3D
+__all__ = [Axes3D]
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from packaging import version
 from scipy.stats import circmean
 
 from .cmap import phase_twilight
 
-from spharpy.samplings import (Coordinates, latlon2cart, sph2cart,
-                               spherical_voronoi)
+from spharpy.samplings import sph2cart, spherical_voronoi
 
 
 def set_aspect_equal_3d(ax):
@@ -526,7 +525,8 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     ax.scatter(points[:, 0], points[:, 1], points[:, 2], c='r')
 
     for region in sv.regions:
-        polygon = Poly3DCollection([sv.vertices[region]], alpha=0.5, facecolor=None)
+        polygon = Poly3DCollection(
+            [sv.vertices[region]], alpha=0.5, facecolor=None)
         polygon.set_edgecolor((0, 0, 0, 1))
         polygon.set_facecolor((1, 1, 1, 0.))
 

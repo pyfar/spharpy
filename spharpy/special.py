@@ -55,7 +55,6 @@ def spherical_bessel(n, z, derivative=False):
     if z.ndim <= 1 or n.ndim <= 1:
         bessel = np.squeeze(bessel)
 
-
     return bessel
 
 
@@ -79,7 +78,7 @@ def spherical_bessel_zeros(n_max, n_zeros):
 
     """
     def func(x, n):
-        return  _spspecial.spherical_jn(n, x)
+        return _spspecial.spherical_jn(n, x)
 
     zerosj = np.zeros((n_max+1, n_zeros), dtype=np.double)
     zerosj[0] = np.arange(1, n_zeros+1)*np.pi
@@ -205,7 +204,8 @@ def spherical_harmonic_real(n, m, theta, phi):
 
     .. math::
 
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi} \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+        \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
         \begin{cases}
             \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
