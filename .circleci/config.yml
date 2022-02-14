@@ -65,7 +65,7 @@ jobs:
           name: Flake8
           command: flake8 spharpy
 
-test_examples:
+  test_examples:
     parameters:
       version:
         description: "version tag"
