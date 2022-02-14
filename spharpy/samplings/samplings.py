@@ -155,7 +155,7 @@ def spherical_t_design(n_max, criterion='const_energy'):
         raise ValueError("Invalid design criterion.")
 
     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 13:98, 15:128}
+    n_points_exceptions = {3: 8, 5: 18, 7: 32, 9: 50, 11: 72, 13: 98, 15: 128}
     if degree in n_points_exceptions:
         n_points = n_points_exceptions[degree]
 
@@ -473,10 +473,10 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     def _spiral_points(n_points):
         """Helper function doing the actual calculation of the points"""
-        r = np.zeros( n_points)
-        h = np.zeros( n_points)
-        theta = np.zeros( n_points)
-        phi = np.zeros( n_points)
+        r = np.zeros(n_points)
+        h = np.zeros(n_points)
+        theta = np.zeros(n_points)
+        phi = np.zeros(n_points)
 
         p = 1/2
         a = 1 - 2*p/(n_points-3)

@@ -206,7 +206,6 @@ class Coordinates(object):
         """Return number of points stored in the object"""
         return self.x.size
 
-
     def merge(self, other):
         """Merge another coordinates objects into this object."""
         data = np.concatenate(
@@ -214,7 +213,6 @@ class Coordinates(object):
             axis=-1
         )
         self.cartesian = data
-
 
     def find_nearest_point(self, point):
         """Find the closest Coordinate point to a given Point.
@@ -343,7 +341,8 @@ class SamplingSphere(Coordinates):
         return SamplingSphere(x, y, z, n_max, weights)
 
     @classmethod
-    def from_spherical(cls, radius, elevation, azimuth,
+    def from_spherical(
+            cls, radius, elevation, azimuth,
             n_max=None, weights=None):
         """Create a Coordinates class object from a set of points in the
         spherical coordinate system.
@@ -363,9 +362,9 @@ class SamplingSphere(Coordinates):
         x, y, z = sph2cart(radius, elevation, azimuth)
         return SamplingSphere(x, y, z, n_max, weights)
 
-
     @classmethod
-    def from_array(cls, values, n_max=None, weights=None,
+    def from_array(
+            cls, values, n_max=None, weights=None,
             coordinate_system='cartesian'):
         """Create a Coordinates class object from a set of points given as
         numpy array
@@ -387,7 +386,6 @@ class SamplingSphere(Coordinates):
             return ValueError("This coordinate system is not supported.")
 
         return coords
-
 
     def __repr__(self):
         """repr for SamplingSphere class
