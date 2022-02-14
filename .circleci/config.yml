@@ -105,6 +105,8 @@ workflows:
             parameters:
               version:
                 - "3.9"
+          requires:
+            - build_and_test
 
   test_and_publish:
     # Test and publish on new git version tags
