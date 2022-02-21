@@ -2,6 +2,16 @@
 History
 =======
 
+0.4.0 (2022-02-21)
+------------------
+* SH Rotation class derived from scipy rotations
+* Implement Wigner-D Rotations
+* SmoothBivariateSpline Interpolation on the sphere
+* New phase colormap for balloon plots
+* Switch to CircleCI for unit-testing
+* Updated readthedocs.org
+* Minor documentation fixes and flake8 consistency changes
+
 0.3.3 (2021-01-13)
 ------------------
 * Replace broken link in hyperinterpolation sampling download.
