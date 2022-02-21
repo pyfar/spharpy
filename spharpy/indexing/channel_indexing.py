@@ -5,6 +5,7 @@ Commonly used channel indexing functions used in Ambisonics
 import numpy as np
 import spharpy
 
+
 def sid(n_max):
     """Calculates the SID indices up to a maximum spherical harmonic order n_max.
     TODO: Add citation Daniel
@@ -26,7 +27,7 @@ def sid(n_max):
         for m in range(1, n+1):
             sid_m[idx_n + 2*m-1] = n-m+1
             sid_m[idx_n + 2*m] = -(n-m+1)
-        sid_m[idx_n + 2*n +1] = 0
+        sid_m[idx_n + 2*n + 1] = 0
         idx_n += 2*n+1
 
     return sid_n, sid_m

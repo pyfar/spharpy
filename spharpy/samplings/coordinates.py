@@ -2,6 +2,7 @@ import numpy as np
 from spharpy.samplings.helpers import sph2cart
 from scipy.spatial import cKDTree
 
+
 class Coordinates(object):
     """Container class for coordinates in a three-dimensional space, allowing
     for compact representation and convenient conversion into spherical as well
@@ -11,20 +12,11 @@ class Coordinates(object):
     a set of points in spherical coordinates, please use the
     Coordinates.from_spherical() method.
 
-    Attributes
-    ----------
-    x : ndarray, double
-        x-coordinate
-    y : ndarray, double
-        y-coordinate
-    z : ndarray, double
-        z-coordinate
-
     """
     def __init__(self, x=None, y=None, z=None):
         """Init coordinates container
 
-        Attributes
+        Parameters
         ----------
         x : ndarray, double
             x-coordinate
@@ -214,7 +206,6 @@ class Coordinates(object):
         """Return number of points stored in the object"""
         return self.x.size
 
-
     def merge(self, other):
         """Merge another coordinates objects into this object."""
         data = np.concatenate(
@@ -222,7 +213,6 @@ class Coordinates(object):
             axis=-1
         )
         self.cartesian = data
-
 
     def find_nearest_point(self, point):
         """Find the closest Coordinate point to a given Point.
@@ -351,7 +341,8 @@ class SamplingSphere(Coordinates):
         return SamplingSphere(x, y, z, n_max, weights)
 
     @classmethod
-    def from_spherical(cls, radius, elevation, azimuth,
+    def from_spherical(
+            cls, radius, elevation, azimuth,
             n_max=None, weights=None):
         """Create a Coordinates class object from a set of points in the
         spherical coordinate system.
@@ -371,9 +362,9 @@ class SamplingSphere(Coordinates):
         x, y, z = sph2cart(radius, elevation, azimuth)
         return SamplingSphere(x, y, z, n_max, weights)
 
-
     @classmethod
-    def from_array(cls, values, n_max=None, weights=None,
+    def from_array(
+            cls, values, n_max=None, weights=None,
             coordinate_system='cartesian'):
         """Create a Coordinates class object from a set of points given as
         numpy array
@@ -395,7 +386,6 @@ class SamplingSphere(Coordinates):
             return ValueError("This coordinate system is not supported.")
 
         return coords
-
 
     def __repr__(self):
         """repr for SamplingSphere class

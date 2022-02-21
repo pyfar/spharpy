@@ -8,14 +8,15 @@ import matplotlib.tri as mtri
 import numpy as np
 import scipy.spatial as sspat
 from matplotlib import cm, colors
-from matplotlib.colors import ListedColormap
 from mpl_toolkits.mplot3d import Axes3D
+__all__ = [Axes3D]
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from packaging import version
 from scipy.stats import circmean
 
-from spharpy.samplings import (Coordinates, latlon2cart, sph2cart,
-                               spherical_voronoi)
+from .cmap import phase_twilight
+
+from spharpy.samplings import sph2cart, spherical_voronoi
 
 
 def set_aspect_equal_3d(ax):
@@ -100,7 +101,8 @@ def interpolate_data_on_sphere(
         sampling,
         data,
         overlap=np.pi*0.25,
-        refine=False):
+        refine=False,
+        interpolator='linear'):
     """Linear interpolator for data on a spherical surface. The interpolator
     exploits that the data on the sphere is periodic with regard to the
     elevation and azimuth angle. The data is periodically extended to a
@@ -112,11 +114,23 @@ def interpolate_data_on_sphere(
         The coordinates at which the data is sampled.
     data : ndarray, double
         The sampled data points.
+    overlap : float, (pi/4)
+        The overlap for the periodic extension in azimuth angle, given in
+        radians
+    refine : bool (False)
+        Refine the mesh before interpolating
+    interpolator : linear, cubic
+        The interpolation method to be used
 
     Returns
     -------
-    interp : LinearTriInterpolator
+    interp : LinearTriInterpolator, CubicTriInterpolator
         The interpolator object.
+
+    Note
+    ----
+    Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
+    are used.
 
     """
     lats = sampling.latitude
@@ -141,7 +155,12 @@ def interpolate_data_on_sphere(
             triinterpolator=mtri.LinearTriInterpolator(tri, data),
             subdiv=3)
 
-    interpolator = mtri.LinearTriInterpolator(tri, data)
+    if interpolator == 'linear':
+        interpolator = mtri.LinearTriInterpolator(tri, data)
+    elif interpolator == 'cubic':
+        interpolator = mtri.CubicTriInterpolator(tri, data, kind='mind_E')
+    else:
+        raise ValueError("Please give a valid interpolation method.")
 
     return interpolator
 
@@ -506,7 +525,8 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     ax.scatter(points[:, 0], points[:, 1], points[:, 2], c='r')
 
     for region in sv.regions:
-        polygon = Poly3DCollection([sv.vertices[region]], alpha=0.5, facecolor=None)
+        polygon = Poly3DCollection(
+            [sv.vertices[region]], alpha=0.5, facecolor=None)
         polygon.set_edgecolor((0, 0, 0, 1))
         polygon.set_facecolor((1, 1, 1, 0.))
 
@@ -780,35 +800,3 @@ class MidpointNormalize(colors.Normalize):
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
         return np.ma.masked_array(np.interp(value, x, y))
-
-
-def phase_twilight(lut=512):
-    r"""
-    Cyclic colormap for phase plots. Assuming angles in the
-    interval [0, $2\pi$], 0 radians (+1) will be red, while $\pi$ radians (-1)
-    will be represented in blue.
-
-    Parameters
-    ----------
-    lut : int (512)
-        Number of entries in the look up table for interpolation
-
-    Returns
-    -------
-    cmap : ListedColormap
-        Matplotlib ListedColormap object
-
-    Note
-    ----
-    The function implements a shifted version of the twilight colormap from
-    matplotlib >= 3.0
-    """
-    lut = int(np.ceil(lut/4)*4)
-    twilight = cm.get_cmap('twilight', lut=lut)
-
-    twilight_r_colors = np.array(twilight.reversed().colors)
-
-    roll_by = int(lut/4)
-    phase_colors = np.roll(twilight_r_colors, -roll_by, axis=0)
-
-    return ListedColormap(phase_colors)

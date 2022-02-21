@@ -1,13 +1,13 @@
 """
 Collection of sampling schemes for the sphere
 """
-import os
 import urllib3
 import numpy as np
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 import spharpy
 
 from ._eqsp import point_set as eq_point_set
+
 
 def cube_equidistant(n_points):
     """Create a cuboid sampling with equidistant spacings in x, y, and z.
@@ -16,9 +16,9 @@ def cube_equidistant(n_points):
     Parameters
     ----------
     n_points : int, tuple
-        Number of points in the sampling. If a single value is given, the number
-        of sampling positions will be the same in every axis. If a tuple is
-        given, the number of points will be set as (n_x, n_y, n_z)
+        Number of points in the sampling. If a single value is given, the
+        number of sampling positions will be the same in every axis. If a tuple
+        is given, the number of points will be set as (n_x, n_y, n_z)
 
     Returns
     -------
@@ -103,10 +103,10 @@ def hyperinterpolation(n_max):
 
 
 def spherical_t_design(n_max, criterion='const_energy'):
-    r"""Return the sampling positions for a spherical t-design [1]_ .
+    r"""Return the sampling positions for a spherical t-design [3]_ .
     For a spherical harmonic order N, a t-Design of degree `:math: t=2N` for
     constant energy or `:math: t=2N+1` additionally ensuring a constant angular
-    spread of energy is required [2]_. For a given degree t
+    spread of energy is required [4]_. For a given degree t
 
     .. math::
 
@@ -132,19 +132,19 @@ def spherical_t_design(n_max, criterion='const_energy'):
     Notes
     -----
     This function downloads a pre-calculated set of points from
-    Rob Womersley's homepage [3]_ .
+    Rob Womersley's homepage [5]_ .
 
     References
     ----------
 
-    .. [1]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
+    .. [3]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
             Spherical Designs for Integration and Interpolation on the
             Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
             pp. 2135–2157, Jan. 2010.
-    .. [2]  F. Zotter, M. Frank, and A. Sontacchi, “The Virtual T-Design
+    .. [4]  F. Zotter, M. Frank, and A. Sontacchi, “The Virtual T-Design
             Ambisonics-Rig Using VBAP,” in Proceedings on the Congress on
             Sound and Vibration, 2010.
-    .. [3]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+    .. [5]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
 
     """
     if criterion == 'const_energy':
@@ -155,7 +155,7 @@ def spherical_t_design(n_max, criterion='const_energy'):
         raise ValueError("Invalid design criterion.")
 
     n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 13:98, 15:128}
+    n_points_exceptions = {3: 8, 5: 18, 7: 32, 9: 50, 11: 72, 13: 98, 15: 128}
     if degree in n_points_exceptions:
         n_points = n_points_exceptions[degree]
 
@@ -185,23 +185,9 @@ def spherical_t_design(n_max, criterion='const_energy'):
     return sampling
 
 
-
-# def healpix(n_max):
-#     """
-#     Sampling based on the healpix pixelisation.
-#     """
-#     n_sh = (n_max+1)**2
-#     n_side = np.int(2**(np.ceil(np.log2(np.sqrt(n_sh/12)))))
-#
-#     n_pix = np.arange(healpy.nside2npix(n_side))
-#     theta, phi = healpy.pix2ang(n_side, n_pix)
-#     rad = np.ones(theta.size)
-#
-#     return rad, theta, phi
-
-
 def dodecahedron():
-    """Generate a sampling based on the center points of the twelve dodecahedron faces.
+    """Generate a sampling based on the center points of the twelve
+    dodecahedron faces.
 
     Returns
     -------
@@ -347,11 +333,11 @@ def gaussian(n_max):
 
 def eigenmike_em32():
     """Microphone positions of the Eigenmike em32 by mhacoustics according to the
-    Eigenstudio user manual on the homepage [1]_.
+    Eigenstudio user manual on the homepage [6]_.
 
     References
     ----------
-    .. [1]  Eigenstudio User Manual, https://mhacoustics.com/download
+    .. [6]  Eigenstudio User Manual, https://mhacoustics.com/download
 
 
     Returns
@@ -412,7 +398,7 @@ def icosahedron_ke4():
 
 
 def equalarea(n_max, condition_num=2.5, n_points=None):
-    """Sampling based on partitioning into faces with equal area [1]_.
+    """Sampling based on partitioning into faces with equal area [9]_.
 
     Parameters
     ----------
@@ -431,7 +417,7 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
 
     References
     ----------
-    .. [1]  P. Leopardi, “A partition of the unit sphere into regions of equal
+    .. [9]  P. Leopardi, “A partition of the unit sphere into regions of equal
             area and small diameter,” Electronic Transactions on Numerical
             Analysis, vol. 25, no. 12, pp. 309–327, 2006.
 
@@ -457,7 +443,7 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
 
 
 def spiral_points(n_max, condition_num=2.5, n_points=None):
-    """Sampling based on a spiral distribution of points on a sphere [1]_.
+    """Sampling based on a spiral distribution of points on a sphere [10]_.
 
     Parameters
     ----------
@@ -477,7 +463,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     References
     ----------
 
-    .. [1]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
+    .. [10]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
             Energy on the Sphere,” Mathematical Research Letters, vol. 1,
             no. 6, pp. 647–662, 1994.
 
@@ -487,10 +473,10 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     def _spiral_points(n_points):
         """Helper function doing the actual calculation of the points"""
-        r = np.zeros( n_points)
-        h = np.zeros( n_points)
-        theta = np.zeros( n_points)
-        phi = np.zeros( n_points)
+        r = np.zeros(n_points)
+        h = np.zeros(n_points)
+        theta = np.zeros(n_points)
+        phi = np.zeros(n_points)
 
         p = 1/2
         a = 1 - 2*p/(n_points-3)
@@ -504,7 +490,8 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
             h[k] = -1 + 2*(kStrich-1)/(n_points-1)
             r[k] = np.sqrt(1-h[k]**2)
             theta[k] = np.arccos(h[k])
-            phi[k] = np.mod((phi[k-1]) + 3.6/np.sqrt(n_points)*2/(r[k-1]+r[k]), 2*np.pi)
+            phi[k] = np.mod(
+                (phi[k-1]) + 3.6/np.sqrt(n_points)*2/(r[k-1]+r[k]), 2*np.pi)
         # Finally:
         theta[n_points-1] = 0
         phi[n_points-1] = 0

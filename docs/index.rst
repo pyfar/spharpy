@@ -1,17 +1,36 @@
-Welcome to spharpy's documentation!
-======================================
+spharpy
+=======
+
+.. toctree::
+   :maxdepth: 2
+
+   intro
+
+
+Documentation
+=============
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   intro
-   installation
-   usage
    modules
-   contributing
-   authors
-   history
+
+Contributing
+===============
+
+.. toctree::
+    :maxdepth: 2
+
+    contributing
+
+Other
+=====
+.. toctree::
+    :maxdepth: 1
+
+    authors
+    history
 
 Indices and tables
 ==================

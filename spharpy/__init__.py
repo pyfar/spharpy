@@ -8,3 +8,15 @@ from . import plot
 from . import indexing
 from . import transforms
 from . import beamforming
+from . import interpolate
+
+
+__all__ = [
+    'spherical',
+    'samplings',
+    'plot',
+    'indexing',
+    'transforms',
+    'beamforming',
+    'interpolate'
+]

@@ -5,7 +5,6 @@
 The setup script.
 """
 
-import sys
 from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
@@ -37,7 +36,7 @@ setup(
     name='spharpy',
     version='0.3.3',
     description="Python package for spherical array processing.",
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
     url='https://git.rwth-aachen.de/mbe/spharpy/',
@@ -48,15 +47,16 @@ setup(
     zip_safe=False,
     keywords='spharpy',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     test_suite='tests',
     tests_require=test_requirements,
-    setup_requires=setup_requirements
+    setup_requires=setup_requirements,
+    python_requires='>=3.7'
 )

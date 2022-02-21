@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.spatial as sspat
 
+
 def greens_function_plane_wave(
         source_points,
         receiver_points,
@@ -53,7 +54,6 @@ def greens_function_plane_wave(
              plane_wave_gradient_matrix_z]
 
 
-
 def greens_function_point_source(sources, receivers, k, gradient=False):
     r"""Green's function for point sources in free space in matrix form. The
     phase sign convention corresponds to a direction of propagation away from
@@ -87,7 +87,9 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
     if not gradient:
         return G
     else:
-        lambda_cdiff = lambda u, v: (u-v)
+        def lambda_cdiff(u, v):
+            return u-v
+
         diff_x = sspat.distance.cdist(
             np.atleast_2d(receivers.x).T,
             np.atleast_2d(sources.x).T,
