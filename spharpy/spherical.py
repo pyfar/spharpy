@@ -431,14 +431,14 @@ def aperture_vibrating_spherical_cap(
 
     aperture = np.zeros((n_sh, n_sh), dtype=np.double)
 
-    aperture[0, 0] = (1-arg)*2*np.pi**2
+    aperture[0, 0] = (1-arg)*2*np.pi
     for n in range(1, n_max+1):
         legendre_minus = special.legendre(n-1)(arg)
         legendre_plus = special.legendre(n+1)(arg)
+        legendre_term = legendre_minus - legendre_plus
         for m in range(-n, n+1):
             acn = nm2acn(n, m)
-            aperture[acn, acn] = (legendre_minus - legendre_plus) * \
-                4 * np.pi**2 / (2*n+1)
+            aperture[acn, acn] = legendre_term * 4 * np.pi / (2*n+1)
 
     return aperture
 
