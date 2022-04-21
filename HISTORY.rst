@@ -2,6 +2,10 @@
 History
 =======
 
+0.4.1 (2022-04-21)
+------------------
+* Bugfix for the aperture function of vibrating spherical caps
+
 0.4.0 (2022-02-21)
 ------------------
 * SH Rotation class derived from scipy rotations
