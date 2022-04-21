@@ -388,26 +388,17 @@ def aperture_vibrating_spherical_cap(
 
     .. math::
 
-        a_n (r_{s}, \alpha) =
+        a_n (r_{s}, \alpha) = 4 \pi
         \begin{cases}
-            \displaystyle \cos\left(\alpha\right)
-                P_n\left[ \cos\left(\alpha\right) \right] -
-                P_{n-1}\left[ \cos\left(\alpha\right) \right],
+            \displaystyle \left(2n+1\right)\left[
+                P_{n-1} \left(\cos\alpha\right) -
+                P_{n+1} \left(\cos\alpha\right) \right],
                 & {n>0} \newline
-            \displaystyle  1 - \cos(\alpha),  & {n=0}
+            \displaystyle  (1 - \cos\alpha)/2,  & {n=0}
         \end{cases}
 
     where :math:`\alpha = \arcsin \left(\frac{r_c}{r_s} \right)` is the
     aperture angle.
-
-
-    References
-    ----------
-    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [6]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
-            loudspeaker system as multipole source,” in Proceedings of the 33rd
-            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
-
 
     Parameters
     ----------
@@ -424,6 +415,19 @@ def aperture_vibrating_spherical_cap(
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
+    References
+    ----------
+    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [6]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
+            Independent Steering for Spherical Loudspeaker Arrays,” IEEE
+            Transactions on Audio, Speech, and Language Processing, vol. 19,
+            no. 7, pp. 2234-2238, 2011
+
+    Notes
+    -----
+    Eq. (3) in Ref. [6]_ contains an error, here, the power of 2 on pi is
+    omitted on the normalization term.
+
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
     arg = np.cos(angle_cap)
@@ -431,14 +435,14 @@ def aperture_vibrating_spherical_cap(
 
     aperture = np.zeros((n_sh, n_sh), dtype=np.double)
 
-    aperture[0, 0] = (1-arg)*2*np.pi**2
+    aperture[0, 0] = (1-arg)*2*np.pi
     for n in range(1, n_max+1):
         legendre_minus = special.legendre(n-1)(arg)
         legendre_plus = special.legendre(n+1)(arg)
+        legendre_term = legendre_minus - legendre_plus
         for m in range(-n, n+1):
             acn = nm2acn(n, m)
-            aperture[acn, acn] = (legendre_minus - legendre_plus) * \
-                4 * np.pi**2 / (2*n+1)
+            aperture[acn, acn] = legendre_term * 4 * np.pi / (2*n+1)
 
     return aperture
 
