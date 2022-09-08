@@ -111,27 +111,27 @@ def spherical_harmonic_basis(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : pyfar.Coordinates
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
     Returns
     -------
-    Y : double, ndarray, matrix
+    Y : complex, ndarray
         Complex spherical harmonic basis matrix
     """
 
     n_coeff = (n_max+1)**2
 
-    basis = np.zeros((coords.n_points, n_coeff), dtype=complex)
+    basis = np.zeros((*coords.cshape, n_coeff), dtype=complex)
 
     for acn in range(0, n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
             order,
             degree,
-            coords.elevation,
-            coords.azimuth)
+            coords.get_sph()[..., 1],
+            coords.get_sph()[..., 0])
 
     return basis
 
