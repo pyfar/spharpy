@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
+from spharpy._deprecation import coordinate_deprecation_warning
 
 
 def acn2nm(acn):
@@ -120,6 +121,7 @@ def spherical_harmonic_basis(n_max, coords):
     Y : complex, ndarray
         Complex spherical harmonic basis matrix
     """
+    coords = coordinate_deprecation_warning(coords)
 
     n_coeff = (n_max+1)**2
 
