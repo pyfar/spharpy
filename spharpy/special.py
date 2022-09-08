@@ -41,10 +41,10 @@ def spherical_bessel(n, z, derivative=False):
     """
 
     ufunc = _spspecial.spherical_jn
-    n = np.asarray(n, dtype=np.int)
-    z = np.asarray(z, dtype=np.double)
+    n = np.asarray(n, dtype=int)
+    z = np.asarray(z, dtype=float)
 
-    bessel = np.zeros((n.size, z.size), dtype=np.complex)
+    bessel = np.zeros((n.size, z.size), dtype=complex)
 
     if n.size > 1:
         for idx, order in zip(count(), n):
@@ -80,11 +80,11 @@ def spherical_bessel_zeros(n_max, n_zeros):
     def func(x, n):
         return _spspecial.spherical_jn(n, x)
 
-    zerosj = np.zeros((n_max+1, n_zeros), dtype=np.double)
+    zerosj = np.zeros((n_max+1, n_zeros), dtype=float)
     zerosj[0] = np.arange(1, n_zeros+1)*np.pi
     points = np.arange(1, n_zeros+n_max+1)*np.pi
 
-    roots = np.zeros(n_zeros+n_max, dtype=np.double)
+    roots = np.zeros(n_zeros+n_max, dtype=float)
     for i in range(1, n_max+1):
         for j in range(n_zeros+n_max-i):
             roots[j] = brentq(func, points[j], points[j+1], (i,), maxiter=5000)
@@ -124,8 +124,8 @@ def spherical_hankel(n, z, kind=2, derivative=False):
         raise ValueError("The spherical hankel function can \
             only be of first or second kind.")
 
-    n = np.asarray(n, dtype=np.int)
-    z = np.asarray(z, dtype=np.double)
+    n = np.asarray(n, dtype=int)
+    z = np.asarray(z, dtype=float)
 
     if derivative:
         ufunc = _spherical_hankel_derivative
@@ -133,7 +133,7 @@ def spherical_hankel(n, z, kind=2, derivative=False):
         ufunc = _spherical_hankel
 
     if n.size > 1:
-        hankel = np.zeros((n.size, z.size), dtype=np.complex)
+        hankel = np.zeros((n.size, z.size), dtype=complex)
         for idx, order in zip(count(), n):
             hankel[idx, :] = ufunc(order, z, kind)
     else:
@@ -186,8 +186,8 @@ def spherical_harmonic(n, m, theta, phi):
     if $n < |m|$.
 
     """
-    theta = np.asarray(theta, dtype=np.double)
-    phi = np.asarray(phi, dtype=np.double)
+    theta = np.asarray(theta, dtype=float)
+    phi = np.asarray(phi, dtype=float)
 
     if n < np.abs(m):
         sph_harm = np.zeros(theta.shape)
@@ -246,9 +246,9 @@ def spherical_harmonic_real(n, m, theta, phi):
     elif m > 0:
         Y_nm = np.real(Y_nm_cplx) * np.sqrt(2)
     elif m < 0:
-        Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * np.float(-1)**(m+1)
+        Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * float(-1)**(m+1)
 
-    Y_nm *= (np.float(-1)**(m))
+    Y_nm *= float(-1)**(m)
 
     return Y_nm
 
@@ -277,7 +277,7 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
 
     """
     if m == 0 or n == 0:
-        res = np.zeros(phi.shape, dtype=np.complex)
+        res = np.zeros(phi.shape, dtype=complex)
     else:
         res = spherical_harmonic(n, m, theta, phi) * 1j * m
 
@@ -308,7 +308,7 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     """
     if m == 0:
-        res = np.zeros(theta.shape, dtype=np.complex)
+        res = np.zeros(theta.shape, dtype=complex)
     else:
         factor = np.sqrt((2*n+1)/(2*n-1))/2
         exp_phi = np.exp(1j*phi)
@@ -346,7 +346,7 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     """
     if n == 0:
-        res = np.zeros(theta.shape, dtype=np.complex)
+        res = np.zeros(theta.shape, dtype=complex)
     else:
         exp_phi = np.exp(1j*phi)
         first = np.sqrt((n-m+1) * (n+m)) * exp_phi * \
@@ -481,7 +481,7 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
 
     m_abs = np.abs(m)
     if n == 0:
-        res = np.zeros(theta.shape, dtype=np.double)
+        res = np.zeros(theta.shape, dtype=float)
     else:
         first = (n+m_abs)*(n-m_abs+1) * \
             legendre_function(
@@ -536,7 +536,7 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
     """
     m_abs = np.abs(m)
     if m == 0:
-        res = np.zeros(theta.shape, dtype=np.double)
+        res = np.zeros(theta.shape, dtype=float)
     else:
         legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
         N_nm = spherical_harmonic_normalization(n, m_abs)
@@ -586,7 +586,7 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     """
     m_abs = np.abs(m)
     if m == 0:
-        res = np.zeros(theta.shape, dtype=np.double)
+        res = np.zeros(theta.shape, dtype=float)
     else:
         first = (n+m_abs)*(n+m_abs-1) * \
             legendre_function(

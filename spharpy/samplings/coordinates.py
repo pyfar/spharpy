@@ -290,7 +290,7 @@ class SamplingSphere(Coordinates):
         """
         Coordinates.__init__(self, x, y, z)
         if n_max is not None:
-            self._n_max = np.int(n_max)
+            self._n_max = int(n_max)
         else:
             self._n_max = None
 
@@ -309,7 +309,7 @@ class SamplingSphere(Coordinates):
 
     @n_max.setter
     def n_max(self, value):
-        self._n_max = np.int(value)
+        self._n_max = int(value)
 
     @property
     def weights(self):
