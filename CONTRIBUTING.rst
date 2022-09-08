@@ -113,9 +113,7 @@ Before you submit a pull request, check that it meets these guidelines:
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring.
-3. The pull request should work for Python >=3.7. Check
-   https://www.travis-ci.org/github/mberz/spharpy/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python >=3.7. Make sure that the tests pass for all supported Python versions.
 
 
 Testing Guidelines
@@ -216,4 +214,4 @@ Then run
     $ git push
     $ git push --tags
 
-Travis will then deploy to PyPI if tests pass.
+CircleCI will then deploy to PyPI if tests pass.

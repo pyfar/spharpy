@@ -2,6 +2,24 @@
 History
 =======
 
+0.4.1 (2022-04-21)
+------------------
+* Bugfix for the aperture function of vibrating spherical caps
+
+0.4.0 (2022-02-21)
+------------------
+* SH Rotation class derived from scipy rotations
+* Implement Wigner-D Rotations
+* SmoothBivariateSpline Interpolation on the sphere
+* New phase colormap for balloon plots
+* Switch to CircleCI for unit-testing
+* Updated readthedocs.org
+* Minor documentation fixes and flake8 consistency changes
+
+0.3.3 (2021-01-13)
+------------------
+* Replace broken link in hyperinterpolation sampling download.
+
 0.3.2 (2021-01-29)
 ------------------
 * Bugfix in modal strength calculation for rigid spheres

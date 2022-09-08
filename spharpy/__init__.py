@@ -1,6 +1,6 @@
 __author__ = "Marco Berzborn"
 __email__ = 'marco.berzborn@akustik.rwth-aachen.de'
-__version__ = '0.3.2'
+__version__ = '0.4.1'
 
 from . import spherical
 from . import samplings
