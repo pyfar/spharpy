@@ -11,7 +11,7 @@ def test_sph_bessel_zeros():
     jn_zeros = np.ones(roots.shape)
     for n in range(0, 4):
         jn_zeros[n, :] = spherical_jn(n, roots[n, :])
-    zeros = np.zeros((4, 3), dtype=np.float)
+    zeros = np.zeros((4, 3), dtype=float)
     np.testing.assert_allclose(jn_zeros, zeros, atol=1e-12)
 
 

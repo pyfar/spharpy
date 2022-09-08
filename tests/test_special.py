@@ -114,7 +114,7 @@ def test_spherical_harmonic_derivative_theta():
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_ele.csv',
-        dtype=np.complex,
+        dtype=complex,
         delimiter=',')
 
     for acn in range((n_max+1)**2):
@@ -135,7 +135,7 @@ def test_spherical_harmonic_derivative_phi():
 
     desired_all = np.genfromtxt(
         './tests/data/Y_diff_azi.csv',
-        dtype=np.complex,
+        dtype=complex,
         delimiter=',')
 
     for acn in range((n_max+1)**2):
@@ -156,7 +156,7 @@ def test_spherical_harmonic_gradient_phi():
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_azi.csv',
-        dtype=np.complex,
+        dtype=complex,
         delimiter=',')
 
     for acn in range((n_max+1)**2):
@@ -177,7 +177,7 @@ def test_spherical_harmonic_derivative_theta_real():
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_real_ele.csv',
-        dtype=np.double,
+        dtype=float,
         delimiter=',')
 
     for acn in range((n_max+1)**2):
@@ -199,7 +199,7 @@ def test_spherical_harmonic_derivative_phi_real():
 
     desired_all = np.genfromtxt(
         './tests/data/Y_diff_real_azi.csv',
-        dtype=np.double,
+        dtype=float,
         delimiter=',')
 
     for acn in range((n_max+1)**2):
@@ -221,7 +221,7 @@ def test_spherical_harmonic_gradient_phi_real():
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_real_azi.csv',
-        dtype=np.double,
+        dtype=float,
         delimiter=',')
 
     for acn in range((n_max+1)**2):

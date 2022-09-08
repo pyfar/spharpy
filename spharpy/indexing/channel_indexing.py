@@ -21,7 +21,7 @@ def sid(n_max):
     """
     n_sh = (n_max+1)**2
     sid_n = sph_identity_matrix(n_max, 'n-nm').T @ np.arange(0, n_max+1)
-    sid_m = np.zeros(n_sh, dtype=np.int)
+    sid_m = np.zeros(n_sh, dtype=int)
     idx_n = 0
     for n in range(1, n_max+1):
         for m in range(1, n+1):
@@ -73,7 +73,7 @@ def sph_identity_matrix(n_max, type='n-nm'):
     if type != 'n-nm':
         raise NotImplementedError
 
-    identity_matrix = np.zeros((n_max+1, n_sh), dtype=np.int)
+    identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)
     # linear_n0 = np.cumsum(np.arange(0, 2*(n_max+1), 2))
 
     for n in range(0, n_max+1):

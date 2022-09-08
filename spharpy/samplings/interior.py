@@ -123,7 +123,7 @@ def sph_modes_matrix(n_max, k, theta, phi, rad):
     meshgrid_shape = theta.shape
     B = spspecial.spherical_jn(n_max, rad.flatten()*k) * 4*np.pi * (1j)**n_max
     B = np.reshape(B, meshgrid_shape)
-    M = np.zeros((*meshgrid_shape, n_coefficients), dtype=np.complex)
+    M = np.zeros((*meshgrid_shape, n_coefficients), dtype=complex)
     for m in range(-n_max, n_max+1):
         Y_m = spspecial.sph_harm(m, n_max, theta.flatten(), phi.flatten())
         M[:, :, :, m+n_max] = B * np.reshape(Y_m, meshgrid_shape)
