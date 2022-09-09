@@ -126,26 +126,20 @@ def test_spherical_harmonic_basis_gradient_real():
     n_max = 15
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points):
-        coords = Coordinates()
+    coords = pf.Coordinates(phi, theta, np.zeros_like(theta), domain='sph')
 
-        grad_ele, grad_azi = \
-            sh.spherical_harmonic_basis_gradient_real(n_max, coords)
+    grad_ele, grad_azi = \
+        sh.spherical_harmonic_basis_gradient_real(n_max, coords)
 
-        desire_ele = np.genfromtxt(
-            './tests/data/Y_grad_real_ele.csv',
-            dtype=complex,
-            delimiter=',')
-        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
+    desire_ele = np.genfromtxt(
+        './tests/data/Y_grad_real_ele.csv',
+        dtype=complex,
+        delimiter=',')
+    npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
 
-        desire_azi = np.genfromtxt(
-            './tests/data/Y_grad_real_azi.csv',
-            dtype=complex,
-            delimiter=',')
-        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
+    desire_azi = np.genfromtxt(
+        './tests/data/Y_grad_real_azi.csv',
+        dtype=complex,
+        delimiter=',')
+    npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)

@@ -276,30 +276,30 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : pyfar.Coordinates
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
     Returns
     -------
-    Y : double, ndarray, matrix
+    Y : float, ndarray
         Complex spherical harmonic basis matrix
 
     """
-    n_points = coords.n_points
+    cshape = coords.cshape
     n_coeff = (n_max+1)**2
-    theta = coords.elevation
-    phi = coords.azimuth
-    grad_theta = np.zeros((n_points, n_coeff), dtype=float)
-    grad_phi = np.zeros((n_points, n_coeff), dtype=float)
+    theta = coords.get_sph()[..., 1]
+    phi = coords.get_sph()[..., 0]
+    grad_theta = np.zeros((*cshape, n_coeff), dtype=float)
+    grad_phi = np.zeros((*cshape, n_coeff), dtype=float)
 
     for acn in range(0, n_coeff):
         n, m = acn2nm(acn)
 
-        grad_theta[:, acn] = \
+        grad_theta[..., acn] = \
             _special.spherical_harmonic_derivative_theta_real(
                 n, m, theta, phi)
-        grad_phi[:, acn] = \
+        grad_phi[..., acn] = \
             _special.spherical_harmonic_gradient_phi_real(
                 n, m, theta, phi)
 
