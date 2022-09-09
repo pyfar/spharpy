@@ -129,7 +129,7 @@ def spherical_harmonic_basis(n_max, coords):
 
     for acn in range(0, n_coeff):
         order, degree = acn2nm(acn)
-        basis[:, acn] = _special.spherical_harmonic(
+        basis[..., acn] = _special.spherical_harmonic(
             order,
             degree,
             coords.get_sph()[..., 1],
@@ -161,33 +161,35 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : pyfar.Coordinates
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
     Returns
     -------
-    grad_elevation : double, ndarray, matrix
+    grad_elevation : complex, ndarray, matrix
         Gradient with regard to the elevation angle.
-    grad_azimuth : double, ndarray, matrix
+    grad_azimuth : complex, ndarray, matrix
         Gradient with regard to the azimuth angle.
 
 
     """
-    n_points = coords.n_points
+    coords = coordinate_deprecation_warning(coords)
+
+    cshape = coords.cshape
     n_coeff = (n_max+1)**2
-    theta = coords.elevation
-    phi = coords.azimuth
-    grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
-    grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
+    theta = coords.get_sph()[..., 1]
+    phi = coords.get_sph()[..., 0]
+    grad_theta = np.zeros((*cshape, n_coeff), dtype=complex)
+    grad_phi = np.zeros((*cshape, n_coeff), dtype=complex)
 
     for acn in range(0, n_coeff):
         n, m = acn2nm(acn)
 
-        grad_theta[:, acn] = \
+        grad_theta[..., acn] = \
             _special.spherical_harmonic_derivative_theta(
                 n, m, theta, phi)
-        grad_phi[:, acn] = \
+        grad_phi[..., acn] = \
             _special.spherical_harmonic_gradient_phi(
                 n, m, theta, phi)
 
