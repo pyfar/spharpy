@@ -3,7 +3,8 @@ Collection of sampling schemes for the sphere
 """
 import urllib3
 import numpy as np
-from spharpy.samplings.coordinates import Coordinates, SamplingSphere
+from spharpy.samplings.coordinates import SamplingSphere
+from pyfar import Coordinates
 import spharpy
 
 from ._eqsp import point_set as eq_point_set
@@ -93,10 +94,11 @@ def hyperinterpolation(n_max):
 
     file_data = np.fromstring(
         file_data, dtype='double', sep=' ').reshape((n_sh, 4))
-    sampling = SamplingSphere(
+    sampling = Coordinates(
         file_data[:, 0],
         file_data[:, 1],
-        file_data[:, 2])
+        file_data[:, 2],
+        domain='cart')
     sampling.weights = file_data[:, 3]
 
     return sampling
@@ -178,9 +180,9 @@ def spherical_t_design(n_max, criterion='const_energy'):
 
     points = np.fromstring(
         file_data,
-        dtype=np.double,
+        dtype=float,
         sep=' ').reshape((n_points, 3)).T
-    sampling = SamplingSphere.from_array(points)
+    sampling = Coordinates(points[0], points[1], points[2], domain='cart')
 
     return sampling
 
