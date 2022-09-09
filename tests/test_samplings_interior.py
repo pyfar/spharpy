@@ -1,9 +1,9 @@
 import pytest
 import numpy as np
 import spharpy.samplings as samplings
-from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 from spharpy.special import spherical_bessel_zeros
 from scipy.special import spherical_jn
+from pyfar import Coordinates
 
 
 def test_sph_bessel_zeros():
@@ -15,12 +15,17 @@ def test_sph_bessel_zeros():
     np.testing.assert_allclose(jn_zeros, zeros, atol=1e-12)
 
 
-
 def test_interior_points_chardon():
     kr_max = 7
     int_points = samplings.interior_stabilization_points(kr_max)
 
     filename = 'tests/data/interior_points_kr7.csv'
-    truth = np.genfromtxt(filename, dtype=np.double, delimiter=';')
+    truth = np.genfromtxt(filename, dtype=float, delimiter=';')
 
-    np.testing.assert_allclose(int_points.cartesian.T, truth, atol=1e-7)
+    assert isinstance(int_points, Coordinates)
+
+    # check if the absolute values match, as the algorithm may find mirror
+    # symmetric interior points, as the nodal points lie on planes inside the
+    # ball
+    np.testing.assert_allclose(
+        np.abs(int_points.get_cart()), np.abs(truth), atol=1e-7)
