@@ -55,7 +55,7 @@ def test_spherical_harmonics_real():
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype='double')
     phi = np.array([0, np.pi/2, 0, np.pi/4], dtype='double')
     rad = np.ones(4)
-    coords = Coordinates.from_spherical(rad, theta, phi)
+    coords = pf.Coordinates(phi, theta, rad, domain='sph')
 
     reference = read_2d_matrix_from_csv('./tests/data/sh_basis_real.csv')
     basis = sh.spherical_harmonic_basis_real(n_max, coords)
@@ -75,7 +75,7 @@ def test_orthogonality():
     coords = pf.Coordinates(phi, theta, np.ones_like(theta), domain='sph')
     basis = sh.spherical_harmonic_basis(n_max, coords)
 
-    inner = (basis @ np.conjugate(basis.T))
+    inner = basis @ np.conjugate(basis.T)
     fact = 4 * np.pi / (n_max + 1) ** 2
     orth = np.diagonal(fact * inner)
     np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
@@ -90,18 +90,13 @@ def test_orthogonality_real():
     phi = np.array([0, np.pi / 2, 0, np.pi / 4], dtype='double')
     n_points = phi.size
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points) as patched_vals:
-        coords = Coordinates()
-        basis = sh.spherical_harmonic_basis_real(n_max, coords)
+    coords = pf.Coordinates(phi, theta, np.ones_like(theta), domain='sph')
+    basis = sh.spherical_harmonic_basis_real(n_max, coords)
 
-        inner = (basis @ np.conjugate(basis.T))
-        fact = 4 * np.pi / (n_max + 1) ** 2
-        orth = np.diagonal(fact * inner)
-        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15, atol=1e-10)
+    inner = basis @ basis.T
+    fact = 4 * np.pi / (n_max + 1) ** 2
+    orth = np.diagonal(fact * inner)
+    np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15, atol=1e-10)
 
 
 def test_spherical_harmonic_basis_gradient():

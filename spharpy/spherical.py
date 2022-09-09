@@ -224,28 +224,29 @@ def spherical_harmonic_basis_real(n_max, coords):
     ----------
     n : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : pyfar.Coordinates
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
     Returns
     -------
-    Y : double, ndarray, matrix
+    Y : float, ndarray, matrix
         Real valued spherical harmonic basis matrix
 
 
     """
+    coords = coordinate_deprecation_warning(coords)
     n_coeff = (n_max+1)**2
 
-    basis = np.zeros((coords.n_points, n_coeff), dtype=float)
+    basis = np.zeros((*coords.cshape, n_coeff), dtype=float)
 
     for acn in range(0, n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
             order,
             degree,
-            coords.elevation,
-            coords.azimuth)
+            coords.get_sph()[..., 1],
+            coords.get_sph()[..., 0])
 
     return basis
 
