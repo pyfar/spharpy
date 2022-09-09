@@ -83,15 +83,19 @@ def _triangulation_sphere(sampling, data):
     triangulation : matplotlib Triangulation
 
     """
+
+    if sampling.cdim > 1:
+        raise ValueError("N-dimensional coordinate objects are not supported")
+
     x, y, z = sph2cart(
         np.abs(data),
-        sampling.elevation,
-        sampling.azimuth)
+        sampling.get_sph()[:, 1],
+        sampling.get_sph()[:, 0])
     hull = sspat.ConvexHull(
         np.asarray(sph2cart(
-            np.ones(sampling.n_points),
-            sampling.elevation,
-            sampling.azimuth)).T)
+            np.ones(sampling.csize),
+            sampling.get_sph()[:, 1],
+            sampling.get_sph()[:, 0])).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
 
     return tri, z
