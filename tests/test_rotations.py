@@ -3,7 +3,7 @@
 import numpy as np
 import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
-from spharpy.samplings import Coordinates
+from pyfar import Coordinates
 import spharpy
 from spharpy.transforms import RotationSH
 import pytest
