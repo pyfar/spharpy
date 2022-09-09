@@ -41,6 +41,11 @@ def test_contour_plot():
     spharpy.plot.contour(coords, np.abs(data), show=False)
 
 
+def test_scatter():
+    coords = spharpy.samplings.dodecahedron()
+    spharpy.plot.scatter(coords)
+
+
 def test_triangulation_sphere():
     coords = spharpy.samplings.dodecahedron()
     tri, z = spharpy.plot.spatial._triangulation_sphere(coords, np.ones(12))

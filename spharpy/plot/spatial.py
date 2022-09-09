@@ -56,7 +56,9 @@ def scatter(coordinates):
     else:
         ax = plt.gca(projection='3d')
 
-    ax.scatter(coordinates.x, coordinates.y, coordinates.z)
+    cart = coordinates.get_cart().reshape((-1, 3))
+
+    ax.scatter(cart[:, 0], cart[:, 1], cart[:, 2])
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
