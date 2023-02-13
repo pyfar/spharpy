@@ -1,6 +1,6 @@
-======
+=======
 spharpy
-======
+=======
 
 .. image:: https://badge.fury.io/py/spharpy.svg
     :target: https://badge.fury.io/py/spharpy
