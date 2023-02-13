@@ -139,9 +139,9 @@ class Coordinates(object):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
-        radius = np.asarray(radius, dtype=np.double)
-        elevation = np.asarray(elevation, dtype=np.double)
-        azimuth = np.asarray(azimuth, dtype=np.double)
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return Coordinates(x, y, z)
 
@@ -272,18 +272,15 @@ class SamplingSphere(Coordinates):
         """Init for sampling class
         """
         Coordinates.__init__(self, x, y, z)
-        if n_max is not None:
-            self._n_max = np.int(n_max)
-        else:
-            self._n_max = None
-
-        if weights is not None:
-            if len(x) != len(weights):
-                raise ValueError("The number of weights has to be equal to \
-                        the number of sampling points.")
-            self._weights = np.asarray(weights, dtype=np.double)
-        else:
+        self._n_max = int(n_max) if n_max is not None else None
+        if weights is None:
             self._weights = None
+
+        elif len(x) != len(weights):
+            raise ValueError("The number of weights has to be equal to \
+                        the number of sampling points.")
+        else:
+            self._weights = np.asarray(weights, dtype=float)
 
     @property
     def n_max(self):
@@ -292,7 +289,7 @@ class SamplingSphere(Coordinates):
 
     @n_max.setter
     def n_max(self, value):
-        self._n_max = np.int(value)
+        self._n_max = int(value)
 
     @property
     def weights(self):
