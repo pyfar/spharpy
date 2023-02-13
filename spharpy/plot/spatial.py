@@ -498,7 +498,7 @@ def balloon(
     return plot
 
 
-def voronoi_cells_sphere(sampling, round_decimals=13):
+def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     """Plot the Voronoi cells of a Voronoi tesselation on a sphere.
 
     Parameters
@@ -508,6 +508,9 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     round_decimals : int
         Decimals to be rounded to for eliminating duplicate points in
         the voronoi diagram
+    ax : AxesSubplot, None, optional
+        The subplot axes to use for plotting. The used projection needs to be
+        '3d'.
 
     """
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
@@ -515,7 +518,12 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     points = sampling.cartesian.T
 
     fig = plt.gcf()
-    ax = fig.add_subplot(111, projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    if '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
+
     if version.parse(mpl.__version__) < version.parse('3.1.0'):
         ax.set_aspect('equal')
 

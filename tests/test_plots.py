@@ -118,3 +118,26 @@ def test_contour():
 
     # explicitly pass axes
     plot.contour(coords, data, ax=ax)
+
+
+def test_plot_voronoi_sphere():
+    """Test if the plot executes without raising an exception
+    """
+    coords = spharpy.samplings.hyperinterpolation(4)
+    plot.voronoi_cells_sphere(coords)
+
+    # test of auto detection of axes works
+    ax = plt.axes(projection='3d')
+    plot.voronoi_cells_sphere(coords)
+
+    # explicitly pass axes
+    plot.voronoi_cells_sphere(coords, ax=ax)
+
+    # pass axes with wrong projection
+    ax = plt.axes()
+    with pytest.raises(ValueError, match='3d'):
+        plot.voronoi_cells_sphere(coords, ax=ax)
+
+    # current axis with wrong projection
+    with pytest.raises(ValueError, match='3d'):
+        plot.voronoi_cells_sphere(coords)
