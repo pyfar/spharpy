@@ -21,13 +21,13 @@ def test_spherical_harmonic():
     Nmax = 1
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
     phi = np.array([0, np.pi/2, 0], dtype=float)
+
     rad = np.ones(3, dtype=float)
     coords = Coordinates.from_spherical(rad, theta, phi)
 
     Y = np.array([[2.820947917738781e-01 + 0.000000000000000e+00j, 3.454941494713355e-01 + 0.000000000000000e+00j, 2.991827511286337e-17 + 0.000000000000000e+00j, -3.454941494713355e-01 + 0.000000000000000e+00j],
                   [2.820947917738781e-01 + 0.000000000000000e+00j, 2.115541521371041e-17 - 3.454941494713355e-01j, 2.991827511286337e-17 + 0.000000000000000e+00j, -2.115541521371041e-17 - 3.454941494713355e-01j],
                   [2.820947917738781e-01 + 0.000000000000000e+00j, 0.000000000000000e+00 + 0.000000000000000e+00j, 4.886025119029199e-01 + 0.000000000000000e+00j, 0.000000000000000e+00 + 0.000000000000000e+00j]], dtype=complex)
-
 
     basis = sh.spherical_harmonic_basis(Nmax, coords)
 
@@ -36,8 +36,8 @@ def test_spherical_harmonic():
 
 def test_spherical_harmonic_n10():
     Nmax = 10
-    theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
-    phi = np.array([0, np.pi/2, 0], dtype='double')
+    theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
+    phi = np.array([0, np.pi/2, 0], dtype=float)
     n_points = len(theta)
 
     with patch.multiple(
