@@ -7,7 +7,7 @@ import spharpy
 
 
 def sid(n_max):
-    """Calculates the SID indices up to a maximum spherical harmonic order n_max.
+    """Calculates the SID indices up to spherical harmonic order n_max.
     TODO: Add citation Daniel
 
     Parameters

@@ -1,9 +1,9 @@
 scipy
-numpy
+numpy<1.20
 setuptools
 pytest
 urllib3
-matplotlib
+matplotlib<3.4
 pip
 bump2version
 wheel
