@@ -42,7 +42,7 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(coordinates):
+def scatter(coordinates, ax=None):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
@@ -50,11 +50,10 @@ def scatter(coordinates):
     coordinates : Coordinates
 
     """
-    fig = plt.gcf()
-    if 'Axes3D' in fig.axes.__str__():
-        ax = plt.gca()
-    else:
-        ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.axes(projection='3d')
+    elif '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')

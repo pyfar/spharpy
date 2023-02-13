@@ -8,6 +8,7 @@ plt.switch_backend('agg')
 
 import spharpy
 import numpy as np
+import pytest
 
 
 def test_balloon_plot_abs():
@@ -38,3 +39,14 @@ def test_contour_plot():
     basis = spharpy.spherical.spherical_harmonic_basis_real(n_max, coords)
     data = np.squeeze(4*np.pi/(n_max+1)**2 * basis @ y_vec.T)
     spharpy.plot.contour(coords, np.abs(data), show=False)
+
+
+def test_scatter():
+    coords = spharpy.samplings.hyperinterpolation(10)
+
+    ax = plt.axes(projection='3d')
+    spharpy.plot.scatter(coords, ax=ax)
+
+    ax = plt.axes()
+    with pytest.raises(ValueError, match='3d'):
+        spharpy.plot.scatter(coords, ax=ax)
