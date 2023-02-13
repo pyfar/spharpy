@@ -632,7 +632,8 @@ def pcolor_map(
 
     if ax.name != projection:
         raise ValueError(
-            "Projection does not match the projection of the axis")
+            "Projection does not match the projection of the axis",
+            f"Needs to be '{projection}', but is '{ax.name}'")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -712,7 +713,8 @@ def contour_map(
 
     if ax.name != projection:
         raise ValueError(
-            "Projection does not match the projection of the axis")
+            "Projection does not match the projection of the axis",
+            f"Needs to be '{projection}', but is '{ax.name}'")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
