@@ -246,9 +246,9 @@ def spherical_harmonic_real(n, m, theta, phi):
     elif m > 0:
         Y_nm = np.real(Y_nm_cplx) * np.sqrt(2)
     elif m < 0:
-        Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * np.float(-1)**(m+1)
+        Y_nm = np.imag(Y_nm_cplx) * np.sqrt(2) * float(-1)**(m+1)
 
-    Y_nm *= (np.float(-1)**(m))
+    Y_nm *= float(-1)**(m)
 
     return Y_nm
 
@@ -308,7 +308,7 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     """
     if m == 0:
-        res = np.zeros(theta.shape, dtype=np.complex)
+        res = np.zeros(theta.shape, dtype=complex)
     else:
         factor = np.sqrt((2*n+1)/(2*n-1))/2
         exp_phi = np.exp(1j*phi)
@@ -346,7 +346,7 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     """
     if n == 0:
-        res = np.zeros(theta.shape, dtype=np.complex)
+        res = np.zeros(theta.shape, dtype=complex)
     else:
         exp_phi = np.exp(1j*phi)
         first = np.sqrt((n-m+1) * (n+m)) * exp_phi * \
@@ -481,7 +481,7 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
 
     m_abs = np.abs(m)
     if n == 0:
-        res = np.zeros(theta.shape, dtype=np.double)
+        res = np.zeros(theta.shape, dtype=float)
     else:
         first = (n+m_abs)*(n-m_abs+1) * \
             legendre_function(
@@ -536,7 +536,7 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
     """
     m_abs = np.abs(m)
     if m == 0:
-        res = np.zeros(theta.shape, dtype=np.double)
+        res = np.zeros(theta.shape, dtype=float)
     else:
         legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
         N_nm = spherical_harmonic_normalization(n, m_abs)
@@ -586,7 +586,7 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     """
     m_abs = np.abs(m)
     if m == 0:
-        res = np.zeros(theta.shape, dtype=np.double)
+        res = np.zeros(theta.shape, dtype=float)
     else:
         first = (n+m_abs)*(n+m_abs-1) * \
             legendre_function(
