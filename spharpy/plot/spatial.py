@@ -62,10 +62,11 @@ def scatter(coordinates, ax=None):
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
+    ax.set_box_aspect([
+        np.ptp(coordinates.x),
+        np.ptp(coordinates.y),
+        np.ptp(coordinates.z)])
 
-    set_aspect_equal_3d(ax)
     plt.show()
 
 
@@ -270,9 +271,6 @@ def pcolor_sphere(
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
-
     plot = ax.plot_trisurf(tri,
                            z,
                            cmap=cmap,
@@ -282,8 +280,6 @@ def pcolor_sphere(
 
     plot.set_array(cdata)
 
-    set_aspect_equal_3d(ax)
-
     if colorbar:
         fig.colorbar(plot, ax=ax, label=clabel)
 
@@ -291,7 +287,10 @@ def pcolor_sphere(
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
 
-    ax.set_proj_type('ortho')
+    ax.set_box_aspect([
+        np.ptp(coordinates.x),
+        np.ptp(coordinates.y),
+        np.ptp(coordinates.z)])
 
     if show:
         plt.show()
@@ -354,12 +353,8 @@ def balloon_wireframe(
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
-
     plot = ax.plot_trisurf(tri,
                            z,
-                           # cmap=cmap,
                            antialiased=True,
                            vmin=vmin,
                            vmax=vmax)
@@ -371,8 +366,6 @@ def balloon_wireframe(
     cmappable.set_array(np.linspace(vmin, vmax, cdata.size))
 
     plot.set_edgecolors(cmap_colors)
-
-    set_aspect_equal_3d(ax)
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
     if colorbar:
@@ -383,7 +376,11 @@ def balloon_wireframe(
     ax.set_zlabel('z[m]')
 
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
-    ax.set_proj_type('ortho')
+
+    ax.set_box_aspect([
+        np.ptp(coordinates.x),
+        np.ptp(coordinates.y),
+        np.ptp(coordinates.z)])
 
     if show:
         plt.show()
@@ -451,9 +448,6 @@ def balloon(
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
-
     plot = ax.plot_trisurf(tri,
                            z,
                            cmap=cmap,
@@ -465,7 +459,10 @@ def balloon(
 
     plot.set_array(cdata)
 
-    set_aspect_equal_3d(ax)
+    ax.set_box_aspect([
+        np.ptp(coordinates.x),
+        np.ptp(coordinates.y),
+        np.ptp(coordinates.z)])
 
     if colorbar:
         fig.colorbar(plot, ax=ax, label=clabel)
@@ -474,7 +471,6 @@ def balloon(
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
 
-    ax.set_proj_type('ortho')
 
     if show:
         plt.show()
@@ -529,12 +525,14 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
 
         ax.add_collection3d(polygon)
 
-    set_aspect_equal_3d(ax)
+    ax.set_box_aspect([
+        np.ptp(sampling.x),
+        np.ptp(sampling.y),
+        np.ptp(sampling.z)])
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-    ax.set_proj_type('ortho')
 
 
 def _combined_contour(x, y, data, limits, cmap, ax):
