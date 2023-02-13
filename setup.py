@@ -34,7 +34,7 @@ test_requirements = [
 
 setup(
     name='spharpy',
-    version='0.4.1',
+    version='0.4.2',
     description="Python package for spherical array processing.",
     long_description=readme,
     author="Marco Berzborn",
