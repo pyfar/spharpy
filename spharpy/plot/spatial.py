@@ -588,10 +588,8 @@ def _combined_contour(x, y, data, limits, cmap, ax):
 
     ax.tricontour(x, y, data, linewidths=0.5, colors='k',
                   vmin=limits[0], vmax=limits[1], extend=extend)
-    cf = ax.tricontourf(x, y, data, cmap=cmap,
-                        vmin=limits[0], vmax=limits[1], extend=extend)
-
-    return cf
+    return ax.tricontourf(
+        x, y, data, cmap=cmap, vmin=limits[0], vmax=limits[1], extend=extend)
 
 
 def pcolor_map(
@@ -757,7 +755,8 @@ def contour_map(
     return cf
 
 
-def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
+def contour(
+        coordinates, data, limits=None, cmap=cm.viridis, show=True, ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -783,7 +782,8 @@ def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
     lat_deg = coordinates.latitude * 180/np.pi
     lon_deg = coordinates.longitude * 180/np.pi
     fig = plt.gcf()
-    ax = plt.gca()
+    if ax is None:
+        ax = plt.gca()
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 

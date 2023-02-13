@@ -103,3 +103,18 @@ def test_contour_map():
     ax = plt.axes()
     with pytest.raises(ValueError, match='Projection does not match'):
         plot.contour_map(coords, data, ax=ax)
+
+
+def test_contour():
+    """Test if the plot executes without raising an exception
+    """
+    coords = spharpy.samplings.hyperinterpolation(10)
+    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    plot.contour_map(coords, data)
+
+    # test of auto detection of axes works
+    ax = plt.axes()
+    plot.contour(coords, data)
+
+    # explicitly pass axes
+    plot.contour(coords, data, ax=ax)
