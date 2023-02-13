@@ -27,9 +27,9 @@ class Coordinates(object):
         """
 
         super(Coordinates, self).__init__()
-        x = np.asarray(x, dtype=np.float64)
-        y = np.asarray(y, dtype=np.float64)
-        z = np.asarray(z, dtype=np.float64)
+        x = np.asarray(x, dtype=float)
+        y = np.asarray(y, dtype=float)
+        z = np.asarray(z, dtype=float)
 
         if not np.shape(x) == np.shape(y) == np.shape(z):
             raise ValueError("Input arrays need to have same dimensions.")
@@ -46,7 +46,7 @@ class Coordinates(object):
 
     @x.setter
     def x(self, value):
-        self._x = np.asarray(value, dtype=np.float64)
+        self._x = np.asarray(value, dtype=float)
 
     @property
     def y(self):
@@ -55,7 +55,7 @@ class Coordinates(object):
 
     @y.setter
     def y(self, value):
-        self._y = np.asarray(value, dtype=np.float64)
+        self._y = np.asarray(value, dtype=float)
 
     @property
     def z(self):
@@ -64,7 +64,7 @@ class Coordinates(object):
 
     @z.setter
     def z(self, value):
-        self._z = np.asarray(value, dtype=np.float64)
+        self._z = np.asarray(value, dtype=float)
 
     @property
     def radius(self):
@@ -73,7 +73,7 @@ class Coordinates(object):
 
     @radius.setter
     def radius(self, radius):
-        x, y, z = sph2cart(np.asarray(radius, dtype=np.float64),
+        x, y, z = sph2cart(np.asarray(radius, dtype=float),
                            self.elevation,
                            self.azimuth)
         self._x = x
@@ -89,7 +89,7 @@ class Coordinates(object):
     def azimuth(self, azimuth):
         x, y, z = sph2cart(self.radius,
                            self.elevation,
-                           np.asarray(azimuth, dtype=np.float64))
+                           np.asarray(azimuth, dtype=float))
         self._x = x
         self._y = y
         self._z = z
@@ -103,7 +103,7 @@ class Coordinates(object):
     @elevation.setter
     def elevation(self, elevation):
         x, y, z = sph2cart(self.radius,
-                           np.asarray(elevation, dtype=np.float64),
+                           np.asarray(elevation, dtype=float),
                            self.azimuth)
         self._x = x
         self._y = y
@@ -139,9 +139,9 @@ class Coordinates(object):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
-        radius = np.asarray(radius, dtype=np.double)
-        elevation = np.asarray(elevation, dtype=np.double)
-        azimuth = np.asarray(azimuth, dtype=np.double)
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return Coordinates(x, y, z)
 
@@ -272,18 +272,15 @@ class SamplingSphere(Coordinates):
         """Init for sampling class
         """
         Coordinates.__init__(self, x, y, z)
-        if n_max is not None:
-            self._n_max = np.int(n_max)
-        else:
-            self._n_max = None
-
-        if weights is not None:
-            if len(x) != len(weights):
-                raise ValueError("The number of weights has to be equal to \
-                        the number of sampling points.")
-            self._weights = np.asarray(weights, dtype=np.double)
-        else:
+        self._n_max = int(n_max) if n_max is not None else None
+        if weights is None:
             self._weights = None
+
+        elif len(x) != len(weights):
+            raise ValueError("The number of weights has to be equal to \
+                        the number of sampling points.")
+        else:
+            self._weights = np.asarray(weights, dtype=float)
 
     @property
     def n_max(self):
@@ -292,7 +289,7 @@ class SamplingSphere(Coordinates):
 
     @n_max.setter
     def n_max(self, value):
-        self._n_max = np.int(value)
+        self._n_max = int(value)
 
     @property
     def weights(self):
@@ -304,7 +301,7 @@ class SamplingSphere(Coordinates):
         if len(weights) != self.n_points:
             raise ValueError("The number of weights has to be equal to \
                     the number of sampling points.")
-        self._weights = np.asarray(weights, dtype=np.double)
+        self._weights = np.asarray(weights, dtype=float)
 
     @classmethod
     def from_coordinates(cls, coords, n_max=None, weights=None):
@@ -356,9 +353,9 @@ class SamplingSphere(Coordinates):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
-        radius = np.asarray(radius, dtype=np.double)
-        elevation = np.asarray(elevation, dtype=np.double)
-        azimuth = np.asarray(azimuth, dtype=np.double)
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return SamplingSphere(x, y, z, n_max, weights)
 

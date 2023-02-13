@@ -74,37 +74,37 @@ def test_coordinates_init_from_array_cartesian():
     npt.assert_allclose(coords._z, z, atol=1e-15)
 
 def test_getter_x():
-    x = np.array([1, 0], dtype=np.double)
+    x = np.array([1, 0], dtype=float)
     coords = Coordinates()
     coords._x = x
     npt.assert_allclose(coords.x, x)
 
 def test_getter_y():
-    y = np.array([1, 0], dtype=np.double)
+    y = np.array([1, 0], dtype=float)
     coords = Coordinates()
     coords._y = y
     npt.assert_allclose(coords.y, y)
 
 def test_getter_z():
-    z = np.array([1, 0], dtype=np.double)
+    z = np.array([1, 0], dtype=float)
     coords = Coordinates()
     coords._z = z
     npt.assert_allclose(coords.z, z)
 
 def test_setter_x():
-    value = np.array([1.0, 1], dtype=np.double)
+    value = np.array([1.0, 1], dtype=float)
     coords = Coordinates()
     coords.x = value
     npt.assert_allclose(value, coords._x)
 
 def test_setter_y():
-    value = np.array([1.0, 1], dtype=np.double)
+    value = np.array([1.0, 1], dtype=float)
     coords = Coordinates()
     coords.y = value
     npt.assert_allclose(value, coords._y)
 
 def test_setter_z():
-    value = np.array([1.0, 1], dtype=np.double)
+    value = np.array([1.0, 1], dtype=float)
     coords = Coordinates()
     coords.z = value
     npt.assert_allclose(value, coords._z)
@@ -209,9 +209,9 @@ def test_setter_cartesian():
 
 
 def test_getter_spherical():
-    x = np.array([1, 0, 0, 1], dtype=np.float64)
-    y = np.array([0, 1, 0, 1], dtype=np.float64)
-    z = np.array([0, 0, 1, 1], dtype=np.float64)
+    x = np.array([1, 0, 0, 1], dtype=float)
+    y = np.array([0, 1, 0, 1], dtype=float)
+    z = np.array([0, 0, 1, 1], dtype=float)
 
     rad, theta, phi = cart2sph(x, y, z)
 
@@ -222,9 +222,9 @@ def test_getter_spherical():
 
 def test_setter_spherical():
     eps = np.spacing(1)
-    x = np.array([1, 0, 0, 1], dtype=np.float64)
-    y = np.array([0, 1, 0, 1], dtype=np.float64)
-    z = np.array([0, 0, 1, 1], dtype=np.float64)
+    x = np.array([1, 0, 0, 1], dtype=float)
+    y = np.array([0, 1, 0, 1], dtype=float)
+    z = np.array([0, 0, 1, 1], dtype=float)
     rad, theta, phi = cart2sph(x, y, z)
     spherial = np.vstack((rad, theta, phi))
     coords = Coordinates()
