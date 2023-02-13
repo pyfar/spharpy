@@ -21,7 +21,7 @@ def sid(n_max):
     """
     n_sh = (n_max+1)**2
     sid_n = sph_identity_matrix(n_max, 'n-nm').T @ np.arange(0, n_max+1)
-    sid_m = np.zeros(n_sh, dtype=np.int)
+    sid_m = np.zeros(n_sh, dtype=int)
     idx_n = 0
     for n in range(1, n_max+1):
         for m in range(1, n+1):
@@ -49,9 +49,7 @@ def sid2acn(n_max):
     """
     sid_n, sid_m = spharpy.indexing.sid(n_max)
     linear_sid = spharpy.spherical.nm2acn(sid_n, sid_m)
-    sort_index = np.argsort(linear_sid)
-
-    return sort_index
+    return np.argsort(linear_sid)
 
 
 def sph_identity_matrix(n_max, type='n-nm'):
@@ -73,10 +71,10 @@ def sph_identity_matrix(n_max, type='n-nm'):
     if type != 'n-nm':
         raise NotImplementedError
 
-    identity_matrix = np.zeros((n_max+1, n_sh), dtype=np.int)
+    identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)
     # linear_n0 = np.cumsum(np.arange(0, 2*(n_max+1), 2))
 
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         m = np.arange(-n, n+1)
         linear_nm = spharpy.spherical.nm2acn(np.tile(n, m.shape), m)
         identity_matrix[n, linear_nm] = 1
