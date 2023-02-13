@@ -807,30 +807,3 @@ class MidpointNormalize(colors.Normalize):
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
         return np.ma.masked_array(np.interp(value, x, y))
-
-
-def _add_colorbar(fig, ax, qm, label):
-    """
-    Add colorbar to 2D plot
-    Parameters
-    ----------
-    colorbar : bool
-        Flag indicating if a colobar should be added to the plot
-    fig : matplotlib figure object
-    ax : list
-        either a list of to axes objects or a list with one axis and None
-        object
-    mappable : A matplotlib mappable
-    label : string
-        colorbar label
-    Returns
-    -------
-    cb : matplotlib colorbar object
-    """
-    if ax[1] is None:
-        cb = fig.colorbar(qm, ax=ax[0])
-    else:
-        cb = fig.colorbar(qm, cax=ax[1])
-    cb.set_label(label)
-
-    return cb
