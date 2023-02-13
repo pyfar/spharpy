@@ -141,3 +141,21 @@ def test_plot_voronoi_sphere():
     # current axis with wrong projection
     with pytest.raises(ValueError, match='3d'):
         plot.voronoi_cells_sphere(coords)
+
+
+def test_pcolor_sphere():
+    coords = spharpy.samplings.hyperinterpolation(10)
+    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    plot.pcolor_sphere(coords, data, colorbar=True)
+
+    # test of auto detection of axes works
+    ax = plt.axes(projection='3d')
+    plot.pcolor_sphere(coords, data)
+
+    # explicitly pass axes
+    plot.pcolor_sphere(coords, data, ax=ax)
+
+    # pass axes with wrong projection
+    ax = plt.axes()
+    with pytest.raises(ValueError, match="'3d'"):
+        plot.pcolor_sphere(coords, data, ax=ax)
