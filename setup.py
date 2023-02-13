@@ -52,8 +52,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
     test_suite='tests',
     tests_require=test_requirements,
@@ -64,5 +65,5 @@ setup(
         "Documentation": "https://spharpy.readthedocs.io/",
         "Source Code": "https://github.com/mberz/spharpy",
     },
-    python_requires='>=3.7'
+    python_requires='>=3.8'
 )
