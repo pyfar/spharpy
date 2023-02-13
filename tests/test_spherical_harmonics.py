@@ -51,6 +51,7 @@ def test_spherical_harmonic_n10():
             './tests/data/sh_basis_cplx_n10.csv',
             delimiter=',',
             dtype=complex)
+
         basis = sh.spherical_harmonic_basis(Nmax, coords)
 
         np.testing.assert_allclose(Y, basis, atol=1e-13)
