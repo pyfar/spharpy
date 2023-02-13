@@ -46,14 +46,14 @@ def test_scatter():
     """Test if the plot executes without raising an exception
     """
     coords = spharpy.samplings.hyperinterpolation(10)
-    ax = plt.axes(projection='3d')
+    spharpy.plot.scatter(coords)
 
     # test of auto detection of axes works
+    ax = plt.axes(projection='3d')
     spharpy.plot.scatter(coords)
 
     # explicitly pass axes
     spharpy.plot.scatter(coords, ax=ax)
-
 
     # pass axes with wrong projection
     ax = plt.axes()
@@ -68,11 +68,12 @@ def test_scatter():
 def test_pcolor_map():
     """Test if the plot executes without raising an exception
     """
-    ax = plt.axes(projection='mollweide')
     coords = spharpy.samplings.hyperinterpolation(10)
     data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    plot.pcolor_map(coords, data)
 
     # test of auto detection of axes works
+    ax = plt.axes(projection='mollweide')
     plot.pcolor_map(coords, data)
 
     # explicitly pass axes
@@ -82,3 +83,23 @@ def test_pcolor_map():
     ax = plt.axes()
     with pytest.raises(ValueError, match='Projection does not match'):
         plot.pcolor_map(coords, data, ax=ax)
+
+
+def test_contour_map():
+    """Test if the plot executes without raising an exception
+    """
+    coords = spharpy.samplings.hyperinterpolation(10)
+    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    plot.contour_map(coords, data)
+
+    # test of auto detection of axes works
+    ax = plt.axes(projection='mollweide')
+    plot.contour_map(coords, data)
+
+    # explicitly pass axes
+    plot.contour_map(coords, data, ax=ax)
+
+    # pass axes with wrong projection
+    ax = plt.axes()
+    with pytest.raises(ValueError, match='Projection does not match'):
+        plot.contour_map(coords, data, ax=ax)

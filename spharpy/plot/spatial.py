@@ -50,8 +50,9 @@ def scatter(coordinates, ax=None):
     coordinates : Coordinates
 
     """
+    fig = plt.gcf()
     if ax is None:
-        ax = plt.gca()
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
 
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
@@ -637,7 +638,7 @@ def pcolor_map(
     fig = plt.gcf()
 
     if ax is None:
-        ax = plt.gca()
+        ax = plt.gca() if fig.axes else plt.axes(projection=projection)
 
     if ax.name != projection:
         raise ValueError(
@@ -681,7 +682,8 @@ def contour_map(
         cmap=cm.viridis,
         colorbar=True,
         show=True,
-        levels=None):
+        levels=None,
+        ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -715,8 +717,12 @@ def contour_map(
     interp = interpolate_data_on_sphere(coordinates, data)
     zi = interp(xi, yi)
 
-    # ax = plt.axes(projection=projection)
-    ax = plt.gca(projection=projection)
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection=projection)
+
+    if ax.name != projection:
+        raise ValueError(
+            "Projection does not match the projection of the axis")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
