@@ -305,7 +305,8 @@ def balloon_wireframe(
         cmap=None,
         phase=False,
         show=True,
-        colorbar=True):
+        colorbar=True,
+        ax=None):
     """Plot data on a sphere defined by the coordinate angles
     theta and phi. The magnitude information is mapped onto the radius of the
     sphere. The colormap represents either the phase or the magnitude of the
@@ -334,28 +335,22 @@ def balloon_wireframe(
     tri, z = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
-    if colorbar:
-        gs = fig.add_gridspec(
-            2,
-            2,
-            width_ratios=[1, 0.05],
-            height_ratios=[1, 0.05])
-        ax = fig.add_subplot(gs[0, 0], projection='3d')
-        cax = fig.add_subplot(gs[0, 1])
-    else:
-        if 'Axes3D' in fig.axes.__str__():
-            ax = plt.gca()
-        else:
-            ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    elif '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
             cmap = phase_twilight()
+        clabel = 'Phase (rad)'
     else:
-        itype = 'magnitude'
+        itype = 'amplitude'
         if cmap is None:
             cmap = cm.viridis
+        clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
@@ -381,7 +376,7 @@ def balloon_wireframe(
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
     if colorbar:
-        plt.colorbar(cmappable, cax=cax)
+        fig.colorbar(cmappable, ax=ax, label=clabel)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
@@ -405,6 +400,7 @@ def balloon(
         phase=False,
         show=True,
         colorbar=True,
+        ax=None,
         *args,
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles theta and phi.
@@ -436,28 +432,22 @@ def balloon(
     tri, z = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
-    if colorbar:
-        gs = fig.add_gridspec(
-            2,
-            2,
-            width_ratios=[1, 0.05],
-            height_ratios=[1, 0.05])
-        ax = fig.add_subplot(gs[0, 0], projection='3d')
-        cax = fig.add_subplot(gs[0, 1])
-    else:
-        if 'Axes3D' in fig.axes.__str__():
-            ax = plt.gca()
-        else:
-            ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    elif '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
             cmap = phase_twilight()
+        clabel = 'Phase (rad)'
     else:
-        itype = 'magnitude'
+        itype = 'amplitude'
         if cmap is None:
             cmap = cm.viridis
+        clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
@@ -478,7 +468,7 @@ def balloon(
     set_aspect_equal_3d(ax)
 
     if colorbar:
-        plt.colorbar(plot, cax=cax)
+        fig.colorbar(plot, ax=ax, label=clabel)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')

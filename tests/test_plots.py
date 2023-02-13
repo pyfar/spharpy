@@ -159,3 +159,39 @@ def test_pcolor_sphere():
     ax = plt.axes()
     with pytest.raises(ValueError, match="'3d'"):
         plot.pcolor_sphere(coords, data, ax=ax)
+
+
+def test_balloon_wireframe():
+    coords = spharpy.samplings.hyperinterpolation(10)
+    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    plot.balloon_wireframe(coords, data)
+
+    # test of auto detection of axes works
+    ax = plt.axes(projection='3d')
+    plot.balloon_wireframe(coords, data)
+
+    # explicitly pass axes
+    plot.balloon_wireframe(coords, data, ax=ax)
+
+    # pass axes with wrong projection
+    ax = plt.axes()
+    with pytest.raises(ValueError, match="'3d'"):
+        plot.balloon_wireframe(coords, data, ax=ax)
+
+
+def test_balloon():
+    coords = spharpy.samplings.hyperinterpolation(10)
+    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    plot.balloon(coords, data)
+
+    # test of auto detection of axes works
+    ax = plt.axes(projection='3d')
+    plot.balloon(coords, data)
+
+    # explicitly pass axes
+    plot.balloon(coords, data, ax=ax)
+
+    # pass axes with wrong projection
+    ax = plt.axes()
+    with pytest.raises(ValueError, match="'3d'"):
+        plot.balloon(coords, data, ax=ax)
