@@ -9,6 +9,7 @@ plt.switch_backend('agg')
 import spharpy
 import numpy as np
 import pytest
+from spharpy import plot
 
 
 def test_balloon_plot_abs():
@@ -42,11 +43,31 @@ def test_contour_plot():
 
 
 def test_scatter():
+    """Test if the plot executes without raising an exception
+    """
     coords = spharpy.samplings.hyperinterpolation(10)
-
     ax = plt.axes(projection='3d')
     spharpy.plot.scatter(coords, ax=ax)
 
     ax = plt.axes()
     with pytest.raises(ValueError, match='3d'):
         spharpy.plot.scatter(coords, ax=ax)
+
+
+def test_pcolor_map():
+    """Test if the plot executes without raising an exception
+    """
+    ax = plt.axes(projection='mollweide')
+    coords = spharpy.samplings.hyperinterpolation(10)
+    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+
+    # test of auto detection of axes works
+    plot.pcolor_map(coords, data)
+
+    # explicitly pass axes
+    plot.pcolor_map(coords, data, ax=ax)
+
+    # pass axes with wrong projection
+    ax = plt.axes()
+    with pytest.raises(ValueError, match='Projection does not match'):
+        plot.pcolor_map(coords, data, ax=ax)

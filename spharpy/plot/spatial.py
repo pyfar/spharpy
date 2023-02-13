@@ -216,6 +216,7 @@ def pcolor_sphere(
         colorbar=True,
         show=True,
         phase=False,
+        ax=None,
         *args,
         **kwargs):
     """Plot data on the surface of a sphere defined by the coordinate angles
@@ -238,6 +239,9 @@ def pcolor_sphere(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object.
     show : boolean, optional
         Whether to show the figure or not
 
@@ -254,10 +258,10 @@ def pcolor_sphere(
         ax = fig.add_subplot(gs[0, 0], projection='3d')
         cax = fig.add_subplot(gs[0, 1])
     else:
-        if 'Axes3D' in fig.axes.__str__():
-            ax = plt.gca()
-        else:
-            ax = plt.gca(projection='3d')
+        if ax is None:
+            ax = plt.axes(projection='3d')
+        elif '3d' not in ax.name:
+            raise ValueError("The projection of the axis needs to be '3d'")
 
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
@@ -593,9 +597,10 @@ def pcolor_map(
         data,
         projection='mollweide',
         limits=None,
-        cmap=cm.viridis,
+        cmap=plt.get_cmap('viridis'),
         show=True,
         refine=False,
+        ax=None,
         **kwargs):
     """
     Plot the map projection of data points sampled on a spherical surface.
@@ -621,10 +626,7 @@ def pcolor_map(
     """
     tri = mtri.Triangulation(coordinates.longitude, coordinates.latitude)
     if refine is not None:
-        if isinstance(refine, int):
-            subdiv = refine
-        else:
-            subdiv = 2
+        subdiv = refine if isinstance(refine, int) else 2
         refiner = mtri.UniformTriRefiner(tri)
         tri, data = refiner.refine_field(
             data,
@@ -633,7 +635,12 @@ def pcolor_map(
 
     fig = plt.gcf()
 
-    ax = plt.axes(projection=projection)
+    if ax is None:
+        ax = plt.gca()
+
+    if ax.name != projection:
+        raise ValueError(
+            "Projection does not match the projection of the axis")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -799,3 +806,30 @@ class MidpointNormalize(colors.Normalize):
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
         return np.ma.masked_array(np.interp(value, x, y))
+
+
+def _add_colorbar(fig, ax, qm, label):
+    """
+    Add colorbar to 2D plot
+    Parameters
+    ----------
+    colorbar : bool
+        Flag indicating if a colobar should be added to the plot
+    fig : matplotlib figure object
+    ax : list
+        either a list of to axes objects or a list with one axis and None
+        object
+    mappable : A matplotlib mappable
+    label : string
+        colorbar label
+    Returns
+    -------
+    cb : matplotlib colorbar object
+    """
+    if ax[1] is None:
+        cb = fig.colorbar(qm, ax=ax[0])
+    else:
+        cb = fig.colorbar(qm, cax=ax[1])
+    cb.set_label(label)
+
+    return cb
