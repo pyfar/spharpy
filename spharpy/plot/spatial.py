@@ -77,8 +77,8 @@ def _triangulation_sphere(sampling, data):
     ----------
     sampling : Coordinates
         Coordinate object for which the triangulation is calculated
-    data : array, shape(n_points)
-        Sampled data
+    xyz : list of arrays
+        x, y, and z values of the data points in the triangulation
 
     Returns
     -------
@@ -96,7 +96,7 @@ def _triangulation_sphere(sampling, data):
             sampling.azimuth)).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
 
-    return tri, z
+    return tri, [x, y, z]
 
 
 def interpolate_data_on_sphere(
@@ -249,7 +249,7 @@ def pcolor_sphere(
         Whether to show the figure or not
 
     """
-    tri, z = _triangulation_sphere(coordinates, np.ones_like(data))
+    tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
     if ax is None:
@@ -272,7 +272,7 @@ def pcolor_sphere(
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
     plot = ax.plot_trisurf(tri,
-                           z,
+                           xyz[2],
                            cmap=cmap,
                            antialiased=True,
                            vmin=vmin,
@@ -331,7 +331,7 @@ def balloon_wireframe(
     show : boolean, optional
         Whether to show the figure or not
     """
-    tri, z = _triangulation_sphere(coordinates, data)
+    tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
     if ax is None:
@@ -354,7 +354,7 @@ def balloon_wireframe(
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
     plot = ax.plot_trisurf(tri,
-                           z,
+                           xyz[2],
                            antialiased=True,
                            vmin=vmin,
                            vmax=vmax)
@@ -378,9 +378,9 @@ def balloon_wireframe(
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
     ax.set_box_aspect([
-        np.ptp(coordinates.x),
-        np.ptp(coordinates.y),
-        np.ptp(coordinates.z)])
+        np.ptp(xyz[0]),
+        np.ptp(xyz[1]),
+        np.ptp(xyz[2])])
 
     if show:
         plt.show()
@@ -426,7 +426,7 @@ def balloon(
     show : boolean, optional
         Wheter to show the figure or not
     """
-    tri, z = _triangulation_sphere(coordinates, data)
+    tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
     if ax is None:
@@ -449,7 +449,7 @@ def balloon(
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
     plot = ax.plot_trisurf(tri,
-                           z,
+                           xyz[2],
                            cmap=cmap,
                            antialiased=True,
                            vmin=vmin,
@@ -460,9 +460,9 @@ def balloon(
     plot.set_array(cdata)
 
     ax.set_box_aspect([
-        np.ptp(coordinates.x),
-        np.ptp(coordinates.y),
-        np.ptp(coordinates.z)])
+        np.ptp(xyz[0]),
+        np.ptp(xyz[1]),
+        np.ptp(xyz[2])])
 
     if colorbar:
         fig.colorbar(plot, ax=ax, label=clabel)
@@ -470,7 +470,6 @@ def balloon(
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-
 
     if show:
         plt.show()
