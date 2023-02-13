@@ -51,8 +51,9 @@ def scatter(coordinates, ax=None):
 
     """
     if ax is None:
-        ax = plt.axes(projection='3d')
-    elif '3d' not in ax.name:
+        ax = plt.gca()
+
+    if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)

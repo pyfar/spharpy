@@ -47,11 +47,22 @@ def test_scatter():
     """
     coords = spharpy.samplings.hyperinterpolation(10)
     ax = plt.axes(projection='3d')
+
+    # test of auto detection of axes works
+    spharpy.plot.scatter(coords)
+
+    # explicitly pass axes
     spharpy.plot.scatter(coords, ax=ax)
 
+
+    # pass axes with wrong projection
     ax = plt.axes()
     with pytest.raises(ValueError, match='3d'):
         spharpy.plot.scatter(coords, ax=ax)
+
+    # current axis with wrong projection
+    with pytest.raises(ValueError, match='3d'):
+        spharpy.plot.scatter(coords)
 
 
 def test_pcolor_map():
