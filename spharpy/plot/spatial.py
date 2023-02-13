@@ -42,7 +42,7 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(coordinates):
+def scatter(coordinates, ax=None):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
@@ -51,20 +51,22 @@ def scatter(coordinates):
 
     """
     fig = plt.gcf()
-    if 'Axes3D' in fig.axes.__str__():
-        ax = plt.gca()
-    else:
-        ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    if '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
+    ax.set_box_aspect([
+        np.ptp(coordinates.x),
+        np.ptp(coordinates.y),
+        np.ptp(coordinates.z)])
 
-    set_aspect_equal_3d(ax)
     plt.show()
 
 
@@ -75,8 +77,8 @@ def _triangulation_sphere(sampling, data):
     ----------
     sampling : Coordinates
         Coordinate object for which the triangulation is calculated
-    data : array, shape(n_points)
-        Sampled data
+    xyz : list of arrays
+        x, y, and z values of the data points in the triangulation
 
     Returns
     -------
@@ -94,7 +96,7 @@ def _triangulation_sphere(sampling, data):
             sampling.azimuth)).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
 
-    return tri, z
+    return tri, [x, y, z]
 
 
 def interpolate_data_on_sphere(
@@ -217,6 +219,7 @@ def pcolor_sphere(
         colorbar=True,
         show=True,
         phase=False,
+        ax=None,
         *args,
         **kwargs):
     """Plot data on the surface of a sphere defined by the coordinate angles
@@ -239,43 +242,37 @@ def pcolor_sphere(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object.
     show : boolean, optional
         Whether to show the figure or not
 
     """
-    tri, z = _triangulation_sphere(coordinates, np.ones_like(data))
+    tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
-    if colorbar:
-        gs = fig.add_gridspec(
-            2,
-            2,
-            width_ratios=[1, 0.05],
-            height_ratios=[1, 0.05])
-        ax = fig.add_subplot(gs[0, 0], projection='3d')
-        cax = fig.add_subplot(gs[0, 1])
-    else:
-        if 'Axes3D' in fig.axes.__str__():
-            ax = plt.gca()
-        else:
-            ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    elif '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
             cmap = phase_twilight()
+        clabel = 'Phase (rad)'
     else:
         itype = 'amplitude'
         if cmap is None:
             cmap = cm.viridis
+        clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
-
     plot = ax.plot_trisurf(tri,
-                           z,
+                           xyz[2],
                            cmap=cmap,
                            antialiased=True,
                            vmin=vmin,
@@ -283,16 +280,17 @@ def pcolor_sphere(
 
     plot.set_array(cdata)
 
-    set_aspect_equal_3d(ax)
-
     if colorbar:
-        plt.colorbar(plot, cax=cax)
+        fig.colorbar(plot, ax=ax, label=clabel)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
 
-    ax.set_proj_type('ortho')
+    ax.set_box_aspect([
+        np.ptp(coordinates.x),
+        np.ptp(coordinates.y),
+        np.ptp(coordinates.z)])
 
     if show:
         plt.show()
@@ -306,7 +304,8 @@ def balloon_wireframe(
         cmap=None,
         phase=False,
         show=True,
-        colorbar=True):
+        colorbar=True,
+        ax=None):
     """Plot data on a sphere defined by the coordinate angles
     theta and phi. The magnitude information is mapped onto the radius of the
     sphere. The colormap represents either the phase or the magnitude of the
@@ -332,40 +331,30 @@ def balloon_wireframe(
     show : boolean, optional
         Whether to show the figure or not
     """
-    tri, z = _triangulation_sphere(coordinates, data)
+    tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
-    if colorbar:
-        gs = fig.add_gridspec(
-            2,
-            2,
-            width_ratios=[1, 0.05],
-            height_ratios=[1, 0.05])
-        ax = fig.add_subplot(gs[0, 0], projection='3d')
-        cax = fig.add_subplot(gs[0, 1])
-    else:
-        if 'Axes3D' in fig.axes.__str__():
-            ax = plt.gca()
-        else:
-            ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    elif '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
             cmap = phase_twilight()
+        clabel = 'Phase (rad)'
     else:
-        itype = 'magnitude'
+        itype = 'amplitude'
         if cmap is None:
             cmap = cm.viridis
+        clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
-
     plot = ax.plot_trisurf(tri,
-                           z,
-                           # cmap=cmap,
+                           xyz[2],
                            antialiased=True,
                            vmin=vmin,
                            vmax=vmax)
@@ -377,19 +366,21 @@ def balloon_wireframe(
     cmappable.set_array(np.linspace(vmin, vmax, cdata.size))
 
     plot.set_edgecolors(cmap_colors)
-
-    set_aspect_equal_3d(ax)
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
     if colorbar:
-        plt.colorbar(cmappable, cax=cax)
+        fig.colorbar(cmappable, ax=ax, label=clabel)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
 
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
-    ax.set_proj_type('ortho')
+
+    ax.set_box_aspect([
+        np.ptp(xyz[0]),
+        np.ptp(xyz[1]),
+        np.ptp(xyz[2])])
 
     if show:
         plt.show()
@@ -406,6 +397,7 @@ def balloon(
         phase=False,
         show=True,
         colorbar=True,
+        ax=None,
         *args,
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles theta and phi.
@@ -434,39 +426,30 @@ def balloon(
     show : boolean, optional
         Wheter to show the figure or not
     """
-    tri, z = _triangulation_sphere(coordinates, data)
+    tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
-    if colorbar:
-        gs = fig.add_gridspec(
-            2,
-            2,
-            width_ratios=[1, 0.05],
-            height_ratios=[1, 0.05])
-        ax = fig.add_subplot(gs[0, 0], projection='3d')
-        cax = fig.add_subplot(gs[0, 1])
-    else:
-        if 'Axes3D' in fig.axes.__str__():
-            ax = plt.gca()
-        else:
-            ax = plt.gca(projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    elif '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
 
     if np.iscomplex(data).any() or phase:
         itype = 'phase'
         if cmap is None:
             cmap = phase_twilight()
+        clabel = 'Phase (rad)'
     else:
-        itype = 'magnitude'
+        itype = 'amplitude'
         if cmap is None:
             cmap = cm.viridis
+        clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
-
     plot = ax.plot_trisurf(tri,
-                           z,
+                           xyz[2],
                            cmap=cmap,
                            antialiased=True,
                            vmin=vmin,
@@ -476,16 +459,17 @@ def balloon(
 
     plot.set_array(cdata)
 
-    set_aspect_equal_3d(ax)
+    ax.set_box_aspect([
+        np.ptp(xyz[0]),
+        np.ptp(xyz[1]),
+        np.ptp(xyz[2])])
 
     if colorbar:
-        plt.colorbar(plot, cax=cax)
+        fig.colorbar(plot, ax=ax, label=clabel)
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-
-    ax.set_proj_type('ortho')
 
     if show:
         plt.show()
@@ -493,7 +477,7 @@ def balloon(
     return plot
 
 
-def voronoi_cells_sphere(sampling, round_decimals=13):
+def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     """Plot the Voronoi cells of a Voronoi tesselation on a sphere.
 
     Parameters
@@ -503,6 +487,9 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     round_decimals : int
         Decimals to be rounded to for eliminating duplicate points in
         the voronoi diagram
+    ax : AxesSubplot, None, optional
+        The subplot axes to use for plotting. The used projection needs to be
+        '3d'.
 
     """
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
@@ -510,7 +497,12 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
     points = sampling.cartesian.T
 
     fig = plt.gcf()
-    ax = fig.add_subplot(111, projection='3d')
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+
+    if '3d' not in ax.name:
+        raise ValueError("The projection of the axis needs to be '3d'")
+
     if version.parse(mpl.__version__) < version.parse('3.1.0'):
         ax.set_aspect('equal')
 
@@ -532,12 +524,14 @@ def voronoi_cells_sphere(sampling, round_decimals=13):
 
         ax.add_collection3d(polygon)
 
-    set_aspect_equal_3d(ax)
+    ax.set_box_aspect([
+        np.ptp(sampling.x),
+        np.ptp(sampling.y),
+        np.ptp(sampling.z)])
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-    ax.set_proj_type('ortho')
 
 
 def _combined_contour(x, y, data, limits, cmap, ax):
@@ -583,10 +577,8 @@ def _combined_contour(x, y, data, limits, cmap, ax):
 
     ax.tricontour(x, y, data, linewidths=0.5, colors='k',
                   vmin=limits[0], vmax=limits[1], extend=extend)
-    cf = ax.tricontourf(x, y, data, cmap=cmap,
-                        vmin=limits[0], vmax=limits[1], extend=extend)
-
-    return cf
+    return ax.tricontourf(
+        x, y, data, cmap=cmap, vmin=limits[0], vmax=limits[1], extend=extend)
 
 
 def pcolor_map(
@@ -594,9 +586,10 @@ def pcolor_map(
         data,
         projection='mollweide',
         limits=None,
-        cmap=cm.viridis,
+        cmap=plt.get_cmap('viridis'),
         show=True,
         refine=False,
+        ax=None,
         **kwargs):
     """
     Plot the map projection of data points sampled on a spherical surface.
@@ -622,10 +615,7 @@ def pcolor_map(
     """
     tri = mtri.Triangulation(coordinates.longitude, coordinates.latitude)
     if refine is not None:
-        if isinstance(refine, int):
-            subdiv = refine
-        else:
-            subdiv = 2
+        subdiv = refine if isinstance(refine, int) else 2
         refiner = mtri.UniformTriRefiner(tri)
         tri, data = refiner.refine_field(
             data,
@@ -634,7 +624,13 @@ def pcolor_map(
 
     fig = plt.gcf()
 
-    ax = plt.axes(projection=projection)
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection=projection)
+
+    if ax.name != projection:
+        raise ValueError(
+            "Projection does not match the projection of the axis",
+            f"Needs to be '{projection}', but is '{ax.name}'")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -674,7 +670,8 @@ def contour_map(
         cmap=cm.viridis,
         colorbar=True,
         show=True,
-        levels=None):
+        levels=None,
+        ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -708,8 +705,13 @@ def contour_map(
     interp = interpolate_data_on_sphere(coordinates, data)
     zi = interp(xi, yi)
 
-    # ax = plt.axes(projection=projection)
-    ax = plt.gca(projection=projection)
+    if ax is None:
+        ax = plt.gca() if fig.axes else plt.axes(projection=projection)
+
+    if ax.name != projection:
+        raise ValueError(
+            "Projection does not match the projection of the axis",
+            f"Needs to be '{projection}', but is '{ax.name}'")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -744,7 +746,8 @@ def contour_map(
     return cf
 
 
-def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
+def contour(
+        coordinates, data, limits=None, cmap=cm.viridis, show=True, ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -770,7 +773,8 @@ def contour(coordinates, data, limits=None, cmap=cm.viridis, show=True):
     lat_deg = coordinates.latitude * 180/np.pi
     lon_deg = coordinates.longitude * 180/np.pi
     fig = plt.gcf()
-    ax = plt.gca()
+    if ax is None:
+        ax = plt.gca()
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 

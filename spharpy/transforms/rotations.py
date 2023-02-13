@@ -265,7 +265,7 @@ class RotationSH(Rotation):
 
         n_sh = (self.n_max+1)**2
         if type == 'real':
-            dtype = np.double
+            dtype = float
             rot_func = wigner_d_rotation_real
         elif type == 'complex':
             dtype = complex
@@ -511,7 +511,7 @@ def wigner_d_rotation_real(n_max, alpha, beta, gamma):
 
     """
     n_sh = (n_max+1)**2
-    R = np.zeros((n_sh, n_sh), dtype=np.double)
+    R = np.zeros((n_sh, n_sh), dtype=float)
 
     for row_acn in np.arange(0, (n_max+1)**2):
         for col_acn in np.arange(0, (n_max+1)**2):
