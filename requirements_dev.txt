@@ -3,7 +3,7 @@ numpy
 setuptools
 pytest
 urllib3
-matplotlib<3.4
+matplotlib>=3.3.0
 pip
 bump2version
 wheel
