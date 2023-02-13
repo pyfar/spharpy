@@ -52,6 +52,8 @@ def test_scatter():
     with pytest.raises(ValueError, match='3d'):
         spharpy.plot.scatter(coords)
 
+    plt.close('all')
+
 
 def test_pcolor_map():
     """Test if the plot executes without raising an exception
@@ -71,6 +73,8 @@ def test_pcolor_map():
     ax = plt.axes()
     with pytest.raises(ValueError, match='Projection does not match'):
         plot.pcolor_map(coords, data, ax=ax)
+
+    plt.close('all')
 
 
 def test_contour_map():
@@ -92,6 +96,8 @@ def test_contour_map():
     with pytest.raises(ValueError, match='Projection does not match'):
         plot.contour_map(coords, data, ax=ax)
 
+    plt.close('all')
+
 
 def test_contour():
     """Test if the plot executes without raising an exception
@@ -106,6 +112,8 @@ def test_contour():
 
     # explicitly pass axes
     plot.contour(coords, data, ax=ax)
+
+    plt.close('all')
 
 
 def test_plot_voronoi_sphere():
@@ -130,6 +138,8 @@ def test_plot_voronoi_sphere():
     with pytest.raises(ValueError, match='3d'):
         plot.voronoi_cells_sphere(coords)
 
+    plt.close('all')
+
 
 def test_pcolor_sphere():
     coords = spharpy.samplings.hyperinterpolation(10)
@@ -147,6 +157,8 @@ def test_pcolor_sphere():
     ax = plt.axes()
     with pytest.raises(ValueError, match="'3d'"):
         plot.pcolor_sphere(coords, data, ax=ax)
+
+    plt.close('all')
 
 
 def test_balloon_wireframe():
@@ -166,6 +178,8 @@ def test_balloon_wireframe():
     with pytest.raises(ValueError, match="'3d'"):
         plot.balloon_wireframe(coords, data, ax=ax)
 
+    plt.close('all')
+
 
 def test_balloon():
     coords = spharpy.samplings.hyperinterpolation(10)
@@ -183,3 +197,5 @@ def test_balloon():
     ax = plt.axes()
     with pytest.raises(ValueError, match="'3d'"):
         plot.balloon(coords, data, ax=ax)
+
+    plt.close('all')
