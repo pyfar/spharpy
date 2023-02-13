@@ -14,7 +14,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'numpy',
+    'numpy>=1.22',
     'scipy',
     'urllib3',
     'matplotlib<3.4'
