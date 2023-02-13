@@ -332,8 +332,8 @@ def gaussian(n_max):
 
 
 def eigenmike_em32():
-    """Microphone positions of the Eigenmike em32 by mhacoustics according to the
-    Eigenstudio user manual on the homepage [6]_.
+    """Microphone positions of the Eigenmike em32 by mhacoustics according to
+    the Eigenstudio user manual on the homepage [6]_.
 
     References
     ----------
