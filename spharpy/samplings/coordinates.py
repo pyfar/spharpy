@@ -301,7 +301,7 @@ class SamplingSphere(Coordinates):
         if len(weights) != self.n_points:
             raise ValueError("The number of weights has to be equal to \
                     the number of sampling points.")
-        self._weights = np.asarray(weights, dtype=np.double)
+        self._weights = np.asarray(weights, dtype=float)
 
     @classmethod
     def from_coordinates(cls, coords, n_max=None, weights=None):
@@ -353,9 +353,9 @@ class SamplingSphere(Coordinates):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
-        radius = np.asarray(radius, dtype=np.double)
-        elevation = np.asarray(elevation, dtype=np.double)
-        azimuth = np.asarray(azimuth, dtype=np.double)
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return SamplingSphere(x, y, z, n_max, weights)
 

@@ -218,7 +218,7 @@ def calculate_sampling_weights(sampling, round_decimals=12):
 
     Returns
     -------
-    weigths : ndarray, np.double
+    weigths : ndarray, float
         Sampling weights
 
     """
@@ -231,7 +231,7 @@ def calculate_sampling_weights(sampling, round_decimals=12):
         return_index=True)
 
     searchtree = cKDTree(unique_verts)
-    area = np.zeros(sampling.n_points, np.double)
+    area = np.zeros(sampling.n_points, float)
 
     for idx, region in enumerate(sv.regions):
         _, idx_nearest = searchtree.query(sv.vertices[np.array(region)])
