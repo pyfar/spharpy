@@ -1,5 +1,5 @@
 scipy
-numpy
+numpy>=1.22
 setuptools
 pytest
 urllib3

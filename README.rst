@@ -11,7 +11,7 @@ spharpy
     :target: https://circleci.com/gh/mberz/spharpy
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/mberz/spharpy/main?filepath=examples/
-    
+
 Spherical array processing in python.
 
 
@@ -23,8 +23,6 @@ Use pip to install spharpy
 .. code-block:: console
 
     $ pip install spharpy
-
-Python versions >= 3.7 are required
 
 
 Getting Started
