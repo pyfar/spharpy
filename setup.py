@@ -39,7 +39,7 @@ setup(
     long_description=readme,
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
-    url='https://git.rwth-aachen.de/mbe/spharpy/',
+    url='https://github.com/mberz/spharpy',
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
@@ -58,5 +58,11 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     setup_requires=setup_requirements,
+    download_url="https://pypi.org/project/spharpy/",
+    project_urls={
+        "Bug Tracker": "https://github.com/mberz/spharpy/issues",
+        "Documentation": "https://spharpy.readthedocs.io/",
+        "Source Code": "https://github.com/mberz/spharpy",
+    },
     python_requires='>=3.7'
 )

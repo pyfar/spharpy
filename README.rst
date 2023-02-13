@@ -1,8 +1,18 @@
 ======
-Readme
+spharpy
 ======
 
-Package for SPherical ARray processing in PYthon.
+.. image:: https://badge.fury.io/py/spharpy.svg
+    :target: https://badge.fury.io/py/spharpy
+.. image:: https://readthedocs.org/projects/spharpy/badge/?version=latest
+    :target: https://spharpy.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+.. image:: https://circleci.com/gh/mberz/spharpy.svg?style=shield
+    :target: https://circleci.com/gh/mberz/spharpy
+.. image:: https://mybinder.org/badge_logo.svg
+    :target: https://mybinder.org/v2/gh/mberz/spharpy/main?filepath=examples/
+    
+Spherical array processing in python.
 
 
 Installation
