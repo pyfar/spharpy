@@ -80,12 +80,10 @@ def nm2acn(n, m):
     n = np.asarray(n, dtype=int)
     m = np.asarray(m, dtype=int)
 
-    if not (n.size == m.size):
+    if n.size != m.size:
         raise ValueError("n and m need to be of the same size")
 
-    acn = n**2 + n + m
-
-    return acn
+    return n**2 + n + m
 
 
 def spherical_harmonic_basis(n_max, coords):
@@ -125,7 +123,7 @@ def spherical_harmonic_basis(n_max, coords):
 
     basis = np.zeros((coords.n_points, n_coeff), dtype=complex)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
             order,
@@ -179,7 +177,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
     grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
@@ -235,7 +233,7 @@ def spherical_harmonic_basis_real(n_max, coords):
 
     basis = np.zeros((coords.n_points, n_coeff), dtype=float)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
             order,
@@ -288,7 +286,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     grad_theta = np.zeros((n_points, n_coeff), dtype=float)
     grad_phi = np.zeros((n_points, n_coeff), dtype=float)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
@@ -351,7 +349,7 @@ def modal_strength(n_max,
 
     modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=complex)
 
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         bn = _modal_strength(n, kr, arraytype)
         for m in range(-n, n+1):
             acn = n*n + n + m
@@ -499,7 +497,7 @@ def radiation_from_sphere(
     n_bins = k.shape[0]
     radiation = np.zeros((n_bins, n_sh, n_sh), dtype=complex)
 
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
         hankel_prime = _special.spherical_hankel(
             n, k*rad_sphere, kind=2, derivative=True)

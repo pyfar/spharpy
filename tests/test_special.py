@@ -33,6 +33,7 @@ class TestBessel(object):
         truth = np.genfromtxt('./tests/data/bessel.csv', delimiter=',')
         npt.assert_allclose(res, truth)
 
+
 class TestBesselPrime(object):
     def test_shape(self):
         n = np.array([0, 1])
@@ -110,7 +111,6 @@ def test_spherical_harmonic_derivative_theta():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_ele.csv',
@@ -131,7 +131,6 @@ def test_spherical_harmonic_derivative_phi():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
     desired_all = np.genfromtxt(
         './tests/data/Y_diff_azi.csv',
@@ -152,7 +151,6 @@ def test_spherical_harmonic_gradient_phi():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_azi.csv',
@@ -173,7 +171,6 @@ def test_spherical_harmonic_derivative_theta_real():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_real_ele.csv',
@@ -195,7 +192,6 @@ def test_spherical_harmonic_derivative_phi_real():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
     desired_all = np.genfromtxt(
         './tests/data/Y_diff_real_azi.csv',
@@ -217,7 +213,6 @@ def test_spherical_harmonic_gradient_phi_real():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
     desired_all = np.genfromtxt(
         './tests/data/Y_grad_real_azi.csv',

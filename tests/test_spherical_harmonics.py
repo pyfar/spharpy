@@ -19,8 +19,9 @@ import numpy.testing as npt
 
 def test_spherical_harmonic():
     Nmax = 1
-    theta = np.array([np.pi/2, np.pi/2, 0], dtype='double')
-    phi = np.array([0, np.pi/2, 0], dtype='double')
+    theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
+    phi = np.array([0, np.pi/2, 0], dtype=float)
+
     rad = np.ones(3, dtype=float)
     coords = Coordinates.from_spherical(rad, theta, phi)
 
@@ -46,7 +47,11 @@ def test_spherical_harmonic_n10():
             n_points=n_points) as patched_vals:
         coords = Coordinates()
 
-        Y = np.genfromtxt('./tests/data/sh_basis_cplx_n10.csv', delimiter=',', dtype=complex)
+        Y = np.genfromtxt(
+            './tests/data/sh_basis_cplx_n10.csv',
+            delimiter=',',
+            dtype=complex)
+
         basis = sh.spherical_harmonic_basis(Nmax, coords)
 
         np.testing.assert_allclose(Y, basis, atol=1e-13)
@@ -54,8 +59,8 @@ def test_spherical_harmonic_n10():
 
 def test_spherical_harmonics_real():
     n_max = 10
-    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype='double')
-    phi = np.array([0, np.pi/2, 0, np.pi/4], dtype='double')
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
+    phi = np.array([0, np.pi/2, 0, np.pi/4], dtype=float)
     rad = np.ones(4)
     coords = Coordinates.from_spherical(rad, theta, phi)
 
@@ -69,8 +74,8 @@ def test_orthogonality():
     Check if the orthonormality condition of the spherical harmonics is fulfilled
     """
     n_max = 82
-    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype='double')
-    phi = np.array([0, np.pi/2, 0, np.pi/4], dtype='double')
+    theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
+    phi = np.array([0, np.pi/2, 0, np.pi/4], dtype=float)
     n_points = phi.size
     n_points = len(theta)
 
@@ -85,7 +90,8 @@ def test_orthogonality():
         inner = (basis @ np.conjugate(basis.T))
         fact = 4 * np.pi / (n_max + 1) ** 2
         orth = np.diagonal(fact * inner)
-        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15)
+        np.testing.assert_allclose(
+            orth, np.ones(n_points, dtype=complex), rtol=1e-14)
 
 
 def test_orthogonality_real():
