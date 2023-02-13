@@ -209,9 +209,9 @@ def test_setter_cartesian():
 
 
 def test_getter_spherical():
-    x = np.array([1, 0, 0, 1], dtype=np.float64)
-    y = np.array([0, 1, 0, 1], dtype=np.float64)
-    z = np.array([0, 0, 1, 1], dtype=np.float64)
+    x = np.array([1, 0, 0, 1], dtype=float)
+    y = np.array([0, 1, 0, 1], dtype=float)
+    z = np.array([0, 0, 1, 1], dtype=float)
 
     rad, theta, phi = cart2sph(x, y, z)
 
@@ -222,9 +222,9 @@ def test_getter_spherical():
 
 def test_setter_spherical():
     eps = np.spacing(1)
-    x = np.array([1, 0, 0, 1], dtype=np.float64)
-    y = np.array([0, 1, 0, 1], dtype=np.float64)
-    z = np.array([0, 0, 1, 1], dtype=np.float64)
+    x = np.array([1, 0, 0, 1], dtype=float)
+    y = np.array([0, 1, 0, 1], dtype=float)
+    z = np.array([0, 0, 1, 1], dtype=float)
     rad, theta, phi = cart2sph(x, y, z)
     spherial = np.vstack((rad, theta, phi))
     coords = Coordinates()

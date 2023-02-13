@@ -27,9 +27,9 @@ class Coordinates(object):
         """
 
         super(Coordinates, self).__init__()
-        x = np.asarray(x, dtype=np.float64)
-        y = np.asarray(y, dtype=np.float64)
-        z = np.asarray(z, dtype=np.float64)
+        x = np.asarray(x, dtype=float)
+        y = np.asarray(y, dtype=float)
+        z = np.asarray(z, dtype=float)
 
         if not np.shape(x) == np.shape(y) == np.shape(z):
             raise ValueError("Input arrays need to have same dimensions.")
@@ -46,7 +46,7 @@ class Coordinates(object):
 
     @x.setter
     def x(self, value):
-        self._x = np.asarray(value, dtype=np.float64)
+        self._x = np.asarray(value, dtype=float)
 
     @property
     def y(self):
@@ -55,7 +55,7 @@ class Coordinates(object):
 
     @y.setter
     def y(self, value):
-        self._y = np.asarray(value, dtype=np.float64)
+        self._y = np.asarray(value, dtype=float)
 
     @property
     def z(self):
@@ -64,7 +64,7 @@ class Coordinates(object):
 
     @z.setter
     def z(self, value):
-        self._z = np.asarray(value, dtype=np.float64)
+        self._z = np.asarray(value, dtype=float)
 
     @property
     def radius(self):
@@ -73,7 +73,7 @@ class Coordinates(object):
 
     @radius.setter
     def radius(self, radius):
-        x, y, z = sph2cart(np.asarray(radius, dtype=np.float64),
+        x, y, z = sph2cart(np.asarray(radius, dtype=float),
                            self.elevation,
                            self.azimuth)
         self._x = x
@@ -89,7 +89,7 @@ class Coordinates(object):
     def azimuth(self, azimuth):
         x, y, z = sph2cart(self.radius,
                            self.elevation,
-                           np.asarray(azimuth, dtype=np.float64))
+                           np.asarray(azimuth, dtype=float))
         self._x = x
         self._y = y
         self._z = z
@@ -103,7 +103,7 @@ class Coordinates(object):
     @elevation.setter
     def elevation(self, elevation):
         x, y, z = sph2cart(self.radius,
-                           np.asarray(elevation, dtype=np.float64),
+                           np.asarray(elevation, dtype=float),
                            self.azimuth)
         self._x = x
         self._y = y
