@@ -1,6 +1,7 @@
 """
 Plot functions for spatial data
 """
+from spharpy._deprecation import convert_coordinates
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -57,6 +58,7 @@ def scatter(coordinates, ax=None):
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
+    coordinates = convert_coordinates(coordinates)
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -249,6 +251,7 @@ def pcolor_sphere(
         Whether to show the figure or not
 
     """
+    coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
@@ -331,6 +334,7 @@ def balloon_wireframe(
     show : boolean, optional
         Whether to show the figure or not
     """
+    coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -426,6 +430,8 @@ def balloon(
     show : boolean, optional
         Wheter to show the figure or not
     """
+    coordinates = convert_coordinates(coordinates)
+
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -492,6 +498,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         '3d'.
 
     """
+    sampling = convert_coordinates(sampling)
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
@@ -613,6 +620,7 @@ def pcolor_map(
         Wheter to show the figure or not
 
     """
+    coordinates = convert_coordinates(coordinates)
     tri = mtri.Triangulation(coordinates.longitude, coordinates.latitude)
     if refine is not None:
         subdiv = refine if isinstance(refine, int) else 2
@@ -694,6 +702,7 @@ def contour_map(
         Wheter to show the figure or not
 
     """
+    coordinates = convert_coordinates(coordinates)
     fig = plt.gcf()
 
     res = int(np.ceil(np.sqrt(coordinates.n_points)))
@@ -770,6 +779,7 @@ def contour(
         Wheter to show the figure or not
 
     """
+    coordinates = convert_coordinates(coordinates)
     lat_deg = coordinates.latitude * 180/np.pi
     lon_deg = coordinates.longitude * 180/np.pi
     fig = plt.gcf()
