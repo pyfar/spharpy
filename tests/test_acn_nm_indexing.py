@@ -2,11 +2,6 @@
 Tests for acn and order, degree indexing functions
 """
 
-import sys
-from filehandling import read_matrix_from_mat
-
-sys.path.append('./')
-
 import pytest
 import spharpy.spherical as sh
 import numpy as np
