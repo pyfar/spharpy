@@ -328,6 +328,9 @@ class SamplingSphere(Coordinates):
 
     @weights.setter
     def weights(self, weights):
+        if weights is None:
+            self._weights = None
+            return
         if len(weights) != self.n_points:
             raise ValueError("The number of weights has to be equal to \
                     the number of sampling points.")
@@ -438,7 +441,8 @@ class SamplingSphere(Coordinates):
             The equivalent pyfar class object.
         """
         pyfar_coords = super().to_pyfar()
-        pyfar_coords.weights = self.weights / np.linalg.norm(self.weights)
+        if self.weights is not None:
+            pyfar_coords.weights = self.weights / np.linalg.norm(self.weights)
         pyfar_coords.sh_order = self.n_max
 
         return pyfar_coords
