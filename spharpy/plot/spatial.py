@@ -87,6 +87,7 @@ def _triangulation_sphere(sampling, data):
     triangulation : matplotlib Triangulation
 
     """
+    sampling = convert_coordinates(sampling)
     x, y, z = sph2cart(
         np.abs(data),
         sampling.elevation,
@@ -137,6 +138,7 @@ def interpolate_data_on_sphere(
     are used.
 
     """
+    sampling = convert_coordinates(sampling)
     lats = sampling.latitude
     lons = sampling.longitude
 
