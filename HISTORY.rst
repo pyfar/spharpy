@@ -2,6 +2,12 @@
 History
 =======
 
+0.4.2 (2021-01-13)
+------------------
+* Bugfix: Replace deprecated numpy wrappers for built-in python types (PR #20)
+* Refactor axes handling in plots, required as getting the current axis while specifying a specific projection is deprecated (PR #21)
+* Drop support for Python 3.7 (PR #23)
+
 0.4.1 (2022-04-21)
 ------------------
 * Bugfix for the aperture function of vibrating spherical caps
