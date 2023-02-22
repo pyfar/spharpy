@@ -110,7 +110,7 @@ def spherical_harmonic_basis(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coords : Coordinates, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` # noqa: 501
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -160,7 +160,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : Coordinates, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` # noqa: 501
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -223,7 +223,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     ----------
     n : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : Coordinates, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` # noqa: 501
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -276,7 +276,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : Coordinates, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` # noqa: 501
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
