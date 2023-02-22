@@ -15,11 +15,11 @@ def greens_function_plane_wave(
 
     Parameters
     ----------
-    source_points : Coordinates
+    source_points : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The source points defining the direction of incidence for the plane
         wave. Note that the radius on which the source is positioned has no
         relevance.
-    receiver_points : Coordinates
+    receiver_points : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The receiver points.
     wave_number : double
         The wave number of the wave
@@ -34,7 +34,7 @@ def greens_function_plane_wave(
     M : ndarray, complex, shape(n_receiver, n_sources)
         The plane wave propagation matrix
 
-    """
+    """ # noqa: 501
     source_points = convert_coordinates(source_points)
     receiver_points = convert_coordinates(receiver_points)
     e_doa = source_points.cartesian / \
@@ -69,9 +69,10 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
 
     Parameters
     ----------
-    source : Coordinates
+
+    source : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         source points as Coordinates object
-    receivers : Coordinates
+    receivers : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         receiver points as Coordinates object
     k : ndarray, double
         wave number
@@ -81,7 +82,7 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
     G : ndarray, double
         Green's function
 
-    """
+    """ # noqa: 501
     sources = convert_coordinates(sources)
     receivers = convert_coordinates(receivers)
     dist = sspat.distance.cdist(receivers.cartesian.T, sources.cartesian.T)
