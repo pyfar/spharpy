@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.spatial as sspat
+from spharpy._deprecation import convert_coordinates
 
 
 def greens_function_plane_wave(
@@ -34,6 +35,8 @@ def greens_function_plane_wave(
         The plane wave propagation matrix
 
     """
+    source_points = convert_coordinates(source_points)
+    receiver_points = convert_coordinates(receiver_points)
     e_doa = source_points.cartesian / \
         np.linalg.norm(source_points.cartesian, axis=0)
     k_vec = np.squeeze(wave_number*e_doa)
@@ -79,6 +82,8 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
         Green's function
 
     """
+    sources = convert_coordinates(sources)
+    receivers = convert_coordinates(receivers)
     dist = sspat.distance.cdist(receivers.cartesian.T, sources.cartesian.T)
     dist = np.squeeze(dist)
     cexp = np.cos(k*dist) - 1j*np.sin(k*dist)
