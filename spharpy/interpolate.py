@@ -1,5 +1,6 @@
 from scipy import interpolate as spinterpolate
 import numpy as np
+from spharpy._deprecation import convert_coordinates
 
 
 class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
@@ -58,6 +59,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
 
     """
     def __init__(self, sampling, data, w=None, s=1e-4, eps=1e-16):
+        sampling = convert_coordinates(sampling)
         theta = sampling.elevation
         phi = sampling.azimuth
         if np.any(np.iscomplex(data)):
@@ -78,6 +80,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
             Order of phi derivative
 
         """
+        interp_grid = convert_coordinates(interp_grid)
         theta = interp_grid.elevation
         phi = interp_grid.azimuth
         return super().__call__(
