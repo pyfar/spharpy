@@ -107,7 +107,7 @@ jobs:
           name: deploy
           command: |  # create whl, install twine and publish to Test PyPI
             python setup.py sdist bdist_wheel
-            twine upload dist/*
+            twine upload --verbose dist/*
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
