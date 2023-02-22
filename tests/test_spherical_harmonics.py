@@ -2,11 +2,6 @@
 Tests for spherical harmonic basis and related functions
 """
 
-import sys
-from filehandling import read_2d_matrix_from_csv
-
-sys.path.append('./')
-
 from unittest.mock import patch
 
 
@@ -64,7 +59,7 @@ def test_spherical_harmonics_real():
     rad = np.ones(4)
     coords = Coordinates.from_spherical(rad, theta, phi)
 
-    reference = read_2d_matrix_from_csv('./tests/data/sh_basis_real.csv')
+    reference = np.genfromtxt('./tests/data/sh_basis_real.csv', delimiter=',')
     basis = sh.spherical_harmonic_basis_real(n_max, coords)
     np.testing.assert_allclose(basis, reference, atol=1e-13)
 
