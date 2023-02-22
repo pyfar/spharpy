@@ -5,6 +5,8 @@ import pytest
 from spharpy.samplings import cart2latlon, cart2sph
 from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 
+import pyfar as pf
+
 
 def test_coordinates_init():
     coords = Coordinates()
@@ -21,6 +23,13 @@ def test_to_pyfar():
     coords = Coordinates(1, 0, 0)
     pyfar_coords = coords.to_pyfar()
     np.testing.assert_allclose(pyfar_coords.get_cart(), coords.cartesian.T)
+
+
+def test_from_pyfar():
+    pyfar_coords = pf.Coordinates(1, 0, 0)
+    spharpy_coords = Coordinates.from_pyfar(pyfar_coords)
+    np.testing.assert_allclose(
+        pyfar_coords.get_cart(), spharpy_coords.cartesian.T)
 
 
 def test_coordinates_init_incomplete():
@@ -289,6 +298,15 @@ def test_sampling_to_pyfar_coords():
     np.testing.assert_allclose(pyfar_coords.get_cart(), sampling.cartesian.T)
     assert pyfar_coords.sh_order == sampling.n_max
     assert pyfar_coords.weights == 1.
+
+
+def test_from_pyfar():
+    pyfar_coords = pf.Coordinates(1, 0, 0, weights=1, sh_order=0)
+    spharpy_sampling = SamplingSphere.from_pyfar(pyfar_coords)
+    np.testing.assert_allclose(
+        pyfar_coords.get_cart(), spharpy_sampling.cartesian.T)
+    assert pyfar_coords.sh_order == spharpy_sampling.n_max
+    npt.assert_almost_equal(4*np.pi, spharpy_sampling.weights)
 
 
 def sampling_cube():

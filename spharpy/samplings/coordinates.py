@@ -281,6 +281,23 @@ class Coordinates(object):
             convention='right',
             unit='met')
 
+    @classmethod
+    def from_pyfar(cls, coords):
+        """Create a spharpy Coordinates object from pyfar Coordinates.
+
+        Parameters
+        ----------
+        coords : pyfar.Coordinates
+            A set of coordinates.
+
+        Returns
+        -------
+        Coordinates
+            The same set of coordinates.
+        """
+        cartesian = coords.get_cart(convention='right', unit='met').T
+        return Coordinates(cartesian[0], cartesian[1], cartesian[2])
+
 
 class SamplingSphere(Coordinates):
     """Class for samplings on a sphere"""
@@ -318,7 +335,14 @@ class SamplingSphere(Coordinates):
         if len(weights) != self.n_points:
             raise ValueError("The number of weights has to be equal to \
                     the number of sampling points.")
-        self._weights = np.asarray(weights, dtype=float)
+
+        weights = np.asarray(weights, dtype=float)
+        norm = np.linalg.norm(weights, axis=-1)
+
+        if not np.allclose(norm, 4*np.pi):
+            weights *= 4*np.pi/norm
+
+        self._weights = weights
 
     @classmethod
     def from_coordinates(cls, coords, n_max=None, weights=None):
@@ -410,7 +434,6 @@ class SamplingSphere(Coordinates):
         return repr_string
 
     def to_pyfar(self):
-
         """Export to a pyfar Coordinates object.
 
         Returns
@@ -423,3 +446,24 @@ class SamplingSphere(Coordinates):
         pyfar_coords.sh_order = self.n_max
 
         return pyfar_coords
+
+    @classmethod
+    def from_pyfar(cls, coords):
+        """Create a spharpy SamplingSphere object from pyfar Coordinates.
+
+        Parameters
+        ----------
+        coords : pyfar.Coordinates
+            A set of coordinates.
+
+        Returns
+        -------
+        SamplingSphere
+            The same set of coordinates.
+        """
+        cartesian = coords.get_cart(convention='right', unit='met').T
+        spharpy_coords = SamplingSphere(
+            cartesian[0], cartesian[1], cartesian[2])
+        spharpy_coords.weights = coords.weights
+        spharpy_coords.n_max = coords.sh_order
+        return spharpy_coords
