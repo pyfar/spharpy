@@ -309,12 +309,8 @@ class SamplingSphere(Coordinates):
         self._n_max = int(n_max) if n_max is not None else None
         if weights is None:
             self._weights = None
-
-        elif len(x) != len(weights):
-            raise ValueError("The number of weights has to be equal to \
-                        the number of sampling points.")
         else:
-            self._weights = np.asarray(weights, dtype=float)
+            self.weights = weights
 
     @property
     def n_max(self):
