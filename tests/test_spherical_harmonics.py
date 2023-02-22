@@ -10,6 +10,7 @@ import spharpy.samplings as samplings
 from spharpy.samplings import Coordinates
 import numpy as np
 import numpy.testing as npt
+import pyfar as pf
 
 
 def test_spherical_harmonic():
@@ -26,6 +27,12 @@ def test_spherical_harmonic():
 
     basis = sh.spherical_harmonic_basis(Nmax, coords)
 
+    np.testing.assert_allclose(Y, basis, atol=1e-13)
+
+    # run the same test with pyfar.Coordinates
+    coords = coords.to_pyfar()
+    assert type(coords) == pf.Coordinates
+    basis = sh.spherical_harmonic_basis(Nmax, coords)
     np.testing.assert_allclose(Y, basis, atol=1e-13)
 
 
@@ -62,6 +69,12 @@ def test_spherical_harmonics_real():
     reference = np.genfromtxt('./tests/data/sh_basis_real.csv', delimiter=',')
     basis = sh.spherical_harmonic_basis_real(n_max, coords)
     np.testing.assert_allclose(basis, reference, atol=1e-13)
+
+    # run the same test with pyfar.Coordinates
+    coords = coords.to_pyfar()
+    assert type(coords) == pf.Coordinates
+    basis = sh.spherical_harmonic_basis_real(n_max, coords)
+    np.testing.assert_allclose(reference, basis, atol=1e-13)
 
 
 def test_orthogonality():
