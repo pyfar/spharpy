@@ -1,12 +1,7 @@
 """
 Tests for spherical harmonic basis and related functions
 """
-
-from unittest.mock import patch
-
-
 import spharpy.spherical as sh
-import spharpy.samplings as samplings
 from spharpy.samplings import Coordinates
 import numpy as np
 import numpy.testing as npt
@@ -33,23 +28,16 @@ def test_spherical_harmonic_n10():
     Nmax = 10
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
     phi = np.array([0, np.pi/2, 0], dtype=float)
-    n_points = len(theta)
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points) as patched_vals:
-        coords = Coordinates()
+    coords = Coordinates.from_spherical(np.ones_like(theta), theta, phi)
+    Y = np.genfromtxt(
+        './tests/data/sh_basis_cplx_n10.csv',
+        delimiter=',',
+        dtype=complex)
 
-        Y = np.genfromtxt(
-            './tests/data/sh_basis_cplx_n10.csv',
-            delimiter=',',
-            dtype=complex)
+    basis = sh.spherical_harmonic_basis(Nmax, coords)
 
-        basis = sh.spherical_harmonic_basis(Nmax, coords)
-
-        np.testing.assert_allclose(Y, basis, atol=1e-13)
+    np.testing.assert_allclose(Y, basis, atol=1e-13)
 
 
 def test_spherical_harmonics_real():
@@ -73,20 +61,14 @@ def test_orthogonality():
     phi = np.array([0, np.pi/2, 0, np.pi/4], dtype=float)
     n_points = phi.size
     n_points = len(theta)
+    coords = Coordinates.from_spherical(np.ones_like(theta), theta, phi)
+    basis = sh.spherical_harmonic_basis(n_max, coords)
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points) as patched_vals:
-        coords = Coordinates()
-        basis = sh.spherical_harmonic_basis(n_max, coords)
-
-        inner = (basis @ np.conjugate(basis.T))
-        fact = 4 * np.pi / (n_max + 1) ** 2
-        orth = np.diagonal(fact * inner)
-        np.testing.assert_allclose(
-            orth, np.ones(n_points, dtype=complex), rtol=1e-14)
+    inner = (basis @ np.conjugate(basis.T))
+    fact = 4 * np.pi / (n_max + 1) ** 2
+    orth = np.diagonal(fact * inner)
+    np.testing.assert_allclose(
+        orth, np.ones(n_points, dtype=complex), rtol=1e-14)
 
 
 def test_orthogonality_real():
@@ -98,73 +80,56 @@ def test_orthogonality_real():
     phi = np.array([0, np.pi / 2, 0, np.pi / 4], dtype='double')
     n_points = phi.size
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points) as patched_vals:
-        coords = Coordinates()
-        basis = sh.spherical_harmonic_basis_real(n_max, coords)
+    coords = Coordinates.from_spherical(np.ones_like(theta), theta, phi)
+    basis = sh.spherical_harmonic_basis_real(n_max, coords)
 
-        inner = (basis @ np.conjugate(basis.T))
-        fact = 4 * np.pi / (n_max + 1) ** 2
-        orth = np.diagonal(fact * inner)
-        np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15, atol=1e-10)
+    inner = (basis @ np.conjugate(basis.T))
+    fact = 4 * np.pi / (n_max + 1) ** 2
+    orth = np.diagonal(fact * inner)
+    np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15, atol=1e-10)
 
 
 def test_spherical_harmonic_basis_gradient():
     n_max = 15
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points):
-        coords = Coordinates()
+    coords = Coordinates.from_spherical(np.ones_like(theta), theta, phi)
 
-        grad_ele, grad_azi = \
-            sh.spherical_harmonic_basis_gradient(n_max, coords)
+    grad_ele, grad_azi = \
+        sh.spherical_harmonic_basis_gradient(n_max, coords)
 
-        desire_ele = np.genfromtxt(
-            './tests/data/Y_grad_ele.csv',
-            dtype=complex,
-            delimiter=',')
-        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
+    desire_ele = np.genfromtxt(
+        './tests/data/Y_grad_ele.csv',
+        dtype=complex,
+        delimiter=',')
+    npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
 
-        desire_azi = np.genfromtxt(
-            './tests/data/Y_grad_azi.csv',
-            dtype=complex,
-            delimiter=',')
-        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
+    desire_azi = np.genfromtxt(
+        './tests/data/Y_grad_azi.csv',
+        dtype=complex,
+        delimiter=',')
+    npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
 
 
 def test_spherical_harmonic_basis_gradient_real():
     n_max = 15
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
-    n_points = np.size(theta)
 
-    with patch.multiple(
-            Coordinates,
-            azimuth=phi,
-            elevation=theta,
-            n_points=n_points):
-        coords = Coordinates()
+    coords = Coordinates.from_spherical(np.ones_like(theta), theta, phi)
 
-        grad_ele, grad_azi = \
-            sh.spherical_harmonic_basis_gradient_real(n_max, coords)
+    grad_ele, grad_azi = \
+        sh.spherical_harmonic_basis_gradient_real(n_max, coords)
 
-        desire_ele = np.genfromtxt(
-            './tests/data/Y_grad_real_ele.csv',
-            dtype=complex,
-            delimiter=',')
-        npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
+    desire_ele = np.genfromtxt(
+        './tests/data/Y_grad_real_ele.csv',
+        dtype=complex,
+        delimiter=',')
+    npt.assert_allclose(grad_ele, desire_ele, rtol=1e-10, atol=1e-10)
 
-        desire_azi = np.genfromtxt(
-            './tests/data/Y_grad_real_azi.csv',
-            dtype=complex,
-            delimiter=',')
-        npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
+    desire_azi = np.genfromtxt(
+        './tests/data/Y_grad_real_azi.csv',
+        dtype=complex,
+        delimiter=',')
+    npt.assert_allclose(grad_azi, desire_azi, rtol=1e-10, atol=1e-10)
