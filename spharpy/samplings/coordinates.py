@@ -270,7 +270,7 @@ class Coordinates(object):
 
         Returns
         -------
-        pyfar.Coordinates
+        :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
             The equivalent pyfar class object.
         """
         return pyfar.Coordinates(
@@ -287,7 +287,7 @@ class Coordinates(object):
 
         Parameters
         ----------
-        coords : pyfar.Coordinates
+        coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
             A set of coordinates.
 
         Returns
@@ -437,7 +437,7 @@ class SamplingSphere(Coordinates):
 
         Returns
         -------
-        pyfar.Coordinates
+        :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
             The equivalent pyfar class object.
         """
         pyfar_coords = super().to_pyfar()
@@ -453,7 +453,7 @@ class SamplingSphere(Coordinates):
 
         Parameters
         ----------
-        coords : pyfar.Coordinates
+        coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
             A set of coordinates.
 
         Returns
