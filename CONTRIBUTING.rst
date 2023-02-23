@@ -55,49 +55,40 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up spharpy for local development.
+Ready to contribute? Here's how to set up `pyfar` for local development using the
+command-line interface. Note that several alternative user interfaces exist, e.g., the Git GUI,
+`GitHub Desktop <https://desktop.github.com/>`_, extensions in `Visual Studio Code <https://code.visualstudio.com/>`_ ...
 
 1. Fork the spharpy repo on GitHub.
-2. Clone your fork locally
-
-.. code-block:: console
+2. Clone your fork locally and cd into the pyfar directory::
 
     $ git clone https://github.com/mberz/spharpy.git
+    $ cd spharpy
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development
+3. Install your local copy into a virtualenv. Assuming you have Anaconda or Miniconda installed, this is how you set up your fork for local development::
 
-.. code-block:: console
-
-    $ mkvirtualenv spharpy
-    $ cd spharpy/
-    $ python setup.py develop
+    $ conda create --name spharpy python
+    $ conda activate spharpy
+    $ conda install pip
+    $ pip install -e .
+    $ pip install -r requirements_dev.txt
 
 4. Create a branch for local development. Indicate the intention of your branch in its
-   respective name (i.e. ``feature/branch-name`` or ``bugfix/branch-name``)
-
-.. code-block:: console
+   respective name (i.e. ``feature/branch-name`` or ``bugfix/branch-name``)::
 
     $ git checkout -b name-of-your-bugfix-or-feature
 
    Now you can make your changes locally.
 
 5. When you're done making changes, check that your changes pass flake8 and the
-   tests, including testing other Python versions with tox
-
-.. code-block:: console
+   tests::
 
     $ flake8 spharpy tests
     $ pytest
-    $ tox
 
-To get flake8 and tox, pip install them into your virtualenv. The flake8 test must pass without any
-warnings for ``./spharpy`` and ``./tests`` using the default or a stricter configuration.
-Flake8 ignores `E123/E133, E226` and `E241/E242` by default. If necessary adjust
-your flake8 and linting configuration in your IDE accordingly.
+   flake8 test must pass without any warnings for `./pyfar` and `./tests` using the default or a stricter configuration. Flake8 ignores `E123/E133, E226` and `E241/E242` by default. If necessary adjust the your flake8 and linting configuration in your IDE accordingly.
 
-6. Commit your changes and push your branch to GitHub
-
-.. code-block:: console
+6. Commit your changes and push your branch to GitHub::
 
     $ git add .
     $ git commit -m "Your detailed description of your changes."
@@ -111,9 +102,8 @@ Pull Request Guidelines
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
-   your new functionality into a function with a docstring.
-3. The pull request should work for Python >=3.7. Make sure that the tests pass for all supported Python versions.
+2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring.
+3. If checks to not pass, have a look at https://app.circleci.com/pipelines/github/mberz/spharpy for more information.
 
 
 Testing Guidelines
