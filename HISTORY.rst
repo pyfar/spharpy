@@ -2,7 +2,14 @@
 History
 =======
 
-0.4.2 (2021-01-13)
+0.5.0 (2023-03-22)
+------------------
+* Introduce support for `pyfar.Coordinates` alongside spharpy's implementation (PR #24). This is the initial step of a full transition in future versions.
+* Minor refactorings of tests (PR #25)
+* Updates to the documentation (PR #26)
+* Bugfix: Round values smaller than eps in `sph2cart` (PR #27)
+
+0.4.2 (2023-01-13)
 ------------------
 * Bugfix: Replace deprecated numpy wrappers for built-in python types (PR #20)
 * Refactor axes handling in plots, required as getting the current axis while specifying a specific projection is deprecated (PR #21)
