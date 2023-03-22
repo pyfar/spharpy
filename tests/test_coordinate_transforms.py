@@ -5,6 +5,7 @@ import numpy as np
 import spharpy.samplings as samplings
 from spharpy.samplings import spherical_voronoi
 
+
 def test_sph2cart():
     rad, theta, phi = 1, np.pi/2, 0
     x, y, z = samplings.sph2cart(rad, theta, phi)
@@ -40,6 +41,7 @@ def test_cart2sph_array():
     np.testing.assert_allclose(rad, rr, atol=1e-15)
     np.testing.assert_allclose(phi, pp, atol=1e-15)
     np.testing.assert_allclose(theta, tt, atol=1e-15)
+
 
 def test_cart2latlon_array():
     x = np.array([1, -1, 0, 0, 0, 0])
