@@ -38,7 +38,14 @@ def sph2cart(r, theta, phi):
     x = r*np.sin(theta)*np.cos(phi)
     y = r*np.sin(theta)*np.sin(phi)
     z = r*np.cos(theta)
-    return x, y, z
+    x = np.asarray(x)
+    y = np.asarray(y)
+    z = np.asarray(z)
+    x[np.abs(x) <= np.finfo(x.dtype).eps] = 0
+    y[np.abs(y) <= np.finfo(y.dtype).eps] = 0
+    z[np.abs(z) <= np.finfo(x.dtype).eps] = 0
+
+    return np.squeeze(x), np.squeeze(y), np.squeeze(z)
 
 
 def cart2sph(x, y, z):
