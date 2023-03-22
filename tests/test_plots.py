@@ -10,30 +10,38 @@ import spharpy
 import numpy as np
 import pytest
 from spharpy import plot
+import pytest
 
 
-def test_balloon_plot_abs():
-    coords = spharpy.samplings.icosahedron()
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_balloon_plot(icosahedron, make_coordinates, implementation):
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+    data = np.cos(phi)*np.sin(theta)
     spharpy.plot.balloon(coords, data, show=False)
 
-
-def test_balloon_plot_phase():
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
     spharpy.plot.balloon(coords, data, phase=True, show=False)
 
 
-def test_contour_plot():
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_contour_plot(icosahedron, make_coordinates, implementation):
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+    data = np.cos(phi)*np.sin(theta)
+
     spharpy.plot.contour(coords, np.abs(data), show=False)
 
 
-def test_scatter():
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_scatter(icosahedron, make_coordinates, implementation):
     """Test if the plot executes without raising an exception
     """
-    coords = spharpy.samplings.hyperinterpolation(10)
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
     spharpy.plot.scatter(coords)
 
     # test of auto detection of axes works
@@ -55,11 +63,15 @@ def test_scatter():
     plt.close('all')
 
 
-def test_pcolor_map():
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_pcolor_map(icosahedron, make_coordinates, implementation):
     """Test if the plot executes without raising an exception
     """
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    data = np.cos(phi)*np.sin(theta)
     plot.pcolor_map(coords, data)
 
     # test of auto detection of axes works
@@ -77,11 +89,16 @@ def test_pcolor_map():
     plt.close('all')
 
 
-def test_contour_map():
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_contour_map(icosahedron, make_coordinates, implementation):
     """Test if the plot executes without raising an exception
     """
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    data = np.cos(phi)*np.sin(theta)
+
     plot.contour_map(coords, data)
 
     # test of auto detection of axes works
@@ -99,11 +116,16 @@ def test_contour_map():
     plt.close('all')
 
 
-def test_contour():
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_contour(icosahedron, make_coordinates, implementation):
     """Test if the plot executes without raising an exception
     """
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    data = np.cos(phi)*np.sin(theta)
+
     plot.contour_map(coords, data)
 
     # test of auto detection of axes works
@@ -116,10 +138,14 @@ def test_contour():
     plt.close('all')
 
 
-def test_plot_voronoi_sphere():
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_plot_voronoi_sphere(icosahedron, make_coordinates, implementation):
     """Test if the plot executes without raising an exception
     """
-    coords = spharpy.samplings.hyperinterpolation(4)
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
     plot.voronoi_cells_sphere(coords)
 
     # test of auto detection of axes works
@@ -141,9 +167,14 @@ def test_plot_voronoi_sphere():
     plt.close('all')
 
 
-def test_pcolor_sphere():
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_pcolor_sphere(icosahedron, make_coordinates, implementation):
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    data = np.cos(phi)*np.sin(theta)
+
     plot.pcolor_sphere(coords, data, colorbar=True)
 
     # test of auto detection of axes works
@@ -161,9 +192,14 @@ def test_pcolor_sphere():
     plt.close('all')
 
 
-def test_balloon_wireframe():
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_balloon_wireframe(icosahedron, make_coordinates, implementation):
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    data = np.cos(phi)*np.sin(theta)
+
     plot.balloon_wireframe(coords, data)
 
     # test of auto detection of axes works
@@ -181,9 +217,14 @@ def test_balloon_wireframe():
     plt.close('all')
 
 
-def test_balloon():
-    coords = spharpy.samplings.hyperinterpolation(10)
-    data = np.cos(coords.azimuth)*np.sin(coords.elevation)
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_balloon(icosahedron, make_coordinates, implementation):
+    rad, theta, phi = icosahedron
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    data = np.cos(phi)*np.sin(theta)
+
     plot.balloon(coords, data)
 
     # test of auto detection of axes works

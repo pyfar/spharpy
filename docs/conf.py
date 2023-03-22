@@ -92,8 +92,10 @@ autodoc_default_options = {'autosummary': True}
 # intersphinx mapping
 intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
-    'matplotlib': ('https://matplotlib.org/stable/', None)}
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None),
+    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None)
+    }
 
 # -- Options for HTML output -------------------------------------------
 

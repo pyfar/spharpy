@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
+from spharpy._deprecation import convert_coordinates
 
 
 def acn2nm(acn):
@@ -109,7 +110,7 @@ def spherical_harmonic_basis(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -117,7 +118,9 @@ def spherical_harmonic_basis(n_max, coords):
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
-    """
+    """ # noqa: 501
+
+    coords = convert_coordinates(coords)
 
     n_coeff = (n_max+1)**2
 
@@ -157,7 +160,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -169,7 +172,9 @@ def spherical_harmonic_basis_gradient(n_max, coords):
         Gradient with regard to the azimuth angle.
 
 
-    """
+    """ # noqa: 501
+    coords = convert_coordinates(coords)
+
     n_points = coords.n_points
     n_coeff = (n_max+1)**2
     theta = coords.elevation
@@ -218,7 +223,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     ----------
     n : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -228,7 +233,9 @@ def spherical_harmonic_basis_real(n_max, coords):
         Real valued spherical harmonic basis matrix
 
 
-    """
+    """ # noqa: 501
+    coords = convert_coordinates(coords)
+
     n_coeff = (n_max+1)**2
 
     basis = np.zeros((coords.n_points, n_coeff), dtype=float)
@@ -269,7 +276,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -278,7 +285,9 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
 
-    """
+    """ # noqa: 501
+    coords = convert_coordinates(coords)
+
     n_points = coords.n_points
     n_coeff = (n_max+1)**2
     theta = coords.elevation
