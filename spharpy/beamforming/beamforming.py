@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 import numpy.polynomial as poly
 from scipy.linalg import eig
@@ -143,17 +144,14 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     for n in range(n_max+1):
         for n_dash in range(n_max+1):
             const = 1/8/np.pi * (2*n+1) * (2*n_dash+1)
-            temp = 0
-            for q in range(n+1):
-                for ll in range(n_dash+1):
-                    temp += 1/(q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
+            temp = sum(
+                1 / (q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
+                for q, ll in itertools.product(range(n+1), range(n_dash+1)))
             Ann[n, n_dash] = temp * const
 
-            temp = 0
-            for q in range(n+1):
-                for ll in range(n_dash+1):
-                    temp += ((-1)**(q+ll))/(q+ll+1) * \
-                        P_N[q, n] * P_N[ll, n_dash]
+            temp = sum(
+                ((-1) ** (q+ll)) / (q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
+                for q, ll in itertools.product(range(n+1), range(n_dash+1)))
             Bnn[n, n_dash] = temp * const
 
     eigenvals, eigenvectors = eig(Ann, Bnn)
