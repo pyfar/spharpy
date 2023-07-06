@@ -109,7 +109,7 @@ def rE_max_weights(n_max, normalize=True):
     return spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
 
 
-def maximum_front_back_ratio_weights(n_max):
+def maximum_front_back_ratio_weights(n_max, normalize=True):
     """Weights that maximize the front-back ratio of the beam pattern.
     This is also often referred to as the super-cardioid beam pattern.
 
@@ -117,6 +117,9 @@ def maximum_front_back_ratio_weights(n_max):
     ----------
     n_max : int
         The spherical harmonic order
+    normalize : bool
+        If `True`, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted.
 
     Returns
     -------
@@ -142,20 +145,21 @@ def maximum_front_back_ratio_weights(n_max):
         for n_dash in range(n_max+1):
             const = 1/8/np.pi * (2*n+1) * (2*n_dash+1)
             temp = 0
-            for q in range(0, n+1):
-                for ll in range(0, n_dash+1):
+            for q in range(n+1):
+                for ll in range(n_dash+1):
                     temp += 1/(q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
             Ann[n, n_dash] = temp * const
 
             temp = 0
-            for q in range(0, n+1):
-                for ll in range(0, n_dash+1):
+            for q in range(n+1):
+                for ll in range(n_dash+1):
                     temp += ((-1)**(q+ll))/(q+ll+1) * \
                         P_N[q, n] * P_N[ll, n_dash]
             Bnn[n, n_dash] = temp * const
 
     eigenvals, eigenvectors = eig(Ann, Bnn)
     f_n = eigenvectors[:, np.argmax(np.real(eigenvals))]
-    weights = spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
+    if normalize:
+        f_n /= np.dot(f_n, 2*np.arange(0, n_max+1)+1)/(4*np.pi)
 
-    return weights
+    return spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
