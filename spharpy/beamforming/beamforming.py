@@ -104,7 +104,7 @@ def rE_max_weights(n_max, normalize=True):
         g_n[n] = leg(max_root)
 
     if normalize:
-        g_n /= np.dot(g_n, 2*np.arange(0, n_max+1)+1)/(4*np.pi)
+        g_n = normalize_beamforming_weights(g_n, n_max)
 
     return spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
 
@@ -157,6 +157,28 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     eigenvals, eigenvectors = eig(Ann, Bnn)
     f_n = eigenvectors[:, np.argmax(np.real(eigenvals))]
     if normalize:
-        f_n /= np.dot(f_n, 2*np.arange(0, n_max+1)+1)/(4*np.pi)
+        f_n = normalize_beamforming_weights(f_n, n_max)
+    else:
+        f_n /= np.sign(f_n[0])
 
     return spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
+
+
+def normalize_beamforming_weights(weights, n_max):
+    """Normalize the beamforming weights such that the complex amplitude of a
+    plane wave is not distorted.
+
+    Parameters
+    ----------
+    weights : ndarray, double
+        An array containing the beamforming weights
+    n_max : int
+        The spherical harmonic order
+
+    Returns
+    -------
+    weights : ndarray, double
+        An array containing the normalized beamforming weights
+
+    """
+    return weights / np.dot(weights, 2*np.arange(0, n_max+1)+1) * (4*np.pi)

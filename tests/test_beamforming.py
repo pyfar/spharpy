@@ -46,7 +46,7 @@ def test_max_front_back():
         N, normalize=False)
 
     truth = np.loadtxt('tests/data/max_front_back_weights.csv', delimiter=',')
-    npt.assert_allclose(f_nm, truth)
+    npt.assert_allclose(f_nm, np.abs(truth))
 
     f_nm_norm = spharpy.beamforming.maximum_front_back_ratio_weights(
         N, normalize=True)
