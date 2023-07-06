@@ -26,10 +26,17 @@ def test_dolph_cheby_sidelobe():
 
 def test_re_max():
     N = 7
-    g_nm = spharpy.beamforming.rE_max_weights(N)
+    g_nm = spharpy.beamforming.rE_max_weights(N, normalize=False)
 
     truth = np.loadtxt('tests/data/re_max_weights.csv', delimiter=',')
     npt.assert_allclose(g_nm, truth)
+
+    g_nm_norm = spharpy.beamforming.rE_max_weights(N, normalize=True)
+
+    Y = spharpy.spherical.spherical_harmonic_basis_real(
+        N, spharpy.samplings.Coordinates(1, 0, 0))
+
+    npt.assert_allclose(Y @ np.diag(g_nm_norm) @ Y.T, 1)
 
 
 def test_max_front_back():

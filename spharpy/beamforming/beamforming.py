@@ -71,8 +71,7 @@ def dolph_chebyshev_weights(
 
     return weights
 
-
-def rE_max_weights(n_max):
+def rE_max_weights(n_max, normalize=True):
     """Weights that maximize the length of the energy vector.
     This is most often used in Ambisonics decoding.
 
@@ -80,6 +79,9 @@ def rE_max_weights(n_max):
     ----------
     n_max : int
         Spherical harmonic order
+    normalize : bool
+        If `True`, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted.
 
     Returns
     -------
@@ -97,13 +99,14 @@ def rE_max_weights(n_max):
     P_n_root = poly.legendre.legroots(leg.coef)
     max_root = np.max(np.abs(P_n_root))
     g_n = np.zeros(n_max+1)
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         leg = poly.legendre.Legendre.basis(n)
         g_n[n] = leg(max_root)
 
-    weights = spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
+    if normalize:
+        g_n /= np.dot(g_n, 2*np.arange(0, n_max+1)+1)/(4*np.pi)
 
-    return weights
+    return spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
 
 
 def maximum_front_back_ratio_weights(n_max):
