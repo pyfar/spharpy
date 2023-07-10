@@ -44,11 +44,7 @@ def cube_equidistant(n_points):
 
     x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
 
-    sampling = Coordinates(x_grid.flatten(),
-                           y_grid.flatten(),
-                           z_grid.flatten())
-
-    return sampling
+    return Coordinates(x_grid.flatten(), y_grid.flatten(), z_grid.flatten())
 
 
 def hyperinterpolation(n_max):
@@ -78,11 +74,11 @@ def hyperinterpolation(n_max):
         SamplingSphere object containing all sampling points
     """
     n_sh = (n_max+1)**2
-    filename = "/Womersley/md%02d.%04d" % (n_max, n_sh)
-    url = "http://www.ita-toolbox.org/Griddata"
+    filename = "md%03d.%05d" % (n_max, n_sh)
+    url = "https://web.maths.unsw.edu.au/~rsw/Sphere/S2Pts/MD/"
     fileurl = url + filename
 
-    http = urllib3.PoolManager()
+    http = urllib3.PoolManager(cert_reqs=False)
     http_data = http.urlopen('GET', fileurl)
 
     if http_data.status == 200:
@@ -91,12 +87,12 @@ def hyperinterpolation(n_max):
         raise ConnectionError("Connection error. Please check your internet \
                 connection.")
 
-    file_data = np.fromstring(file_data,
-                              dtype='double',
-                              sep=' ').reshape((n_sh, 4))
-    sampling = SamplingSphere(file_data[:, 0],
-                              file_data[:, 1],
-                              file_data[:, 2])
+    file_data = np.fromstring(
+        file_data, dtype='double', sep=' ').reshape((n_sh, 4))
+    sampling = SamplingSphere(
+        file_data[:, 0],
+        file_data[:, 1],
+        file_data[:, 2])
     sampling.weights = file_data[:, 3]
 
     return sampling
@@ -154,8 +150,8 @@ def spherical_t_design(n_max, criterion='const_energy'):
     else:
         raise ValueError("Invalid design criterion.")
 
-    n_points = np.int(np.ceil((degree + 1)**2 / 2) + 1)
-    n_points_exceptions = {3:8, 5:18, 7:32, 9:50, 11:72, 13:98, 15:128}
+    n_points = int(np.ceil((degree + 1)**2 / 2) + 1)
+    n_points_exceptions = {3: 8, 5: 18, 7: 32, 9: 50, 11: 72, 13: 98, 15: 128}
     if degree in n_points_exceptions:
         n_points = n_points_exceptions[degree]
 
@@ -178,11 +174,10 @@ def spherical_t_design(n_max, criterion='const_energy'):
 
     points = np.fromstring(
         file_data,
-        dtype=np.double,
+        dtype=float,
         sep=' ').reshape((n_points, 3)).T
-    sampling = SamplingSphere.from_array(points)
 
-    return sampling
+    return SamplingSphere.from_array(points)
 
 
 def dodecahedron():
@@ -219,20 +214,16 @@ def dodecahedron():
     phi2 = 2*np.pi/3
     phi3 = 4*np.pi/3
 
-    theta = np.concatenate((np.tile(theta1, 3),
-                            np.tile(theta2, 3),
-                            np.tile(theta3, 3),
-                            np.tile(theta4, 3)))
-    phi = np.tile(np.array([phi1,
-                            phi2,
-                            phi3,
-                            phi1 + np.pi/3,
-                            phi2 + np.pi/3,
-                            phi3 + np.pi/3]), 2)
+    theta = np.concatenate((
+        np.tile(theta1, 3), np.tile(theta2, 3),
+        np.tile(theta3, 3), np.tile(theta4, 3)))
+    phi = np.tile(np.array([
+        phi1, phi2, phi3,
+        phi1 + np.pi/3, phi2 + np.pi/3, phi3 + np.pi/3]), 2)
+
     rad = np.ones(np.size(theta))
 
-    sampling = SamplingSphere.from_spherical(rad, theta, phi)
-    return sampling
+    return SamplingSphere.from_spherical(rad, theta, phi)
 
 
 def icosahedron():
@@ -254,10 +245,9 @@ def icosahedron():
     theta = np.sort(theta)
     phi = np.arange(0, 2*np.pi, 2*np.pi/5)
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi/5, 2)))
-
     rad = np.ones(20)
-    sampling = SamplingSphere.from_spherical(rad, theta, phi)
-    return sampling
+
+    return SamplingSphere.from_spherical(rad, theta, phi)
 
 
 def equiangular(n_max):
@@ -293,10 +283,10 @@ def equiangular(n_max):
         (1/L @ L[np.newaxis].T @ theta_angles[np.newaxis])
     weights = np.tile(factor_phi * factor_theta * np.pi/2 * factor_sin, n_phi)
 
-    sampling = SamplingSphere.from_spherical(rad,
-                                             theta.reshape(-1),
-                                             phi.reshape(-1))
+    sampling = SamplingSphere.from_spherical(
+        rad, theta.reshape(-1), phi.reshape(-1))
     sampling.weights = weights
+
     return sampling
 
 
@@ -324,16 +314,15 @@ def gaussian(n_max):
     rad = np.ones(theta.size)
     weights = np.tile(weights*np.pi/(n_max+1), 2*(n_max+1))
 
-    sampling = SamplingSphere.from_spherical(rad,
-                                             theta.reshape(-1),
-                                             phi.reshape(-1))
+    sampling = SamplingSphere.from_spherical(
+        rad, theta.reshape(-1), phi.reshape(-1))
     sampling.weights = weights
     return sampling
 
 
 def eigenmike_em32():
-    """Microphone positions of the Eigenmike em32 by mhacoustics according to the
-    Eigenstudio user manual on the homepage [6]_.
+    """Microphone positions of the Eigenmike em32 by mhacoustics according to
+    the Eigenstudio user manual on the homepage [6]_.
 
     References
     ----------
@@ -360,8 +349,7 @@ def eigenmike_em32():
                     180.0, 135.0, 111.0, 135.0, 269.0, 270.0,
                     270.0, 271.0]) * np.pi / 180
 
-    sampling = SamplingSphere.from_spherical(rad, theta, phi)
-    return sampling
+    return SamplingSphere.from_spherical(rad, theta, phi)
 
 
 def icosahedron_ke4():
@@ -392,9 +380,8 @@ def icosahedron_ke4():
                     3.801856477793762, 3.141592653589793])
 
     rad = np.ones(20) * 0.065
-    sampling = SamplingSphere.from_spherical(rad, theta, phi)
 
-    return sampling
+    return SamplingSphere.from_spherical(rad, theta, phi)
 
 
 def equalarea(n_max, condition_num=2.5, n_points=None):
@@ -429,12 +416,11 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
         point_set = eq_point_set(2, n_points)
         sampling = SamplingSphere(point_set[0], point_set[1], point_set[2])
 
-        if condition_num != np.inf:
-            Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
-            cond = np.linalg.cond(Y)
-            if cond < condition_num:
-                break
-        else:
+        if condition_num == np.inf:
+            break
+        Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
+        cond = np.linalg.cond(Y)
+        if cond < condition_num:
             break
         n_points += 1
 
@@ -473,10 +459,10 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     def _spiral_points(n_points):
         """Helper function doing the actual calculation of the points"""
-        r = np.zeros( n_points)
-        h = np.zeros( n_points)
-        theta = np.zeros( n_points)
-        phi = np.zeros( n_points)
+        r = np.zeros(n_points)
+        h = np.zeros(n_points)
+        theta = np.zeros(n_points)
+        phi = np.zeros(n_points)
 
         p = 1/2
         a = 1 - 2*p/(n_points-3)
@@ -501,12 +487,11 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     while True:
         theta, phi = _spiral_points(n_points)
         sampling = SamplingSphere.from_spherical(np.ones(n_points), theta, phi)
-        if condition_num != np.inf:
-            Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
-            cond = np.linalg.cond(Y)
-            if cond < condition_num:
-                break
-        else:
+        if condition_num == np.inf:
+            break
+        Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
+        cond = np.linalg.cond(Y)
+        if cond < condition_num:
             break
         n_points += 1
 

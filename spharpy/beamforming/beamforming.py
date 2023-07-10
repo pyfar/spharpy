@@ -42,7 +42,7 @@ def dolph_chebyshev_weights(
     M = 2*n_max
     if design_criterion == 'sidelobe':
         R = design_parameter
-        x0 = np.cosh((1/M) * np.arccosh(R));
+        x0 = np.cosh((1/M) * np.arccosh(R))
     elif design_criterion == 'mainlobe':
         theta0 = design_parameter
         x0 = np.cos(np.pi/2/M) / np.cos(theta0/2)
@@ -56,14 +56,14 @@ def dolph_chebyshev_weights(
     for n in range(n_max+1):
         P_N[0:n+1, n] = special.legendre_coefficients(n)
 
-    d_n = np.zeros(n_max+1);
+    d_n = np.zeros(n_max+1)
     for n in range(n_max+1):
         temp = 0
         for i in range(n+1):
             for j in range(n_max+1):
                 for m in range(j+1):
-                    temp = temp+(1-(-1)**(m+i+1))/(m+i+1)* \
-                           factorial(j)/(factorial(m)*factorial(j-m))* \
+                    temp = temp+(1-(-1)**(m+i+1))/(m+i+1) * \
+                           factorial(j)/(factorial(m)*factorial(j-m)) * \
                            (1/2**j)*t_2N[2*j]*P_N[i, n]*x0**(2*j)
         d_n[n] = (2*np.pi/R)*temp
 
@@ -94,7 +94,6 @@ def rE_max_weights(n_max):
 
     """
     leg = poly.legendre.Legendre.basis(n_max+1)
-    P_n = poly.legendre.leg2poly(leg.coef)
     P_n_root = poly.legendre.legroots(leg.coef)
     max_root = np.max(np.abs(P_n_root))
     g_n = np.zeros(n_max+1)
@@ -141,14 +140,15 @@ def maximum_front_back_ratio_weights(n_max):
             const = 1/8/np.pi * (2*n+1) * (2*n_dash+1)
             temp = 0
             for q in range(0, n+1):
-                for l in range(0, n_dash+1):
-                    temp += 1/(q+l+1) * P_N[q, n] * P_N[l, n_dash]
+                for ll in range(0, n_dash+1):
+                    temp += 1/(q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
             Ann[n, n_dash] = temp * const
 
             temp = 0
             for q in range(0, n+1):
-                for l in range(0, n_dash+1):
-                    temp += ((-1)**(q+l))/(q+l+1) * P_N[q, n] * P_N[l, n_dash]
+                for ll in range(0, n_dash+1):
+                    temp += ((-1)**(q+ll))/(q+ll+1) * \
+                        P_N[q, n] * P_N[ll, n_dash]
             Bnn[n, n_dash] = temp * const
 
     eigenvals, eigenvectors = eig(Ann, Bnn)

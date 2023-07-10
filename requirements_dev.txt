@@ -1,9 +1,9 @@
 scipy
-numpy
+numpy>=1.22
 setuptools
 pytest
 urllib3
-matplotlib
+matplotlib>=3.3.0
 pip
 bump2version
 wheel
@@ -19,3 +19,5 @@ pytest-runner
 numpydoc
 insipid-sphinx-theme
 autodocsumm
+nbmake
+pyfar

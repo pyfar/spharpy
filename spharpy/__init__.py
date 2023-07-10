@@ -1,6 +1,6 @@
 __author__ = "Marco Berzborn"
 __email__ = 'marco.berzborn@akustik.rwth-aachen.de'
-__version__ = '0.3.2'
+__version__ = '0.5.0'
 
 from . import spherical
 from . import samplings
@@ -9,6 +9,7 @@ from . import indexing
 from . import transforms
 from . import beamforming
 from . import interpolate
+from . import _deprecation
 
 
 __all__ = [
@@ -18,5 +19,6 @@ __all__ = [
     'indexing',
     'transforms',
     'beamforming',
-    'interpolate'
+    'interpolate',
+    '_deprecation',
 ]

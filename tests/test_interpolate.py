@@ -27,3 +27,15 @@ def test_smooth_sphere_bivariate_spline_interpolation():
     # check if error over entire sphere sufficiently small
     assert np.linalg.norm(np.abs(interp_data - data_grid)) / \
         np.linalg.norm(np.abs(data_grid)) < 1e-2
+
+    # convert to pyfar to coordinates and check the results
+    pf_sampling = sampling.to_pyfar()
+    interpolator = interpolate.SmoothSphereBivariateSpline(
+        pf_sampling, data, s=1e-4)
+
+    pf_interp_grid = interp_grid.to_pyfar()
+    interp_data = interpolator(pf_interp_grid)
+
+    # check if error over entire sphere sufficiently small
+    assert np.linalg.norm(np.abs(interp_data - data_grid)) / \
+        np.linalg.norm(np.abs(data_grid)) < 1e-2

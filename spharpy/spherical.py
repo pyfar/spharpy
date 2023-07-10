@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
+from spharpy._deprecation import convert_coordinates
 
 
 def acn2nm(acn):
@@ -36,13 +37,13 @@ def acn2nm(acn):
         Linear index
 
     """
-    acn = np.asarray(acn, dtype=np.int)
+    acn = np.asarray(acn, dtype=int)
 
     n = (np.ceil(np.sqrt(acn + 1)) - 1)
     m = acn - n**2 - n
 
-    n = n.astype(np.int, copy=False)
-    m = m.astype(np.int, copy=False)
+    n = n.astype(int, copy=False)
+    m = m.astype(int, copy=False)
 
     return n, m
 
@@ -77,16 +78,13 @@ def nm2acn(n, m):
         Linear index
 
     """
-    n = np.asarray(n, dtype=np.int)
-    m = np.asarray(m, dtype=np.int)
-    n_acn = m.size
+    n = np.asarray(n, dtype=int)
+    m = np.asarray(m, dtype=int)
 
-    if not (n.size == m.size):
+    if n.size != m.size:
         raise ValueError("n and m need to be of the same size")
 
-    acn = n**2 + n + m
-
-    return acn
+    return n**2 + n + m
 
 
 def spherical_harmonic_basis(n_max, coords):
@@ -98,7 +96,8 @@ def spherical_harmonic_basis(n_max, coords):
 
     .. math::
 
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi} \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+        \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
 
     References
     ----------
@@ -111,7 +110,7 @@ def spherical_harmonic_basis(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -119,13 +118,15 @@ def spherical_harmonic_basis(n_max, coords):
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
-    """
+    """ # noqa: 501
+
+    coords = convert_coordinates(coords)
 
     n_coeff = (n_max+1)**2
 
-    basis = np.zeros((coords.n_points, n_coeff), dtype=np.complex)
+    basis = np.zeros((coords.n_points, n_coeff), dtype=complex)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
             order,
@@ -159,7 +160,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -171,15 +172,17 @@ def spherical_harmonic_basis_gradient(n_max, coords):
         Gradient with regard to the azimuth angle.
 
 
-    """
+    """ # noqa: 501
+    coords = convert_coordinates(coords)
+
     n_points = coords.n_points
     n_coeff = (n_max+1)**2
     theta = coords.elevation
     phi = coords.azimuth
-    grad_theta = np.zeros((n_points, n_coeff), dtype=np.complex)
-    grad_phi = np.zeros((n_points, n_coeff), dtype=np.complex)
+    grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
+    grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
@@ -201,7 +204,8 @@ def spherical_harmonic_basis_real(n_max, coords):
 
     .. math::
 
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi} \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+        \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
         \begin{cases}
             \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
@@ -219,7 +223,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     ----------
     n : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -229,12 +233,14 @@ def spherical_harmonic_basis_real(n_max, coords):
         Real valued spherical harmonic basis matrix
 
 
-    """
+    """ # noqa: 501
+    coords = convert_coordinates(coords)
+
     n_coeff = (n_max+1)**2
 
-    basis = np.zeros((coords.n_points, n_coeff), dtype=np.double)
+    basis = np.zeros((coords.n_points, n_coeff), dtype=float)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
             order,
@@ -270,7 +276,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : Coordinates
+    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object with sampling points for which the basis matrix is
         calculated
 
@@ -279,15 +285,17 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
 
-    """
+    """ # noqa: 501
+    coords = convert_coordinates(coords)
+
     n_points = coords.n_points
     n_coeff = (n_max+1)**2
     theta = coords.elevation
     phi = coords.azimuth
-    grad_theta = np.zeros((n_points, n_coeff), dtype=np.double)
-    grad_phi = np.zeros((n_points, n_coeff), dtype=np.double)
+    grad_theta = np.zeros((n_points, n_coeff), dtype=float)
+    grad_phi = np.zeros((n_points, n_coeff), dtype=float)
 
-    for acn in range(0, n_coeff):
+    for acn in range(n_coeff):
         n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
@@ -311,8 +319,10 @@ def modal_strength(n_max,
         b(kr) =
         \begin{cases}
             \displaystyle 4\pi i^n j_n(kr),  & \text{open} \newline
-            \displaystyle  4\pi i^{(n-1)} \frac{1}{(kr)^2 h_n^\prime(kr)},  & \text{rigid} \newline
-            \displaystyle  4\pi i^n (j_n(kr) - i j_n^\prime(kr)),  & \text{cardioid}
+            \displaystyle  4\pi i^{(n-1)} \frac{1}{(kr)^2 h_n^\prime(kr)},
+                & \text{rigid} \newline
+            \displaystyle  4\pi i^n (j_n(kr) - i j_n^\prime(kr)),
+                & \text{cardioid}
         \end{cases}
 
 
@@ -346,9 +356,9 @@ def modal_strength(n_max,
     n_coeff = (n_max+1)**2
     n_bins = kr.shape[0]
 
-    modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=np.complex)
+    modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=complex)
 
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         bn = _modal_strength(n, kr, arraytype)
         for m in range(-n, n+1):
             acn = n*n + n + m
@@ -385,23 +395,17 @@ def aperture_vibrating_spherical_cap(
 
     .. math::
 
-        a_n (r_{s}, \alpha) =
+        a_n (r_{s}, \alpha) = 4 \pi
         \begin{cases}
-            \displaystyle \cos\left(\alpha\right) P_n\left[ \cos\left(\alpha\right) \right] - P_{n-1}\left[ \cos\left(\alpha\right) \right],  & {n>0} \newline
-            \displaystyle  1 - \cos(\alpha),  & {n=0}
+            \displaystyle \left(2n+1\right)\left[
+                P_{n-1} \left(\cos\alpha\right) -
+                P_{n+1} \left(\cos\alpha\right) \right],
+                & {n>0} \newline
+            \displaystyle  (1 - \cos\alpha)/2,  & {n=0}
         \end{cases}
 
     where :math:`\alpha = \arcsin \left(\frac{r_c}{r_s} \right)` is the
     aperture angle.
-
-
-    References
-    ----------
-    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [6]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
-            loudspeaker system as multipole source,” in Proceedings of the 33rd
-            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
-
 
     Parameters
     ----------
@@ -418,21 +422,34 @@ def aperture_vibrating_spherical_cap(
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
+    References
+    ----------
+    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [6]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
+            Independent Steering for Spherical Loudspeaker Arrays,” IEEE
+            Transactions on Audio, Speech, and Language Processing, vol. 19,
+            no. 7, pp. 2234-2238, 2011
+
+    Notes
+    -----
+    Eq. (3) in Ref. [6]_ contains an error, here, the power of 2 on pi is
+    omitted on the normalization term.
+
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
     arg = np.cos(angle_cap)
     n_sh = (n_max+1)**2
 
-    aperture = np.zeros((n_sh, n_sh), dtype=np.double)
+    aperture = np.zeros((n_sh, n_sh), dtype=float)
 
-    aperture[0, 0] = (1-arg)*2*np.pi**2
+    aperture[0, 0] = (1-arg)*2*np.pi
     for n in range(1, n_max+1):
         legendre_minus = special.legendre(n-1)(arg)
         legendre_plus = special.legendre(n+1)(arg)
+        legendre_term = legendre_minus - legendre_plus
         for m in range(-n, n+1):
             acn = nm2acn(n, m)
-            aperture[acn, acn] = (legendre_minus - legendre_plus) * \
-                    4 * np.pi**2 / (2*n+1)
+            aperture[acn, acn] = legendre_term * 4 * np.pi / (2*n+1)
 
     return aperture
 
@@ -458,7 +475,7 @@ def radiation_from_sphere(
     .. [7]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
     .. [8]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
             loudspeaker system as multipole source,” in Proceedings of the 33rd
-            DAGA German Annual Conference on Acoustics, 2007, pp. 221–222.
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
 
 
     Parameters
@@ -487,9 +504,9 @@ def radiation_from_sphere(
 
     k = np.atleast_1d(k)
     n_bins = k.shape[0]
-    radiation = np.zeros((n_bins, n_sh, n_sh), dtype=np.complex)
+    radiation = np.zeros((n_bins, n_sh, n_sh), dtype=complex)
 
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
         hankel_prime = _special.spherical_hankel(
             n, k*rad_sphere, kind=2, derivative=True)

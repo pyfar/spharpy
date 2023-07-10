@@ -9,9 +9,9 @@ from scipy.spatial import cKDTree, SphericalVoronoi
 def sph2cart(r, theta, phi):
     """Transforms from spherical to Cartesian coordinates.
     Spherical coordinates follow the common convention in Physics/Mathematics
-    Theta denotes the elevation angle with theta = 0 at the north pole and theta = pi
-    at the south pole
-    Phi is the azimuth angle counting from phi = 0 at the x-axis in positive direction
+    Theta denotes the elevation angle with theta = 0 at the north pole and
+    theta = pi at the south pole. Phi is the azimuth angle counting from
+    phi = 0 at the x-axis in positive direction
     (counter clockwise rotation).
 
     .. math::
@@ -38,15 +38,23 @@ def sph2cart(r, theta, phi):
     x = r*np.sin(theta)*np.cos(phi)
     y = r*np.sin(theta)*np.sin(phi)
     z = r*np.cos(theta)
-    return x, y, z
+    x = np.asarray(x)
+    y = np.asarray(y)
+    z = np.asarray(z)
+    x[np.abs(x) <= np.finfo(x.dtype).eps] = 0
+    y[np.abs(y) <= np.finfo(y.dtype).eps] = 0
+    z[np.abs(z) <= np.finfo(x.dtype).eps] = 0
+
+    return np.squeeze(x), np.squeeze(y), np.squeeze(z)
+
 
 def cart2sph(x, y, z):
     """
     Transforms from Cartesian to spherical coordinates.
     Spherical coordinates follow the common convention in Physics/Mathematics
-    Theta denotes the elevation angle with theta = 0 at the north pole and theta = pi
-    at the south pole
-    Phi is the azimuth angle counting from phi = 0 at the x-axis in positive direction
+    Theta denotes the elevation angle with theta = 0 at the north pole and
+    theta = pi at the south pole. Phi is the azimuth angle counting from
+    phi = 0 at the x-axis in positive direction
     (counter clockwise rotation).
 
     .. math::
@@ -84,6 +92,7 @@ def cart2sph(x, y, z):
     theta = np.arccos(z/rad)
     phi = np.mod(np.arctan2(y, x), 2*np.pi)
     return rad, theta, phi
+
 
 def cart2latlon(x, y, z):
     """Transforms from Cartesian coordinates to Geocentric coordinates
@@ -126,7 +135,6 @@ def cart2latlon(x, y, z):
     latitude = np.pi/2 - np.arccos(z/height)
     longitude = np.arctan2(y, x)
     return height, latitude, longitude
-
 
 
 def latlon2cart(height, latitude, longitude):
@@ -217,7 +225,7 @@ def calculate_sampling_weights(sampling, round_decimals=12):
 
     Returns
     -------
-    weigths : ndarray, np.double
+    weigths : ndarray, float
         Sampling weights
 
     """
@@ -230,7 +238,7 @@ def calculate_sampling_weights(sampling, round_decimals=12):
         return_index=True)
 
     searchtree = cKDTree(unique_verts)
-    area = np.zeros(sampling.n_points, np.double)
+    area = np.zeros(sampling.n_points, float)
 
     for idx, region in enumerate(sv.regions):
         _, idx_nearest = searchtree.query(sv.vertices[np.array(region)])
@@ -242,8 +250,6 @@ def calculate_sampling_weights(sampling, round_decimals=12):
     area = area / np.sum(area) * 4 * np.pi
 
     return area
-
-
 
 
 def _unit_normal(a, b, c):
@@ -264,9 +270,11 @@ def _unit_normal(a, b, c):
 
     return (x/magnitude, y/magnitude, z/magnitude)
 
-#area of polygon poly
+
 def _poly_area(poly):
-    if len(poly) < 3: # not a plane - no area
+    # area of polygon poly
+    if len(poly) < 3:
+        # not a plane - no area
         return 0
     total = [0.0, 0.0, 0.0]
     N = len(poly)

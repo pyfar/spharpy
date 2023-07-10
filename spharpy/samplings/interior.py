@@ -36,9 +36,7 @@ def interior_stabilization_points(kr_max, resolution_factor=1):
     """
     x, y, z = find_interior_points(kr_max, resolution_factor=resolution_factor)
 
-    sampling_interior = Coordinates(x, y, z)
-
-    return sampling_interior
+    return Coordinates(x, y, z)
 
 
 def find_eigenfrequencies(kr_max):
@@ -49,7 +47,7 @@ def find_eigenfrequencies(kr_max):
     jn_zeros = spherical_bessel_zeros(kr_max, kr_max)
 
     eigenfrequencies = []
-    for idx in range(0, kr_max + 1):
+    for idx in range(kr_max + 1):
         roots = jn_zeros[idx]
         roots = roots[roots < kr_max]
         if roots.size != 0:
@@ -85,9 +83,9 @@ def calculate_eigenspaces(kr_max, theta, phi, rad):
 
     subspaces = []
     for u in range(len(eigenfrequencies)):
-        for root in eigenfrequencies[u]:
-            subspaces.append(sph_modes_matrix(u, root, theta, phi, rad))
-
+        subspaces.extend(
+            sph_modes_matrix(u, root, theta, phi, rad)
+            for root in eigenfrequencies[u])
     return subspaces, mults
 
 
@@ -123,7 +121,7 @@ def sph_modes_matrix(n_max, k, theta, phi, rad):
     meshgrid_shape = theta.shape
     B = spspecial.spherical_jn(n_max, rad.flatten()*k) * 4*np.pi * (1j)**n_max
     B = np.reshape(B, meshgrid_shape)
-    M = np.zeros((*meshgrid_shape, n_coefficients), dtype=np.complex)
+    M = np.zeros((*meshgrid_shape, n_coefficients), dtype=complex)
     for m in range(-n_max, n_max+1):
         Y_m = spspecial.sph_harm(m, n_max, theta.flatten(), phi.flatten())
         M[:, :, :, m+n_max] = B * np.reshape(Y_m, meshgrid_shape)
@@ -135,8 +133,7 @@ def ball_dot(S1, S2, radius, phi):
     wphi = np.sin(phi)
     wr = radius**2
     w = wr*wphi
-    d = np.sum(np.conj(S1) * S2 * w) / np.sum(w)
-    return d
+    return np.sum(np.conj(S1) * S2 * w) / np.sum(w)
 
 
 def find_interior_points(k_max, resolution_factor=1):
@@ -153,16 +150,16 @@ def find_interior_points(k_max, resolution_factor=1):
     max_mult = mults.max()
 
     idx_sel = []
-    for w in range(0, max_mult):
+    for _ in range(max_mult):
         maxes = np.ones((*meshgrid_shape, len(subspaces))) * 1e3
 
-        for idx_space in range(0, len(subspaces)):
+        for idx_space in range(len(subspaces)):
             if subspaces[idx_space].size > 0:
                 maxes[:, :, :, idx_space] = 0.0
 
-                for v in range(0, subspaces[idx_space].shape[3]):
+                for v in range(subspaces[idx_space].shape[3]):
                     vector = subspaces[idx_space][:, :, :, v]
-                    for www in range(0, v):
+                    for www in range(v):
                         vector = vector - ball_dot(
                                         subspaces[idx_space][:, :, :, www],
                                         vector,
@@ -182,7 +179,7 @@ def find_interior_points(k_max, resolution_factor=1):
         argmax_unravel = np.unravel_index(argmax, meshgrid_shape)
         idx_sel.append(argmax)
 
-        for idx_space in range(0, len(subspaces)):
+        for idx_space in range(len(subspaces)):
             if subspaces[idx_space].shape[3] <= 1:
                 subspaces[idx_space] = np.array([[[[]]]])
             else:
@@ -197,7 +194,7 @@ def find_interior_points(k_max, resolution_factor=1):
                     subspaces[idx_space][:, :, :, -1]
                 subspaces[idx_space][:, :, :, -1] = vend
 
-                for v in range(0, subspaces[idx_space].shape[3] - 1):
+                for v in range(subspaces[idx_space].shape[3] - 1):
                     vv = subspaces[idx_space][:, :, :, v]
                     value_vv = vv[argmax_unravel]
                     subspaces[idx_space][:, :, :, v] = \

@@ -1,5 +1,7 @@
 import numpy as np
 import scipy.spatial as sspat
+from spharpy._deprecation import convert_coordinates
+
 
 def greens_function_plane_wave(
         source_points,
@@ -13,11 +15,11 @@ def greens_function_plane_wave(
 
     Parameters
     ----------
-    source_points : Coordinates
+    source_points : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The source points defining the direction of incidence for the plane
         wave. Note that the radius on which the source is positioned has no
         relevance.
-    receiver_points : Coordinates
+    receiver_points : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The receiver points.
     wave_number : double
         The wave number of the wave
@@ -32,7 +34,9 @@ def greens_function_plane_wave(
     M : ndarray, complex, shape(n_receiver, n_sources)
         The plane wave propagation matrix
 
-    """
+    """ # noqa: 501
+    source_points = convert_coordinates(source_points)
+    receiver_points = convert_coordinates(receiver_points)
     e_doa = source_points.cartesian / \
         np.linalg.norm(source_points.cartesian, axis=0)
     k_vec = np.squeeze(wave_number*e_doa)
@@ -53,7 +57,6 @@ def greens_function_plane_wave(
              plane_wave_gradient_matrix_z]
 
 
-
 def greens_function_point_source(sources, receivers, k, gradient=False):
     r"""Green's function for point sources in free space in matrix form. The
     phase sign convention corresponds to a direction of propagation away from
@@ -66,9 +69,10 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
 
     Parameters
     ----------
-    source : Coordinates
+
+    source : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         source points as Coordinates object
-    receivers : Coordinates
+    receivers : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         receiver points as Coordinates object
     k : ndarray, double
         wave number
@@ -78,7 +82,9 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
     G : ndarray, double
         Green's function
 
-    """
+    """ # noqa: 501
+    sources = convert_coordinates(sources)
+    receivers = convert_coordinates(receivers)
     dist = sspat.distance.cdist(receivers.cartesian.T, sources.cartesian.T)
     dist = np.squeeze(dist)
     cexp = np.cos(k*dist) - 1j*np.sin(k*dist)
@@ -87,7 +93,9 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
     if not gradient:
         return G
     else:
-        lambda_cdiff = lambda u, v: (u-v)
+        def lambda_cdiff(u, v):
+            return u-v
+
         diff_x = sspat.distance.cdist(
             np.atleast_2d(receivers.x).T,
             np.atleast_2d(sources.x).T,

@@ -14,10 +14,10 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'numpy>=1.10',
+    'numpy>=1.22',
     'scipy',
     'urllib3',
-    'matplotlib'
+    'matplotlib>=3.3.0'
 ]
 
 setup_requirements = [
@@ -34,12 +34,12 @@ test_requirements = [
 
 setup(
     name='spharpy',
-    version='0.3.2',
+    version='0.5.0',
     description="Python package for spherical array processing.",
     long_description=readme,
     author="Marco Berzborn",
     author_email='marco.berzborn@akustik.rwth-aachen.de',
-    url='https://git.rwth-aachen.de/mbe/spharpy/',
+    url='https://github.com/mberz/spharpy',
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
@@ -52,11 +52,18 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
     test_suite='tests',
     tests_require=test_requirements,
     setup_requires=setup_requirements,
-    python_requires='>=3.7'
+    download_url="https://pypi.org/project/spharpy/",
+    project_urls={
+        "Bug Tracker": "https://github.com/mberz/spharpy/issues",
+        "Documentation": "https://spharpy.readthedocs.io/",
+        "Source Code": "https://github.com/mberz/spharpy",
+    },
+    python_requires='>=3.8'
 )

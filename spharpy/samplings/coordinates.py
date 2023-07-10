@@ -1,6 +1,7 @@
 import numpy as np
 from spharpy.samplings.helpers import sph2cart
 from scipy.spatial import cKDTree
+import pyfar
 
 
 class Coordinates(object):
@@ -27,9 +28,9 @@ class Coordinates(object):
         """
 
         super(Coordinates, self).__init__()
-        x = np.asarray(x, dtype=np.float64)
-        y = np.asarray(y, dtype=np.float64)
-        z = np.asarray(z, dtype=np.float64)
+        x = np.asarray(x, dtype=float)
+        y = np.asarray(y, dtype=float)
+        z = np.asarray(z, dtype=float)
 
         if not np.shape(x) == np.shape(y) == np.shape(z):
             raise ValueError("Input arrays need to have same dimensions.")
@@ -46,7 +47,7 @@ class Coordinates(object):
 
     @x.setter
     def x(self, value):
-        self._x = np.asarray(value, dtype=np.float64)
+        self._x = np.asarray(value, dtype=float)
 
     @property
     def y(self):
@@ -55,7 +56,7 @@ class Coordinates(object):
 
     @y.setter
     def y(self, value):
-        self._y = np.asarray(value, dtype=np.float64)
+        self._y = np.asarray(value, dtype=float)
 
     @property
     def z(self):
@@ -64,7 +65,7 @@ class Coordinates(object):
 
     @z.setter
     def z(self, value):
-        self._z = np.asarray(value, dtype=np.float64)
+        self._z = np.asarray(value, dtype=float)
 
     @property
     def radius(self):
@@ -73,7 +74,7 @@ class Coordinates(object):
 
     @radius.setter
     def radius(self, radius):
-        x, y, z = sph2cart(np.asarray(radius, dtype=np.float64),
+        x, y, z = sph2cart(np.asarray(radius, dtype=float),
                            self.elevation,
                            self.azimuth)
         self._x = x
@@ -89,7 +90,7 @@ class Coordinates(object):
     def azimuth(self, azimuth):
         x, y, z = sph2cart(self.radius,
                            self.elevation,
-                           np.asarray(azimuth, dtype=np.float64))
+                           np.asarray(azimuth, dtype=float))
         self._x = x
         self._y = y
         self._z = z
@@ -103,7 +104,7 @@ class Coordinates(object):
     @elevation.setter
     def elevation(self, elevation):
         x, y, z = sph2cart(self.radius,
-                           np.asarray(elevation, dtype=np.float64),
+                           np.asarray(elevation, dtype=float),
                            self.azimuth)
         self._x = x
         self._y = y
@@ -139,9 +140,9 @@ class Coordinates(object):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
-        radius = np.asarray(radius, dtype=np.double)
-        elevation = np.asarray(elevation, dtype=np.double)
-        azimuth = np.asarray(azimuth, dtype=np.double)
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return Coordinates(x, y, z)
 
@@ -206,7 +207,6 @@ class Coordinates(object):
         """Return number of points stored in the object"""
         return self.x.size
 
-
     def merge(self, other):
         """Merge another coordinates objects into this object."""
         data = np.concatenate(
@@ -214,7 +214,6 @@ class Coordinates(object):
             axis=-1
         )
         self.cartesian = data
-
 
     def find_nearest_point(self, point):
         """Find the closest Coordinate point to a given Point.
@@ -266,6 +265,39 @@ class Coordinates(object):
         """
         return self.n_points
 
+    def to_pyfar(self):
+        """Export to a pyfar Coordinates object.
+
+        Returns
+        -------
+        :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            The equivalent pyfar class object.
+        """
+        return pyfar.Coordinates(
+            self.x,
+            self.y,
+            self.z,
+            domain='cart',
+            convention='right',
+            unit='met')
+
+    @classmethod
+    def from_pyfar(cls, coords):
+        """Create a spharpy Coordinates object from pyfar Coordinates.
+
+        Parameters
+        ----------
+        coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            A set of coordinates.
+
+        Returns
+        -------
+        Coordinates
+            The same set of coordinates.
+        """
+        cartesian = coords.get_cart(convention='right', unit='met').T
+        return Coordinates(cartesian[0], cartesian[1], cartesian[2])
+
 
 class SamplingSphere(Coordinates):
     """Class for samplings on a sphere"""
@@ -274,18 +306,11 @@ class SamplingSphere(Coordinates):
         """Init for sampling class
         """
         Coordinates.__init__(self, x, y, z)
-        if n_max is not None:
-            self._n_max = np.int(n_max)
-        else:
-            self._n_max = None
-
-        if weights is not None:
-            if len(x) != len(weights):
-                raise ValueError("The number of weights has to be equal to \
-                        the number of sampling points.")
-            self._weights = np.asarray(weights, dtype=np.double)
-        else:
+        self._n_max = int(n_max) if n_max is not None else None
+        if weights is None:
             self._weights = None
+        else:
+            self.weights = weights
 
     @property
     def n_max(self):
@@ -294,7 +319,7 @@ class SamplingSphere(Coordinates):
 
     @n_max.setter
     def n_max(self, value):
-        self._n_max = np.int(value)
+        self._n_max = int(value)
 
     @property
     def weights(self):
@@ -303,10 +328,20 @@ class SamplingSphere(Coordinates):
 
     @weights.setter
     def weights(self, weights):
+        if weights is None:
+            self._weights = None
+            return
         if len(weights) != self.n_points:
             raise ValueError("The number of weights has to be equal to \
                     the number of sampling points.")
-        self._weights = np.asarray(weights, dtype=np.double)
+
+        weights = np.asarray(weights, dtype=float)
+        norm = np.linalg.norm(weights, axis=-1)
+
+        if not np.allclose(norm, 4*np.pi):
+            weights *= 4*np.pi/norm
+
+        self._weights = weights
 
     @classmethod
     def from_coordinates(cls, coords, n_max=None, weights=None):
@@ -343,8 +378,8 @@ class SamplingSphere(Coordinates):
         return SamplingSphere(x, y, z, n_max, weights)
 
     @classmethod
-    def from_spherical(cls, radius, elevation, azimuth,
-            n_max=None, weights=None):
+    def from_spherical(
+            cls, radius, elevation, azimuth, n_max=None, weights=None):
         """Create a Coordinates class object from a set of points in the
         spherical coordinate system.
 
@@ -357,15 +392,15 @@ class SamplingSphere(Coordinates):
         azimuth : ndarray, double
             The azimuth angle in radians
         """
-        radius = np.asarray(radius, dtype=np.double)
-        elevation = np.asarray(elevation, dtype=np.double)
-        azimuth = np.asarray(azimuth, dtype=np.double)
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
         x, y, z = sph2cart(radius, elevation, azimuth)
         return SamplingSphere(x, y, z, n_max, weights)
 
-
     @classmethod
-    def from_array(cls, values, n_max=None, weights=None,
+    def from_array(
+            cls, values, n_max=None, weights=None,
             coordinate_system='cartesian'):
         """Create a Coordinates class object from a set of points given as
         numpy array
@@ -388,7 +423,6 @@ class SamplingSphere(Coordinates):
 
         return coords
 
-
     def __repr__(self):
         """repr for SamplingSphere class
         """
@@ -397,3 +431,39 @@ class SamplingSphere(Coordinates):
         else:
             repr_string = "Sampling with {} points".format(self.n_points)
         return repr_string
+
+    def to_pyfar(self):
+        """Export to a pyfar Coordinates object.
+
+        Returns
+        -------
+        :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            The equivalent pyfar class object.
+        """
+        pyfar_coords = super().to_pyfar()
+        if self.weights is not None:
+            pyfar_coords.weights = self.weights / np.linalg.norm(self.weights)
+        pyfar_coords.sh_order = self.n_max
+
+        return pyfar_coords
+
+    @classmethod
+    def from_pyfar(cls, coords):
+        """Create a spharpy SamplingSphere object from pyfar Coordinates.
+
+        Parameters
+        ----------
+        coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            A set of coordinates.
+
+        Returns
+        -------
+        SamplingSphere
+            The same set of coordinates.
+        """
+        cartesian = coords.get_cart(convention='right', unit='met').T
+        spharpy_coords = SamplingSphere(
+            cartesian[0], cartesian[1], cartesian[2])
+        spharpy_coords.weights = coords.weights
+        spharpy_coords.n_max = coords.sh_order
+        return spharpy_coords
