@@ -4,7 +4,8 @@ import numpy as np
 import pytest
 
 import spharpy.samplings as samplings
-from spharpy.samplings.coordinates import Coordinates, SamplingSphere
+from spharpy.samplings.coordinates import SamplingSphere
+from pyfar.classes.coordinates import Coordinates
 
 
 def test_cube_equidistant():

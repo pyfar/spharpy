@@ -92,8 +92,9 @@ def hyperinterpolation(n_max):
     sampling = SamplingSphere(
         file_data[:, 0],
         file_data[:, 1],
-        file_data[:, 2])
-    sampling.weights = file_data[:, 3]
+        file_data[:, 2],
+        n_max=n_max,
+        weights=file_data[:, 3])
 
     return sampling
 
@@ -177,7 +178,8 @@ def spherical_t_design(n_max, criterion='const_energy'):
         dtype=float,
         sep=' ').reshape((n_points, 3)).T
 
-    return SamplingSphere.from_array(points)
+    return SamplingSphere.from_cartesian(
+        points[0], points[1], points[2], n_max=n_max)
 
 
 def dodecahedron():
@@ -223,7 +225,7 @@ def dodecahedron():
 
     rad = np.ones(np.size(theta))
 
-    return SamplingSphere.from_spherical(rad, theta, phi)
+    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def icosahedron():
@@ -247,7 +249,7 @@ def icosahedron():
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi/5, 2)))
     rad = np.ones(20)
 
-    return SamplingSphere.from_spherical(rad, theta, phi)
+    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def equiangular(n_max):
@@ -283,11 +285,8 @@ def equiangular(n_max):
         (1/L @ L[np.newaxis].T @ theta_angles[np.newaxis])
     weights = np.tile(factor_phi * factor_theta * np.pi/2 * factor_sin, n_phi)
 
-    sampling = SamplingSphere.from_spherical(
-        rad, theta.reshape(-1), phi.reshape(-1))
-    sampling.weights = weights
-
-    return sampling
+    return SamplingSphere.from_spherical_colatitude(
+        phi.reshape(-1), theta.reshape(-1), rad, weights=weights)
 
 
 def gaussian(n_max):
@@ -314,10 +313,8 @@ def gaussian(n_max):
     rad = np.ones(theta.size)
     weights = np.tile(weights*np.pi/(n_max+1), 2*(n_max+1))
 
-    sampling = SamplingSphere.from_spherical(
-        rad, theta.reshape(-1), phi.reshape(-1))
-    sampling.weights = weights
-    return sampling
+    return SamplingSphere.from_spherical_colatitude(
+        phi.reshape(-1), theta.reshape(-1), rad, weights=weights)
 
 
 def eigenmike_em32():
@@ -349,7 +346,7 @@ def eigenmike_em32():
                     180.0, 135.0, 111.0, 135.0, 269.0, 270.0,
                     270.0, 271.0]) * np.pi / 180
 
-    return SamplingSphere.from_spherical(rad, theta, phi)
+    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def icosahedron_ke4():
@@ -381,7 +378,7 @@ def icosahedron_ke4():
 
     rad = np.ones(20) * 0.065
 
-    return SamplingSphere.from_spherical(rad, theta, phi)
+    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def equalarea(n_max, condition_num=2.5, n_points=None):
@@ -486,7 +483,8 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     while True:
         theta, phi = _spiral_points(n_points)
-        sampling = SamplingSphere.from_spherical(np.ones(n_points), theta, phi)
+        sampling = SamplingSphere.from_spherical_colatitude(
+            phi, theta, np.ones(n_points))
         if condition_num == np.inf:
             break
         Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)

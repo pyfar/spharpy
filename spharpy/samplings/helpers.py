@@ -201,7 +201,7 @@ def spherical_voronoi(sampling, round_decimals=13, center=0.0):
         Spherical voronoi diagram as implemented in scipy.
 
     """
-    points = sampling.cartesian.T
+    points = sampling.cartesian
     radius = np.unique(np.round(sampling.radius, decimals=round_decimals))
     if len(radius) > 1:
         raise ValueError("All sampling points need to be on the \
