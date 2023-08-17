@@ -6,7 +6,7 @@ import numpy as np
 
 def test_smooth_sphere_bivariate_spline_interpolation():
     n_max = 10
-    sampling = spharpy.samplings.equalarea(
+    sampling = spharpy.samplings.equal_area(
         n_max, n_points=500, condition_num=np.inf)
     Y = spharpy.spherical.spherical_harmonic_basis_real(n_max, sampling)
     y_vec = spharpy.spherical.spherical_harmonic_basis_real(
