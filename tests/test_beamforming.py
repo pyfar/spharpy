@@ -53,3 +53,14 @@ def test_max_front_back():
 
     with pytest.raises(RuntimeError, match='did not converge'):
         spharpy.beamforming.maximum_front_back_ratio_weights(30)
+
+
+def test_normalize_weights():
+    n_max = 7
+    normalized_weights = spharpy.beamforming.normalize_beamforming_weights(
+        np.ones(n_max+1), n_max)
+
+    # pwd weights are const 4*pi/(n_max+1)**2
+    expected = np.ones(n_max+1)*4*np.pi/(n_max+1)**2
+
+    npt.assert_allclose(expected, normalized_weights)
