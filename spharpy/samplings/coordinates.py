@@ -337,7 +337,7 @@ class SamplingSphere(pf.Coordinates):
         """
         pf.Coordinates.__init__(
             self, x, y, z, weights=weights, comment=comment)
-        self.n_max = n_max
+        self._n_max = n_max
 
     @classmethod
     def from_cartesian(
@@ -583,15 +583,15 @@ class SamplingSphere(pf.Coordinates):
             x, y, z, weights=weights, comment=comment, n_max=n_max)
 
     @property
-    def sh_order(self):
+    def n_max(self):
         """Get the maximum spherical harmonic order."""
-        return self._sh_order
+        return self._n_max
 
-    @sh_order.setter
-    def sh_order(self, value):
+    @n_max.setter
+    def n_max(self, value):
         """Set the maximum spherical harmonic order."""
         assert value >= 0
         if value is None:
-            self._sh_order = None
+            self._n_max = None
         else:
-            self._sh_order = int(value)
+            self._n_max = int(value)
