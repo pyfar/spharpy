@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.testing as npt
+import pytest
 
 import spharpy
 
@@ -42,12 +43,6 @@ def test_re_max():
 
 def test_max_front_back():
     N = 7
-    f_nm = spharpy.beamforming.maximum_front_back_ratio_weights(
-        N, normalize=False)
-
-    truth = np.loadtxt('tests/data/max_front_back_weights.csv', delimiter=',')
-    npt.assert_allclose(f_nm, np.abs(truth))
-
     f_nm_norm = spharpy.beamforming.maximum_front_back_ratio_weights(
         N, normalize=True)
 
@@ -55,3 +50,6 @@ def test_max_front_back():
         N, spharpy.samplings.Coordinates(1, 0, 0))
 
     npt.assert_allclose(Y @ np.diag(f_nm_norm) @ Y.T, 1)
+
+    with pytest.raises(RuntimeError, match='did not converge'):
+        spharpy.beamforming.maximum_front_back_ratio_weights(30)

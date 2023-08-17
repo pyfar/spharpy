@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
 import numpy.polynomial as poly
-from scipy.linalg import eig
+from scipy.linalg import eigh
 from scipy.special import factorial
 
 import spharpy
@@ -154,7 +154,12 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
                 for q, ll in itertools.product(range(n+1), range(n_dash+1)))
             Bnn[n, n_dash] = temp * const
 
-    eigenvals, eigenvectors = eig(Ann, Bnn)
+    try:
+        eigenvals, eigenvectors = eigh(Ann, Bnn)
+    except np.linalg.LinAlgError as e:
+        raise RuntimeError(
+            'Eigenvalue decomposition did not converge. '
+            'Try reducing the spherical harmonic order.') from e
     f_n = eigenvectors[:, np.argmax(np.real(eigenvals))]
     if normalize:
         f_n = normalize_beamforming_weights(f_n, n_max)
