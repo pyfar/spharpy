@@ -3,6 +3,7 @@ import numpy.testing as npt
 
 import spharpy
 
+
 def test_dolph_cheby_mainlobe():
     N = 7
     theta0 = np.pi/6
