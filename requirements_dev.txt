@@ -20,4 +20,4 @@ numpydoc
 insipid-sphinx-theme
 autodocsumm
 nbmake
-pyfar @ https://github.com/pyfar/pyfar@develop
+pyfar @ git+https://github.com/pyfar/pyfar@develop
