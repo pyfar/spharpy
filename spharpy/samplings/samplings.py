@@ -3,7 +3,8 @@ Collection of sampling schemes for the sphere
 """
 import urllib3
 import numpy as np
-from spharpy.samplings.coordinates import Coordinates, SamplingSphere
+from spharpy.samplings.coordinates import SamplingSphere
+from pyfar import Coordinates
 import spharpy
 
 from ._eqsp import point_set as eq_point_set
@@ -25,6 +26,14 @@ def cube_equidistant(n_points):
     sampling : Coordinates
         Sampling positions as Coordinate object
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.cube_equidistant(3)
+        >>> coords.show()
     """
     if np.size(n_points) == 1:
         n_x = n_points
@@ -72,6 +81,15 @@ def hyperinterpolation(n_max):
     -------
     sampling: SamplingSphere
         SamplingSphere object containing all sampling points
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.hyperinterpolation(5)
+        >>> coords.show()
     """
     n_sh = (n_max+1)**2
     filename = "md%03d.%05d" % (n_max, n_sh)
@@ -143,6 +161,15 @@ def spherical_t_design(n_max, criterion='const_energy'):
             Sound and Vibration, 2010.
     .. [5]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.spherical_t_design(5)
+        >>> coords.show()
+
     """
     if criterion == 'const_energy':
         degree = 2*n_max
@@ -194,10 +221,20 @@ def dodecahedron():
         Elevation angle in the range [0, pi]
     phi : ndarray
         Azimuth angle in the range [0, 2 pi]
+
     Returns
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.dodecahedron()
+        >>> coords.show()
     """
 
     dihedral = 2*np.arcsin(np.cos(np.pi/3)/np.sin(np.pi/5))
@@ -236,6 +273,16 @@ def icosahedron():
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.icosahedron()
+        >>> coords.show()
+
     """
     gamma_R_r = np.arccos(np.cos(np.pi/3) / np.sin(np.pi/5))
     gamma_R_rho = np.arccos(1/(np.tan(np.pi/5) * np.tan(np.pi/3)))
@@ -264,6 +311,15 @@ def equiangular(n_max):
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.equiangular(3)
+        >>> coords.show()
 
     """
     n_theta = np.round((n_max+1)*2)
@@ -302,6 +358,14 @@ def gaussian(n_max):
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.gaussian(3)
+        >>> coords.show()
     """
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
     theta_angles = np.arccos(legendre)
@@ -331,6 +395,14 @@ def eigenmike_em32():
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.eigenmike_em32()
+        >>> coords.show()
     """
     rad = np.ones(32)
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
@@ -358,6 +430,14 @@ def icosahedron_ke4():
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.icosahedron_ke4()
+        >>> coords.show()
     """
 
     theta = np.array([1.565269801525254, 2.294997457752220, 1.226592351686568,
@@ -405,6 +485,14 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
             area and small diameter,” Electronic Transactions on Numerical
             Analysis, vol. 25, no. 12, pp. 309–327, 2006.
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.equalarea(3)
+        >>> coords.show()
     """
     if not n_points:
         n_points = (n_max+1)**2
@@ -450,6 +538,14 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
             Energy on the Sphere,” Mathematical Research Letters, vol. 1,
             no. 6, pp. 647–662, 1994.
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.spiral_points(3)
+        >>> coords.show()
     """
     if n_points is None:
         n_points = (n_max+1)**2
