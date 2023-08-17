@@ -202,6 +202,7 @@ def spherical_voronoi(sampling, round_decimals=13, center=0.0):
 
     """
     points = sampling.cartesian
+    points = points if points.shape[-1] == 3 else points.T
     radius = np.unique(np.round(sampling.radius, decimals=round_decimals))
     if len(radius) > 1:
         raise ValueError("All sampling points need to be on the \
@@ -238,7 +239,10 @@ def calculate_sampling_weights(sampling, round_decimals=12):
         return_index=True)
 
     searchtree = cKDTree(unique_verts)
-    area = np.zeros(sampling.n_points, float)
+    if hasattr(sampling, 'csize'):
+        area = np.zeros(sampling.csize, float)
+    else:
+        area = np.zeros(sampling.n_points, float)
 
     for idx, region in enumerate(sv.regions):
         _, idx_nearest = searchtree.query(sv.vertices[np.array(region)])
