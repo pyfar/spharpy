@@ -1,6 +1,7 @@
+import itertools
 import numpy as np
 import numpy.polynomial as poly
-from scipy.linalg import eig
+from scipy.linalg import eigh
 from scipy.special import factorial
 
 import spharpy
@@ -67,12 +68,10 @@ def dolph_chebyshev_weights(
                            (1/2**j)*t_2N[2*j]*P_N[i, n]*x0**(2*j)
         d_n[n] = (2*np.pi/R)*temp
 
-    weights = spharpy.indexing.sph_identity_matrix(n_max, type='n-nm').T @ d_n
-
-    return weights
+    return spharpy.indexing.sph_identity_matrix(n_max, type='n-nm').T @ d_n
 
 
-def rE_max_weights(n_max):
+def rE_max_weights(n_max, normalize=True):
     """Weights that maximize the length of the energy vector.
     This is most often used in Ambisonics decoding.
 
@@ -80,6 +79,9 @@ def rE_max_weights(n_max):
     ----------
     n_max : int
         Spherical harmonic order
+    normalize : bool
+        If `True`, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted.
 
     Returns
     -------
@@ -97,16 +99,17 @@ def rE_max_weights(n_max):
     P_n_root = poly.legendre.legroots(leg.coef)
     max_root = np.max(np.abs(P_n_root))
     g_n = np.zeros(n_max+1)
-    for n in range(0, n_max+1):
+    for n in range(n_max+1):
         leg = poly.legendre.Legendre.basis(n)
         g_n[n] = leg(max_root)
 
-    weights = spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
+    if normalize:
+        g_n = normalize_beamforming_weights(g_n, n_max)
 
-    return weights
+    return spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
 
 
-def maximum_front_back_ratio_weights(n_max):
+def maximum_front_back_ratio_weights(n_max, normalize=True):
     """Weights that maximize the front-back ratio of the beam pattern.
     This is also often referred to as the super-cardioid beam pattern.
 
@@ -114,6 +117,9 @@ def maximum_front_back_ratio_weights(n_max):
     ----------
     n_max : int
         The spherical harmonic order
+    normalize : bool
+        If `True`, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted.
 
     Returns
     -------
@@ -138,21 +144,46 @@ def maximum_front_back_ratio_weights(n_max):
     for n in range(n_max+1):
         for n_dash in range(n_max+1):
             const = 1/8/np.pi * (2*n+1) * (2*n_dash+1)
-            temp = 0
-            for q in range(0, n+1):
-                for ll in range(0, n_dash+1):
-                    temp += 1/(q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
+            temp = sum(
+                1 / (q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
+                for q, ll in itertools.product(range(n+1), range(n_dash+1)))
             Ann[n, n_dash] = temp * const
 
-            temp = 0
-            for q in range(0, n+1):
-                for ll in range(0, n_dash+1):
-                    temp += ((-1)**(q+ll))/(q+ll+1) * \
-                        P_N[q, n] * P_N[ll, n_dash]
+            temp = sum(
+                ((-1) ** (q+ll)) / (q+ll+1) * P_N[q, n] * P_N[ll, n_dash]
+                for q, ll in itertools.product(range(n+1), range(n_dash+1)))
             Bnn[n, n_dash] = temp * const
 
-    eigenvals, eigenvectors = eig(Ann, Bnn)
+    try:
+        eigenvals, eigenvectors = eigh(Ann, Bnn)
+    except np.linalg.LinAlgError as e:
+        raise RuntimeError(
+            'Eigenvalue decomposition did not converge. '
+            'Try reducing the spherical harmonic order.') from e
     f_n = eigenvectors[:, np.argmax(np.real(eigenvals))]
-    weights = spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
+    if normalize:
+        f_n = normalize_beamforming_weights(f_n, n_max)
+    else:
+        f_n /= np.sign(f_n[0])
 
-    return weights
+    return spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
+
+
+def normalize_beamforming_weights(weights, n_max):
+    """Normalize the beamforming weights such that the complex amplitude of a
+    plane wave is not distorted.
+
+    Parameters
+    ----------
+    weights : ndarray, double
+        An array containing the beamforming weights
+    n_max : int
+        The spherical harmonic order
+
+    Returns
+    -------
+    weights : ndarray, double
+        An array containing the normalized beamforming weights
+
+    """
+    return weights / np.dot(weights, 2*np.arange(0, n_max+1)+1) * (4*np.pi)
