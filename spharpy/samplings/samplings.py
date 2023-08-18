@@ -10,6 +10,8 @@ from pyfar import Coordinates
 import spharpy
 import warnings
 import scipy.io as sio
+import requests
+from multiprocessing.pool import ThreadPool
 
 from ._eqsp import point_set, lebedev_sphere
 
@@ -1174,15 +1176,11 @@ def _sph_t_design_load_data(degrees='all'):
     elif not isinstance(degrees, list):
         raise ValueError("degrees must an int, list, or string.")
 
-    print("Loading t-design sampling points from \
-        http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html. \
-        This might take a while but is only done once.")
-
-    http = urllib3.PoolManager(cert_reqs=False)
     prefix = 'samplings_t_design_'
 
     n_points_exceptions = {3: 8, 5: 18, 7: 32, 9: 50, 11: 72, 13: 98, 15: 128}
 
+    entries = []
     for degree in degrees:
         # number of sampling points
         n_points = int(np.ceil((degree + 1)**2 / 2) + 1)
@@ -1194,22 +1192,12 @@ def _sph_t_design_load_data(degrees='all'):
         url = "http://web.maths.unsw.edu.au/~rsw/Sphere/Points/SF/"\
               "SF29-Nov-2012/"
         fileurl = url + filename
+        path_save = os.path.join(
+            os.path.dirname(__file__), "_eqsp", prefix + filename)
 
-        # Kontrolle ist gut, Vertrauen ist besser
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", InsecureRequestWarning)
-            http_data = http.urlopen('GET', fileurl)
+        entries.append((path_save, fileurl))
 
-        # save the data
-        if http_data.status == 200:
-            save_name = os.path.join(
-                os.path.dirname(__file__), "_eqsp", prefix + filename)
-            print(f'Loading file {degree}/{len(degrees)}')
-            with open(save_name, 'wb') as out:
-                out.write(http_data.data)
-        else:
-            raise ConnectionError(
-                "Connection error. Please check your internet connection.")
+    ThreadPool(os.cpu_count()).imap_unordered(_fetch_url, entries)
 
 
 def _sph_extremal_load_data(orders='all'):
@@ -1227,13 +1215,9 @@ def _sph_extremal_load_data(orders='all'):
     elif not isinstance(orders, list):
         raise ValueError("orders must an int, list, or string.")
 
-    print("Loading extremal sampling points from \
-        https://web.maths.unsw.edu.au/~rsw/Sphere/MaxDet/. \
-        This might take a while but is only done once.")
-
-    http = urllib3.PoolManager(cert_reqs=False)
     prefix = 'samplings_extremal_'
 
+    entries = []
     for n_max in orders:
         # number of sampling points
         n_points = (n_max + 1)**2
@@ -1242,19 +1226,24 @@ def _sph_extremal_load_data(orders='all'):
         filename = "md%03d.%05d" % (n_max, n_points)
         url = "https://web.maths.unsw.edu.au/~rsw/Sphere/S2Pts/MD/"
         fileurl = url + filename
+        path_save = os.path.join(
+            os.path.dirname(__file__), "_eqsp", prefix + filename)
 
+        entries.append((path_save, fileurl))
+
+    # download on parallel
+    ThreadPool(os.cpu_count()).imap_unordered(_fetch_url, entries)
+
+
+def _fetch_url(entry):
+    path, uri = entry
+    if not os.path.exists(path):
         # Kontrolle ist gut, Vertrauen ist besser
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", InsecureRequestWarning)
-            http_data = http.urlopen('GET', fileurl)
-
-        # save the data
-        if http_data.status == 200:
-            save_name = os.path.join(
-                os.path.dirname(__file__), "_eqsp", prefix + filename)
-            print(f'Loading file {n_max}/{len(orders)}')
-            with open(save_name, 'wb') as out:
-                out.write(http_data.data)
-        else:
-            raise ConnectionError(
-                "Connection error. Please check your internet connection.")
+            r = requests.get(uri, stream=True, verify=False)
+        if r.status_code == 200:
+            with open(path, 'wb') as f:
+                for chunk in r:
+                    f.write(chunk)
+    return path
