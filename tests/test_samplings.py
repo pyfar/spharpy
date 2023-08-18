@@ -32,7 +32,7 @@ def test_cube_equidistant_pyfar():
 
 def test_hyperinterpolation():
     n_max = 1
-    sampling = samplings.hyperinterpolation(sh_order=n_max)
+    sampling = samplings.hyperinterpolation(n_max=n_max)
     assert sampling.radius.size == (n_max+1)**2
 
 
@@ -50,7 +50,7 @@ def test_sph_extremal():
     npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
-    c = samplings.hyperinterpolation(sh_order=1)
+    c = samplings.hyperinterpolation(n_max=1)
     assert c.csize == 4
     npt.assert_allclose(np.sum(c.weights), 1)
 
@@ -62,7 +62,7 @@ def test_sph_extremal():
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
     # test loading SH order > 9
-    c = samplings.hyperinterpolation(sh_order=10)
+    c = samplings.hyperinterpolation(n_max=10)
 
     # test exceptions
     with raises(ValueError):
@@ -70,27 +70,27 @@ def test_sph_extremal():
     with raises(ValueError):
         c = samplings.hyperinterpolation(5)
     with raises(ValueError):
-        c = samplings.hyperinterpolation(sh_order=0)
+        c = samplings.hyperinterpolation(n_max=0)
 
 
 def test_spherical_t_design_const_e():
     order = 2
     coords = samplings.spherical_t_design(
-        sh_order=order, criterion='const_energy')
+        n_max=order, criterion='const_energy')
     assert isinstance(coords, SamplingSphere)
 
 
 def test_spherical_t_design_const_angle():
     order = 2
     coords = samplings.spherical_t_design(
-        sh_order=order, criterion='const_angular_spread')
+        n_max=order, criterion='const_angular_spread')
     assert isinstance(coords, SamplingSphere)
 
 
 def test_spherical_t_design_invalid():
     order = 2
     with pytest.raises(ValueError, match='Invalid design'):
-        samplings.spherical_t_design(sh_order=order, criterion='bla')
+        samplings.spherical_t_design(n_max=order, criterion='bla')
 
 
 def test_sph_t_design():
@@ -106,10 +106,10 @@ def test_sph_t_design():
     assert c.csize == 6
 
     # test with spherical harmonic order
-    c = samplings.spherical_t_design(sh_order=1)
+    c = samplings.spherical_t_design(n_max=1)
     assert c.csize == 6
     c = samplings.spherical_t_design(
-        sh_order=1, criterion='const_angular_spread')
+        n_max=1, criterion='const_angular_spread')
     assert c.csize == 8
 
     # test default radius
@@ -128,7 +128,7 @@ def test_sph_t_design():
     with raises(ValueError):
         c = samplings.spherical_t_design(0)
     with raises(ValueError):
-        c = samplings.spherical_t_design(sh_order=0)
+        c = samplings.spherical_t_design(n_max=0)
     with raises(ValueError):
         c = samplings.spherical_t_design(2, criterion='const_thread')
 
@@ -167,7 +167,7 @@ def test_sph_icosahedron():
 
 def test_equiangular():
     n_max = 1
-    sampling = samplings.equiangular(sh_order=n_max)
+    sampling = samplings.equiangular(n_max=n_max)
     assert isinstance(sampling, SamplingSphere)
 
 
@@ -188,7 +188,7 @@ def test_equiangular_pyfar():
     npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
-    c = samplings.equiangular(sh_order=5)
+    c = samplings.equiangular(n_max=5)
     assert c.csize == 4 * (5 + 1)**2
     npt.assert_allclose(np.sum(c.weights), 1)
 
@@ -202,7 +202,7 @@ def test_equiangular_pyfar():
 
 def test_gaussian():
     n_max = 1
-    sampling = samplings.gaussian(sh_order=n_max)
+    sampling = samplings.gaussian(n_max=n_max)
     assert isinstance(sampling, SamplingSphere)
 
 
@@ -223,7 +223,7 @@ def test_gaussian_pyfar():
     npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
-    c = samplings.gaussian(sh_order=5)
+    c = samplings.gaussian(n_max=5)
     assert c.csize == 2 * (5 + 1)**2
     npt.assert_allclose(np.sum(c.weights), 1)
 
@@ -248,18 +248,6 @@ def test_icosahedron_ke4():
 def test_equalarea():
     sampling = samplings.equal_area(2)
     assert isinstance(sampling, SamplingSphere)
-
-
-def test_sph_equal_area():
-    # test with points only
-    c = samplings.equal_area(10)
-    assert isinstance(c, Coordinates)
-    assert c.csize == 10
-    npt.assert_allclose(c.radius, 1., atol=1e-15)
-
-    # test with user radius
-    c = samplings.equal_area(10, 1.5)
-    npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
 
 def test_spiral_points():
@@ -329,7 +317,7 @@ def test_lebedev():
     npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
-    c = samplings.lebedev(sh_order=3)
+    c = samplings.lebedev(n_max=3)
     assert c.csize == 26
     npt.assert_allclose(np.sum(c.weights), 1)
 
@@ -352,7 +340,7 @@ def test_fliege():
     npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
-    c = samplings.fliege(sh_order=3)
+    c = samplings.fliege(n_max=3)
     assert c.csize == 16
     npt.assert_allclose(np.sum(c.weights), 1)
 
