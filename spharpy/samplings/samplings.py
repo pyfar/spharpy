@@ -1164,15 +1164,21 @@ def fliege(n_points=None, n_max=None, radius=1.):
 def _sph_t_design_load_data(degrees='all'):
     """Download t-design sampling grids.
 
-    degrees = 'all' : load all samplings up to degree 99
-    degrees = number : load sampling of specified degree
+    Note: Samplings are downloaded form
+    https://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+
+    Parameters
+    ----------
+    degrees : str or list of int, optional
+        list of int load sampling of specified degree, `all` load all
+        samplings up to degree 180, by default 'all'.
     """
 
     # set the degrees to be read
     if isinstance(degrees, int):
         degrees = [degrees]
     elif isinstance(degrees, str):
-        degrees = range(1, 100)
+        degrees = range(1, 181)
     elif not isinstance(degrees, list):
         raise ValueError("degrees must an int, list, or string.")
 
@@ -1203,15 +1209,21 @@ def _sph_t_design_load_data(degrees='all'):
 def _sph_extremal_load_data(orders='all'):
     """Download extremal sampling grids.
 
-    orders = 'all' : load all samplings up to SH order 99
-    orders = int, list : load sampling of specified SH order(s)
+    Note: Samplings are downloaded form
+    https://web.maths.unsw.edu.au/~rsw/Sphere/MaxDet/MaxDet1.html
+
+    Parameters
+    ----------
+    orders : str or list of int, optional
+        list of int load sampling of specified orders, `all` load all
+        samplings up to orders 200, by default 'all'.
     """
 
     # set the SH orders to be read
     if isinstance(orders, int):
         orders = [orders]
     elif isinstance(orders, str):
-        orders = range(1, 100)
+        orders = range(1, 201)
     elif not isinstance(orders, list):
         raise ValueError("orders must an int, list, or string.")
 
