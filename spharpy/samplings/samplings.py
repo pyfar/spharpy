@@ -1203,7 +1203,10 @@ def _sph_t_design_load_data(degrees='all'):
 
         entries.append((path_save, fileurl))
 
-    ThreadPool(os.cpu_count()).imap_unordered(_fetch_url, entries)
+    pool = ThreadPool(os.cpu_count())
+    pool.imap_unordered(_fetch_url, entries)
+    pool.close()
+    pool.join()
 
 
 def _sph_extremal_load_data(orders='all'):
@@ -1244,7 +1247,10 @@ def _sph_extremal_load_data(orders='all'):
         entries.append((path_save, fileurl))
 
     # download on parallel
-    ThreadPool(os.cpu_count()).imap_unordered(_fetch_url, entries)
+    pool = ThreadPool(os.cpu_count())
+    pool.imap_unordered(_fetch_url, entries)
+    pool.close()
+    pool.join()
 
 
 def _fetch_url(entry):
