@@ -1179,8 +1179,6 @@ def _sph_t_design_load_data(degrees='all'):
         degrees = [degrees]
     elif isinstance(degrees, str):
         degrees = range(1, 181)
-    elif not isinstance(degrees, list):
-        raise ValueError("degrees must an int, list, or string.")
 
     prefix = 'samplings_t_design_'
 
@@ -1227,8 +1225,6 @@ def _sph_extremal_load_data(orders='all'):
         orders = [orders]
     elif isinstance(orders, str):
         orders = range(1, 201)
-    elif not isinstance(orders, list):
-        raise ValueError("orders must an int, list, or string.")
 
     prefix = 'samplings_extremal_'
 

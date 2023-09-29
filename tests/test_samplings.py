@@ -32,13 +32,14 @@ def test_cube_equidistant_pyfar():
 
 def test_hyperinterpolation():
     n_max = 1
+    samplings.samplings._sph_extremal_load_data(n_max)
     sampling = samplings.hyperinterpolation(n_max=n_max)
     assert sampling.radius.size == (n_max+1)**2
 
 
 def test_sph_extremal():
     # load test data
-    samplings.samplings._sph_extremal_load_data(1)
+    samplings.samplings._sph_extremal_load_data([1, 10])
 
     # test without parameters
     assert samplings.hyperinterpolation() is None
@@ -75,6 +76,7 @@ def test_sph_extremal():
 
 def test_spherical_t_design_const_e():
     order = 2
+    samplings.samplings._sph_t_design_load_data(range(1, 11))
     coords = samplings.spherical_t_design(
         n_max=order, criterion='const_energy')
     assert isinstance(coords, SamplingSphere)
@@ -82,6 +84,7 @@ def test_spherical_t_design_const_e():
 
 def test_spherical_t_design_const_angle():
     order = 2
+    samplings.samplings._sph_t_design_load_data(range(1, 11))
     coords = samplings.spherical_t_design(
         n_max=order, criterion='const_angular_spread')
     assert isinstance(coords, SamplingSphere)
@@ -89,13 +92,14 @@ def test_spherical_t_design_const_angle():
 
 def test_spherical_t_design_invalid():
     order = 2
+    samplings.samplings._sph_t_design_load_data(range(1, 11))
     with pytest.raises(ValueError, match='Invalid design'):
         samplings.spherical_t_design(n_max=order, criterion='bla')
 
 
 def test_sph_t_design():
     # load test data
-    samplings.samplings._sph_t_design_load_data([1, 2, 3])
+    samplings.samplings._sph_t_design_load_data(np.arange(1, 11))
 
     # test without parameters
     assert samplings.spherical_t_design() is None
