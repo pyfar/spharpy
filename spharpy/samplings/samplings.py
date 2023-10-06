@@ -141,7 +141,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     file_data = file_data.decode()
     file_data = np.fromstring(
         file_data,
-        dtype='double',
+        dtype=float, count=int(n_points)*4,
         sep=' ').reshape((int(n_points), 4))
 
     # normalize weights
