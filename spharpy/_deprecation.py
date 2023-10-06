@@ -1,4 +1,4 @@
-from spharpy.samplings import Coordinates
+from spharpy.samplings import Coordinates, SamplingSphere
 import pyfar as pf
 
 
@@ -11,6 +11,6 @@ def convert_coordinates_to_pyfar(coordinates):
 
 def convert_coordinates(coordinates):
     coords_type = type(coordinates)
-    if coords_type is not pf.Coordinates:
+    if coords_type not in [pf.Coordinates, SamplingSphere]:
         return coordinates
     return Coordinates.from_pyfar(coordinates)
