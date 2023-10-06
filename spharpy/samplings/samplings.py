@@ -1,7 +1,6 @@
 """
 Collection of sampling schemes for the sphere
 """
-import urllib3
 import os
 from urllib3.exceptions import InsecureRequestWarning
 import numpy as np

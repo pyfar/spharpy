@@ -309,7 +309,7 @@ class SamplingSphere(pf.Coordinates):
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
             comment: str = ""):
-        """
+        r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
