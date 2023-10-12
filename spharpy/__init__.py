@@ -1,5 +1,5 @@
-__author__ = "Marco Berzborn"
-__email__ = 'marco.berzborn@akustik.rwth-aachen.de'
+__author__ = """The pyfar developers"""
+__email__ = 'info@pyfar.org'
 __version__ = '0.5.0'
 
 from . import spherical

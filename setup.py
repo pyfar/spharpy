@@ -38,9 +38,9 @@ setup(
     version='0.5.0',
     description="Python package for spherical array processing.",
     long_description=readme,
-    author="Marco Berzborn",
-    author_email='marco.berzborn@akustik.rwth-aachen.de',
-    url='https://github.com/mberz/spharpy',
+    author="The pyfar developers",
+    author_email='info@pyfar.org',
+    url='https://github.com/pyfar/spharpy',
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
@@ -62,9 +62,9 @@ setup(
     setup_requires=setup_requirements,
     download_url="https://pypi.org/project/spharpy/",
     project_urls={
-        "Bug Tracker": "https://github.com/mberz/spharpy/issues",
+        "Bug Tracker": "https://github.com/pyfar/spharpy/issues",
         "Documentation": "https://spharpy.readthedocs.io/",
-        "Source Code": "https://github.com/mberz/spharpy",
+        "Source Code": "https://github.com/pyfar/spharpy",
     },
     python_requires='>=3.8'
 )
