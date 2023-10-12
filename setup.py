@@ -17,7 +17,8 @@ requirements = [
     'numpy>=1.22',
     'scipy',
     'urllib3',
-    'matplotlib>=3.3.0'
+    'matplotlib>=3.3.0',
+    'pyfar<0.6.0',
 ]
 
 setup_requirements = [
