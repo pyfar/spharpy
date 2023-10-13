@@ -12,7 +12,8 @@ import scipy.io as sio
 import requests
 from multiprocessing.pool import ThreadPool
 
-from ._eqsp import point_set, lebedev_sphere
+from ._eqsp import point_set as eq_point_set
+from ._eqsp import lebedev_sphere
 
 
 def cube_equidistant(n_points):
@@ -655,7 +656,7 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
         n_points = (n_max+1)**2
 
     while True:
-        point_data = point_set(2, n_points)
+        point_data = eq_point_set(2, n_points)
         sampling = SamplingSphere(point_data[0], point_data[1], point_data[2])
 
         if condition_num == np.inf:
