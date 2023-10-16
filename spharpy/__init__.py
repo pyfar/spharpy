@@ -9,7 +9,6 @@ from . import indexing
 from . import transforms
 from . import beamforming
 from . import interpolate
-from . import _deprecation
 
 
 __all__ = [
@@ -20,5 +19,4 @@ __all__ = [
     'transforms',
     'beamforming',
     'interpolate',
-    '_deprecation',
 ]
