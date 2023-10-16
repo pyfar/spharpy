@@ -12,34 +12,30 @@ from spharpy import plot
 import pytest
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_balloon_plot(icosahedron, make_coordinates, implementation):
+def test_balloon_plot(icosahedron, make_coordinates):
     rad, theta, phi = icosahedron
-    coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+    coords = make_coordinates.create_coordinates(rad, theta, phi)
     data = np.cos(phi)*np.sin(theta)
     spharpy.plot.balloon(coords, data, show=False)
 
     spharpy.plot.balloon(coords, data, phase=True, show=False)
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_contour_plot(icosahedron, make_coordinates, implementation):
+def test_contour_plot(icosahedron, make_coordinates):
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
     data = np.cos(phi)*np.sin(theta)
 
     spharpy.plot.contour(coords, np.abs(data), show=False)
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_scatter(icosahedron, make_coordinates, implementation):
+def test_scatter(icosahedron, make_coordinates):
     """Test if the plot executes without raising an exception
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     spharpy.plot.scatter(coords)
 
@@ -62,13 +58,11 @@ def test_scatter(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_pcolor_map(icosahedron, make_coordinates, implementation):
+def test_pcolor_map(icosahedron, make_coordinates):
     """Test if the plot executes without raising an exception
     """
     rad, theta, phi = icosahedron
-    coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+    coords = make_coordinates.create_coordinates(rad, theta, phi)
 
     data = np.cos(phi)*np.sin(theta)
     plot.pcolor_map(coords, data)
@@ -88,13 +82,12 @@ def test_pcolor_map(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_contour_map(icosahedron, make_coordinates, implementation):
+def test_contour_map(icosahedron, make_coordinates):
     """Test if the plot executes without raising an exception
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     data = np.cos(phi)*np.sin(theta)
 
@@ -115,13 +108,12 @@ def test_contour_map(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_contour(icosahedron, make_coordinates, implementation):
+def test_contour(icosahedron, make_coordinates):
     """Test if the plot executes without raising an exception
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     data = np.cos(phi)*np.sin(theta)
 
@@ -137,13 +129,12 @@ def test_contour(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_plot_voronoi_sphere(icosahedron, make_coordinates, implementation):
+def test_plot_voronoi_sphere(icosahedron, make_coordinates):
     """Test if the plot executes without raising an exception
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     plot.voronoi_cells_sphere(coords)
 
@@ -166,11 +157,10 @@ def test_plot_voronoi_sphere(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_pcolor_sphere(icosahedron, make_coordinates, implementation):
+def test_pcolor_sphere(icosahedron, make_coordinates):
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     data = np.cos(phi)*np.sin(theta)
 
@@ -191,11 +181,10 @@ def test_pcolor_sphere(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_balloon_wireframe(icosahedron, make_coordinates, implementation):
+def test_balloon_wireframe(icosahedron, make_coordinates):
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     data = np.cos(phi)*np.sin(theta)
 
@@ -216,11 +205,10 @@ def test_balloon_wireframe(icosahedron, make_coordinates, implementation):
     plt.close('all')
 
 
-@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-def test_balloon(icosahedron, make_coordinates, implementation):
+def test_balloon(icosahedron, make_coordinates):
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
-        implementation, rad, theta, phi)
+        rad, theta, phi)
 
     data = np.cos(phi)*np.sin(theta)
 
