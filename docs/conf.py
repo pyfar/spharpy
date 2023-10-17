@@ -56,8 +56,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'spharpy'
-copyright = u"2018, Marco Berzborn"
-author = u"Marco Berzborn"
+copyright = u"2023, The pyfar developers"
+author = u"The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
