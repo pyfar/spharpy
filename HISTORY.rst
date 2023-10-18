@@ -2,6 +2,18 @@
 History
 =======
 
+0.6.0 (2023-10-17)
+------------------
+This is the last minor release of spharpy before full integration into the pyfar ecosystem.
+The next release will be version 1.0.0 which will depend on pyfar >= 0.6.0 and rely on pyfar's `pyfar.Coordinates` class as a replacement for spharpy's `spharpy.samplings.Coordinates` class.
+
+**Changes:**
+
+* Add normalization for distortionless response beamforming weights (PR #30)
+* Minor refactoring in beamforming weight calculations (PR #30)
+* Change dependency to pyfar versions < 0.6.0 (PR #35)
+* Adaptations to the repository move to pyfar/spharpy (PR #32)
+
 0.5.0 (2023-03-22)
 ------------------
 * Introduce support for `pyfar.Coordinates` alongside spharpy's implementation (PR #24). This is the initial step of a full transition in future versions.

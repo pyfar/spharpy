@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/mberz/spharpy/issues.
+Report bugs at https://github.com/pyfar/spharpy/issues.
 
 If you are reporting a bug, please include:
 
@@ -43,7 +43,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/mberz/spharpy/issues.
+The best way to send feedback is to file an issue at https://github.com/pyfar/spharpy/issues.
 
 If you are proposing a feature:
 
@@ -62,7 +62,7 @@ command-line interface. Note that several alternative user interfaces exist, e.g
 1. Fork the spharpy repo on GitHub.
 2. Clone your fork locally and cd into the pyfar directory::
 
-    $ git clone https://github.com/mberz/spharpy.git
+    $ git clone https://github.com/pyfar/spharpy.git
     $ cd spharpy
 
 3. Install your local copy into a virtualenv. Assuming you have Anaconda or Miniconda installed, this is how you set up your fork for local development::
@@ -103,7 +103,7 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring.
-3. If checks to not pass, have a look at https://app.circleci.com/pipelines/github/mberz/spharpy for more information.
+3. If checks to not pass, have a look at https://app.circleci.com/pipelines/github/pyfar/spharpy for more information.
 
 
 Testing Guidelines
