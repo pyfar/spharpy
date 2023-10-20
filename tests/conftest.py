@@ -1,7 +1,7 @@
 import pytest
 import pyfar as pf
 import numpy as np
-from spharpy.samplings import SamplingSphere
+from spharpy import SamplingSphere
 
 
 @pytest.fixture
