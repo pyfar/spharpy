@@ -36,7 +36,6 @@ __all__ = [
     'eigenmike_em32',
     'equal_area',
     'spiral_points',
-    'coordinates2latlon',
     'spherical_voronoi',
     'calculate_sampling_weights',
     'interior_stabilization_points',
