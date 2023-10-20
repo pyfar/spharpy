@@ -17,7 +17,6 @@ from .samplings import (
     )
 
 from .helpers import (
-    coordinates2latlon,
     spherical_voronoi,
     calculate_sampling_weights
 )
