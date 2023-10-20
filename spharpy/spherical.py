@@ -119,7 +119,7 @@ def spherical_harmonic_basis(n_max, coords):
         Complex spherical harmonic basis matrix
 
     """ # noqa: 501
-    
+
     n_coeff = (n_max+1)**2
 
     basis = np.zeros((coords.csize, n_coeff), dtype=complex)
