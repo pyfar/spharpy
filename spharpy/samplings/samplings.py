@@ -1033,7 +1033,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
     toolbox [#]_. Possible combinations of `n_points` and `n_max` are:
 
     +------------+------------+
-    | `n_points` | `n_max` |
+    | `n_points` | `n_max`    |
     +============+============+
     | 4          | 1          |
     +------------+------------+

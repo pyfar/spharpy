@@ -12,10 +12,10 @@ def dolph_chebyshev_weights(
         n_max,
         design_parameter,
         design_criterion='sidelobe'):
-    """Calculate the weights for a spherical Dolph-Chebyshev beamformer. The
-    design criterion can either be a desired side-lobe attenuation or a desired
-    main-lobe width. Once one criterion is chosen, the other will become a
-    dependent property which will be chosen accordingly.
+    """Calculate the weights for a spherical Dolph-Chebyshev beamformer [1]_.
+    The design criterion can either be a desired side-lobe attenuation or a
+    desired main-lobe width. Once one criterion is chosen, the other will
+    become a dependent property which will be chosen accordingly.
 
     Parameters
     ----------
@@ -72,7 +72,7 @@ def dolph_chebyshev_weights(
 
 
 def rE_max_weights(n_max, normalize=True):
-    """Weights that maximize the length of the energy vector.
+    """Weights that maximize the length of the energy vector [2]_.
     This is most often used in Ambisonics decoding.
 
     Parameters
