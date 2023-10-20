@@ -21,7 +21,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-import spharpy
+import spharpy  # noqa: E402
 
 # -- General configuration ---------------------------------------------
 
@@ -84,11 +84,18 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
+# If true, '()' will be appended to :func: etc. cross-reference text.
+add_function_parentheses = False
+
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 # summary of modules
 autodoc_default_options = {'autosummary': True}
+
+# show the code of plots that follows the command .. plot:: based on the
+# package matplotlib.sphinxext.plot_directive
+plot_include_source = True
 
 # intersphinx mapping
 intersphinx_mapping = {
