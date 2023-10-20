@@ -107,3 +107,7 @@ ENV/
 
 # macOS
 .DS_Store
+
+# external data that is loaded from the web
+spharpy/samplings/_eqsp/samplings_extremal*
+spharpy/samplings/_eqsp/samplings_t_design*

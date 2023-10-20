@@ -291,24 +291,6 @@ def test_sampling_sphere_init_value():
     assert isinstance(sampling, SamplingSphere)
 
 
-def test_sampling_to_pyfar_coords():
-    sampling = SamplingSphere(
-        [1], [0], [0], n_max=0, weights=np.array([4*np.pi]))
-    pyfar_coords = sampling.to_pyfar()
-    np.testing.assert_allclose(pyfar_coords.get_cart(), sampling.cartesian.T)
-    assert pyfar_coords.sh_order == sampling.n_max
-    assert pyfar_coords.weights == 1.
-
-
-def test_from_pyfar():
-    pyfar_coords = pf.Coordinates(1, 0, 0, weights=1, sh_order=0)
-    spharpy_sampling = SamplingSphere.from_pyfar(pyfar_coords)
-    np.testing.assert_allclose(
-        pyfar_coords.get_cart(), spharpy_sampling.cartesian.T)
-    assert pyfar_coords.sh_order == spharpy_sampling.n_max
-    npt.assert_almost_equal(4*np.pi, spharpy_sampling.weights)
-
-
 def sampling_cube():
     """Helper function returning a cube sampling"""
     x = [1, -1, 0, 0, 0, 0]
@@ -317,12 +299,14 @@ def sampling_cube():
 
     return x, y, z
 
+
 def test_getter_n_max():
     x, y, z = sampling_cube()
     n_max = 1
     sampling = SamplingSphere(x, y, z, n_max)
 
     assert sampling.n_max == n_max
+
 
 def test_setter_n_max():
     x, y, z = sampling_cube()

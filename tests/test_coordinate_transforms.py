@@ -75,8 +75,7 @@ def test_latlon2cart_array():
 
 
 def test_sph_voronoi():
-    s = samplings.coordinates.SamplingSphere.from_coordinates(
-            samplings.dodecahedron())
+    s = samplings.dodecahedron()
     verts = np.array([[ 8.72677996e-01, -3.56822090e-01,  3.33333333e-01],
                       [ 3.33333333e-01, -5.77350269e-01,  7.45355992e-01],
                       [ 7.45355992e-01, -5.77350269e-01, -3.33333333e-01],

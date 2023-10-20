@@ -95,7 +95,7 @@ def _triangulation_sphere(sampling, data):
         sampling.azimuth)
     hull = sspat.ConvexHull(
         np.asarray(sph2cart(
-            np.ones(sampling.n_points),
+            np.ones(len(sampling.elevation)),
             sampling.elevation,
             sampling.azimuth)).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
