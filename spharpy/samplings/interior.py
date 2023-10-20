@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.special as spspecial
 from spharpy.special import spherical_bessel_zeros
-from spharpy.samplings import Coordinates
+import pyfar as pf
 
 
 def interior_stabilization_points(kr_max, resolution_factor=1):
@@ -36,7 +36,7 @@ def interior_stabilization_points(kr_max, resolution_factor=1):
     """
     x, y, z = find_interior_points(kr_max, resolution_factor=resolution_factor)
 
-    return Coordinates(x, y, z)
+    return pf.Coordinates(x, y, z)
 
 
 def find_eigenfrequencies(kr_max):
