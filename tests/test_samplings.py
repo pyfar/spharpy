@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import spharpy.samplings as samplings
-from spharpy.samplings.coordinates import SamplingSphere
+from spharpy import SamplingSphere
 from pyfar import Coordinates
 import numpy.testing as npt
 from pytest import raises

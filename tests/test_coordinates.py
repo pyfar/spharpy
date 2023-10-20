@@ -1,4 +1,4 @@
-from spharpy.samplings.coordinates import SamplingSphere
+from spharpy import SamplingSphere
 
 
 def test_sampling_sphere_init():
