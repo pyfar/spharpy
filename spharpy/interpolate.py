@@ -1,6 +1,5 @@
 from scipy import interpolate as spinterpolate
 import numpy as np
-from spharpy._deprecation import convert_coordinates_to_pyfar
 
 
 class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
@@ -9,7 +8,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
 
     Parameters
     ----------
-    sampling : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinates object containing the positions for which the data
         is sampled
     data : array, float
@@ -59,7 +58,6 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
 
     """ # noqa: 501
     def __init__(self, sampling, data, w=None, s=1e-4, eps=1e-16):
-        sampling = convert_coordinates_to_pyfar(sampling)
         theta = sampling.colatitude
         phi = sampling.azimuth
         if np.any(np.iscomplex(data)):
@@ -71,7 +69,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
 
         Parameters
         ----------
-        interp_grid : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        interp_grid : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
             Coordinates object containing a new set of points for which data
             is to be interpolated.
         dtheta : int, optional
@@ -80,7 +78,6 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
             Order of phi derivative
 
         """ # noqa: 501
-        interp_grid = convert_coordinates_to_pyfar(interp_grid)
         theta = interp_grid.colatitude
         phi = interp_grid.azimuth
         return super().__call__(

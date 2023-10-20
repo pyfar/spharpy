@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-from spharpy._deprecation import convert_coordinates_to_pyfar
 
 
 def acn2nm(acn):
@@ -119,9 +118,8 @@ def spherical_harmonic_basis(n_max, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
 
-    """  # noqa: E501
-    coords = convert_coordinates_to_pyfar(coords)
-
+    """ # noqa: 501
+    
     n_coeff = (n_max+1)**2
 
     basis = np.zeros((coords.csize, n_coeff), dtype=complex)
@@ -173,8 +171,6 @@ def spherical_harmonic_basis_gradient(n_max, coords):
 
 
     """ # noqa: 501
-    coords = convert_coordinates_to_pyfar(coords)
-
     n_points = coords.csize
     n_coeff = (n_max+1)**2
     theta = coords.colatitude
@@ -234,8 +230,6 @@ def spherical_harmonic_basis_real(n_max, coords):
 
 
     """ # noqa: 501
-    coords = convert_coordinates_to_pyfar(coords)
-
     n_coeff = (n_max+1)**2
 
     basis = np.zeros((coords.csize, n_coeff), dtype=float)
@@ -286,7 +280,6 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
         Complex spherical harmonic basis matrix
 
     """ # noqa: 501
-    coords = convert_coordinates_to_pyfar(coords)
     n_points = coords.csize
     n_coeff = (n_max+1)**2
     theta = coords.colatitude

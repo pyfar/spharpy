@@ -1,13 +1,12 @@
 """
 Plot functions for spatial data
 """
-from spharpy._deprecation import convert_coordinates
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import numpy as np
 import scipy.spatial as sspat
+import pyfar as pf
 from matplotlib import cm, colors
 from mpl_toolkits.mplot3d import Axes3D
 __all__ = [Axes3D]
@@ -17,7 +16,8 @@ from scipy.stats import circmean
 
 from .cmap import phase_twilight
 
-from spharpy.samplings import sph2cart, spherical_voronoi
+from spharpy.samplings import spherical_voronoi
+from pyfar.classes.coordinates import sph2cart
 
 
 def set_aspect_equal_3d(ax):
@@ -48,7 +48,7 @@ def scatter(coordinates, ax=None):
 
     Parameters
     ----------
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The coordinates to be plotted
 
     """ # noqa: 501
@@ -59,7 +59,6 @@ def scatter(coordinates, ax=None):
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
-    coordinates = convert_coordinates(coordinates)
     ax.scatter(coordinates.x, coordinates.y, coordinates.z)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -78,7 +77,7 @@ def _triangulation_sphere(sampling, data):
 
     Parameters
     ----------
-    sampling : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinate object for which the triangulation is calculated
     xyz : list of arrays
         x, y, and z values of the data points in the triangulation
@@ -88,16 +87,16 @@ def _triangulation_sphere(sampling, data):
     triangulation : matplotlib Triangulation
 
     """ # noqa: 501
-    sampling = convert_coordinates(sampling)
     x, y, z = sph2cart(
+        sampling.azimuth,
+        sampling.colatitude,
         np.abs(data),
-        sampling.elevation,
-        sampling.azimuth)
+        )
     hull = sspat.ConvexHull(
         np.asarray(sph2cart(
-            np.ones(len(sampling.elevation)),
-            sampling.elevation,
-            sampling.azimuth)).T)
+            sampling.azimuth,
+            sampling.colatitude,
+            np.ones(len(sampling.colatitude)))).T)
     tri = mtri.Triangulation(x, y, triangles=hull.simplices)
 
     return tri, [x, y, z]
@@ -116,7 +115,7 @@ def interpolate_data_on_sphere(
 
     Parameters
     ----------
-    sampling : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The coordinates at which the data is sampled.
     data : ndarray, double
         The sampled data points.
@@ -139,9 +138,7 @@ def interpolate_data_on_sphere(
     are used.
 
     """ # noqa: 501
-    sampling = convert_coordinates(sampling)
-    lats = sampling.latitude
-    lons = sampling.longitude
+    _, lats, lons = coordinates2latlon(sampling)
 
     mask = lons > np.pi - overlap
     lons = np.concatenate((lons, lons[mask] - np.pi*2))
@@ -237,7 +234,7 @@ def pcolor_sphere(
 
     Parameters
     ----------
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -254,7 +251,6 @@ def pcolor_sphere(
         Whether to show the figure or not
 
     """ # noqa: 501
-    coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
@@ -324,7 +320,7 @@ def balloon_wireframe(
 
     Parameters
     ----------
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -337,7 +333,6 @@ def balloon_wireframe(
     show : boolean, optional
         Whether to show the figure or not
     """ # noqa: 501
-    coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -420,7 +415,7 @@ def balloon(
 
     Parameters
     ----------
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -433,8 +428,6 @@ def balloon(
     show : boolean, optional
         Wheter to show the figure or not
     """ # noqa: 501
-    coordinates = convert_coordinates(coordinates)
-
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -491,7 +484,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
 
     Parameters
     ----------
-    sampling : :class:`spharpy.samplings.SamplingSphere`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Sampling as SamplingSphere object
     round_decimals : int
         Decimals to be rounded to for eliminating duplicate points in
@@ -501,7 +494,6 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         '3d'.
 
     """ # noqa: 501
-    sampling = convert_coordinates(sampling)
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
@@ -612,7 +604,7 @@ def pcolor_map(
 
     Parameters
     ----------
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinates defining a sphere
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -621,8 +613,8 @@ def pcolor_map(
         Wheter to show the figure or not
 
     """ # noqa: 501
-    coordinates = convert_coordinates(coordinates)
-    tri = mtri.Triangulation(coordinates.longitude, coordinates.latitude)
+    height, latitude, longitude = coordinates2latlon(coordinates)
+    tri = mtri.Triangulation(longitude, latitude)
     if refine is not None:
         subdiv = refine if isinstance(refine, int) else 2
         refiner = mtri.UniformTriRefiner(tri)
@@ -703,10 +695,9 @@ def contour_map(
         Wheter to show the figure or not
 
     """
-    coordinates = convert_coordinates(coordinates)
     fig = plt.gcf()
 
-    res = int(np.ceil(np.sqrt(coordinates.n_points)))
+    res = int(np.ceil(np.sqrt(coordinates.csize)))
 
     xi, yi = np.meshgrid(
         np.linspace(-np.pi, np.pi, res*2),
@@ -769,7 +760,7 @@ def contour(
 
     Parameters
     ----------
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         Coordinates defining a sphere
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -778,9 +769,9 @@ def contour(
         Wheter to show the figure or not
 
     """ # noqa: 501
-    coordinates = convert_coordinates(coordinates)
-    lat_deg = coordinates.latitude * 180/np.pi
-    lon_deg = coordinates.longitude * 180/np.pi
+    height, latitude, longitude = coordinates2latlon(coordinates)
+    lat_deg = latitude * 180/np.pi
+    lon_deg = longitude * 180/np.pi
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca()
@@ -813,3 +804,45 @@ class MidpointNormalize(colors.Normalize):
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
         return np.ma.masked_array(np.interp(value, x, y))
+
+
+def coordinates2latlon(coords: pf.Coordinates):
+    """Transforms from Cartesian coordinates to Geocentric coordinates
+
+    .. math::
+
+        h = \\sqrt{x^2 + y^2 + z^2},
+
+        \\theta = \\pi/2 - \\arccos(\\frac{z}{r}),
+
+        \\phi = \\arctan(\\frac{y}{x})
+
+        -\\pi/2 < \\theta < \\pi/2,
+
+        -\\pi < \\phi < \\pi
+
+    where :math:`h` is the heigth, :math:`\\theta` is the latitude angle
+    and :math:`\\phi` is the longitude angle
+
+    Parameters
+    ----------
+    coords : pf.Coordinates
+        Cartesian Coordiantes are transformed to Geocentric coordinates
+
+    Returns
+    -------
+    height : ndarray, number
+        The radius is rendered as height information
+    latitude : ndarray, number
+        Geocentric latitude angle
+    longitude : ndarray, number
+        Geocentric longitude angle
+
+    """
+    x = coords.x
+    y = coords.y
+    z = coords.z
+    height = np.sqrt(x**2 + y**2 + z**2)
+    latitude = np.pi/2 - np.arccos(z/height)
+    longitude = np.arctan2(y, x)
+    return height, latitude, longitude

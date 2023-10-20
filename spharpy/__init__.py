@@ -2,6 +2,7 @@ __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
 __version__ = '0.6.0'
 
+from .samplings.coordinates import SamplingSphere
 from . import spherical
 from . import samplings
 from . import plot
@@ -9,7 +10,6 @@ from . import indexing
 from . import transforms
 from . import beamforming
 from . import interpolate
-from . import _deprecation
 
 
 __all__ = [
@@ -20,5 +20,5 @@ __all__ = [
     'transforms',
     'beamforming',
     'interpolate',
-    '_deprecation',
+    'SamplingSphere',
 ]

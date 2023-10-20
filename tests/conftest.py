@@ -1,7 +1,7 @@
 import pytest
-from spharpy.samplings import Coordinates
 import pyfar as pf
 import numpy as np
+from spharpy import SamplingSphere
 
 
 @pytest.fixture
@@ -17,8 +17,8 @@ def make_coordinates():
                     phi, theta, rad, domain='sph', convention='top_colat'
                 )
             elif implementation == 'spharpy':
-                return Coordinates.from_spherical(rad, theta, phi)
-
+                return SamplingSphere.from_spherical_colatitude(
+                    phi, theta, rad)
     yield Factory
 
 
