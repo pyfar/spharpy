@@ -4,7 +4,6 @@ Collection of sampling schemes for the sphere
 import os
 from urllib3.exceptions import InsecureRequestWarning
 import numpy as np
-# from spharpy import SamplingSphere
 from pyfar import Coordinates
 import spharpy
 import warnings
