@@ -83,6 +83,10 @@ todo_include_todos = False
 # default language for highlighting in source code
 highlight_language = "python3"
 
+# show the code of plots that follows the command .. plot:: based on the
+# package matplotlib.sphinxext.plot_directive
+plot_include_source = True
+
 # intersphinx mapping
 intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
