@@ -50,7 +50,7 @@ def acn2nm(acn):
 def nm2acn(n, m):
     """
     Calculate the linear index coefficient for a spherical harmonic order n
-    and degree m, according to the Ambisonics Channel Convention [1]_.
+    and degree m, according to the Ambisonics Channel Convention [2]_.
 
     .. math::
 
@@ -58,7 +58,7 @@ def nm2acn(n, m):
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+    .. [2]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1–11, 2011.
@@ -91,17 +91,17 @@ def spherical_harmonic_basis(n_max, coords):
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [2]_, [3]_.
+    Condon-Shotley phase term :math:`(-1)^m` [3]_, [4]_.
 
     .. math::
 
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+        Y_n^m(\theta, \\phi) = \\sqrt{\frac{2n+1}{4\pi}
         \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
 
     References
     ----------
-    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [3]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
+    .. [3]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [4]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
             Springer, 2015.
 
 
@@ -117,7 +117,9 @@ def spherical_harmonic_basis(n_max, coords):
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
+
     """ # noqa: 501
+
     n_coeff = (n_max+1)**2
 
     basis = np.zeros((coords.csize, n_coeff), dtype=complex)
@@ -139,14 +141,14 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     harmonic basis matrix of order N for a set of points given by their
     elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [2]_. This implementation avoids
-    singularities at the poles using identities derived in [5]_.
+    Condon-Shotley phase term :math:`(-1)^m` [5]_. This implementation avoids
+    singularities at the poles using identities derived in [6]_.
 
 
     References
     ----------
-    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [9]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [6]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
@@ -194,7 +196,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     Calulcates the real valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [1]_.
+    the AmbiX phase convention [7]_.
 
     .. math::
 
@@ -207,7 +209,7 @@ def spherical_harmonic_basis_real(n_max, coords):
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+    .. [7]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1–11, 2011.
@@ -249,13 +251,13 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     harmonic basis matrix of order N for a set of points given by their
     elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [1]_. This implementation avoids
-    singularities at the poles using identities derived in [5]_.
+    the AmbiX phase convention [8]_. This implementation avoids
+    singularities at the poles using identities derived in [9]_.
 
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+    .. [8]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1–11, 2011.
@@ -318,12 +320,12 @@ def modal_strength(n_max,
 
     Notes
     -----
-    This implementation uses the second order Hankel function, see [4]_ for an
+    This implementation uses the second order Hankel function, see [10]_ for an
     overview of the corresponding sign conventions.
 
     References
     ----------
-    .. [4]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+    .. [10] V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
             Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
 
 
@@ -381,7 +383,7 @@ def aperture_vibrating_spherical_cap(
         rad_cap):
     r"""
     Aperture function for a vibrating cap with radius :math:`r_c` in a rigid
-    sphere with radius :math:`r_s` [5]_, [6]_
+    sphere with radius :math:`r_s` [11]_, [12]_
 
     .. math::
 
@@ -414,15 +416,15 @@ def aperture_vibrating_spherical_cap(
 
     References
     ----------
-    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [6]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
-            Independent Steering for Spherical Loudspeaker Arrays,” IEEE
-            Transactions on Audio, Speech, and Language Processing, vol. 19,
-            no. 7, pp. 2234-2238, 2011
+    .. [11]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [12]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
+             Independent Steering for Spherical Loudspeaker Arrays,” IEEE
+             Transactions on Audio, Speech, and Language Processing, vol. 19,
+             no. 7, pp. 2234-2238, 2011
 
     Notes
     -----
-    Eq. (3) in Ref. [6]_ contains an error, here, the power of 2 on pi is
+    Eq. (3) in Ref. [12]_ contains an error, here, the power of 2 on pi is
     omitted on the normalization term.
 
     """
@@ -456,14 +458,14 @@ def radiation_from_sphere(
     impedance and the propagation to a arbitrary distance from the sphere.
     The sign and phase conventions result in a positive pressure response for
     a positive cap velocity with the intensity vector pointing away from the
-    source.
+    source. [13]_, [14]_
 
     TODO: This function does not have a test yet.
 
     References
     ----------
-    .. [7]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [8]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+    .. [13]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [14]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
             loudspeaker system as multipole source,” in Proceedings of the 33rd
             DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
 
