@@ -656,7 +656,8 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
 
     while True:
         point_data = eq_point_set(2, n_points)
-        sampling = spharpy.SamplingSphere(point_data[0], point_data[1], point_data[2])
+        sampling = spharpy.SamplingSphere(
+            point_data[0], point_data[1], point_data[2])
 
         if condition_num == np.inf:
             break
