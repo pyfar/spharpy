@@ -39,6 +39,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'sphinx.ext.autosummary',
               'sphinx.ext.intersphinx',
+              'matplotlib.sphinxext.plot_directive',
               'autodocsumm',
               ]
 

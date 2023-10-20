@@ -8,8 +8,13 @@ from .samplings import (
     equiangular,
     gaussian,
     eigenmike_em32,
-    equalarea,
-    spiral_points)
+    equal_area,
+    spiral_points,
+    equal_angle,
+    great_circle,
+    lebedev,
+    fliege,
+    )
 
 from .helpers import (
     sph2cart,
@@ -35,7 +40,7 @@ __all__ = [
     'equiangular',
     'gaussian',
     'eigenmike_em32',
-    'equalarea',
+    'equal_area',
     'spiral_points',
     'sph2cart',
     'cart2sph',
@@ -46,4 +51,8 @@ __all__ = [
     'Coordinates',
     'SamplingSphere',
     'interior_stabilization_points',
+    'equal_angle',
+    'great_circle',
+    'lebedev',
+    'fliege',
 ]
