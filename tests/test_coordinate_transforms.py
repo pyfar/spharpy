@@ -12,7 +12,7 @@ def test_cart2latlon_array():
     y = np.array([0, 0, 1, -1, 0, 0])
     z = np.array([0, 0, 0, 0, 1, -1])
     coords = pf.Coordinates(x, y, z)
-    rr, tt, pp = samplings.coordinates2latlon(coords)
+    rr, tt, pp = samplings.helpers.coordinates2latlon(coords)
 
     rad = np.ones(6)
     theta = np.array([0, 0, 0, 0, np.pi/2, -np.pi/2])
