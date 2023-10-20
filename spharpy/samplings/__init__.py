@@ -22,7 +22,7 @@ from .helpers import (
     calculate_sampling_weights
 )
 
-from . import coordinates
+# from . import coordinates
 
 from .interior import interior_stabilization_points
 
@@ -42,7 +42,7 @@ __all__ = [
     'coordinates2latlon',
     'spherical_voronoi',
     'calculate_sampling_weights',
-    'coordinates',
+    # 'coordinates',
     'interior_stabilization_points',
     'equal_angle',
     'great_circle',

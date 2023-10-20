@@ -4,7 +4,7 @@ Collection of sampling schemes for the sphere
 import os
 from urllib3.exceptions import InsecureRequestWarning
 import numpy as np
-from spharpy import SamplingSphere
+# from spharpy import SamplingSphere
 from pyfar import Coordinates
 import spharpy
 import warnings
@@ -148,7 +148,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     weights = file_data[:, 3] / 4 / np.pi
 
     # generate Coordinates object
-    sampling = SamplingSphere(
+    sampling = spharpy.SamplingSphere(
         file_data[:, 0] * radius,
         file_data[:, 1] * radius,
         file_data[:, 2] * radius,
@@ -279,7 +279,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
         sep=' ').reshape((n_points, 3))
 
     # generate Coordinates object
-    sampling = SamplingSphere(
+    sampling = spharpy.SamplingSphere(
         points[..., 0] * radius,
         points[..., 1] * radius,
         points[..., 2] * radius,
@@ -346,7 +346,7 @@ def dodecahedron(radius=1.):
         phi3 + np.pi / 3]), 2)
     rad = radius * np.ones(np.size(theta))
 
-    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
+    return spharpy.SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def icosahedron(radius=1.):
@@ -385,7 +385,7 @@ def icosahedron(radius=1.):
     phi = np.arange(0, 2 * np.pi, 2 * np.pi / 5)
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi / 5, 2)))
 
-    return SamplingSphere.from_spherical_colatitude(phi, theta, radius)
+    return spharpy.SamplingSphere.from_spherical_colatitude(phi, theta, radius)
 
 
 def equiangular(n_points=None, n_max=None, radius=1.):
@@ -464,7 +464,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     w = w / np.sum(w)
 
     # make Coordinates object
-    sampling = SamplingSphere.from_spherical_colatitude(
+    sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), rad,
         weights=w, n_max=n_max)
 
@@ -540,7 +540,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     weights = weights / np.sum(weights)
 
     # make Coordinates object
-    sampling = SamplingSphere.from_spherical_colatitude(
+    sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), radius,
         weights=weights, n_max=n_max)
 
@@ -584,7 +584,7 @@ def eigenmike_em32():
                     180.0, 135.0, 111.0, 135.0, 269.0, 270.0,
                     270.0, 271.0]) * np.pi / 180
 
-    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
+    return spharpy.SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def icosahedron_ke4():
@@ -624,7 +624,7 @@ def icosahedron_ke4():
 
     rad = np.ones(20) * 0.065
 
-    return SamplingSphere.from_spherical_colatitude(phi, theta, rad)
+    return spharpy.SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
 def equal_area(n_max, condition_num=2.5, n_points=None):
@@ -657,7 +657,7 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
 
     while True:
         point_data = eq_point_set(2, n_points)
-        sampling = SamplingSphere(point_data[0], point_data[1], point_data[2])
+        sampling = spharpy.SamplingSphere(point_data[0], point_data[1], point_data[2])
 
         if condition_num == np.inf:
             break
@@ -737,7 +737,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     while True:
         theta, phi = _spiral_points(n_points)
-        sampling = SamplingSphere.from_spherical_colatitude(
+        sampling = spharpy.SamplingSphere.from_spherical_colatitude(
             phi, theta, np.ones(n_points))
         if condition_num == np.inf:
             break
@@ -992,7 +992,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     weights = leb["w"] / (4 * np.pi)
 
     # generate Coordinates object
-    sampling = SamplingSphere(
+    sampling = spharpy.SamplingSphere(
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
@@ -1148,7 +1148,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
     fliege = fliege[f"Fliege_{int(n_points)}"]
 
     # generate Coordinates object
-    sampling = SamplingSphere.from_spherical_colatitude(
+    sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         fliege[:, 0],
         fliege[:, 1],
         radius,
