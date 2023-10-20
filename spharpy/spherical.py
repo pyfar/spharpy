@@ -332,8 +332,8 @@ def modal_strength(n_max,
 
     References
     ----------
-    .. [10]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
-             Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
+    .. [10] V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+            Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
 
 
     Parameters
