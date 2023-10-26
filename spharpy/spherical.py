@@ -513,6 +513,8 @@ def radiation_from_sphere(
 
 def sid(n_max):
     """Calculates the SID indices up to spherical harmonic order n_max.
+    The SID indices were originally proposed by Daniel [#]_, more recently
+    ACN indexing has been favored and is used in the AmbiX format [#]_.
 
     Parameters
     ----------
@@ -525,6 +527,18 @@ def sid(n_max):
         The SID indices for all orders
     sid_m : array-like, int
         The SID indices for all degrees
+
+    References
+    ----------
+    .. [#]  J. Daniel, “Représentation de champs acoustiques, application à la
+            transmission et à la reproduction de scènes sonores complexes dans
+            un contexte multimédia,” Dissertation, l’Université Paris 6, Paris,
+            2001.
+
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
 
     """
     n_sh = (n_max+1)**2
@@ -542,7 +556,7 @@ def sid(n_max):
 
 
 def sid2acn(n_max):
-    """Convert from SID channel indexing as proposed by Daniel.
+    """Convert from SID channel indexing to ACN indeces.
     Returns the indices to achieve a corresponding linear acn indexing.
 
     Parameters
