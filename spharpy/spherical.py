@@ -516,3 +516,109 @@ def radiation_from_sphere(
             radiation[:, acn, acn] = radiation_order
 
     return radiation
+
+
+def sid(n_max):
+    """Calculates the SID indices up to spherical harmonic order n_max.
+
+    Parameters
+    ----------
+    n_max : int
+        The maximum spherical harmonic order
+
+    Returns
+    -------
+    sid_n : array-like, int
+        The SID indices for all orders
+    sid_m : array-like, int
+        The SID indices for all degrees
+
+    """
+    n_sh = (n_max+1)**2
+    sid_n = sph_identity_matrix(n_max, 'n-nm').T @ np.arange(0, n_max+1)
+    sid_m = np.zeros(n_sh, dtype=int)
+    idx_n = 0
+    for n in range(1, n_max+1):
+        for m in range(1, n+1):
+            sid_m[idx_n + 2*m-1] = n-m+1
+            sid_m[idx_n + 2*m] = -(n-m+1)
+        sid_m[idx_n + 2*n + 1] = 0
+        idx_n += 2*n+1
+
+    return sid_n, sid_m
+
+
+def sid2acn(n_max):
+    """Convert from SID channel indexing as proposed by Daniel.
+    Returns the indices to achieve a corresponding linear acn indexing.
+
+    Parameters
+    ----------
+    n_max : int
+        The maximum spherical harmonic order.
+
+    Returns
+    -------
+    acn : array-like, int
+        The SID indices sorted according to a respective linear ACN indexing.
+    """
+    sid_n, sid_m = sid(n_max)
+    linear_sid = nm2acn(sid_n, sid_m)
+    return np.argsort(linear_sid)
+
+
+def sph_identity_matrix(n_max, type='n-nm'):
+    """Calculate a spherical harmonic identity matrix.
+
+    Parameters
+    ----------
+    n_max : int
+        The spherical harmonic order.
+    type : str, optional
+        The type of identity matrix. Currently only 'n-nm' is implemented.
+
+    Returns
+    -------
+    identity_matrix : array-like, int
+        The spherical harmonic identity matrix.
+
+    Examples
+    --------
+
+    The identity matrix can for example be used to decompress from order only
+    vectors to a full order and degree representation.
+
+    >>> import spharpy
+    >>> import matplotlib.pyplot as plt
+    >>> n_max = 2
+    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+    >>> a_n = [1, 2, 3]
+    >>> a_nm = E.T @ a_n
+    >>> a_nm
+    array([1, 2, 2, 2, 3, 3, 3, 3, 3])
+
+    The matrix E in this case has the following form.
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import matplotlib.pyplot as plt
+        >>> n_max = 2
+        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+        >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
+        >>> plt.gca().set_aspect('equal')
+
+    """
+    n_sh = (n_max+1)**2
+
+    if type != 'n-nm':
+        raise NotImplementedError
+
+    identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)
+
+    for n in range(n_max+1):
+        m = np.arange(-n, n+1)
+        linear_nm = nm2acn(np.tile(n, m.shape), m)
+        identity_matrix[n, linear_nm] = 1
+
+    return identity_matrix
