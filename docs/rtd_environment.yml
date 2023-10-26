@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pandoc
+  - ipykernel
+  - pip:
+    - -r requirements_dev.txt
+    - -e ./spharpy
