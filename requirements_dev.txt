@@ -21,3 +21,5 @@ insipid-sphinx-theme
 autodocsumm
 nbmake
 pyfar>=0.6.0
+nbsphinx
+nbsphinx-link

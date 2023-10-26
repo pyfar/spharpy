@@ -41,6 +41,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'matplotlib.sphinxext.plot_directive',
               'autodocsumm',
+              'nbsphinx',
+              'nbsphinx_link',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
