@@ -4,6 +4,7 @@ dependencies:
   - python=3.10
   - pandoc
   - ipykernel
+  - pip>=21.1
   - pip:
-    - -r requirements_dev.txt
-    - -e .
+    - -r ../requirements_dev.txt
+    - -e ../.
