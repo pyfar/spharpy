@@ -214,7 +214,7 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
         >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)
         >>> ax = plt.axes(projection='polar')
         >>> ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))
-        >>> ax.set_rticks([-50, -25, 0])
+        >>> ax.set_rticks([-75, -50, -25, 0])
         >>> ax.set_theta_zero_location('N')
         >>> ax.set_xlabel('Azimuth (deg)')
 
@@ -275,6 +275,7 @@ def normalize_beamforming_weights(weights, n_max):
     Calculate hann window function based tapering weights for a plane wave
     decomposition beamformer and normalize.
 
+    >>> import spharpy
     >>> from scipy.signal.windows import hann
     >>> tapering_window = hann(2*(N+1)+1)[N+1:-1], N)
     >>> h_n = spharpy.beamforming.normalize_beamforming_weights(
