@@ -4,8 +4,8 @@ import numpy.polynomial as poly
 from scipy.linalg import eigh
 from scipy.special import factorial
 
-import spharpy
 import spharpy.special as special
+from spharpy.spherical import sph_identity_matrix
 
 
 def dolph_chebyshev_weights(
@@ -98,7 +98,7 @@ def dolph_chebyshev_weights(
                         (1/2**j)*t_2N[2*j]*P_N[i, n]*x0**(2*j)
         d_n[n] = (2*np.pi/R)*temp
 
-    return spharpy.indexing.sph_identity_matrix(n_max, type='n-nm').T @ d_n
+    return sph_identity_matrix(n_max, type='n-nm').T @ d_n
 
 
 def rE_max_weights(n_max, normalize=True):
@@ -163,7 +163,7 @@ def rE_max_weights(n_max, normalize=True):
     if normalize:
         g_n = normalize_beamforming_weights(g_n, n_max)
 
-    return spharpy.indexing.sph_identity_matrix(n_max).T @ g_n
+    return sph_identity_matrix(n_max).T @ g_n
 
 
 def maximum_front_back_ratio_weights(n_max, normalize=True):
@@ -250,7 +250,7 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     else:
         f_n /= np.sign(f_n[0])
 
-    return spharpy.indexing.sph_identity_matrix(n_max).T @ f_n
+    return sph_identity_matrix(n_max).T @ f_n
 
 
 def normalize_beamforming_weights(weights, n_max):

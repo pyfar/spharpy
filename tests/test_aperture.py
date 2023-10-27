@@ -3,7 +3,7 @@ Tests for the aperture function of a spherical loudspeaker array
 """
 import spharpy.spherical as sh
 from scipy.special import legendre
-from spharpy.indexing import sph_identity_matrix
+from spharpy.spherical import sph_identity_matrix
 import numpy as np
 
 
