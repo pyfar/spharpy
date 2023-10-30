@@ -1,0 +1,11 @@
+[tool.ruff]
+src = ["spharpy"]
+ignore = []
+line-length = 79
+select = ["E", "F", "ICN", "W"]
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
