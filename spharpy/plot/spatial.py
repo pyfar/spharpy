@@ -516,7 +516,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     z = np.outer(np.ones(np.size(u)), np.cos(v))
     ax.plot_surface(x, y, z, color='y', alpha=0.1)
 
-    ax.scatter(points[:, 0], points[:, 1], points[:, 2], c='r')
+    ax.scatter(points[0], points[1], points[2], c='r')
 
     for region in sv.regions:
         polygon = Poly3DCollection(
