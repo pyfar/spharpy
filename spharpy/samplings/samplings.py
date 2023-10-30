@@ -42,7 +42,7 @@ def cube_equidistant(n_points):
 
         >>> import spharpy as sp
         >>> coords = sp.samplings.cube_equidistant(3)
-        >>> coords.show()
+        >>> sp.plot.scatter(coords)
     """
     if np.size(n_points) == 1:
         n_x = n_points
@@ -100,8 +100,17 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     ----------
     .. [#]  I. H. Sloan and R. S. Womersley, “Extremal Systems of Points and
             Numerical Integration on the Sphere,” Advances in Computational
-            Mathematics, vol. 21, no. 1/2, pp. 107–125, 2004.
+            Mathematics, vol. 21, no. 1/2, pp. 107-125, 2004.
     .. [#]  https://web.maths.unsw.edu.au/~rsw/Sphere/MaxDet/
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.hyperinterpolation(n_max=3)
+        >>> sp.plot.scatter(coords)
 
     """
     if (n_points is None) and (n_max is None):
@@ -212,11 +221,20 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     .. [#]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
             Spherical Designs for Integration and Interpolation on the
             Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
-            pp. 2135–2157, Jan. 2010.
+            pp. 2135-2157, Jan. 2010.
     .. [#]  F. Zotter, M. Frank, and A. Sontacchi, “The Virtual T-Design
             Ambisonics-Rig Using VBAP,” in Proceedings on the Congress on
             Sound and Vibration, 2010.
     .. [#]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.spherical_t_design(n_max=3)
+        >>> sp.plot.scatter(coords)
 
     """
 
@@ -257,7 +275,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     if degree in n_points_exceptions:
         n_points = n_points_exceptions[degree]
 
-    # download data if neccessary
+    # download data if necessary
     filename = "samplings_t_design_sf%03d.%05d" % (degree, n_points)
     filename = os.path.join(os.path.dirname(__file__), "_eqsp",  filename)
     if not os.path.exists(filename):
@@ -310,7 +328,7 @@ def dodecahedron(radius=1.):
 
         >>> import spharpy as sp
         >>> coords = sp.samplings.dodecahedron()
-        >>> coords.show()
+        >>> sp.plot.scatter(coords)
     """
 
     dihedral = 2 * np.arcsin(np.cos(np.pi / 3) / np.sin(np.pi / 5))
@@ -370,7 +388,7 @@ def icosahedron(radius=1.):
 
         >>> import spharpy as sp
         >>> coords = sp.samplings.icosahedron()
-        >>> coords.show()
+        >>> sp.plot.scatter(coords)
 
     """
     gamma_R_r = np.arccos(np.cos(np.pi/3) / np.sin(np.pi/5))
@@ -418,6 +436,15 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     ----------
     .. [#] B. Rafaely, Fundamentals of spherical array processing, 1st ed.
            Berlin, Heidelberg, Germany: Springer, 2015.
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.equiangular(n_max=3)
+        >>> sp.plot.scatter(coords)
 
     """
     if (n_points is None) and (n_max is None):
@@ -502,6 +529,15 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     .. [#] B. Rafaely, Fundamentals of spherical array processing, 1st ed.
            Berlin, Heidelberg, Germany: Springer, 2015.
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.gaussian(n_max=3)
+        >>> sp.plot.scatter(coords)
+
     """
     if (n_points is None) and (n_max is None):
         raise ValueError(
@@ -547,12 +583,13 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 
 
 def eigenmike_em32():
-    """Microphone positions of the Eigenmike em32 by mhacoustics according to
-    the Eigenstudio user manual on the homepage [6]_.
+    """Microphone positions of the Eigenmike em32 by mhacoustics.
+
+    The data are according to the Eigenstudio user manual on the homepage [#]_.
 
     References
     ----------
-    .. [6]  Eigenstudio User Manual, https://mhacoustics.com/download
+    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
 
 
     Returns
@@ -567,7 +604,7 @@ def eigenmike_em32():
 
         >>> import spharpy as sp
         >>> coords = sp.samplings.eigenmike_em32()
-        >>> coords.show()
+        >>> sp.plot.scatter(coords)
     """
     rad = np.ones(32)
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
@@ -587,7 +624,7 @@ def eigenmike_em32():
 
 
 def icosahedron_ke4():
-    """Microphone positions of the KE4 spherical microphone array.
+    """Microphone positions of IHTA's KE4 spherical microphone array.
     The microphone marked as "1" defines the positive x-axis.
 
     Returns
@@ -602,7 +639,7 @@ def icosahedron_ke4():
 
         >>> import spharpy as sp
         >>> coords = sp.samplings.icosahedron_ke4()
-        >>> coords.show()
+        >>> sp.plot.scatter(coords)
     """
 
     theta = np.array([1.565269801525254, 2.294997457752220, 1.226592351686568,
@@ -627,7 +664,9 @@ def icosahedron_ke4():
 
 
 def equal_area(n_max, condition_num=2.5, n_points=None):
-    """Sampling based on partitioning into faces with equal area [9]_.
+    """Sampling based on partitioning into faces with equal area.
+
+    The implementation is based on [#]_ and Leopardi's MATLAB implementation.
 
     Parameters
     ----------
@@ -646,9 +685,18 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
 
     References
     ----------
-    .. [9]  P. Leopardi, “A partition of the unit sphere into regions of equal
+    .. [#]  P. Leopardi, “A partition of the unit sphere into regions of equal
             area and small diameter,” Electronic Transactions on Numerical
             Analysis, vol. 25, no. 12, pp. 309-327, 2006.
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.equal_area(n_max=3)
+        >>> sp.plot.scatter(coords)
 
     """
     if not n_points:
@@ -672,7 +720,9 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
 
 
 def spiral_points(n_max, condition_num=2.5, n_points=None):
-    """Sampling based on a spiral distribution of points on a sphere [10]_.
+    """Sampling based on a spiral distribution of points on a sphere.
+
+    The implementation is based on [#]_.
 
     Parameters
     ----------
@@ -692,9 +742,9 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     References
     ----------
 
-    .. [10]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
+    .. [#]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
             Energy on the Sphere,” Mathematical Research Letters, vol. 1,
-            no. 6, pp. 647–662, 1994.
+            no. 6, pp. 647-662, 1994.
 
     Examples
     --------
@@ -702,8 +752,9 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.spiral_points(3)
-        >>> coords.show()
+        >>> coords = sp.samplings.spiral_points(n_max=3)
+        >>> sp.plot.scatter(coords)
+
     """
     if n_points is None:
         n_points = (n_max+1)**2
@@ -776,6 +827,15 @@ def equal_angle(delta_angles, radius=1.):
     sampling : Coordinates
         Sampling positions. Sampling weights can be obtained from
         :py:func:`calculate_sph_voronoi_weights`.
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.equal_angle(delta_angles=45)
+        >>> sp.plot.scatter(coords)
 
     """
 
@@ -857,6 +917,15 @@ def great_circle(
             the head-related transfer functions of an artificial head with a
             high directional resolution,” 109th AES Convention, Los Angeles,
             USA, Sep. 2000.
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.great_circle()
+        >>> sp.plot.scatter(coords)
 
     """
 
@@ -940,10 +1009,19 @@ def lebedev(n_points=None, n_max=None, radius=1.):
            "A quadrature formula for the sphere of the 131st
            algebraic order of accuracy"
            Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.
-    .. [#] https://de.mathworks.com/matlabcentral/fileexchange/27097-\
-        getlebedevsphere
+    .. [#] https://de.mathworks.com/matlabcentral/fileexchange/27097-getlebedevsphere
 
-    """
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.lebedev(n_max=3)
+        >>> sp.plot.scatter(coords)
+
+    """  # noqa: E501
 
     # possible degrees
     degrees = np.array([6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230,
@@ -1098,8 +1176,18 @@ def fliege(n_points=None, n_max=None, radius=1.):
     ----------
     .. [#] J. Fliege and U. Maier, "The distribution of points on the sphere
            and corresponding cubature formulae,” IMA J. Numerical Analysis,
-           Vol. 19, pp. 317–334, Apr. 1999, doi: 10.1093/imanum/19.2.317.
+           Vol. 19, pp. 317-334, Apr. 1999, doi: 10.1093/imanum/19.2.317.
     .. [#] https://audiogroup.web.th-koeln.de/SOFiA_wiki/DOWNLOAD.html
+
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.fliege(n_max=3)
+        >>> sp.plot.scatter(coords)
 
     """
 
