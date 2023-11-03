@@ -51,7 +51,18 @@ def scatter(coordinates, ax=None):
     coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The coordinates to be plotted
 
-    """ # noqa: 501
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> coords = spharpy.samplings.gaussian(n_max=5)
+        >>> spharpy.plot.scatter(coords)
+
+
+    """
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -332,7 +343,19 @@ def balloon_wireframe(
         activated by default of the data is complex valued.
     show : boolean, optional
         Whether to show the figure or not
-    """ # noqa: 501
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import numpy as np
+        >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
+        >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+        >>> spharpy.plot.balloon_wireframe(coords, data, phase=True)
+
+    """
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -427,6 +450,18 @@ def balloon(
         activated by default of the data is complex valued.
     show : boolean, optional
         Wheter to show the figure or not
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import numpy as np
+        >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
+        >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+        >>> spharpy.plot.balloon(coords, data)
+
     """ # noqa: 501
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
@@ -492,6 +527,16 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     ax : AxesSubplot, None, optional
         The subplot axes to use for plotting. The used projection needs to be
         '3d'.
+
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> coords = spharpy.samplings.gaussian(n_max=5)
+        >>> spharpy.plot.voronoi_cells_sphere(coords)
 
     """ # noqa: 501
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
@@ -612,7 +657,18 @@ def pcolor_map(
     show : boolean, optional
         Wheter to show the figure or not
 
-    """ # noqa: 501
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import numpy as np
+        >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
+        >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
+        >>> spharpy.plot.pcolor_map(coords, data)
+
+    """
     height, latitude, longitude = coordinates2latlon(coordinates)
     tri = mtri.Triangulation(longitude, latitude)
     if refine is not None:
@@ -694,6 +750,17 @@ def contour_map(
     show : boolean, optional
         Wheter to show the figure or not
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import numpy as np
+        >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
+        >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
+        >>> spharpy.plot.contour_map(coords, data)
+
     """
     fig = plt.gcf()
 
@@ -768,7 +835,18 @@ def contour(
     show : boolean, optional
         Wheter to show the figure or not
 
-    """ # noqa: 501
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import numpy as np
+        >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
+        >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
+        >>> spharpy.plot.contour(coords, data)
+
+    """
     height, latitude, longitude = coordinates2latlon(coordinates)
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
