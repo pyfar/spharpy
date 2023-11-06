@@ -39,7 +39,6 @@ Other
 .. toctree::
     :maxdepth: 1
 
-    authors
     history
 
 Indices and tables

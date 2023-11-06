@@ -1,6 +1,5 @@
 global-include *.py *.pyx *.pxd *.c *.cpp *.hpp *.h
 
-include AUTHORS.rst
 include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
