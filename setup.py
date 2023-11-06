@@ -28,7 +28,7 @@ setup_requirements = [
 test_requirements = [
     'pytest',
     'wheel',
-    'flake8',
+    'ruff',
     'bump2version',
 ]
 
