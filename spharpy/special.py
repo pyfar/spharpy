@@ -127,10 +127,7 @@ def spherical_hankel(n, z, kind=2, derivative=False):
     n = np.asarray(n, dtype=int)
     z = np.asarray(z, dtype=float)
 
-    if derivative:
-        ufunc = _spherical_hankel_derivative
-    else:
-        ufunc = _spherical_hankel
+    ufunc = _spherical_hankel_derivative if derivative else _spherical_hankel
 
     if n.size > 1:
         hankel = np.zeros((n.size, z.size), dtype=complex)
@@ -156,10 +153,8 @@ def _spherical_hankel(n, z, kind):
 
 
 def _spherical_hankel_derivative(n, z, kind):
-    hankel = _spherical_hankel(n-1, z, kind) - \
-        (n+1)/z * _spherical_hankel(n, z, kind)
-
-    return hankel
+    return _spherical_hankel(n - 1, z, kind) - (n + 1) / z * _spherical_hankel(
+        n, z, kind)
 
 
 def spherical_harmonic(n, m, theta, phi):
@@ -308,18 +303,17 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     """
     if m == 0:
-        res = np.zeros(theta.shape, dtype=complex)
-    else:
-        factor = np.sqrt((2*n+1)/(2*n-1))/2
-        exp_phi = np.exp(1j*phi)
-        first = np.sqrt((n+m)*(n+m-1)) * exp_phi * \
-            spherical_harmonic(n-1, m-1, theta, phi)
-        second = np.sqrt((n-m) * (n-m-1)) / exp_phi * \
-            spherical_harmonic(n-1, m+1, theta, phi)
-        Ynm_sin_theta = (-1) * factor * (first + second)
-        res = Ynm_sin_theta * 1j
+        return np.zeros(theta.shape, dtype=complex)
 
-    return res
+    factor = np.sqrt((2*n+1)/(2*n-1))/2
+    exp_phi = np.exp(1j*phi)
+    first = np.sqrt((n+m)*(n+m-1)) * exp_phi * spherical_harmonic(
+        n-1, m-1, theta, phi)
+    second = np.sqrt((n-m) * (n-m-1)) / exp_phi * spherical_harmonic(
+        n-1, m+1, theta, phi)
+    Ynm_sin_theta = (-1) * factor * (first + second)
+
+    return Ynm_sin_theta * 1j
 
 
 def spherical_harmonic_derivative_theta(n, m, theta, phi):
@@ -346,16 +340,14 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     """
     if n == 0:
-        res = np.zeros(theta.shape, dtype=complex)
-    else:
-        exp_phi = np.exp(1j*phi)
-        first = np.sqrt((n-m+1) * (n+m)) * exp_phi * \
-            spherical_harmonic(n, m-1, theta, phi)
-        second = np.sqrt((n-m) * (n+m+1)) / exp_phi * \
-            spherical_harmonic(n, m+1, theta, phi)
-        res = (first-second)/2 * (-1)
+        return np.zeros(theta.shape, dtype=complex)
 
-    return res
+    exp_phi = np.exp(1j*phi)
+    first = np.sqrt((n-m+1) * (n+m)) * exp_phi * spherical_harmonic(
+        n, m-1, theta, phi)
+    second = np.sqrt((n-m) * (n+m+1)) / exp_phi * spherical_harmonic(
+        n, m+1, theta, phi)
+    return (first-second)/2 * (-1)
 
 
 def legendre_function(n, m, z, cs_phase=True):
@@ -433,22 +425,22 @@ def spherical_harmonic_normalization(n, m, norm='full'):
     """
     if np.abs(m) > n:
         factor = 0.0
+    elif norm == 'full':
+        z = n+m+1
+        factor = _spspecial.poch(z, -2*m)
+        factor *= (2*n+1)/(4*np.pi)
+        if int(m) != 0:
+            factor *= 2
+        factor = np.sqrt(factor)
+    elif norm == 'semi':
+        z = n+m+1
+        factor = _spspecial.poch(z, -2*m)
+        if int(m) != 0:
+            factor *= 2
+        factor = np.sqrt(factor)
     else:
-        if norm == 'full':
-            z = n+m+1
-            factor = _spspecial.poch(z, -2*m)
-            factor *= (2*n+1)/(4*np.pi)
-            if int(m) != 0:
-                factor *= 2
-            factor = np.sqrt(factor)
-        elif norm == 'semi':
-            z = n+m+1
-            factor = _spspecial.poch(z, -2*m)
-            if int(m) != 0:
-                factor *= 2
-            factor = np.sqrt(factor)
-        else:
-            raise ValueError("Unknown normalization.")
+        raise ValueError("Unknown normalization.")
+
     return factor
 
 
@@ -480,32 +472,27 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
     """
 
     m_abs = np.abs(m)
+
     if n == 0:
-        res = np.zeros(theta.shape, dtype=float)
-    else:
-        first = (n+m_abs)*(n-m_abs+1) * \
-            legendre_function(
-                n,
-                m_abs-1,
-                np.cos(theta),
-                cs_phase=False)
-        second = legendre_function(
+        return np.zeros(theta.shape, dtype=float)
+
+    first = (n+m_abs)*(n-m_abs+1) * \
+        legendre_function(
             n,
-            m_abs+1,
+            m_abs-1,
             np.cos(theta),
             cs_phase=False)
-        legendre_diff = 0.5*(first - second)
+    second = legendre_function(
+        n,
+        m_abs+1,
+        np.cos(theta),
+        cs_phase=False)
+    legendre_diff = 0.5*(first - second)
 
-        N_nm = spherical_harmonic_normalization(n, m_abs)
+    N_nm = spherical_harmonic_normalization(n, m_abs)
 
-        if m < 0:
-            phi_term = np.sin(m_abs*phi)
-        else:
-            phi_term = np.cos(m_abs*phi)
-
-        res = N_nm * legendre_diff * phi_term
-
-    return res
+    phi_term = np.sin(m_abs*phi) if m < 0 else np.cos(m_abs*phi)
+    return N_nm * legendre_diff * phi_term
 
 
 def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
@@ -536,19 +523,17 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
     """
     m_abs = np.abs(m)
     if m == 0:
-        res = np.zeros(theta.shape, dtype=float)
+        return np.zeros(theta.shape, dtype=float)
+
+    legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
+    N_nm = spherical_harmonic_normalization(n, m_abs)
+
+    if m < 0:
+        phi_term = np.cos(m_abs*phi) * m_abs
     else:
-        legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
-        N_nm = spherical_harmonic_normalization(n, m_abs)
+        phi_term = -np.sin(m_abs*phi) * m_abs
 
-        if m < 0:
-            phi_term = np.cos(m_abs*phi) * m_abs
-        else:
-            phi_term = -np.sin(m_abs*phi) * m_abs
-
-        res = N_nm * legendre * phi_term
-
-    return res
+    return N_nm * legendre * phi_term
 
 
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
@@ -585,31 +570,26 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
 
     """
     m_abs = np.abs(m)
+
     if m == 0:
-        res = np.zeros(theta.shape, dtype=float)
-    else:
-        first = (n+m_abs)*(n+m_abs-1) * \
-            legendre_function(
-                n-1,
-                m_abs-1,
-                np.cos(theta),
-                cs_phase=False)
-        second = legendre_function(
+        return np.zeros(theta.shape, dtype=float)
+
+    first = (n+m_abs)*(n+m_abs-1) * \
+        legendre_function(
             n-1,
-            m_abs+1,
+            m_abs-1,
             np.cos(theta),
             cs_phase=False)
-        legendre_diff = 0.5*(first + second)
-        N_nm = spherical_harmonic_normalization(n, m_abs)
+    second = legendre_function(
+        n-1,
+        m_abs+1,
+        np.cos(theta),
+        cs_phase=False)
+    legendre_diff = 0.5*(first + second)
+    N_nm = spherical_harmonic_normalization(n, m_abs)
 
-        if m < 0:
-            phi_term = np.cos(m_abs*phi)
-        else:
-            phi_term = -np.sin(m_abs*phi)
-
-        res = N_nm * legendre_diff * phi_term
-
-    return res
+    phi_term = np.cos(m_abs*phi) if m < 0 else -np.sin(m_abs*phi)
+    return N_nm * legendre_diff * phi_term
 
 
 def legendre_coefficients(order):
