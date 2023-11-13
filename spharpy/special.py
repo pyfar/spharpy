@@ -172,13 +172,13 @@ def spherical_harmonic(n, m, theta, phi):
     Returns
     -------
     spherical_harmonic : ndarray, double
-        The complex valued spherial harmonic of order n and degree m
+        The complex valued spherical harmonic of order n and degree m
 
     Note
     ----
     This function wraps the spherical harmonic implementation from scipy.
     The only difference is that we return zeros instead of nan values
-    if $n < |m|$.
+    if n < abs(m).
 
     """
     theta = np.asarray(theta, dtype=float)
@@ -195,7 +195,7 @@ def spherical_harmonic_real(n, m, theta, phi):
     r"""Real valued spherical harmonic function of order n and degree m
     evaluated at the angles theta and phi.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [1]_.
+    the AmbiX phase convention [#]_.
 
     .. math::
 
@@ -208,7 +208,7 @@ def spherical_harmonic_real(n, m, theta, phi):
 
     References
     ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1–11, 2011.
@@ -413,7 +413,7 @@ def spherical_harmonic_normalization(n, m, norm='full'):
     m : int
         The spherical harmonic degree.
     norm : 'full', 'semi', optional
-        Normalization to use. Can be either fully normalzied on the sphere or
+        Normalization to use. Can be either fully normalized on the sphere or
         semi-normalized.
 
     Returns
@@ -538,7 +538,9 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
 
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     r"""The gradient of the real valued spherical harmonics with respect
-    to the azimuth angle $\phi$.
+    to the azimuth angle phi.
+    The singularities at the poles are avoided using the formulation proposed
+    in [#]_.
 
     Parameters
     ----------
@@ -563,7 +565,7 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
 
     References
     ----------
-    .. [1]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
@@ -608,9 +610,7 @@ def legendre_coefficients(order):
 
     """
     leg = np.polynomial.legendre.Legendre.basis(order)
-    coefficients = np.polynomial.legendre.leg2poly(leg.coef)
-
-    return coefficients
+    return np.polynomial.legendre.leg2poly(leg.coef)
 
 
 def chebyshev_coefficients(order):
@@ -629,6 +629,4 @@ def chebyshev_coefficients(order):
 
     """
     cheb = np.polynomial.chebyshev.Chebyshev.basis(order)
-    coefficients = np.polynomial.chebyshev.cheb2poly(cheb.coef)
-
-    return coefficients
+    return np.polynomial.chebyshev.cheb2poly(cheb.coef)
