@@ -2,4 +2,6 @@
 Credits
 =======
 
-The pyfar developers <info@pyfar.org>
+The spharpy `developers`_.
+
+.. _developers: https://github.com/pyfar/spharpy/graphs/contributors
