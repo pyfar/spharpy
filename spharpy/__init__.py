@@ -10,6 +10,7 @@ from . import transforms
 from . import beamforming
 from . import interpolate
 from . import spatial
+from . import special
 
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     'beamforming',
     'interpolate',
     'spatial',
+    'special',
     'SamplingSphere',
 ]
