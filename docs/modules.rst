@@ -11,4 +11,5 @@ Modules
    spharpy.spatial
    spharpy.spherical
    spharpy.transforms
+   spharpy.special
 
