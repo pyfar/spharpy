@@ -35,7 +35,7 @@ test_requirements = [
 
 setup(
     name='spharpy',
-    version='0.6.0',
+    version='0.6.1',
     description="Python package for spherical array processing.",
     long_description=readme,
     author="The pyfar developers",
