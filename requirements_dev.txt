@@ -17,7 +17,9 @@ cryptography
 PyYAML
 pytest-runner
 numpydoc
-insipid-sphinx-theme
 autodocsumm
 nbmake
 pyfar<0.6.0
+pydata-sphinx-theme
+sphinx-design
+sphinx-favicon
