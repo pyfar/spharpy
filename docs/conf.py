@@ -9,7 +9,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-
 import spharpy  # noqa
 
 # -- General configuration ---------------------------------------------------
@@ -50,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'spharpy'
-copyright = '2020, The pyfar developers'
+copyright = ', 2020 - 2023, Marco Berzborn; 2023, The pyfar developers'
 author = 'The pyfar developers'
 
 # The version info for the project you're documenting, acts as replacement
