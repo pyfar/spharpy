@@ -443,7 +443,8 @@ class SamplingSphere(Coordinates):
         pyfar_coords = super().to_pyfar()
         if self.weights is not None:
             pyfar_coords.weights = self.weights / np.linalg.norm(self.weights)
-        pyfar_coords.sh_order = self.n_max
+        if self.n_max is not None:
+            pyfar_coords.sh_order = self.n_max
 
         return pyfar_coords
 
