@@ -19,7 +19,7 @@ pytest-runner
 numpydoc
 autodocsumm
 nbmake
-pyfar<0.6.0
+pyfar<0.8.0
 pydata-sphinx-theme
 sphinx-design
 sphinx-favicon
