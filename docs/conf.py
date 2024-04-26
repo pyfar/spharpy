@@ -8,6 +8,8 @@
 
 import os
 import sys
+import urllib3
+import shutil
 sys.path.insert(0, os.path.abspath('..'))
 import spharpy  # noqa
 
@@ -27,6 +29,7 @@ extensions = [
     'autodocsumm',
     'sphinx_design',
     'sphinx_favicon',
+    'sphinx_reredirects',
 ]
 
 # show tocs for classes and functions of modules using the autodocsumm
@@ -120,8 +123,37 @@ html_theme_options = {
     "show_toc_level": 3,  # Show all subsections of notebooks
     "secondary_sidebar_items": ["page-toc"],  # Omit 'show source' link that that shows notebook in json format
     "navigation_with_keys": True,
+    "header_links_before_dropdown": 8,
 }
 
 html_context = {
    "default_mode": "light"
 }
+
+# redirect index to spharpy.html
+redirects = {
+     "index": f"{project}.html"
+}
+
+# -- download navbar and style files from gallery -----------------------------
+branch = 'main'
+link = f'https://github.com/pyfar/gallery/raw/{branch}/docs/'
+folders_in = [
+    '_static/css/custom.css',
+    '_static/favicon.ico',
+    '_static/header.rst',
+    f'resources/logos/pyfar_logos_fixed_size_{project}.png'
+    ]
+c = urllib3.PoolManager()
+for file in folders_in:
+    url = link + file
+    filename = file
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with c.request('GET', url, preload_content=False) as res, open(filename, 'wb') as out_file:
+        shutil.copyfileobj(res, out_file)
+
+# replace pyfar hard link to internal link
+with open("_static/header.rst", "rt") as fin:
+    with open("header.rst", "wt") as fout:
+        for line in fin:
+            fout.write(line.replace(f'https://{project}.readthedocs.io', project))
