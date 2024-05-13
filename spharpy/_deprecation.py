@@ -1,4 +1,4 @@
-from spharpy.samplings import Coordinates, SamplingSphere
+from spharpy.samplings.coordinates import Coordinates, SamplingSphere
 import pyfar as pf
 
 

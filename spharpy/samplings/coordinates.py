@@ -1,47 +1,31 @@
 import numpy as np
-from pyfar.classes.coordinates import sph2cart, cyl2cart
-import pyfar as pf
-from spharpy.samplings.helpers import sph2cart as sp_sph2cart
+from spharpy.samplings.helpers import sph2cart
 from scipy.spatial import cKDTree
+import pyfar
 
 
-class SamplingSphere(pf.Coordinates):
-    """Class for samplings on a sphere"""
+class Coordinates(object):
+    """Container class for coordinates in a three-dimensional space, allowing
+    for compact representation and convenient conversion into spherical as well
+    as geospatial coordinate systems.
+    The constructor as well as the internal representation are only
+    available in Cartesian coordinates. To create a Coordinates object from
+    a set of points in spherical coordinates, please use the
+    Coordinates.from_spherical() method.
 
-    def __init__(
-            self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        r"""
-        Create a SamplingSphere class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+    """
+    def __init__(self, x=None, y=None, z=None):
+        """Init coordinates container
 
         Parameters
         ----------
-        x : ndarray, number
-            X coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < x < \infty).
-        y : ndarray, number
-            Y coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < y < \infty).
-        z : ndarray, number
-            Z coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < z < \infty).
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-        sh_order : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
+        x : ndarray, double
+            x-coordinate
+        y : ndarray, double
+            y-coordinate
+        z : ndarray, double
+            z-coordinate
         """
-        pf.Coordinates.__init__(
-            self, x, y, z, weights=weights, comment=comment)
-        self._n_max = n_max
 
         super(Coordinates, self).__init__()
         x = np.asarray(x, dtype=float)
@@ -90,10 +74,9 @@ class SamplingSphere(pf.Coordinates):
 
     @radius.setter
     def radius(self, radius):
-        x, y, z = sp_sph2cart(
-            np.asarray(radius, dtype=float),
-            self.elevation,
-            self.azimuth)
+        x, y, z = sph2cart(np.asarray(radius, dtype=float),
+                           self.elevation,
+                           self.azimuth)
         self._x = x
         self._y = y
         self._z = z
@@ -105,10 +88,9 @@ class SamplingSphere(pf.Coordinates):
 
     @azimuth.setter
     def azimuth(self, azimuth):
-        x, y, z = sp_sph2cart(
-            self.radius,
-            self.elevation,
-            np.asarray(azimuth, dtype=float))
+        x, y, z = sph2cart(self.radius,
+                           self.elevation,
+                           np.asarray(azimuth, dtype=float))
         self._x = x
         self._y = y
         self._z = z
@@ -121,157 +103,81 @@ class SamplingSphere(pf.Coordinates):
 
     @elevation.setter
     def elevation(self, elevation):
-        x, y, z = sp_sph2cart(
-            self.radius,
-            np.asarray(elevation, dtype=float),
-            self.azimuth)
+        x, y, z = sph2cart(self.radius,
+                           np.asarray(elevation, dtype=float),
+                           self.azimuth)
         self._x = x
         self._y = y
         self._z = z
 
     @classmethod
-    def from_cartesian(
-            cls, x, y, z, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        r"""
-        Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+    def from_cartesian(cls, x, y, z):
+        """Create a Coordinates class object from a set of points in the
+        Cartesian coordinate system.
 
         Parameters
         ----------
-        x : ndarray, number
-            X coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < x < \infty).
-        y : ndarray, number
-            Y coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < y < \infty).
-        z : ndarray, number
-            Z coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < z < \infty).
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_cartesian(0, 0, 1)
-        Or the using init
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere(0, 0, 1)
+        x : ndarray, double
+            x-coordinate
+        y : ndarray, double
+            y-coordinate
+        z : ndarray, double
+            z-coordinate
         """
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return Coordinates(x, y, z)
 
     @classmethod
-    def from_spherical_elevation(
-            cls, azimuth, elevation, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+    def from_spherical(cls, radius, elevation, azimuth):
+        """Create a Coordinates class object from a set of points in the
+        spherical coordinate system.
 
         Parameters
         ----------
-        azimuth : ndarray, double
-            Angle in radiant of rotation from the x-y-plane facing towards
-            positive x direction. Used for spherical and cylindrical coordinate
-            systems.
-        elevation : ndarray, double
-            Angle in radiant with respect to horizontal plane (x-z-plane).
-            Used for spherical coordinate systems.
         radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, float, None, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_elevation(0, 0, 1)
+            The radius for each point
+        elevation : ndarray, double
+            The elevation angle in radians
+        azimuth : ndarray, double
+            The azimuth angle in radians
         """
         radius = np.asarray(radius, dtype=float)
         elevation = np.asarray(elevation, dtype=float)
         azimuth = np.asarray(azimuth, dtype=float)
-        x, y, z = sp_sph2cart(radius, elevation, azimuth)
+        x, y, z = sph2cart(radius, elevation, azimuth)
         return Coordinates(x, y, z)
 
-        x, y, z = sph2cart(azimuth, np.pi / 2 - elevation, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
-
     @classmethod
-    def from_spherical_colatitude(
-            cls, azimuth, colatitude, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+    def from_array(cls, values, coordinate_system='cartesian'):
+        """Create a Coordinates class object from a set of points given as
+        numpy array
 
         Parameters
         ----------
-        azimuth : ndarray, double
-            Angle in radiant of rotation from the x-y-plane facing towards
-            positive x direction. Used for spherical and cylindrical coordinate
-            systems.
-        colatitude : ndarray, double
-            Angle in radiant with respect to polar axis (z-axis). Used for
-            spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_colatitude(0, 0, 1)
+        values : double, ndarray
+            Array with shape Nx3 where N is the number of points.
+        coordinate_system : string
+            Coordinate convention of the given values.
+            Can be Cartesian or spherical coordinates.
         """
+        coords = Coordinates()
+        if coordinate_system == 'cartesian':
+            coords.cartesian = values
+        elif coordinate_system == 'spherical':
+            coords.spherical = values
+        else:
+            return ValueError("This coordinate system is not supported.")
 
-        x, y, z = sph2cart(azimuth, colatitude, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return coords
 
-    @classmethod
-    def from_spherical_side(
-            cls, lateral, polar, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
+    @property
+    def latitude(self):
+        """The latitude angle as used in geospatial coordinates."""
+        return np.pi/2 - self.elevation
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+    @property
+    def longitude(self):
+        """The longitude angle as used in geospatial coordinates."""
+        return np.arctan2(self.y, self.x)
 
     @property
     def cartesian(self):
@@ -293,7 +199,7 @@ class SamplingSphere(pf.Coordinates):
     @spherical.setter
     def spherical(self, value):
         """Cartesian coordinates of all points."""
-        x, y, z = sp_sph2cart(value[0, :], value[1, :], value[2, :])
+        x, y, z = sph2cart(value[0, :], value[1, :], value[2, :])
         self.cartesian = np.vstack((x, y, z))
 
     @property
@@ -316,78 +222,48 @@ class SamplingSphere(pf.Coordinates):
 
         Parameters
         ----------
-        lateral : ndarray, double
-            Angle in radiant with respect to horizontal plane (x-y-plane).
-            Used for spherical coordinate systems.
-        polar : ndarray, double
-            Angle in radiant of rotation from the x-z-plane facing towards
-            positive x direction. Used for spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
+        point : Coordinates
+            Point to find nearest neighboring Coordinate
 
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_side(0, 0, 1)
+        Returns
+        -------
+        distance : ndarray, double
+            Distance between the point and it's closest neighbor
+        index : int
+            Index of the closest point.
+
         """
+        kdtree = cKDTree(self.cartesian.T)
+        distance, index = kdtree.query(point.cartesian.T)
 
-        x, z, y = sph2cart(polar, np.pi / 2 - lateral, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return distance, index
 
-    @classmethod
-    def from_spherical_front(
-            cls, frontal, upper, radius, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
+    def __repr__(self):
+        """repr for Coordinate class
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        frontal : ndarray, double
-            Angle in radiant of rotation from the y-z-plane facing towards
-            positive y direction. Used for spherical coordinate systems.
-        upper : ndarray, double
-            Angle in radiant with respect to polar axis (x-axis). Used for
-            spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_front(0, 0, 1)
         """
+        if self.n_points == 1:
+            repr_string = "Coordinates of 1 point"
+        else:
+            repr_string = "Coordinates of {} points".format(self.n_points)
+        return repr_string
 
-        y, z, x = sph2cart(frontal, upper, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+    def __getitem__(self, index):
+        """Return Coordinates at index
+        """
+        return Coordinates(self._x[index], self._y[index], self._z[index])
+
+    def __setitem__(self, index, item):
+        """Set Coordinates at index
+        """
+        self.x[index] = item.x
+        self.y[index] = item.y
+        self.z[index] = item.z
+
+    def __len__(self):
+        """Length of the object which is the number of points stored.
+        """
+        return self.n_points
 
     def to_pyfar(self):
         """Export to a pyfar Coordinates object.
@@ -397,7 +273,7 @@ class SamplingSphere(pf.Coordinates):
         :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
             The equivalent pyfar class object.
         """
-        return pf.Coordinates(
+        return pyfar.Coordinates(
             self.x,
             self.y,
             self.z,
@@ -406,351 +282,188 @@ class SamplingSphere(pf.Coordinates):
             unit='met')
 
     @classmethod
-    def from_cylindrical(
-            cls, azimuth, z, rho, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+    def from_pyfar(cls, coords):
+        """Create a spharpy Coordinates object from pyfar Coordinates.
 
         Parameters
         ----------
-        azimuth : ndarray, double
-            Angle in radiant of rotation from the x-y-plane facing towards
-            positive x direction. Used for spherical and cylindrical coordinate
-            systems.
-        z : ndarray, double
-            The z coordinate
-        rho : ndarray, double
-            Distance to origin for each point in the x-y-plane. Used for
-            cylindrical coordinate systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
+        coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            A set of coordinates.
 
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_cylindrical(0, 0, 1, sh_order=1)
+        Returns
+        -------
+        Coordinates
+            The same set of coordinates.
         """
+        cartesian = coords.get_cart(convention='right', unit='met').T
+        return Coordinates(cartesian[0], cartesian[1], cartesian[2])
 
-        x, y, z = cyl2cart(azimuth, z, rho)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
 
-class SamplingSphere(pf.Coordinates):
+class SamplingSphere(Coordinates):
     """Class for samplings on a sphere"""
 
-    def __init__(
-            self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        r"""
-        Create a SamplingSphere class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        x : ndarray, number
-            X coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < x < \infty).
-        y : ndarray, number
-            Y coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < y < \infty).
-        z : ndarray, number
-            Z coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < z < \infty).
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-        sh_order : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
+    def __init__(self, x=None, y=None, z=None, n_max=None, weights=None):
+        """Init for sampling class
         """
-        pf.Coordinates.__init__(
-            self, x, y, z, weights=weights, comment=comment)
-        self._n_max = n_max
-
-    @classmethod
-    def from_cartesian(
-            cls, x, y, z, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        r"""
-        Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        x : ndarray, number
-            X coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < x < \infty).
-        y : ndarray, number
-            Y coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < y < \infty).
-        z : ndarray, number
-            Z coordinate of a right handed Cartesian coordinate system in
-            meters (-\infty < z < \infty).
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_cartesian(0, 0, 1)
-        Or the using init
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere(0, 0, 1)
-        """
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
-
-    @classmethod
-    def from_spherical_elevation(
-            cls, azimuth, elevation, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        azimuth : ndarray, double
-            Angle in radiant of rotation from the x-y-plane facing towards
-            positive x direction. Used for spherical and cylindrical coordinate
-            systems.
-        elevation : ndarray, double
-            Angle in radiant with respect to horizontal plane (x-z-plane).
-            Used for spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, float, None, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_elevation(0, 0, 1)
-        """
-
-        x, y, z = sph2cart(azimuth, np.pi / 2 - elevation, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
-
-    @classmethod
-    def from_spherical_colatitude(
-            cls, azimuth, colatitude, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        azimuth : ndarray, double
-            Angle in radiant of rotation from the x-y-plane facing towards
-            positive x direction. Used for spherical and cylindrical coordinate
-            systems.
-        colatitude : ndarray, double
-            Angle in radiant with respect to polar axis (z-axis). Used for
-            spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_colatitude(0, 0, 1)
-        """
-
-        x, y, z = sph2cart(azimuth, colatitude, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
-
-    @classmethod
-    def from_spherical_side(
-            cls, lateral, polar, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        lateral : ndarray, double
-            Angle in radiant with respect to horizontal plane (x-y-plane).
-            Used for spherical coordinate systems.
-        polar : ndarray, double
-            Angle in radiant of rotation from the x-z-plane facing towards
-            positive x direction. Used for spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_side(0, 0, 1)
-        """
-
-        x, z, y = sph2cart(polar, np.pi / 2 - lateral, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
-
-    @classmethod
-    def from_spherical_front(
-            cls, frontal, upper, radius, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        frontal : ndarray, double
-            Angle in radiant of rotation from the y-z-plane facing towards
-            positive y direction. Used for spherical coordinate systems.
-        upper : ndarray, double
-            Angle in radiant with respect to polar axis (x-axis). Used for
-            spherical coordinate systems.
-        radius : ndarray, double
-            Distance to origin for each point. Used for spherical coordinate
-            systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_front(0, 0, 1)
-        """
-
-        y, z, x = sph2cart(frontal, upper, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
-
-    @classmethod
-    def from_cylindrical(
-            cls, azimuth, z, rho, n_max=None, weights: np.array = None,
-            comment: str = ""):
-        """Create a Coordinates class object from a set of points on a sphere.
-
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
-
-        Parameters
-        ----------
-        azimuth : ndarray, double
-            Angle in radiant of rotation from the x-y-plane facing towards
-            positive x direction. Used for spherical and cylindrical coordinate
-            systems.
-        z : ndarray, double
-            The z coordinate
-        rho : ndarray, double
-            Distance to origin for each point in the x-y-plane. Used for
-            cylindrical coordinate systems.
-        n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
-            The default is ``None``.
-        weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
-        comment : str, optional
-            Comment about the stored coordinate points. The default is
-            ``""``, which initializes an empty string.
-
-        Examples
-        --------
-        Create a SamplingSphere object
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_cylindrical(0, 0, 1, sh_order=1)
-        """
-
-        x, y, z = cyl2cart(azimuth, z, rho)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        Coordinates.__init__(self, x, y, z)
+        self._n_max = int(n_max) if n_max is not None else None
+        if weights is None:
+            self._weights = None
+        else:
+            self.weights = weights
 
     @property
     def n_max(self):
-        """Get the maximum spherical harmonic order."""
+        """Spherical harmonic order."""
         return self._n_max
 
     @n_max.setter
     def n_max(self, value):
-        """Set the maximum spherical harmonic order."""
-        assert value >= 0
-        if value is None:
-            self._n_max = None
+        self._n_max = int(value)
+
+    @property
+    def weights(self):
+        """Sampling weights for numeric integration."""
+        return self._weights
+
+    @weights.setter
+    def weights(self, weights):
+        if weights is None:
+            self._weights = None
+            return
+        if len(weights) != self.n_points:
+            raise ValueError("The number of weights has to be equal to \
+                    the number of sampling points.")
+
+        weights = np.asarray(weights, dtype=float)
+        norm = np.linalg.norm(weights, axis=-1)
+
+        if not np.allclose(norm, 4*np.pi):
+            weights *= 4*np.pi/norm
+
+        self._weights = weights
+
+    @classmethod
+    def from_coordinates(cls, coords, n_max=None, weights=None):
+        """Generate a spherical sampling object from a coordinates object
+
+        Parameters
+        ----------
+        coords : Coordinates
+            Coordinate object
+
+        Returns
+        -------
+        sampling : SamplingSphere
+            Sampling on a sphere
+
+        """
+        return SamplingSphere(coords.x, coords.y, coords.z,
+                              n_max=n_max, weights=weights)
+
+    @classmethod
+    def from_cartesian(cls, x, y, z, n_max=None, weights=None):
+        """Create a Coordinates class object from a set of points in the
+        Cartesian coordinate system.
+
+        Parameters
+        ----------
+        x : ndarray, double
+            x-coordinate
+        y : ndarray, double
+            y-coordinate
+        z : ndarray, double
+            z-coordinate
+        """
+        return SamplingSphere(x, y, z, n_max, weights)
+
+    @classmethod
+    def from_spherical(
+            cls, radius, elevation, azimuth, n_max=None, weights=None):
+        """Create a Coordinates class object from a set of points in the
+        spherical coordinate system.
+
+        Parameters
+        ----------
+        radius : ndarray, double
+            The radius for each point
+        elevation : ndarray, double
+            The elevation angle in radians
+        azimuth : ndarray, double
+            The azimuth angle in radians
+        """
+        radius = np.asarray(radius, dtype=float)
+        elevation = np.asarray(elevation, dtype=float)
+        azimuth = np.asarray(azimuth, dtype=float)
+        x, y, z = sph2cart(radius, elevation, azimuth)
+        return SamplingSphere(x, y, z, n_max, weights)
+
+    @classmethod
+    def from_array(
+            cls, values, n_max=None, weights=None,
+            coordinate_system='cartesian'):
+        """Create a Coordinates class object from a set of points given as
+        numpy array
+
+        Parameters
+        ----------
+        values : double, ndarray
+            Array with shape Nx3 where N is the number of points.
+        coordinate_system : string
+            Coordinate convention of the given values.
+            Can be Cartesian or spherical coordinates.
+        """
+        coords = SamplingSphere(n_max=n_max, weights=weights)
+        if coordinate_system == 'cartesian':
+            coords.cartesian = values
+        elif coordinate_system == 'spherical':
+            coords.spherical = values
         else:
-            self._n_max = int(value)
+            return ValueError("This coordinate system is not supported.")
+
+        return coords
+
+    def __repr__(self):
+        """repr for SamplingSphere class
+        """
+        if self.n_points == 1:
+            repr_string = "Sampling with {} point".format(self.n_points)
+        else:
+            repr_string = "Sampling with {} points".format(self.n_points)
+        return repr_string
+
+    def to_pyfar(self):
+        """Export to a pyfar Coordinates object.
+
+        Returns
+        -------
+        :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            The equivalent pyfar class object.
+        """
+        pyfar_coords = super().to_pyfar()
+        if self.weights is not None:
+            pyfar_coords.weights = self.weights / np.linalg.norm(self.weights)
+        pyfar_coords.sh_order = self.n_max
+
+        return pyfar_coords
+
+    @classmethod
+    def from_pyfar(cls, coords):
+        """Create a spharpy SamplingSphere object from pyfar Coordinates.
+
+        Parameters
+        ----------
+        coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+            A set of coordinates.
+
+        Returns
+        -------
+        SamplingSphere
+            The same set of coordinates.
+        """
+        cartesian = coords.get_cart(convention='right', unit='met').T
+        spharpy_coords = SamplingSphere(
+            cartesian[0], cartesian[1], cartesian[2])
+        spharpy_coords.weights = coords.weights
+        spharpy_coords.n_max = coords.sh_order
+        return spharpy_coords
