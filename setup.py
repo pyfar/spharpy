@@ -18,7 +18,7 @@ requirements = [
     'scipy',
     'urllib3',
     'matplotlib>=3.3.0',
-    'pyfar>=0.6.0',
+    'pyfar>=0.6.0,<0.8.0',
 ]
 
 setup_requirements = [
@@ -35,7 +35,7 @@ test_requirements = [
 
 setup(
     name='spharpy',
-    version='0.6.0',
+    version='0.6.1',
     description="Python package for spherical array processing.",
     long_description=readme,
     author="The pyfar developers",

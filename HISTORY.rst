@@ -2,6 +2,10 @@
 History
 =======
 
+0.6.0 (2024-03-20)
+------------------
+- Update of the documentation theme and adaption of the new example gallery, no changes to the code base.
+
 0.6.0 (2023-10-17)
 ------------------
 This is the last minor release of spharpy before full integration into the pyfar ecosystem.

@@ -1,6 +1,6 @@
 __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 from .samplings.coordinates import SamplingSphere
 from . import spherical
@@ -10,6 +10,7 @@ from . import transforms
 from . import beamforming
 from . import interpolate
 from . import spatial
+from . import special
 
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     'beamforming',
     'interpolate',
     'spatial',
+    'special',
     'SamplingSphere',
 ]
