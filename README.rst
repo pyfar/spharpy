@@ -39,6 +39,6 @@ Refer to the `contribution guidelines`_ for more information.
 
 
 .. _contribution guidelines: https://github.com/pyfar/spharpy/blob/main/CONTRIBUTING.rst
-.. _example notebooks: https://github.com/mberz/pyfar/blob/main/examples
+.. _example notebooks: https://github.com/pyfar/pyfar/blob/main/examples
 .. _mybinder.org: https://mybinder.org/v2/gh/pyfar/spharpy/main?filepath=examples/
 .. _read the docs: https://spharpy.readthedocs.io/en/latest
