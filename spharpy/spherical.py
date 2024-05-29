@@ -1,37 +1,97 @@
 import numpy as np
 import scipy.special as special
+
+import spharpy
 import spharpy.special as _special
-import logging as logger
-from pyfar import Coordinates
-from functools import lru_cache
 from spharpy.samplings.helpers import calculate_sampling_weights
+import pyfar as pf
+from functools import lru_cache
 
+class SphericalHarmonics:
+    r"""
+    Spherical Harmonics class for computing spherical harmonic basis matrices and their gradients.
+    The spherical harmonic Ynm is given by:
+    #TODO: change unicode to latex (i.e. \theta to \theta)
+    .. math::
+        Y_{nm} = N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
 
-class SphHarm:
-    def __init__(self, n_max, coords, basis_type='complex', channel_convention='acn', inv_transform_type=None,
+    where:
+    - n is the degree
+    - m is the order
+    - Pnm is the associated Legendre function
+    - Nnm is the normalization term
+    - \theta is the colatitude (angle from the positive z-axis)
+    - \phi is the azimuth (angle from the positive x-axis in the xy-plane)
+
+    The normalization term Nnm is given by:
+
+    .. math::
+        N_{nm} = \sqrt{\frac{(2n+1)(n-m)!}{4\pi(n+m)!}}
+
+    The associated Legendre function Pnm is given by:
+
+    .. math::
+        P_{nm}(x) = (1-x^2)^{|m|/2} (d/dx)^n (x^2-1)^n
+
+    The spherical harmonics are orthogonal on the unit sphere, i.e.,
+
+    .. math::
+        \int_{sphere} Y_{nm} Y_{n'm'}* d\omega = \delta_{nn'} \delta_{mm'}
+
+    where:
+    - * denotes the complex conjugate
+    - \delta is the Kronecker delta
+    - d\omega is the differential solid angle
+    - The integral is over the entire sphere
+
+    The class supports the following conventions:
+
+    - basis_type: Defines the type of spherical harmonic basis. It can be either 'complex' or 'real'.
+        - ``'complex'``: Uses complex-valued spherical harmonics.
+        - ``'real'``: Uses real-valued spherical harmonics.
+
+    - channel_convention: Defines the channel ordering convention. It can be either 'acn' or 'fuma'.
+        - ``'acn'``: Follows the Ambisonic Channel Number (ACN) convention.
+        - ``'fuma'``: Follows the Furse-Malham (FuMa) convention.
+
+    - inv_transform_type: Defines the type of inverse transform. It can be 'pseudo_inverse', 'quadrature', or None.
+        - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse for the inverse transform.
+        - ``'quadrature'``: Uses quadrature for the inverse transform.
+        - ``None``: No inverse transform is applied.
+
+    - normalization: Defines the normalization convention. It can be 'n3d', 'maxN', or 'sn3d'.
+        - ``'n3d'``: Uses the 3D normalization (also known as Schmidt semi-normalized).
+        - ``'maxN'``: Uses the maximum norm (also known as fully normalized).
+        - ``'sn3d'``: Uses the SN3D normalization (also known as Schmidt normalized).
+    """
+    def __init__(self, coords, basis_type='complex', channel_convention='acn', inv_transform_type=None,
                  normalization='n3d'):
         r"""
-        Create a spherical harmonics class for transformation between spherical harmonics and signals.
+        Initialize the SphericalHarmonics class.
 
         Parameters
         ----------
-        n_max : int,
+        n_max : int
             Maximum spherical harmonic order
         coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-            Coordinate object with sampling points for which the basis matrix is
-            calculated
+            Coordinate object with sampling points for which the basis matrix is calculated
         basis_type : str, optional
-            Type of spherical harmonic basis, either 'complex' or 'real'. The default is 'complex'.
+            Type of spherical harmonic basis, either ``'complex'`` or ``'real'``. The default is ``'complex'``.
         channel_convention : str, optional
-            Channel ordering convention, either 'acn' or 'fuma'. The default is 'acn'.
+            Channel ordering convention, either ``'acn'`` or ``'fuma'``. The default is ``'acn'``.
             (FuMa is only supported up to 3rd order)
         inv_transform_type : str, optional
-            Inverse transform type, either 'pseudo_inverse' or 'quadrature'. The default is None.
+            Inverse transform type, either ``'pseudo_inverse'`` or ``'quadrature'``. The default is None.
         normalization : str, optional
-            Normalization convention, either 'n3d', 'maxN' or 'sn3d'. The default is 'n3d'.
+            Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``. The default is ``'n3d'``.
             (maxN is only supported up to 3rd order)
+        weights : array-like, optional
+            Sampling weights for the quadrature transform. Required if `quadrature` is chosen.
         """
-        self.n_max = n_max
+        # TODO: Support for pyfar Coordinates object
+        self.sampling_sphere = spharpy.SamplingSphere.from_pyfar(coords)
+        self.n_max = self.sampling_sphere.n_max
+        self.weights = self.sampling_sphere.weights
         self.coords = coords  # coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         self.basis_type = basis_type
         self.inv_transform_type = inv_transform_type
@@ -41,26 +101,111 @@ class SphHarm:
         self.basis_gradient_theta, self.basis_gradient_phi = (None, None)
         self._basis_inv = None
         self._basis_inv_gradient_theta, self._basis_inv_gradient_phi = (None, None)
+    # Properties
+    @property
+    def n_max(self):
+        return self._n_max
 
-    def _validate_parameters(self):
-        if not isinstance(self.coords, Coordinates):
+    @n_max.setter
+    def n_max(self, value):
+        if value < 0:
+            raise ValueError("n_max must be a positive integer")
+        self._n_max = value
+
+    @property
+    def weights(self):
+        """Sampling weights for numeric integration."""
+        return self._weights
+
+    @weights.setter
+    def weights(self, weights):
+        if weights is None:
+            self._weights = None
+            return
+        if len(weights) != len(self.coords.cartesian):
+            raise ValueError("The number of weights has to be equal to \
+                    the number of sampling points.")
+
+        weights = np.asarray(weights, dtype=float)
+        norm = np.linalg.norm(weights, axis=-1)
+
+        if not np.allclose(norm, 4*np.pi):
+            weights *= 4*np.pi/norm
+
+        self._weights = weights
+    @property
+    def coords(self):
+        return self._coords
+
+    @coords.setter
+    def coords(self, value):
+        if not isinstance(value, pf.Coordinates):
             raise TypeError("coords must be a pyfar.Coordinates object")
-        assert self.n_max >= 0, "n_max must be a positive integer"
-        assert self.channel_convention in ['acn', 'fuma'], ("Invalid channel convention, currently only 'acn' "
-                                                            "and 'fuma' are supported")
-        assert self.normalization in ['n3d', 'maxN', 'sn3d'], ("Invalid normalization, "
-                                                               "currently only 'n3d', 'maxN', 'sn3d' are "
-                                                               "supported")
-        assert self.basis_type in ['complex', 'real'], ("Invalid basis type, currently only 'complex' and 'real' "
-                                                        "are supported")
-        assert self.inv_transform_type in ['pseudo_inverse', 'quadrature', None], (
-            "Invalid inverse transform type, "
-            "currently only 'pseudo_inverse' "
-            "and 'quadrature' are supported")
+        self._coords = value
+    @property
+    def basis_type(self):
+        return self._basis_type
+
+    @basis_type.setter
+    def basis_type(self, value):
+        assert value in ['complex', 'real'], ("Invalid basis type, currently only 'complex' and 'real' "
+                                              "are supported")
+        self._basis_type = value
+    @property
+    def inv_transform_type(self):
+        return self._inv_transform_type
+
+    @inv_transform_type.setter
+    def inv_transform_type(self, value):
+        assert value in ['pseudo_inverse', 'quadrature', None], ("Invalid inverse transform type, "
+                                                                 "currently only 'pseudo_inverse' "
+                                                                 "and 'quadrature' are supported")
+        self._inv_transform_type = value
+
+    @property
+    def channel_convention(self):
+        return self._channel_convention
+
+    @channel_convention.setter
+    def channel_convention(self, value):
+        assert value in ['acn', 'fuma'], ("Invalid channel convention, currently only 'acn' "
+                                          "and 'fuma' are supported")
+        self._channel_convention = value
+
+    @property
+    def normalization(self):
+        return self._normalization
+
+    @normalization.setter
+    def normalization(self, value):
+        assert value in ['n3d', 'maxN', 'sn3d'], ("Invalid normalization, "
+                                                 "currently only 'n3d', 'maxN', 'sn3d' are "
+                                                 "supported")
+        self._normalization = value
+
+    @property
+    def basis(self):
+        if self._basis is None:
+            self._compute_basis()
+        return self._basis
+    @property
+    def basis_gradient_theta(self):
+        if self._basis_gradient_theta is None:
+            self._compute_basis_gradient()
+        return self._basis_gradient_theta
+
+    @property
+    def basis_gradient_phi(self):
+        if self._basis_gradient_phi is None:
+            self._compute_basis_gradient()
+        return self._basis_gradient_phi
+
 
     @lru_cache(maxsize=128)
     def _compute_basis(self):
-        logger.info("Computing basis matrix for n_max=%d", self.n_max)
+        """
+        Compute the basis matrix for the SphericalHarmonics class.
+        """
         if self.basis_type == 'complex':
             self.basis = spherical_harmonic_basis(self.n_max, self.coords,
                                                   self.normalization, self.channel_convention)
@@ -78,7 +223,6 @@ class SphHarm:
 
     @lru_cache(maxsize=128)
     def _compute_basis_gradient(self):
-        logger.info("Computing basis gradient for n_max=%d", self.n_max)
         if self.normalization in ['maxN', 'sn3d'] or self.channel_convention == 'fuma':
             raise ValueError("Gradient computation not supported for MaxN, SN3D normalization or FuMa channel ordering")
         else:
@@ -103,45 +247,41 @@ class SphHarm:
             self.compute_inverse()
         return self._basis_inv
 
-    def compute_inverse(self, inv_transform_type=None, weights=None):
+    def compute_inverse(self):
         """
         Compute the inverse transform matrix for the specified transform type
 
         The inverse transform matrix is calculated based on the specified `inv_transform_type`.
-        If 'pseudo_inverse' is chosen, the Moore-Penrose pseudo-inverse is used.
-        If 'quadrature' is chosen, the inverse is computed using the conjugate transpose of
-        the basis matrix multiplied by 4 * π * weights.
+        If ``'pseudo_inverse' is chosen, the Moore-Penrose pseudo-inverse is used.
+        If ``'quadrature'`` is chosen, the inverse is computed using the conjugate transpose of
+        the basis matrix multiplied by 4 * \pi * weights.
 
         Parameters
         ----------
         inv_transform_type : {'pseudo_inverse', 'quadrature'}, optional
-            Type of inverse transform to compute.
-        weights : array-like, optional
-            Sampling weights for the quadrature transform. Required if 'quadrature' is chosen.
-
+            Type of inverse transform to compute. The default is None.
         Returns
         -------
         None
         """
         if self.basis is None:
             self.compute_basis()
-        if inv_transform_type != self.inv_transform_type:
-            assert inv_transform_type in ['pseudo_inverse', 'quadrature'], (
+        if self.inv_transform_type is not None:
+            assert self.inv_transform_type in ['pseudo_inverse', 'quadrature'], (
                 "Invalid inverse transform type, "
                 "currently only 'pseudo_inverse' "
                 "and 'quadrature' are supported")
-            self.inv_transform_type = inv_transform_type
         # print("computing inverse basis using ", self.inv_transform_type)
-        if self.inv_transform_type is None:
+        elif self.inv_transform_type is None:
             ValueError("Inverse transform type not specified")
-        elif self.inv_transform_type == 'pseudo_inverse':
+        if self.inv_transform_type == 'pseudo_inverse':
             self._basis_inv = np.linalg.pinv(self.basis)
         elif self.inv_transform_type == 'quadrature':
-            if weights is None:
+            if self.weights is None:
                 print("Warning: No weights specified for quadrature transform,"
                       "calculating weights using voronoi tessellation of sphere")
-                weights = calculate_sampling_weights(self.coords)
-            self._basis_inv = np.conj(self.basis).T * (weights)
+                self.weights = calculate_sampling_weights(self.coords)
+            self._basis_inv = np.conj(self.basis).T * (self.weights)
 
     @property
     def basis_inv_gradient_theta(self):
@@ -155,19 +295,19 @@ class SphHarm:
             self.compute_inverse_gradient()
         return self._basis_inv_gradient_phi
 
-    def compute_inverse_gradient(self, inv_transform_type=None, weights=None):
-        if inv_transform_type != self.inv_transform_type:
-            self.inv_transform_type = inv_transform_type
+    def compute_inverse_gradient(self):
         if self.inv_transform_type is None:
             ValueError("Inverse transform type not specified")
         elif self.inv_transform_type == 'pseudo_inverse':
             self._basis_inv_gradient_theta = np.linalg.pinv(self.basis_gradient_theta)
             self._basis_inv_gradient_phi = np.linalg.pinv(self.basis_gradient_phi)
         elif self.inv_transform_type == 'quadrature':
-            if weights is None:
-                weights = calculate_sampling_weights(self.coords)
-            self._basis_inv_gradient_theta = np.conj(self.basis_gradient_theta).T * (4 * np.pi * weights)
-            self._basis_inv_gradient_phi = np.conj(self.basis_gradient_phi).T * (4 * np.pi * weights)
+            if self.weights is None:
+                print("Warning: No weights specified for quadrature transform,"
+                      "calculating weights using voronoi tessellation of sphere")
+                self.weights = calculate_sampling_weights(self.coords)
+            self._basis_inv_gradient_theta = np.conj(self.basis_gradient_theta).T * (4 * np.pi * self.weights)
+            self._basis_inv_gradient_phi = np.conj(self.basis_gradient_phi).T * (4 * np.pi * self.weights)
 
     def transform(self, signal):
         if self.basis is None:
@@ -208,6 +348,18 @@ class SphHarm:
         # Implement plotting function for reconstructed signal
         # TODO: Implement plotting function for reconstructed signal
         pass
+
+    @basis.setter
+    def basis(self, value):
+        self._basis = value
+
+    @basis_gradient_theta.setter
+    def basis_gradient_theta(self, value):
+        self._basis_gradient_theta = value
+
+    @basis_gradient_phi.setter
+    def basis_gradient_phi(self, value):
+        self._basis_gradient_phi = value
 
 
 def to_maxN_norm(acn):
@@ -329,8 +481,7 @@ def spherical_harmonic_basis(n_max, coords, normalization='n3d', channel_convent
     Y : ndarray, complex
         Complex spherical harmonic basis matrix
 
-    Examples
-    --------
+    coords = spharpy.SamplingSphere.from_pyfar(coords)
 
     >>> import spharpy
     >>> n_max = 2
@@ -548,7 +699,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     n_max : int
         Spherical harmonic order
     coords : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+        Pyfar ``Coordinate`` object with sampling points for which the basis matrix is
         calculated
 
     Returns
@@ -560,14 +711,15 @@ def spherical_harmonic_basis_gradient(n_max, coords):
 
     Examples
     --------
-
     >>> import spharpy
     >>> n_max = 2
     >>> coords = spharpy.samplings.icosahedron()
-    >>> Y_theta, Y_phi = spharpy.spherical.spherical_harmonic_basis_gradient(
-            n_max, coords)
+    >>> grad_theta, grad_phi = spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coords)
 
-    """
+
+    """ # noqa: 501
+    coords = spharpy.SamplingSphere.from_pyfar(coords)
+
     n_points = coords.csize
     n_coeff = (n_max + 1) ** 2
     theta = coords.colatitude
@@ -586,6 +738,62 @@ def spherical_harmonic_basis_gradient(n_max, coords):
                 n, m, theta, phi)
 
     return grad_theta, grad_phi
+
+
+def spherical_harmonic_basis_real(n_max, coords):
+    r"""
+    Calculates the real valued spherical harmonic basis matrix.
+
+    The spherical harmonic functions are fully normalized (N3D) and follow
+    the AmbiX phase convention [#]_.
+
+    .. math::
+
+        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+        \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+        \begin{cases}
+            \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
+            \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
+        \end{cases}
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
+
+
+    Parameters
+    ----------
+    n : int
+        Spherical harmonic order
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
+
+    Returns
+    -------
+    Y : ndarray, float
+        Real valued spherical harmonic basis matrix.
+
+
+    """ # noqa: 501
+    coords = spharpy.SamplingSphere.from_pyfar(coords)
+
+    n_coeff = (n_max+1)**2
+
+    basis = np.zeros((coords.csize, n_coeff), dtype=float)
+
+    for acn in range(n_coeff):
+        order, degree = acn2nm(acn)
+        basis[:, acn] = _special.spherical_harmonic_real(
+            order,
+            degree,
+            coords.colatitude,
+            coords.azimuth)
+
+    return basis
 
 
 def spherical_harmonic_basis_gradient_real(n_max, coords):
@@ -636,7 +844,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     grad_phi : ndarray, float
         Gradient with respect to the azimuth angle.
 
-    """
+    """ # noqa: 501
+    coords = spharpy.SamplingSphere.from_pyfar(coords)
     n_points = coords.csize
     n_coeff = (n_max + 1) ** 2
     theta = coords.colatitude
@@ -987,23 +1196,3 @@ def sph_identity_matrix(n_max, type='n-nm'):
         identity_matrix[n, linear_nm] = 1
 
     return identity_matrix
-
-
-if __name__ == '__main__':
-    from samplings import equiangular
-#
-    coords = equiangular(n_max=6, radius=0.3)
-    Sphharm = SphHarm(n_max=6, coords=coords)
-    Sphharm.compute_basis() # initialize basis matrix
-    Sphharm.compute_basis_gradient() # initialize basis gradient matrices
-    Sphharm.compute_inverse( inv_transform_type = 'quadrature') # initialize inverse transform matrix
-    Sphharm.compute_inverse_gradient() # initialize inverse gradient matrices
-    Pnm_quad = Sphharm.transform(np.ones(196))
-    sig1 = Sphharm.inverse_transform(Pnm_quad)
-    Sphharm.compute_inverse( inv_transform_type = 'pseudo_inverse') # initialize inverse transform matrix
-    Y = Sphharm.basis
-    Yinv = Sphharm.basis_inv
-    Pnm_pinv = Sphharm.transform(np.ones(196))
-    sig2 = Sphharm.inverse_transform(Pnm_pinv)
-    print("sig1 close to original signal: ", np.allclose(sig1, np.ones(196)))
-    print("sig2 close to original signal: ", np.allclose(sig2, np.ones(196)))
