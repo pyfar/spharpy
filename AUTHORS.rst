@@ -2,12 +2,6 @@
 Credits
 =======
 
-Development Lead
-----------------
+The spharpy `developers`_.
 
-* Marco Berzborn - Institute of Technical Acoustics <marco.berzborn@akustik.rwth-aachen.de>
-
-Contributors
-------------
-
-None yet. Why not be the first?
+.. _developers: https://github.com/pyfar/spharpy/graphs/contributors

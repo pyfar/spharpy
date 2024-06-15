@@ -1,24 +1,26 @@
-__author__ = "Marco Berzborn"
-__email__ = 'marco.berzborn@akustik.rwth-aachen.de'
-__version__ = '0.4.2'
+__author__ = """The pyfar developers"""
+__email__ = 'info@pyfar.org'
+__version__ = '0.6.1'
 
+from .samplings.coordinates import SamplingSphere
 from . import spherical
 from . import samplings
 from . import plot
-from . import indexing
 from . import transforms
 from . import beamforming
 from . import interpolate
-from . import _deprecation
+from . import spatial
+from . import special
 
 
 __all__ = [
     'spherical',
     'samplings',
     'plot',
-    'indexing',
     'transforms',
     'beamforming',
     'interpolate',
-    '_deprecation',
+    'spatial',
+    'special',
+    'SamplingSphere',
 ]

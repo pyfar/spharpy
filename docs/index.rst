@@ -6,21 +6,30 @@ spharpy
 
    intro
 
+Examples
+========
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Notebook sections:
+
+    spherical_harmonics
+    plane_wave_decomposition
+    general_beamforming_weights
 
 Documentation
 =============
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    modules
 
 Contributing
-===============
+============
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     contributing
 

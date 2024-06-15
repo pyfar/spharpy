@@ -20,4 +20,4 @@ def test_interior_points_chardon():
     filename = 'tests/data/interior_points_kr7.csv'
     truth = np.genfromtxt(filename, dtype=float, delimiter=';')
 
-    np.testing.assert_allclose(int_points.cartesian.T, truth, atol=1e-7)
+    np.testing.assert_allclose(int_points.cartesian, truth, atol=1e-7)
