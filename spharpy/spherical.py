@@ -102,6 +102,7 @@ class SphericalHarmonics:
         channel_convention="acn",
         inverse_transform=None,
         weights=None,
+        condon_shortley=True
     ):
         r"""
         Initialize the SphericalHarmonics class.
@@ -130,6 +131,9 @@ class SphericalHarmonics:
         weights : array-like, optional
             Sampling weights for the quadrature transform.
             Required if `quadrature` is chosen.
+        condon_shortley : bool, optional
+            Whether to include the Condon-Shortley phase term.
+            The default is True.
         """
         if not isinstance(coords, pf.Coordinates):
             raise TypeError("coords must be a pyfar.Coordinates object")
@@ -149,6 +153,7 @@ class SphericalHarmonics:
         self._basis_inv = None
         (self._basis_inv_gradient_theta,
          self._basis_inv_gradient_phi) = (None, None)
+        self._condon_shortley = condon_shortley
 
     # Properties
     @property
@@ -522,18 +527,24 @@ def fuma_to_nm(fuma):
 
 
 def spherical_harmonic_basis(
-    n_max, coords, normalization="n3d", channel_convention="acn"
+    n_max, coords, normalization="n3d", channel_convention="acn",
+    condon_shortley=True
 ):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
-
-    The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [#]_, [#]_.
+    See also :func:`spherical_harmonic_basis_real`.
 
     .. math::
+        Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
 
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
-        \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
+    where:
+    - $n$ is the degree
+    - $m$ is the order
+    - $P_{nm}$ is the associated Legendre function
+    - $N_{nm}$ is the normalization term
+    - $CS_m$ is the Condon-Shortley phase term
+    - $\theta$ is the colatitude (angle from the positive z-axis)
+    - $\phi$ is the azimuth (angle from the positive x-axis in the xy-plane)
 
     References
     ----------
@@ -557,6 +568,9 @@ def spherical_harmonic_basis(
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
+    condon_shortley : bool, optional
+        Whether to include the Condon-Shortley phase term.
+        The default is True.
 
     Returns
     -------
@@ -588,18 +602,21 @@ def spherical_harmonic_basis(
             basis[:, acn] *= n3d_to_sn3d_norm(degree, order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
-
+        if not condon_shortley:
+            # Condon-Shortley phase term is already included in
+            # the special.spherical_harmonic function
+            # so need to divide by (-1)^m
+            basis[:, acn] /= (-1) ** degree
     return basis
 
 
 def spherical_harmonic_basis_real(
-    n_max, coords, normalization="n3d", channel_convention="acn"
+    n_max, coords, normalization="n3d", channel_convention="acn",
+    condon_shortley=True
 ):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
-
-    The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [#]_.
+    See also :func:`spherical_harmonic_basis`.
 
     .. math::
 
@@ -625,6 +642,7 @@ def spherical_harmonic_basis_real(
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
+    condon_shortley : bool, optional
 
     Returns
     -------
@@ -649,6 +667,11 @@ def spherical_harmonic_basis_real(
             basis[:, acn] *= n3d_to_sn3d_norm(degree, order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
+        if not condon_shortley:
+            # Condon-Shortley phase term is already included in
+            # the special.spherical_harmonic function
+            # so need to divide by (-1)^m
+            basis[:, acn] /= (-1) ** degree
 
     return basis
 
@@ -725,8 +748,6 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     r"""
     Calulcates the unit sphere gradients of the complex spherical harmonics.
 
-    The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [#]_.
 
     The angular parts of the gradient are defined as
 
