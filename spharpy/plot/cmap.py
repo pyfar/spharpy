@@ -1,4 +1,4 @@
-from matplotlib import cm
+import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import numpy as np
 
@@ -8,7 +8,7 @@ def phase_twilight(lut=512):
     version of the twilight color map from matplotlib.
     """
     lut = int(np.ceil(lut/4)*4)
-    twilight = cm.get_cmap('twilight', lut=lut)
+    twilight = plt.get_cmap('twilight', lut=lut)
 
     twilight_r_colors = np.array(twilight.reversed().colors)
 

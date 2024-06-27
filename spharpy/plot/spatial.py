@@ -272,7 +272,7 @@ def pcolor_sphere(
     else:
         itype = 'amplitude'
         if cmap is None:
-            cmap = cm.viridis
+            cmap = plt.get_cmap('viridis')
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
@@ -355,7 +355,7 @@ def balloon_wireframe(
     else:
         itype = 'amplitude'
         if cmap is None:
-            cmap = cm.viridis
+            cmap = plt.get_cmap('viridis')
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
@@ -452,7 +452,7 @@ def balloon(
     else:
         itype = 'amplitude'
         if cmap is None:
-            cmap = cm.viridis
+            cmap = plt.get_cmap('viridis')
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
@@ -676,7 +676,7 @@ def contour_map(
         data,
         projection='mollweide',
         limits=None,
-        cmap=cm.viridis,
+        cmap=plt.get_cmap('viridis'),
         colorbar=True,
         show=True,
         levels=None,
@@ -757,7 +757,7 @@ def contour_map(
 
 
 def contour(
-        coordinates, data, limits=None, cmap=cm.viridis, show=True, ax=None):
+        coordinates, data, limits=None, cmap=plt.get_cmap('viridis'), show=True, ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
