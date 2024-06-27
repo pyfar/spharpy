@@ -43,7 +43,7 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(coordinates, ax=None, show=True):
+def scatter(coordinates, ax=None):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
@@ -69,9 +69,6 @@ def scatter(coordinates, ax=None, show=True):
         np.ptp(coordinates.x),
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
-
-    if show:
-        plt.show()
 
 
 def _triangulation_sphere(sampling, data):
@@ -223,7 +220,6 @@ def pcolor_sphere(
         data,
         cmap=None,
         colorbar=True,
-        show=True,
         phase=False,
         ax=None,
         *args,
@@ -251,8 +247,6 @@ def pcolor_sphere(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
-    show : boolean, optional
-        Whether to show the figure or not
 
     """ # noqa: 501
     coordinates = convert_coordinates(coordinates)
@@ -299,9 +293,6 @@ def pcolor_sphere(
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
 
-    if show:
-        plt.show()
-
     return plot
 
 
@@ -310,7 +301,6 @@ def balloon_wireframe(
         data,
         cmap=None,
         phase=False,
-        show=True,
         colorbar=True,
         ax=None):
     """Plot data on a sphere defined by the coordinate angles
@@ -335,8 +325,6 @@ def balloon_wireframe(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    show : boolean, optional
-        Whether to show the figure or not
     """ # noqa: 501
     coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, data)
@@ -390,9 +378,6 @@ def balloon_wireframe(
         np.ptp(xyz[1]),
         np.ptp(xyz[2])])
 
-    if show:
-        plt.show()
-
     plot.set_facecolor([0.9, 0.9, 0.9, 0.9])
 
     return plot
@@ -403,7 +388,6 @@ def balloon(
         data,
         cmap=None,
         phase=False,
-        show=True,
         colorbar=True,
         ax=None,
         *args,
@@ -431,8 +415,6 @@ def balloon(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    show : boolean, optional
-        Wheter to show the figure or not
     """ # noqa: 501
     coordinates = convert_coordinates(coordinates)
 
@@ -480,9 +462,6 @@ def balloon(
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-
-    if show:
-        plt.show()
 
     return plot
 
@@ -598,7 +577,6 @@ def pcolor_map(
         projection='mollweide',
         limits=None,
         cmap=plt.get_cmap('viridis'),
-        show=True,
         refine=False,
         ax=None,
         **kwargs):
@@ -618,8 +596,6 @@ def pcolor_map(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    show : boolean, optional
-        Wheter to show the figure or not
 
     """ # noqa: 501
     coordinates = convert_coordinates(coordinates)
@@ -666,8 +642,6 @@ def pcolor_map(
     plt.grid(True)
     cb = fig.colorbar(cf, ax=ax, extend=extend)
     cb.set_label('Amplitude')
-    if show:
-        plt.show()
 
     return cf
 
@@ -679,7 +653,6 @@ def contour_map(
         limits=None,
         cmap=plt.get_cmap('viridis'),
         colorbar=True,
-        show=True,
         levels=None,
         ax=None):
     """
@@ -700,8 +673,6 @@ def contour_map(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    show : boolean, optional
-        Wheter to show the figure or not
 
     """
     coordinates = convert_coordinates(coordinates)
@@ -751,15 +722,13 @@ def contour_map(
     if colorbar:
         cb = fig.colorbar(cf, ax=ax, ticks=levels)
         cb.set_label('Amplitude')
-    if show:
-        plt.show()
 
     return cf
 
 
 def contour(
         coordinates, data, limits=None, cmap=plt.get_cmap('viridis'),
-        show=True, ax=None):
+        ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
@@ -776,8 +745,6 @@ def contour(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    show : boolean, optional
-        Wheter to show the figure or not
 
     """ # noqa: 501
     coordinates = convert_coordinates(coordinates)
@@ -794,8 +761,6 @@ def contour(
     plt.grid(True)
     cb = fig.colorbar(cf, ax=ax)
     cb.set_label('Amplitude')
-    if show:
-        plt.show()
 
     return cf
 
