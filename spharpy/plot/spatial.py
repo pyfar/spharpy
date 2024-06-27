@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import numpy as np
 import scipy.spatial as sspat
-from matplotlib import cm, colors
+from matplotlib import colors
 from mpl_toolkits.mplot3d import Axes3D
 __all__ = [Axes3D]
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -43,7 +43,7 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(coordinates, ax=None):
+def scatter(coordinates, ax=None, show=True):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
@@ -70,7 +70,8 @@ def scatter(coordinates, ax=None):
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
 
-    plt.show()
+    if show:
+        plt.show()
 
 
 def _triangulation_sphere(sampling, data):
@@ -757,7 +758,8 @@ def contour_map(
 
 
 def contour(
-        coordinates, data, limits=None, cmap=plt.get_cmap('viridis'), show=True, ax=None):
+        coordinates, data, limits=None, cmap=plt.get_cmap('viridis'),
+        show=True, ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
