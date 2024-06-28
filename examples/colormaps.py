@@ -13,7 +13,7 @@ points = np.array([np.real(func), np.imag(func)]).T.reshape(-1, 1, 2)
 segments = np.concatenate([points[:-1], points[1:]], axis=1)
 
 norm = plt.Normalize(phi.min(), phi.max())
-lc = LineCollection(segments, cmap=cm.twilight, norm=norm)
+lc = LineCollection(segments, cmap=plt.get_cmap('twilight'), norm=norm)
 # # Set the values used for colormapping
 lc.set_array(phi)
 lc.set_linewidth(2)
