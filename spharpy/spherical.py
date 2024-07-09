@@ -1,6 +1,5 @@
 import numpy as np
 import scipy.special as special
-
 import spharpy.special as _special
 from spharpy.samplings.helpers import calculate_sampling_weights
 import pyfar as pf
@@ -532,9 +531,9 @@ def fuma_to_nm(fuma):
 
     References
     ----------
-    [2]  D. Malham, "Higher order Ambisonic systems" Space in Music -
+    [2]  D. Malham, "Higher order Ambisonic systems” Space in Music –
     Music in Space (Mphil thesis).
-         University of York. pp. 2-3. , 2003.
+         University of York. pp. 2–3. , 2003.
 
     Parameters
     ----------
@@ -747,7 +746,7 @@ def acn_to_nm(acn):
     return n, m
 
 
-def nm2acn(n, m):
+def nm_to_acn(n, m):
     r"""
     Calculate the linear index coefficient for a order n and degree m,
 
@@ -802,9 +801,9 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, Non-singular spherical
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame, Geoscientific
+            fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     Parameters
@@ -880,13 +879,13 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
 
     References
     ----------
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter), International
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
-    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, Non-singular spherical
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame, Geoscientific
+            fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     Parameters
@@ -951,8 +950,8 @@ def modal_strength(n_max, kr, arraytype="rigid"):
 
     References
     ----------
-    .. [#]  V. Tourbabin and B. Rafaely, On the Consistent Use of Space and
-            Time Conventions in Array Processing, vol. 101, pp. 470473, 2015.
+    .. [#]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+            Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
 
 
     Parameters
@@ -1053,8 +1052,8 @@ def aperture_vibrating_spherical_cap(n_max, rad_sphere, rad_cap):
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [#]  B. Rafaely and D. Khaykin, Optimal Model-Based Beamforming and
-             Independent Steering for Spherical Loudspeaker Arrays, IEEE
+    .. [#]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
+             Independent Steering for Spherical Loudspeaker Arrays,” IEEE
              Transactions on Audio, Speech, and Language Processing, vol. 19,
              no. 7, pp. 2234-2238, 2011
 
@@ -1076,7 +1075,7 @@ def aperture_vibrating_spherical_cap(n_max, rad_sphere, rad_cap):
         legendre_plus = special.legendre(n + 1)(arg)
         legendre_term = legendre_minus - legendre_plus
         for m in range(-n, n + 1):
-            acn = nm2acn(n, m)
+            acn = nm_to_acn(n, m)
             aperture[acn, acn] = legendre_term * 4 * np.pi / (2 * n + 1)
 
     return aperture
@@ -1098,8 +1097,8 @@ def radiation_from_sphere(
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [#]  F. Zotter, A. Sontacchi, and R. Holdrich, Modeling a spherical
-            loudspeaker system as multipole source, in Proceedings of the 33rd
+    .. [#]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
             DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
 
 
@@ -1139,7 +1138,7 @@ def radiation_from_sphere(
         radiation_order = (-1j * hankel / hankel_prime *
                            density_medium * speed_of_sound)
         for m in range(-n, n + 1):
-            acn = nm2acn(n, m)
+            acn = nm_to_acn(n, m)
             radiation[:, acn, acn] = radiation_order
 
     return radiation
@@ -1164,13 +1163,13 @@ def sid(n_max):
 
     References
     ----------
-    .. [#]  J. Daniel, Representation de champs acoustiques, application a la
-            transmission et a la reproduction de scenes sonores complexes dans
-            un contexte multimedia, Dissertation, lUniversite Paris 6, Paris,
+    .. [#]  J. Daniel, “Représentation de champs acoustiques, application à la
+            transmission et à la reproduction de scènes sonores complexes dans
+            un contexte multimédia,” Dissertation, l’Université Paris 6, Paris,
             2001.
 
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter), International
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
 
@@ -1204,7 +1203,7 @@ def sid2acn(n_max):
         The SID indices sorted according to a respective linear ACN indexing.
     """
     sid_n, sid_m = sid(n_max)
-    linear_sid = nm2acn(sid_n, sid_m)
+    linear_sid = nm_to_acn(sid_n, sid_m)
     return np.argsort(linear_sid)
 
 
@@ -1259,7 +1258,7 @@ def sph_identity_matrix(n_max, type="n-nm"):
 
     for n in range(n_max + 1):
         m = np.arange(-n, n + 1)
-        linear_nm = nm2acn(np.tile(n, m.shape), m)
+        linear_nm = nm_to_acn(np.tile(n, m.shape), m)
         identity_matrix[n, linear_nm] = 1
 
     return identity_matrix
