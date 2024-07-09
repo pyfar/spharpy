@@ -3,10 +3,9 @@ import scipy.special as special
 
 import spharpy
 import spharpy.special as _special
-from spharpy._deprecation import convert_coordinates_to_pyfar
 from spharpy.samplings.helpers import calculate_sampling_weights
 import pyfar as pf
-from functools import lru_cache
+# from functools import lru_cache
 import logging as logger
 
 
@@ -137,11 +136,8 @@ class SphericalHarmonics:
         """
         if not isinstance(coords, pf.Coordinates):
             raise TypeError("coords must be a pyfar.Coordinates object")
-        self.sampling_sphere = spharpy.SamplingSphere.from_coordinates(
-            coords, n_max, weights
-        )
         self.n_max = n_max
-        self.weights = self.sampling_sphere.weights
+        self.weights = weights
         self.coords = coords
         self.basis_type = basis_type
         self.inverse_transform = inverse_transform
@@ -154,6 +150,14 @@ class SphericalHarmonics:
         (self._basis_inv_gradient_theta,
          self._basis_inv_gradient_phi) = (None, None)
         self._condon_shortley = condon_shortley
+        # Store previous values for comparison
+        self._prev_n_max = self.n_max
+        self._prev_coords = self.coords
+        self._prev_basis_type = self.basis_type
+        self._prev_inverse_transform = self.inverse_transform
+        self._prev_channel_convention = self.channel_convention
+        self._prev_normalization = self.normalization
+        self._prev_condon_shortley = condon_shortley
 
     # Properties
     @property
@@ -200,6 +204,9 @@ class SphericalHarmonics:
     def coords(self, value):
         if not isinstance(value, pf.Coordinates):
             raise TypeError("coords must be a pyfar.Coordinates object")
+        if value.cdim != 1:
+            raise ValueError("Coordinates must be 1D")
+            # TODO: Allow for 2D coordinates
         self._coords = value
 
     @property
@@ -257,21 +264,24 @@ class SphericalHarmonics:
     def basis(self):
         if self._basis is None:
             self._compute_basis()
+        self._check_properties(compute='basis')
         return self._basis
 
     @property
     def basis_gradient_theta(self):
         if self._basis_gradient_theta is None:
             self._compute_basis_gradient()
+        self._check_properties(compute='basis_gradient')
         return self._basis_gradient_theta
 
     @property
     def basis_gradient_phi(self):
         if self._basis_gradient_phi is None:
             self._compute_basis_gradient()
+        self._check_properties(compute='basis_gradient')
         return self._basis_gradient_phi
 
-    @lru_cache(maxsize=128)
+    # @lru_cache(maxsize=128)
     def _compute_basis(self):
         """
         Compute the basis matrix for the SphericalHarmonics class.
@@ -298,7 +308,7 @@ class SphericalHarmonics:
         except Exception as e:
             raise ValueError("Error computing basis:", e) from e
 
-    @lru_cache(maxsize=128)
+    # @lru_cache(maxsize=128)
     def _compute_basis_gradient(self):
         logger.info("Computing basis gradient for n_max=%d", self.n_max)
         if any(
@@ -341,6 +351,7 @@ class SphericalHarmonics:
     def basis_inv(self):
         if self._basis_inv is None:
             self.compute_inverse()
+        self._check_properties(compute='basis_inv')
         return self._basis_inv
 
     def compute_inverse(self):
@@ -388,6 +399,7 @@ class SphericalHarmonics:
             or self._basis_inv_gradient_phi is None
         ):
             self.compute_inverse_gradient()
+        self._check_properties(compute='basis_inv_gradient')
         return self._basis_inv_gradient_theta
 
     @property
@@ -397,6 +409,7 @@ class SphericalHarmonics:
             or self._basis_inv_gradient_phi is None
         ):
             self.compute_inverse_gradient()
+        self._check_properties(compute='basis_inv_gradient')
         return self._basis_inv_gradient_phi
 
     def compute_inverse_gradient(self):
@@ -430,6 +443,30 @@ class SphericalHarmonics:
     @basis_gradient_phi.setter
     def basis_gradient_phi(self, value):
         self._basis_gradient_phi = value
+
+    def _check_properties(self, compute=None):
+        # Check if any crucial properties have changed
+        if (self.n_max != self._prev_n_max or
+                self.coords != self._prev_coords or
+                self.basis_type != self._prev_basis_type or
+                self.inverse_transform != self._prev_inverse_transform or
+                self.channel_convention != self._prev_channel_convention or
+                self.normalization != self._prev_normalization):
+            if compute == 'basis':
+                self._compute_basis()
+            elif compute == 'basis_gradient':
+                self._compute_basis_gradient()
+            elif compute == 'basis_inv':
+                self.compute_inverse()
+            elif compute == 'basis_inv_gradient':
+                self.compute_inverse_gradient()
+            # And update the previous property values
+            self._prev_n_max = self.n_max
+            self._prev_coords = self.coords
+            self._prev_basis_type = self.basis_type
+            self._prev_inverse_transform = self.inverse_transform
+            self._prev_channel_convention = self.channel_convention
+            self._prev_normalization = self.normalization
 
 
 def n3d_to_maxn(acn):
@@ -577,7 +614,6 @@ def spherical_harmonic_basis(
     Y : ndarray, complex
         Complex spherical harmonic basis matrix
 
-    coords = convert_coordinates_to_pyfar(coords)
 
     >>> import spharpy
     >>> n_max = 2
@@ -704,7 +740,7 @@ def acn_to_nm(acn):
     acn = np.asarray(acn, dtype=int)
 
     n = np.ceil(np.sqrt(acn + 1)) - 1
-    m = acn - n**2 - n
+    m = acn - n ** 2 - n
 
     n = n.astype(int, copy=False)
     m = m.astype(int, copy=False)
@@ -741,7 +777,7 @@ def nm2acn(n, m):
     if n.size != m.size:
         raise ValueError("n and m need to be of the same size")
 
-    return n**2 + n + m
+    return n ** 2 + n + m
 
 
 def spherical_harmonic_basis_gradient(n_max, coords):
@@ -796,7 +832,11 @@ def spherical_harmonic_basis_gradient(n_max, coords):
 
 
     """  # noqa: 501
-    coords = convert_coordinates_to_pyfar(coords)
+    if not isinstance(coords, pf.Coordinates):
+        axis = np.where(coords.shape == 3)[0][0]
+        if axis == 0:
+            coords = coords.T
+        coords = pf.Coordinates(coords[:, 0], coords[:, 1], coords[:, 2])
 
     n_points = coords.csize
     n_coeff = (n_max + 1) ** 2
@@ -866,7 +906,11 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
         Gradient with respect to the azimuth angle.
 
     """  # noqa: 501
-    coords = convert_coordinates_to_pyfar(coords)
+    if not isinstance(coords, pf.Coordinates):
+        axis = np.where(coords.shape == 3)[0][0]
+        if axis == 0:
+            coords = coords.T
+        coords = pf.Coordinates(coords[:, 0], coords[:, 1], coords[:, 2])
     n_points = coords.csize
     n_coeff = (n_max + 1) ** 2
     theta = coords.colatitude
@@ -953,7 +997,7 @@ def _modal_strength(n, kr, config):
             * np.pi
             * pow(1.0j, n + 1)
             / _special.spherical_hankel(n, kr, derivative=True)
-            / kr**2
+            / kr ** 2
         )
     elif config == "cardioid":
         ms = (
