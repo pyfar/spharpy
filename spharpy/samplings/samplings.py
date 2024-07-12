@@ -419,9 +419,13 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
         if condition_num == np.inf:
             break
         Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
-        cond = np.linalg.cond(Y)
-        if cond < condition_num:
-            break
+        try:
+            cond = np.linalg.cond(Y)
+            if cond < condition_num:
+                break
+        except np.linalg.LinAlgError:
+            continue
+
         n_points += 1
 
     sampling.n_max = n_max
@@ -490,9 +494,13 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
         if condition_num == np.inf:
             break
         Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
-        cond = np.linalg.cond(Y)
-        if cond < condition_num:
-            break
+        try:
+            cond = np.linalg.cond(Y)
+            if cond < condition_num:
+                break
+        except np.linalg.LinAlgError:
+            continue
+
         n_points += 1
 
     sampling.n_max = n_max
