@@ -58,11 +58,11 @@ def hyperinterpolation(n_max):
 
     References
     ----------
-    .. [#] I. H. Sloan and R. S. Womersley, “Extremal Systems of Points and
+    .. [#]  I. H. Sloan and R. S. Womersley, “Extremal Systems of Points and
             Numerical Integration on the Sphere,” Advances in Computational
             Mathematics, vol. 21, no. 1/2, pp. 107-125, 2004.
 
-    .. [#] http://web.maths.unsw.edu.au/~rsw/Sphere/Extremal/New/index.html
+    .. [#]  http://web.maths.unsw.edu.au/~rsw/Sphere/Extremal/New/index.html
 
     Parameters
     ----------

@@ -428,6 +428,7 @@ def aperture_vibrating_spherical_cap(
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+
     .. [#]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
             Independent Steering for Spherical Loudspeaker Arrays,” IEEE
             Transactions on Audio, Speech, and Language Processing, vol. 19,
@@ -476,6 +477,7 @@ def radiation_from_sphere(
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+
     .. [#]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
             loudspeaker system as multipole source,” in Proceedings of the 33rd
             DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
