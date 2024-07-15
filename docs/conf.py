@@ -8,7 +8,10 @@
 
 import os
 import sys
+import urllib3
+import shutil
 sys.path.insert(0, os.path.abspath('..'))
+
 import spharpy  # noqa
 
 # -- General configuration ---------------------------------------------------
@@ -16,8 +19,6 @@ import spharpy  # noqa
 
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosummary',
@@ -27,6 +28,7 @@ extensions = [
     'autodocsumm',
     'sphinx_design',
     'sphinx_favicon',
+    'sphinx_reredirects',
 ]
 
 # show tocs for classes and functions of modules using the autodocsumm
@@ -50,7 +52,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'spharpy'
 copyright = ', 2020 - 2023, Marco Berzborn; 2023, The pyfar developers'
-author = 'The pyfar developers'
+author = "The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -88,7 +90,7 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
-    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None)
+    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None),
     }
 
 # -- Options for HTML output -------------------------------------------------
@@ -98,7 +100,7 @@ html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
 html_logo = 'resources/logos/pyfar_logos_fixed_size_spharpy.png'
-html_title = "pyfar"
+html_title = "spharpy"
 html_favicon = '_static/favicon.ico'
 
 # -- HTML theme options
@@ -108,6 +110,7 @@ html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "navbar_end": ["navbar-icon-links", "theme-switcher"],
     "navbar_align": "content",
+    "header_links_before_dropdown": 8,
     "icon_links": [
         {
           "name": "GitHub",
@@ -125,3 +128,31 @@ html_theme_options = {
 html_context = {
    "default_mode": "light"
 }
+
+# redirect index to pyfar.html
+redirects = {
+     "index": f"{project}.html"
+}
+
+# -- download navbar and style files from gallery -----------------------------
+branch = 'main'
+link = f'https://github.com/pyfar/gallery/raw/{branch}/docs/'
+folders_in = [
+    '_static/css/custom.css',
+    '_static/favicon.ico',
+    '_static/header.rst',
+    'resources/logos/pyfar_logos_fixed_size_spharpy.png',
+    ]
+c = urllib3.PoolManager()
+for file in folders_in:
+    url = link + file
+    filename = file
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with c.request('GET', url, preload_content=False) as res, open(filename, 'wb') as out_file:
+        shutil.copyfileobj(res, out_file)
+
+# replace pyfar hard link to internal link
+with open("_static/header.rst", "rt") as fin:
+    with open("header.rst", "wt") as fout:
+        for line in fin:
+            fout.write(line.replace(f'https://{project}.readthedocs.io', project))
