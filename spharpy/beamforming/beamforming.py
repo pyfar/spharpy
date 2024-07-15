@@ -35,9 +35,9 @@ def dolph_chebyshev_weights(
 
     References
     ----------
-    ..  [1] A. Koretz and B. Rafaely, “Dolph-Chebyshev beampattern design for
-        spherical arrays,” IEEE Transactions on Signal Processing, vol. 57,
-        no. 6, pp. 2417–2420, 2009.
+    .. [#]  A. Koretz and B. Rafaely, “Dolph-Chebyshev beampattern design for
+            spherical arrays,” IEEE Transactions on Signal Processing, vol. 57,
+            no. 6, pp. 2417-2420, 2009.
 
     """
     M = 2*n_max
@@ -73,7 +73,7 @@ def dolph_chebyshev_weights(
 
 def rE_max_weights(n_max, normalize=True):
     """Weights that maximize the length of the energy vector.
-    This is most often used in Ambisonics decoding.
+    This is most often used in Ambisonics decoding [#]_.
 
     Parameters
     ----------
@@ -90,9 +90,9 @@ def rE_max_weights(n_max, normalize=True):
 
     References
     ----------
-    ..  [2] J. Daniel, J.-B. Rault, and J.-D. Polack, “Ambisonics Encoding of
-        Other Audio Formats for Multiple Listening Conditions,” in 105th
-        Convention of the Audio Engineering Society, 1998, vol. 3.
+    .. [#]  J. Daniel, J.-B. Rault, and J.-D. Polack, “Ambisonics Encoding of
+            Other Audio Formats for Multiple Listening Conditions,” in 105th
+            Convention of the Audio Engineering Society, 1998, vol. 3.
 
     """
     leg = poly.legendre.Legendre.basis(n_max+1)
@@ -111,7 +111,7 @@ def rE_max_weights(n_max, normalize=True):
 
 def maximum_front_back_ratio_weights(n_max, normalize=True):
     """Weights that maximize the front-back ratio of the beam pattern.
-    This is also often referred to as the super-cardioid beam pattern.
+    This is also often referred to as the super-cardioid beam pattern [#]_.
 
     Parameters
     ----------
@@ -132,7 +132,8 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
 
     References
     ----------
-    [3] B. Rafaely, Fundamentals of Spherical Array Processing, Springer, 2015.
+    .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing,
+            Springer, 2015.
 
     """
     P_N = np.zeros((n_max+1, n_max+1))

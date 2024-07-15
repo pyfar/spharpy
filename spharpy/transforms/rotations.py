@@ -187,8 +187,8 @@ class RotationSH(Rotation):
     def from_matrix(cls, n_max, matrix, **kwargs):
         """Initialize from rotation matrix.
         Rotations in 3 dimensions can be represented with 3 x 3 proper
-        orthogonal matrices [1]_. If the input is not proper orthogonal,
-        an approximation is created using the method described in [2]_.
+        orthogonal matrices [#]_. If the input is not proper orthogonal,
+        an approximation is created using the method described in [#]_.
 
         Parameters
         ----------
@@ -206,8 +206,8 @@ class RotationSH(Rotation):
 
         References
         ----------
-        .. [1] https://en.wikipedia.org/wiki/Rotation_matrix
-        .. [2] F. Landis Markley, “Unit Quaternion from Rotation Matrix”,
+        .. [#] https://en.wikipedia.org/wiki/Rotation_matrix
+        .. [#] F. Landis Markley, “Unit Quaternion from Rotation Matrix”,
                Journal of guidance, control, and dynamics vol. 31.2,
                pp. 440-442, 2008.
 
@@ -331,7 +331,7 @@ def rotation_z_axis(n_max, angle):
     ----------
     .. [#]  N. A. Gumerov and R. Duraiswami, “Recursions for the computation
             of multipole translation and rotation coefficients for the 3-d
-            helmholtz equation,” vol. 25, no. 4, pp. 1344–1381, 2003.
+            helmholtz equation,” vol. 25, no. 4, pp. 1344-1381, 2003.
 
 
     Examples
@@ -506,8 +506,8 @@ def wigner_d_rotation_real(n_max, alpha, beta, gamma):
     ----------
     .. [#]  M. A. Blanco, M. Flórez, and M. Bermejo, “Evaluation of the
             rotation matrices in the basis of real spherical harmonics,”
-            Journal of Molecular Structure: THEOCHEM,  vol. 419, no. 1–3,
-            pp. 19–27, Dec. 1997, doi: 10.1016/S0166-1280(97)00185-1.
+            Journal of Molecular Structure: THEOCHEM,  vol. 419, no. 1-3,
+            pp. 19-27, Dec. 1997, doi: 10.1016/S0166-1280(97)00185-1.
 
     """
     n_sh = (n_max+1)**2
