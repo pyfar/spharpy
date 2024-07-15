@@ -14,6 +14,16 @@ spharpy
 
 Spherical array processing in python.
 
+Getting Started
+===============
+
+The `pyfar workshop`_ gives an overview of the most important pyfar
+functionality and is a good starting point. It is part of the
+`pyfar example gallery`_ that also contains more specific and in-depth
+examples that can be executed interactively without a local installation by
+clicking the mybinder.org button on the respective example. The
+`pyfar documentation`_ gives a detailed and complete overview of pyfar. All
+these information are available from `pyfar.org`_.
 
 Installation
 ============
@@ -24,21 +34,18 @@ Use pip to install spharpy
 
     $ pip install spharpy
 
+(Requires Python 3.8 or higher)
 
-Getting Started
-===============
-
-Check out the `example notebooks`_ - also available on `mybinder.org`_ - for a tour of basic functionality and
-`read the docs`_ for the complete documentation.
-
+If the installation fails, please check out the `help section`_.
 
 Contributing
 ============
 
-Refer to the `contribution guidelines`_ for more information.
+Check out the `contributing guidelines`_ if you want to become part of pyfar.
 
-
-.. _contribution guidelines: https://github.com/pyfar/spharpy/blob/main/CONTRIBUTING.rst
-.. _example notebooks: https://github.com/pyfar/pyfar/blob/main/examples
-.. _mybinder.org: https://mybinder.org/v2/gh/pyfar/spharpy/main?filepath=examples/
-.. _read the docs: https://spharpy.readthedocs.io/en/latest
+.. _pyfar workshop: https://mybinder.org/v2/gh/pyfar/gallery/main?labpath=docs/gallery/interactive/pyfar_introduction.ipynb
+.. _pyfar example gallery: https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html
+.. _pyfar documentation: https://pyfar.readthedocs.io
+.. _pyfar.org: https://pyfar.org
+.. _help section: https://pyfar-gallery.readthedocs.io/en/latest/help
+.. _contributing guidelines: https://pyfar.readthedocs.io/en/stable/contributing.html

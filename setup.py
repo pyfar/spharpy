@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-The setup script.
-"""
+"""The setup script."""
 
 from setuptools import setup, find_packages
 
@@ -34,19 +32,8 @@ test_requirements = [
 
 
 setup(
-    name='spharpy',
-    version='0.6.1',
-    description="Python package for spherical array processing.",
-    long_description=readme,
     author="The pyfar developers",
     author_email='info@pyfar.org',
-    url='https://github.com/pyfar/spharpy',
-    packages=find_packages(),
-    include_package_data=True,
-    install_requires=requirements,
-    license="MIT license",
-    zip_safe=False,
-    keywords='spharpy',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
@@ -57,15 +44,28 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+
     ],
+    description="Python package for spherical array processing.",
+    install_requires=requirements,
+    license="MIT license",
+    long_description=readme,
+    include_package_data=True,
+    keywords='spharpy',
+    name='spharpy',
+    packages=find_packages(),
+    setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    setup_requires=setup_requirements,
+    url="https://pyfar.org/",
     download_url="https://pypi.org/project/spharpy/",
     project_urls={
         "Bug Tracker": "https://github.com/pyfar/spharpy/issues",
         "Documentation": "https://spharpy.readthedocs.io/",
         "Source Code": "https://github.com/pyfar/spharpy",
     },
-    python_requires='>=3.8'
+    version='0.6.1',
+    zip_safe=False,
+    python_requires='>=3.8',
 )
