@@ -4,7 +4,6 @@ Tests for special functions
 
 import pytest
 from spharpy import special
-from spharpy import samplings
 
 import numpy as np
 import numpy.testing as npt
@@ -96,14 +95,16 @@ class TestHankelPrime(object):
         z = np.linspace(0.1, 5, 25)
         n = [0, 1, 2]
         res = special.spherical_hankel(n, z, kind=2, derivative=True)
-        truth = genfromtxt_complex('./tests/data/hankel_2_diff.csv', delimiter=',')
+        truth = genfromtxt_complex(
+            './tests/data/hankel_2_diff.csv', delimiter=',')
         npt.assert_allclose(res, truth)
 
     def test_val_first_kind(self):
         z = np.linspace(0.1, 5, 25)
         n = [0, 1, 2]
         res = special.spherical_hankel(n, z, kind=1, derivative=True)
-        truth = genfromtxt_complex('./tests/data/hankel_1_diff.csv', delimiter=',')
+        truth = genfromtxt_complex(
+            './tests/data/hankel_1_diff.csv', delimiter=',')
         npt.assert_allclose(res, truth)
 
 

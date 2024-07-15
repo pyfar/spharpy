@@ -2,7 +2,6 @@
 Tests for acn and order, degree indexing functions
 """
 
-import pytest
 import spharpy.spherical as sh
 import numpy as np
 

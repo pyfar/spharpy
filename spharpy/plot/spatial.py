@@ -51,7 +51,7 @@ def scatter(coordinates, ax=None):
     coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
         The coordinates to be plotted
 
-    """ # noqa: 501
+    """  # noqa: E501
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -85,7 +85,7 @@ def _triangulation_sphere(sampling, data):
     -------
     triangulation : matplotlib Triangulation
 
-    """ # noqa: 501
+    """  # noqa: E501
     sampling = convert_coordinates(sampling)
     x, y, z = sph2cart(
         np.abs(data),
@@ -136,7 +136,7 @@ def interpolate_data_on_sphere(
     Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
     are used.
 
-    """ # noqa: 501
+    """  # noqa: E501
     sampling = convert_coordinates(sampling)
     lats = sampling.latitude
     lons = sampling.longitude
@@ -248,7 +248,7 @@ def pcolor_sphere(
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
 
-    """ # noqa: 501
+    """  # noqa: E501
     coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
@@ -325,7 +325,7 @@ def balloon_wireframe(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    """ # noqa: 501
+    """  # noqa: E501
     coordinates = convert_coordinates(coordinates)
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
@@ -415,7 +415,7 @@ def balloon(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    """ # noqa: 501
+    """  # noqa: E501
     coordinates = convert_coordinates(coordinates)
 
     tri, xyz = _triangulation_sphere(coordinates, data)
@@ -480,7 +480,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         The subplot axes to use for plotting. The used projection needs to be
         '3d'.
 
-    """ # noqa: 501
+    """  # noqa: E501
     sampling = convert_coordinates(sampling)
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
@@ -597,7 +597,7 @@ def pcolor_map(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
 
-    """ # noqa: 501
+    """  # noqa: E501
     coordinates = convert_coordinates(coordinates)
     tri = mtri.Triangulation(coordinates.longitude, coordinates.latitude)
     if refine is not None:
@@ -746,7 +746,7 @@ def contour(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
 
-    """ # noqa: 501
+    """  # noqa: E501
     coordinates = convert_coordinates(coordinates)
     lat_deg = coordinates.latitude * 180/np.pi
     lon_deg = coordinates.longitude * 180/np.pi
