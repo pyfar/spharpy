@@ -300,7 +300,7 @@ def test_sampling_to_pyfar_coords():
     assert pyfar_coords.weights == 1.
 
 
-def test_from_pyfar():
+def test_coords_from_pyfar():
     pyfar_coords = pf.Coordinates(1, 0, 0, weights=1, sh_order=0)
     spharpy_sampling = SamplingSphere.from_pyfar(pyfar_coords)
     np.testing.assert_allclose(

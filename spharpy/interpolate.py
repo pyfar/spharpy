@@ -57,7 +57,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
     ...
     >>> interp_data = interpolator(interp_grid)
 
-    """ # noqa: 501
+    """  # noqa: E501
     def __init__(self, sampling, data, w=None, s=1e-4, eps=1e-16):
         sampling = convert_coordinates(sampling)
         theta = sampling.elevation
@@ -79,7 +79,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
         dphi : int, optional
             Order of phi derivative
 
-        """ # noqa: 501
+        """  # noqa: E501
         interp_grid = convert_coordinates(interp_grid)
         theta = interp_grid.elevation
         phi = interp_grid.azimuth

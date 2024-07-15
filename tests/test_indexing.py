@@ -1,6 +1,5 @@
 """ Tests for sh channel indexing"""
 
-import pytest
 import numpy as np
 import spharpy.indexing
 

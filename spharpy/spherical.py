@@ -118,7 +118,7 @@ def spherical_harmonic_basis(n_max, coords):
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
-    """ # noqa: 501
+    """  # noqa: E501
 
     coords = convert_coordinates(coords)
 
@@ -172,7 +172,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
         Gradient with regard to the azimuth angle.
 
 
-    """ # noqa: 501
+    """  # noqa: E501
     coords = convert_coordinates(coords)
 
     n_points = coords.n_points
@@ -233,7 +233,7 @@ def spherical_harmonic_basis_real(n_max, coords):
         Real valued spherical harmonic basis matrix
 
 
-    """ # noqa: 501
+    """  # noqa: E501
     coords = convert_coordinates(coords)
 
     n_coeff = (n_max+1)**2
@@ -285,7 +285,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
 
-    """ # noqa: 501
+    """  # noqa: E501
     coords = convert_coordinates(coords)
 
     n_points = coords.n_points

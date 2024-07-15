@@ -34,7 +34,7 @@ def greens_function_plane_wave(
     M : ndarray, complex, shape(n_receiver, n_sources)
         The plane wave propagation matrix
 
-    """ # noqa: 501
+    """  # noqa: E501
     source_points = convert_coordinates(source_points)
     receiver_points = convert_coordinates(receiver_points)
     e_doa = source_points.cartesian / \
@@ -82,7 +82,7 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
     G : ndarray, double
         Green's function
 
-    """ # noqa: 501
+    """  # noqa: E501
     sources = convert_coordinates(sources)
     receivers = convert_coordinates(receivers)
     dist = sspat.distance.cdist(receivers.cartesian.T, sources.cartesian.T)
