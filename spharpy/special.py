@@ -200,7 +200,7 @@ def spherical_harmonic_real(n, m, theta, phi):
     r"""Real valued spherical harmonic function of order n and degree m
     evaluated at the angles theta and phi.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [1]_.
+    the AmbiX phase convention [#]_.
 
     .. math::
 
@@ -210,15 +210,6 @@ def spherical_harmonic_real(n, m, theta, phi):
             \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
         \end{cases}
-
-    References
-    ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1–11, 2011.
-
-
 
     Parameters
     ----------
@@ -235,6 +226,13 @@ def spherical_harmonic_real(n, m, theta, phi):
     -------
     spherical_harmonic : ndarray, double
         The real valued spherial harmonic of order n and degree m
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
 
     """
     # careful here, scipy uses phi as the elevation angle and
@@ -553,7 +551,7 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
 
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     r"""The gradient of the real valued spherical harmonics with respect
-    to the azimuth angle $\phi$.
+    to the azimuth angle $\phi$ [#]_.
 
     Parameters
     ----------
@@ -578,10 +576,10 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
 
     References
     ----------
-    .. [1]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
+            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     """
     m_abs = np.abs(m)

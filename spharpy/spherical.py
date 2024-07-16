@@ -7,7 +7,7 @@ from spharpy._deprecation import convert_coordinates
 def acn2nm(acn):
     r"""
     Calculate the spherical harmonic order n and degree m for a linear
-    coefficient index, according to the Ambisonics Channel Convention [1]_.
+    coefficient index, according to the Ambisonics Channel Convention.
 
     .. math::
 
@@ -16,13 +16,7 @@ def acn2nm(acn):
         m = acn - n^2 -n
 
 
-    References
-    ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1–11, 2011.
-
+    See [#]_ for more details.
 
     Parameters
     ----------
@@ -35,6 +29,13 @@ def acn2nm(acn):
     -------
     acn : integer, ndarray
         Linear index
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
 
     """
     acn = np.asarray(acn, dtype=int)
@@ -51,19 +52,13 @@ def acn2nm(acn):
 def nm2acn(n, m):
     """
     Calculate the linear index coefficient for a spherical harmonic order n
-    and degree m, according to the Ambisonics Channel Convention [1]_.
+    and degree m, according to the Ambisonics Channel Convention.
 
     .. math::
 
         acn = n^2 + n + m
 
-    References
-    ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1–11, 2011.
-
+    See [#]_ for more details.
 
     Parameters
     ----------
@@ -76,6 +71,13 @@ def nm2acn(n, m):
     -------
     acn : integer, ndarray
         Linear index
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
 
     """
     n = np.asarray(n, dtype=int)
@@ -92,19 +94,14 @@ def spherical_harmonic_basis(n_max, coords):
     Calulcates the complex valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [2]_, [3]_.
+    Condon-Shotley phase term :math:`(-1)^m`.
 
     .. math::
 
         Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
         \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
 
-    References
-    ----------
-    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [3]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
-            Springer, 2015.
-
+    See [#]_ and [#]_ for more details.
 
     Parameters
     ----------
@@ -118,6 +115,13 @@ def spherical_harmonic_basis(n_max, coords):
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
+
+    References
+    ----------
+    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
+            Springer, 2015.
+
     """ # noqa: 501
 
     coords = convert_coordinates(coords)
@@ -143,18 +147,8 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     harmonic basis matrix of order N for a set of points given by their
     elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [2]_. This implementation avoids
-    singularities at the poles using identities derived in [5]_.
-
-
-    References
-    ----------
-    .. [2]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [9]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
-            harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
-
+    Condon-Shotley phase term :math:`(-1)^m` [#]_. This implementation avoids
+    singularities at the poles using identities derived in [#]_.
 
     Parameters
     ----------
@@ -171,6 +165,15 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     grad_azimuth : double, ndarray, matrix
         Gradient with regard to the azimuth angle.
 
+
+    References
+    ----------
+    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     """ # noqa: 501
     coords = convert_coordinates(coords)
@@ -200,7 +203,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     Calulcates the real valued spherical harmonic basis matrix of order Nmax
     for a set of points given by their elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [1]_.
+    the AmbiX phase convention [#]_.
 
     .. math::
 
@@ -210,13 +213,6 @@ def spherical_harmonic_basis_real(n_max, coords):
             \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
         \end{cases}
-
-    References
-    ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1–11, 2011.
 
 
     Parameters
@@ -232,6 +228,12 @@ def spherical_harmonic_basis_real(n_max, coords):
     Y : double, ndarray, matrix
         Real valued spherical harmonic basis matrix
 
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
 
     """ # noqa: 501
     coords = convert_coordinates(coords)
@@ -257,20 +259,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     harmonic basis matrix of order N for a set of points given by their
     elevation and azimuth angles.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [1]_. This implementation avoids
-    singularities at the poles using identities derived in [5]_.
-
-
-    References
-    ----------
-    .. [1]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1–11, 2011.
-    .. [9]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
-            harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
+    the AmbiX phase convention [#]_. This implementation avoids
+    singularities at the poles using identities derived in [#]_.
 
     Parameters
     ----------
@@ -284,6 +274,18 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     -------
     Y : double, ndarray, matrix
         Complex spherical harmonic basis matrix
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
+
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     """ # noqa: 501
     coords = convert_coordinates(coords)
@@ -312,7 +314,7 @@ def modal_strength(n_max,
                    kr,
                    arraytype='rigid'):
     r"""
-    Modal strenght function for microphone arrays.
+    Modal strength function for microphone arrays.
 
     .. math::
 
@@ -328,14 +330,8 @@ def modal_strength(n_max,
 
     Notes
     -----
-    This implementation uses the second order Hankel function, see [4]_ for an
+    This implementation uses the second order Hankel function, see [#]_ for an
     overview of the corresponding sign conventions.
-
-    References
-    ----------
-    .. [4]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
-            Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
-
 
     Parameters
     ----------
@@ -351,6 +347,11 @@ def modal_strength(n_max,
     -------
     B : double, ndarray
         Modal strength diagonal matrix
+
+    References
+    ----------
+    .. [#]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+            Time Conventions in Array Processing,” vol. 101, pp. 470-473, 2015.
 
     """
     n_coeff = (n_max+1)**2
@@ -390,8 +391,8 @@ def aperture_vibrating_spherical_cap(
         rad_sphere,
         rad_cap):
     r"""
-    Aperture function for a vibrating cap with radius :math:`r_c` in a rigid
-    sphere with radius :math:`r_s` [5]_, [6]_
+    Aperture  function for a vibrating cap with radius :math:`r_c` in a rigid
+    sphere with radius :math:`r_s`. See [#]_.
 
     .. math::
 
@@ -422,18 +423,19 @@ def aperture_vibrating_spherical_cap(
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
+    Notes
+    -----
+    Eq. (3) in Ref. [#]_ contains an error, here, the power of 2 on pi is
+    omitted on the normalization term.
+
+
     References
     ----------
-    .. [5]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [6]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
+    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [#]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
             Independent Steering for Spherical Loudspeaker Arrays,” IEEE
             Transactions on Audio, Speech, and Language Processing, vol. 19,
             no. 7, pp. 2234-2238, 2011
-
-    Notes
-    -----
-    Eq. (3) in Ref. [6]_ contains an error, here, the power of 2 on pi is
-    omitted on the normalization term.
 
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
@@ -466,17 +468,7 @@ def radiation_from_sphere(
     impedance and the propagation to a arbitrary distance from the sphere.
     The sign and phase conventions result in a positive pressure response for
     a positive cap velocity with the intensity vector pointing away from the
-    source.
-
-    TODO: This function does not have a test yet.
-
-    References
-    ----------
-    .. [7]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [8]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
-            loudspeaker system as multipole source,” in Proceedings of the 33rd
-            DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
-
+    source. See also [#]_ and [#]_.
 
     Parameters
     ----------
@@ -498,6 +490,15 @@ def radiation_from_sphere(
     R : double, ndarray
         Radiation function in diagonal matrix form with shape
         :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`
+
+
+    References
+    ----------
+    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+
+    .. [#]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+            loudspeaker system as multipole source,” in Proceedings of the 33rd
+            DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
 
     """
     n_sh = (n_max+1)**2
