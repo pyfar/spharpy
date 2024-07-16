@@ -49,20 +49,10 @@ def cube_equidistant(n_points):
 
 def hyperinterpolation(n_max):
     """Gives the points of a Hyperinterpolation sampling grid
-    after Sloan and Womersley [#]_.
+    after Sloan and Womersley.
 
-    Notes
-    -----
     This implementation uses precalculated sets of points which are downloaded
-    from Womersley's homepage [#]_.
-
-    References
-    ----------
-    .. [#]  I. H. Sloan and R. S. Womersley, “Extremal Systems of Points and
-            Numerical Integration on the Sphere,” Advances in Computational
-            Mathematics, vol. 21, no. 1/2, pp. 107-125, 2004.
-
-    .. [#]  http://web.maths.unsw.edu.au/~rsw/Sphere/Extremal/New/index.html
+    from Womersley's homepage.
 
     Parameters
     ----------
@@ -73,6 +63,8 @@ def hyperinterpolation(n_max):
     -------
     sampling: SamplingSphere
         SamplingSphere object containing all sampling points
+
+
     """
     n_sh = (n_max+1)**2
     filename = "md%03d.%05d" % (n_max, n_sh)
@@ -100,10 +92,10 @@ def hyperinterpolation(n_max):
 
 
 def spherical_t_design(n_max, criterion='const_energy'):
-    r"""Return the sampling positions for a spherical t-design [#]_ .
+    r"""Return the sampling positions for a spherical t-design  .
     For a spherical harmonic order N, a t-Design of degree `:math: t=2N` for
     constant energy or `:math: t=2N+1` additionally ensuring a constant angular
-    spread of energy is required [#]_. For a given degree t
+    spread of energy is required . For a given degree t
 
     .. math::
 
@@ -129,21 +121,7 @@ def spherical_t_design(n_max, criterion='const_energy'):
     Notes
     -----
     This function downloads a pre-calculated set of points from
-    Rob Womersley's homepage [#]_ .
-
-    References
-    ----------
-
-    .. [#]  C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
-            Spherical Designs for Integration and Interpolation on the
-            Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
-            pp. 2135-2157, Jan. 2010.
-
-    .. [#]  F. Zotter, M. Frank, and A. Sontacchi, “The Virtual T-Design
-            Ambisonics-Rig Using VBAP,” in Proceedings on the Congress on
-            Sound and Vibration, 2010.
-
-    .. [#]  http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html
+    Rob Womersley's homepage .
 
     """
     if criterion == 'const_energy':
@@ -256,8 +234,8 @@ def icosahedron():
 def equiangular(n_max):
     """Generate an equiangular sampling of the sphere.
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     n_max : integer
         Spherical harmonic order of the sampling
 
@@ -325,12 +303,7 @@ def gaussian(n_max):
 
 def eigenmike_em32():
     """Microphone positions of the Eigenmike em32 by mhacoustics according to
-    the Eigenstudio user manual on the homepage [#]_.
-
-    References
-    ----------
-    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
-
+    the Eigenstudio user manual on the homepage.
 
     Returns
     -------
@@ -388,7 +361,7 @@ def icosahedron_ke4():
 
 
 def equalarea(n_max, condition_num=2.5, n_points=None):
-    """Sampling based on partitioning into faces with equal area [#]_.
+    """Sampling based on partitioning into faces with equal area .
 
     Parameters
     ----------
@@ -405,11 +378,6 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
-    References
-    ----------
-    .. [#]  P. Leopardi, “A partition of the unit sphere into regions of equal
-            area and small diameter,” Electronic Transactions on Numerical
-            Analysis, vol. 25, no. 12, pp. 309-327, 2006.
 
     """
     if not n_points:
@@ -432,7 +400,7 @@ def equalarea(n_max, condition_num=2.5, n_points=None):
 
 
 def spiral_points(n_max, condition_num=2.5, n_points=None):
-    """Sampling based on a spiral distribution of points on a sphere [#]_.
+    """Sampling based on a spiral distribution of points on a sphere.
 
     Parameters
     ----------
@@ -448,13 +416,6 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
-
-    References
-    ----------
-
-    .. [#]  E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
-            Energy on the Sphere,” Mathematical Research Letters, vol. 1,
-            no. 6, pp. 647-662, 1994.
 
     """
     if n_points is None:
