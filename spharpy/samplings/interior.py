@@ -28,11 +28,9 @@ def interior_stabilization_points(kr_max, resolution_factor=1):
 
     References
     ----------
-
     .. [#]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial
             microphone arrays for sound field interpolation", IEEE Journal of
             Selected Topics in Signal Processing
-
     .. [#]  https://gilleschardon.fr/jstsp_array/
 
     """

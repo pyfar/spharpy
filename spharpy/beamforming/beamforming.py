@@ -123,7 +123,7 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
 
     Returns
     -------
-    weigths : ndarray, double
+    weights : ndarray, double
         An array containing the weight coefficients
 
     Note

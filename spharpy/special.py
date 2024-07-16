@@ -211,15 +211,6 @@ def spherical_harmonic_real(n, m, theta, phi):
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
         \end{cases}
 
-    References
-    ----------
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1-11, 2011.
-
-
-
     Parameters
     ----------
     n : unsigned int
@@ -235,6 +226,13 @@ def spherical_harmonic_real(n, m, theta, phi):
     -------
     spherical_harmonic : ndarray, double
         The real valued spherial harmonic of order n and degree m
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
 
     """
     # careful here, scipy uses phi as the elevation angle and
