@@ -105,9 +105,6 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
     sh_kind: str
         Use real or complex valued SH bases ``'real'``, ``'complex'``
         default is ``'real'``
-    domain: str
-        Time-frequency domain on which the SH transform is computed
-        default is ``'time'``
     axis: integer
         Axis along which the SH transform is computed
     tikhonov_eps: bool, float
@@ -140,19 +137,18 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
 
     #  coordinates = convert_coordinates(coordinates)
 
-    if not signal.cshape[axis] == coordinates.n_points:
-        if coordinates.n_points not in signal.cshape:
+    if not signal.cshape[axis] == coordinates.csize:
+        if coordinates.csize not in signal.cshape:
             raise ValueError("Signal shape does not match "
                              "number of coordinates.")
         else:
-            axis = signal.cshape.index(coordinates.n_points)
+            axis = signal.cshape.index(coordinates.csize)
             warnings.warn(f"Compute SHT along axis={axis}.", UserWarning)
 
-    spherical_harmonics = SphericalHarmonics(coordinates,
-                                             basis_type=basis_type,
-                                             channel_convention='acn',
-                                             normalization='n3d',
-                                             inv_transform_type=inv_type)
+    spherical_harmonics = SphericalHarmonics(
+        n_max=n_max, coords=coordinates, basis_type=basis_type,
+        channel_convention=channel_convention,
+        normalization=normalization, inverse_transform=inv_type)
 
     if domain == "time":
         data = signal.time
@@ -165,10 +161,16 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
     Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
     data_nm = np.tensordot(Y_inv, data, [1, axis])
 
+    is_complex = signal.complex
+    if domain == "time" and basis_type == "complex":
+        is_complex = True
+
     return AmbisonicsSignal(data=data_nm, domain=domain,
                             spherical_harmonics=spherical_harmonics,
                             sampling_rate=signal.sampling_rate,
-                            fft_norm=signal.fft_norm, comment=signal.comment)
+                            fft_norm=signal.fft_norm,
+                            is_complex=is_complex,
+                            comment=signal.comment)
 
 
 def isht(ambisonics_signal, coordinates):
