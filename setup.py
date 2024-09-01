@@ -18,7 +18,7 @@ requirements = [
     'scipy',
     'urllib3',
     'matplotlib>=3.3.0',
-    'pyfar<0.8.0',
+    'pyfar>=0.6.0,<0.8.0',
 ]
 
 setup_requirements = [
@@ -57,6 +57,7 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
     test_suite='tests',
     tests_require=test_requirements,

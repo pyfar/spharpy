@@ -87,6 +87,32 @@ jobs:
             pip install -e .
             pytest --nbmake examples/*.ipynb
 
+  test_documentation_build:
+    parameters:
+      version:
+        description: "version tag"
+        default: "latest"
+        type: string
+    executor:
+      name: python-docker
+      version: <<parameters.version>>
+
+    steps:
+      - checkout
+      - run:
+          name: Install System Dependencies
+          command: sudo apt-get update && sudo apt-get install -y texlive-latex-extra dvipng pandoc
+      - python/install-packages:
+          pkg-manager: pip
+          # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
+          pip-dependency-file: requirements_dev.txt
+      - run:
+          name: Sphinx
+          command: |
+            pip install -e .
+            cd docs/
+            make html SPHINXOPTS="-W"
+
   test_pypi_publish:
     parameters:
       version:
@@ -123,6 +149,7 @@ workflows:
                 - "3.9"
                 - "3.10"
                 - "3.11"
+                - "3.12"
       - flake:
           matrix:
             parameters:
@@ -138,6 +165,15 @@ workflows:
                 - "3.9"
           requires:
             - build_and_test
+
+      - test_documentation_build:
+          matrix:
+            parameters:
+              version:
+                - "3.9"
+          requires:
+            - build_and_test
+
 
   test_and_publish:
     # Test and publish on new git version tags
@@ -151,6 +187,7 @@ workflows:
                 - "3.9"
                 - "3.10"
                 - "3.11"
+                - "3.12"
           filters:
             branches:
               ignore: /.*/
@@ -173,6 +210,20 @@ workflows:
               only: /^v[0-9]+(\.[0-9]+)*$/
 
       - test_examples:
+          matrix:
+            parameters:
+              version:
+                - "3.9"
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              ignore: /.*/
+            # only act on version tags
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*$/
+
+      - test_documentation_build:
           matrix:
             parameters:
               version:
@@ -195,6 +246,7 @@ workflows:
             - build_and_test
             - flake
             - test_examples
+            - test_documentation_build
           filters:
             branches:
               ignore: /.*/
