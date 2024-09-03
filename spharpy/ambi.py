@@ -67,6 +67,10 @@ class AmbisonicsSignal(Signal):
             raise ValueError("spherical_harmonics has be of type "
                              "`SphericalHarmonics`")
 
+        self.spherical_harmonics = spherical_harmonics
+        if self.spherical_harmonics.basis_type == 'complex' and not is_complex:
+            raise ValueError('Data are real valued but spherical harmonics not')
+
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)
@@ -90,7 +94,7 @@ class AmbisonicsSignal(Signal):
 
 def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
         channel_convention='acn', normalization='n3d',
-        inv_type='pseudo_inverse', tikhonov_eps=0):
+        inv_type='pseudo_inverse'):
     """Compute the spherical harmonics transform at a certain order N
 
     Parameters
@@ -107,14 +111,6 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
         default is ``'real'``
     axis: integer
         Axis along which the SH transform is computed
-    tikhonov_eps: bool, float
-        Specifiy if least-squares solution with tikhonov regularization should
-        be applied. If tikhonov_eps==true, default epsilon of 0.0001 is
-        applied. If tikhonov_eps==false, no tikhonov regularization. Otherwise
-        tikhonov_eps specifeis the epsilon. default is 0
-    use_weights: bool
-        If false, least-squares solution is applied else conj with weigths.
-        default false.
 
     Returns
     ----------
@@ -161,15 +157,10 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
     Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
     data_nm = np.tensordot(Y_inv, data, [1, axis])
 
-    is_complex = signal.complex
-    if domain == "time" and basis_type == "complex":
-        is_complex = True
-
     return AmbisonicsSignal(data=data_nm, domain=domain,
                             spherical_harmonics=spherical_harmonics,
                             sampling_rate=signal.sampling_rate,
                             fft_norm=signal.fft_norm,
-                            is_complex=is_complex,
                             comment=signal.comment)
 
 
@@ -185,12 +176,15 @@ def isht(ambisonics_signal, coordinates):
                  <pyfar:classes/pyfar.coordinates>`
         Coordinates for which the inverse SH transform is computed
     """
+    # get spherical harmonics basis functions of same type as the the
+    # ambisonics signals but for the passed coordinates
     _spherical_harmonics = ambisonics_signal.spherical_harmonics
     spherical_harmonics = SphericalHarmonics(
+        _spherical_harmonics.n_max,
         coordinates,
         basis_type=_spherical_harmonics.basis_type,
         channel_convention=_spherical_harmonics.channel_convention,
-        inv_transform_type=_spherical_harmonics.inv_transform_type,
+        inverse_transform=_spherical_harmonics.inverse_transform,
         normalization=_spherical_harmonics.normalization)
 
     if ambisonics_signal.domain == "time":
@@ -198,6 +192,7 @@ def isht(ambisonics_signal, coordinates):
     else:
         data_nm = ambisonics_signal.freq
 
+    # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, data_nm, [1, 0])
 
     return Signal(data, ambisonics_signal.sampling_rate,

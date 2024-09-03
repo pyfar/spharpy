@@ -3,6 +3,30 @@ from pytest import raises, warns, mark
 from spharpy.ambi import AmbisonicsSignal, sht, isht
 import numpy as np
 import pyfar as pf
+from spharpy import samplings
+from spharpy.spherical import SphericalHarmonics
+
+
+def test_ambisonics_signal_init():
+    """Test to init Signal without optional parameters."""
+
+    coords = samplings.equiangular(3)
+    sh = SphericalHarmonics(n_max=3, coords=coords)
+    signal = AmbisonicsSignal(np.array([1., 2., 3.]), 44100, sh)
+    assert isinstance(signal, AmbisonicsSignal)
+
+
+def test_ambisonics_signal_init_default_parameter():
+    # using all defaults
+    coords = samplings.equiangular(3)
+    sh = SphericalHarmonics(n_max=3, coords=coords)
+    signal = AmbisonicsSignal(np.array([1., 2., 3.], dtype=complex),
+                              44100, sh, is_complex=True)
+
+    assert signal.domain == 'time'
+    assert signal.fft_norm == 'none'
+    assert signal.comment == ''
+    assert signal.complex
 
 
 def test_sht_assert_num_channels():
@@ -44,19 +68,30 @@ def test_sht_invalid_domain():
 
 
 @mark.parametrize("n_max", [3, 12, 44])
-@mark.parametrize("sh_kind", ["real"])
-@mark.parametrize("tkh_eps", [0, 1e-12])
-@mark.parametrize("use_weights", [False, True])
-def test_back_and_forth(n_max, sh_kind, tkh_eps, use_weights):
-    coords = sph.samplings.equiangular(44)
+@mark.parametrize("basis_type", ["real", "complex"])
+def test_back_and_forth(n_max, basis_type):
+
+    tmp = samplings.equiangular(50)
+    coords = pf.Coordinates.from_spherical_colatitude(
+        azimuth=tmp.azimuth, colatitude=tmp.colatitude,
+        radius=np.ones_like(tmp.azimuth))
+
+    sh = SphericalHarmonics(n_max=n_max, coords=coords, basis_type=basis_type)
+
+    if basis_type == 'real':
+        data = np.ones(((n_max+1) ** 2, 16))
+        is_complex = False
+    else:
+        data = np.ones(((n_max+1) ** 2, 16), dtype=complex)
+        is_complex = True
+
     # generate unit amplitude ambisonics signal
-    a_nm = AmbisonicsSignal(np.ones(((n_max+1) ** 2, 16)),
-                            sh_kind=sh_kind, sampling_rate=48000)
+    a_nm = AmbisonicsSignal(data,
+                            spherical_harmonics=sh,
+                            sampling_rate=48000,
+                            is_complex=is_complex)
+
     a = isht(a_nm, coords)
-    a_eval_nm = sht(a, coords, n_max=n_max, sh_kind=sh_kind,
-                    tikhonov_eps=tkh_eps, use_weights=use_weights)
+    a_eval_nm = sht(a, coords, n_max=n_max, basis_type=basis_type)
 
     npt.assert_allclose(a_nm.time, a_eval_nm.time, rtol=1e-8)
-
-
-test_sht_assert_num_channels()
