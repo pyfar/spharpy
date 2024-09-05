@@ -36,8 +36,6 @@ class AmbisonicsSignal(Signal):
             frequencies between 0 Hz and half the sampling rate.
         sampling_rate : double
             Sampling rate in Hz
-        sh_kind : str
-            Real or complex valued SH bases ``'real'``, ``'complex'``
         n_samples : int, optional
             Number of samples of the time signal. Required if domain is
             ``'freq'``. The default is ``None``, which assumes an even number
@@ -50,9 +48,6 @@ class AmbisonicsSignal(Signal):
             or ``'psd'``. See :py:func:`~pyfar.dsp.fft.normalization` and [#]_
             for more information. The default is ``'none'``, which is typically
             used for energy signals, such as impulse responses.
-        channel_order: str, optional
-            The order in which the ambisonics channels are arranged.
-            The default is ``'acn'``
         comment : str
             A comment related to `data`. The default is ``None``.
 
@@ -69,7 +64,8 @@ class AmbisonicsSignal(Signal):
 
         self.spherical_harmonics = spherical_harmonics
         if self.spherical_harmonics.basis_type == 'complex' and not is_complex:
-            raise ValueError('Data are real valued but spherical harmonics not')
+            raise ValueError('Data are real-valued while '
+                             'spherical harmonics bases are complex-valued.')
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -180,7 +176,7 @@ def isht(ambisonics_signal, coordinates):
     # ambisonics signals but for the passed coordinates
     _spherical_harmonics = ambisonics_signal.spherical_harmonics
     spherical_harmonics = SphericalHarmonics(
-        _spherical_harmonics.n_max,
+        ambisonics_signal.N,
         coordinates,
         basis_type=_spherical_harmonics.basis_type,
         channel_convention=_spherical_harmonics.channel_convention,
