@@ -345,7 +345,7 @@ def rotation_z_axis(n_max, angle):
     """
 
     acn = np.arange(0, (n_max+1)**2)
-    m = spharpy.spherical.acn2nm(acn)[1]
+    m = spharpy.spherical.acn_to_nm(acn)[1]
     rotation_phi = np.exp(-1j*angle*m)
 
     return np.diag(rotation_phi)
@@ -386,7 +386,7 @@ def rotation_z_axis_real(n_max, angle):
 
     """
     acn = np.arange(0, (n_max + 1) ** 2)
-    n, m = spharpy.spherical.acn2nm(acn)
+    n, m = spharpy.spherical.acn_to_nm(acn)
     acn_reverse_degree = n ** 2 + n - m
 
     rotation_phi = np.zeros(((n_max + 1) ** 2, (n_max + 1) ** 2))
@@ -458,9 +458,9 @@ def wigner_d_rotation(n_max, alpha, beta, gamma):
     R = np.zeros((n_sh, n_sh), dtype=complex)
 
     for row in np.arange(0, (n_max+1)**2):
-        n_dash, m_dash = spharpy.spherical.acn2nm(row)
+        n_dash, m_dash = spharpy.spherical.acn_to_nm(row)
         for column in np.arange(0, (n_max+1)**2):
-            n, m = spharpy.spherical.acn2nm(column)
+            n, m = spharpy.spherical.acn_to_nm(column)
             if n == n_dash:
                 rot_alpha = np.exp(-1j*m_dash*alpha)
                 rot_beta = wigner_d_function(n, m_dash, m, beta)
@@ -515,8 +515,8 @@ def wigner_d_rotation_real(n_max, alpha, beta, gamma):
 
     for row_acn in np.arange(0, (n_max+1)**2):
         for col_acn in np.arange(0, (n_max+1)**2):
-            n, m = spharpy.spherical.acn2nm(col_acn)
-            n_dash, m_dash = spharpy.spherical.acn2nm(row_acn)
+            n, m = spharpy.spherical.acn_to_nm(col_acn)
+            n_dash, m_dash = spharpy.spherical.acn_to_nm(row_acn)
             if n == n_dash:
                 # minus beta opposite rotation direction
                 d_l_1 = wigner_d_function(n, np.abs(m_dash), np.abs(m), -beta)
