@@ -80,8 +80,6 @@ def scatter(coordinates, ax=None):
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
 
-    plt.show()
-
 
 def _triangulation_sphere(sampling, data):
     """Triangulation for data points sampled on a spherical surface.
@@ -230,7 +228,6 @@ def pcolor_sphere(
         data,
         cmap=None,
         colorbar=True,
-        show=True,
         phase=False,
         ax=None,
         *args,
@@ -258,8 +255,6 @@ def pcolor_sphere(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
-    show : boolean, optional
-        Whether to show the figure or not
 
     """ # noqa: 501
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
@@ -279,7 +274,7 @@ def pcolor_sphere(
     else:
         itype = 'amplitude'
         if cmap is None:
-            cmap = cm.viridis
+            cmap = plt.get_cmap('viridis')
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
@@ -305,9 +300,6 @@ def pcolor_sphere(
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
 
-    if show:
-        plt.show()
-
     return plot
 
 
@@ -316,7 +308,6 @@ def balloon_wireframe(
         data,
         cmap=None,
         phase=False,
-        show=True,
         colorbar=True,
         ax=None):
     """Plot data on a sphere defined by the coordinate angles
@@ -373,7 +364,7 @@ def balloon_wireframe(
     else:
         itype = 'amplitude'
         if cmap is None:
-            cmap = cm.viridis
+            cmap = plt.get_cmap('viridis')
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
@@ -407,9 +398,6 @@ def balloon_wireframe(
         np.ptp(xyz[1]),
         np.ptp(xyz[2])])
 
-    if show:
-        plt.show()
-
     plot.set_facecolor([0.9, 0.9, 0.9, 0.9])
 
     return plot
@@ -420,7 +408,6 @@ def balloon(
         data,
         cmap=None,
         phase=False,
-        show=True,
         colorbar=True,
         ax=None,
         *args,
@@ -480,7 +467,7 @@ def balloon(
     else:
         itype = 'amplitude'
         if cmap is None:
-            cmap = cm.viridis
+            cmap = plt.get_cmap('viridis')
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
@@ -507,9 +494,6 @@ def balloon(
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-
-    if show:
-        plt.show()
 
     return plot
 
@@ -634,7 +618,6 @@ def pcolor_map(
         projection='mollweide',
         limits=None,
         cmap=plt.get_cmap('viridis'),
-        show=True,
         refine=False,
         ax=None,
         **kwargs):
@@ -713,8 +696,6 @@ def pcolor_map(
     plt.grid(True)
     cb = fig.colorbar(cf, ax=ax, extend=extend)
     cb.set_label('Amplitude')
-    if show:
-        plt.show()
 
     return cf
 
@@ -724,9 +705,8 @@ def contour_map(
         data,
         projection='mollweide',
         limits=None,
-        cmap=cm.viridis,
+        cmap=plt.get_cmap('viridis'),
         colorbar=True,
-        show=True,
         levels=None,
         ax=None):
     """
@@ -808,14 +788,13 @@ def contour_map(
     if colorbar:
         cb = fig.colorbar(cf, ax=ax, ticks=levels)
         cb.set_label('Amplitude')
-    if show:
-        plt.show()
 
     return cf
 
 
 def contour(
-        coordinates, data, limits=None, cmap=cm.viridis, show=True, ax=None):
+        coordinates, data, limits=None, cmap=plt.get_cmap('viridis'),
+        ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
@@ -861,8 +840,6 @@ def contour(
     plt.grid(True)
     cb = fig.colorbar(cf, ax=ax)
     cb.set_label('Amplitude')
-    if show:
-        plt.show()
 
     return cf
 

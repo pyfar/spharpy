@@ -18,9 +18,9 @@ def test_balloon_plot(icosahedron, make_coordinates, implementation):
     coords = make_coordinates.create_coordinates(
         implementation, rad, theta, phi)
     data = np.cos(phi)*np.sin(theta)
-    spharpy.plot.balloon(coords, data, show=False)
+    spharpy.plot.balloon(coords, data)
 
-    spharpy.plot.balloon(coords, data, phase=True, show=False)
+    spharpy.plot.balloon(coords, data, phase=True)
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
@@ -30,7 +30,7 @@ def test_contour_plot(icosahedron, make_coordinates, implementation):
         implementation, rad, theta, phi)
     data = np.cos(phi)*np.sin(theta)
 
-    spharpy.plot.contour(coords, np.abs(data), show=False)
+    spharpy.plot.contour(coords, np.abs(data))
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
