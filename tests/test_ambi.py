@@ -10,23 +10,12 @@ from spharpy.spherical import SphericalHarmonics
 def test_ambisonics_signal_init():
     """Test to init Signal without optional parameters."""
 
-    coords = samplings.equiangular(3)
-    sh = SphericalHarmonics(n_max=3, coords=coords)
-    signal = AmbisonicsSignal(np.array([1., 2., 3.]), 44100, sh)
+    signal = AmbisonicsSignal(np.array([1., 2., 3.]), 44100,
+                              n_max=1, basis_type='real',
+                              channel_convention='acn',
+                              condon_shortley=True,
+                              normalization='n3d')
     assert isinstance(signal, AmbisonicsSignal)
-
-
-def test_ambisonics_signal_init_default_parameter():
-    # using all defaults
-    coords = samplings.equiangular(3)
-    sh = SphericalHarmonics(n_max=3, coords=coords)
-    signal = AmbisonicsSignal(np.array([1., 2., 3.], dtype=complex),
-                              44100, sh, is_complex=True)
-
-    assert signal.domain == 'time'
-    assert signal.fft_norm == 'none'
-    assert signal.comment == ''
-    assert signal.complex
 
 
 def test_sht_assert_num_channels():
@@ -76,8 +65,6 @@ def test_back_and_forth(n_max, basis_type):
         azimuth=tmp.azimuth, colatitude=tmp.colatitude,
         radius=np.ones_like(tmp.azimuth))
 
-    sh = SphericalHarmonics(n_max=n_max, coords=coords, basis_type=basis_type)
-
     if basis_type == 'real':
         data = np.ones(((n_max+1) ** 2, 16))
         is_complex = False
@@ -87,7 +74,10 @@ def test_back_and_forth(n_max, basis_type):
 
     # generate unit amplitude ambisonics signal
     a_nm = AmbisonicsSignal(data,
-                            spherical_harmonics=sh,
+                            n_max=1, basis_type='real',
+                            channel_convention='acn',
+                            condon_shortley=True,
+                            normalization='n3d',
                             sampling_rate=48000,
                             is_complex=is_complex)
 

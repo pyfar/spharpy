@@ -17,7 +17,11 @@ class AmbisonicsSignal(Signal):
             self,
             data,
             sampling_rate,
-            spherical_harmonics,
+            n_max,
+            basis_type,
+            normalization,
+            channel_convention,
+            condon_shortley,
             n_samples=None,
             domain='time',
             fft_norm='none',
@@ -36,6 +40,22 @@ class AmbisonicsSignal(Signal):
             frequencies between 0 Hz and half the sampling rate.
         sampling_rate : double
             Sampling rate in Hz
+        n_max : int
+            Maximum spherical harmonic order
+        basis_type : str, optional
+            Type of spherical harmonic basis, either ``'complex'`` or
+            ``'real'``. The default is ``'complex'``.
+        normalization : str, optional
+            Normalization convention, either ``'n3d'``, ``'maxN'`` or
+            ``'sn3d'``. The default is ``'n3d'``.
+            (maxN is only supported up to 3rd order)
+        channel_convention : str, optional
+            Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+            The default is ``'acn'``.
+            (FuMa is only supported up to 3rd order)
+        condon_shortley : bool, optional
+            Whether to include the Condon-Shortley phase term.
+            The default is True.
         n_samples : int, optional
             Number of samples of the time signal. Required if domain is
             ``'freq'``. The default is ``None``, which assumes an even number
@@ -58,12 +78,14 @@ class AmbisonicsSignal(Signal):
 
         """
 
-        if not type(spherical_harmonics) is SphericalHarmonics:
-            raise ValueError("spherical_harmonics has be of type "
-                             "`SphericalHarmonics`")
+        self._n_max = n_max
+        self._basis_type = basis_type
+        self._condon_shortley = condon_shortley
 
-        self.spherical_harmonics = spherical_harmonics
-        if self.spherical_harmonics.basis_type == 'complex' and not is_complex:
+        self.normalization = normalization
+        self.channel_convention = channel_convention
+
+        if self.basis_type == 'complex' and not is_complex:
             raise ValueError('Data are real-valued while '
                              'spherical harmonics bases are complex-valued.')
 
@@ -72,25 +94,76 @@ class AmbisonicsSignal(Signal):
                         comment=comment, is_complex=is_complex)
 
     @property
-    def spherical_harmonics(self):
-        return self._spherical_harmonics
-
-    @spherical_harmonics.setter
-    def spherical_harmonics(self, value):
-        self._spherical_harmonics = value
+    def n_max(self):
+        return self.n_max
 
     @property
-    def N(self):
-        return self.spherical_harmonics.n_max
+    def basis_type(self):
+        return self._basis_type
+
+    @property
+    def normalization(self):
+        return self._normalization
+
+    @normalization.setter
+    def normalization(self, value):
+        if self.normalization is not value:
+            self._recalculate_normalization(self, value)
+
+        self._normalization = value
 
     @property
     def channel_convention(self):
-        return self.spherical_harmonics.channel_convention
+        return self._channel_convention
+
+    @channel_convention.setter
+    def channel_convention(self, value):
+        if self.channel_convention is not value:
+            self._recalculate_channel_convention(value)
+
+    @property
+    def condon_shortley(self):
+        return self._condon_shortley
+
+    def _recalculate_normalization(self, normalization):
+        n_coeff = (self.n_max + 1) ** 2
+
+        for acn in range(n_coeff):
+            if self.channel_convention == "fuma":
+                order, degree = SphericalHarmonics.fuma_to_nm(acn)
+            else:
+                order, degree = SphericalHarmonics.acn_to_nm(acn)
+
+            if self._normalization == 'n3d':
+                if normalization == "sn3d":
+                    self._data[:, acn, ...] *= \
+                        SphericalHarmonics.n3d_to_sn3d_norm(degree, order)
+                elif normalization == "maxN":
+                    self._data[:, acn, ...] *= \
+                        SphericalHarmonics.n3d_to_maxn(acn)
+            if self._normalization == 'sn3d':
+                if normalization == 'n3d':
+                    self._data[:, acn, :] *= \
+                        SphericalHarmonics.sn3d_to_n3d_norm(degree, order)
+                elif normalization == "maxN":
+                    self._data[:, acn, :] *= \
+                        SphericalHarmonics.sn3d_to_maxN(acn)
+            if self._normalization == 'maxN':
+                if normalization == 'n3d':
+                    self._data[:, acn, :] *= \
+                        SphericalHarmonics.maxN_to_n3d(acn)
+                elif normalization == "sn3d":
+                    self._data[:, acn, :] *= \
+                        SphericalHarmonics.maxN_to_sn3d(acn)
+
+
+    def _recalculate_channel_convention(self, value):
+        pass
 
 
 def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
-        channel_convention='acn', normalization='n3d',
-        inv_type='pseudo_inverse'):
+        channel_convention='acn', normalization='n3d', condon_shortley=True,
+        inverse_transform='pseudo_inverse'):
     """Compute the spherical harmonics transform at a certain order N
 
     Parameters
@@ -138,9 +211,10 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
             warnings.warn(f"Compute SHT along axis={axis}.", UserWarning)
 
     spherical_harmonics = SphericalHarmonics(
-        n_max=n_max, coords=coordinates, basis_type=basis_type,
+        n_max=n_max, coordinates=coordinates, basis_type=basis_type,
         channel_convention=channel_convention,
-        normalization=normalization, inverse_transform=inv_type)
+        normalization=normalization, inverse_transform=inverse_transform,
+        condon_shortley=condon_shortley)
 
     if domain == "time":
         data = signal.time
@@ -153,8 +227,10 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
     Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
     data_nm = np.tensordot(Y_inv, data, [1, axis])
 
-    return AmbisonicsSignal(data=data_nm, domain=domain,
-                            spherical_harmonics=spherical_harmonics,
+    return AmbisonicsSignal(data=data_nm, domain=domain, n_max=n_max,
+                            basis_type=basis_type, normalization=normalization,
+                            channel_convention=channel_convention,
+                            condon_shortley=condon_shortley,
                             sampling_rate=signal.sampling_rate,
                             fft_norm=signal.fft_norm,
                             comment=signal.comment)
@@ -174,14 +250,13 @@ def isht(ambisonics_signal, coordinates):
     """
     # get spherical harmonics basis functions of same type as the the
     # ambisonics signals but for the passed coordinates
-    _spherical_harmonics = ambisonics_signal.spherical_harmonics
     spherical_harmonics = SphericalHarmonics(
-        ambisonics_signal.N,
-        coordinates,
-        basis_type=_spherical_harmonics.basis_type,
-        channel_convention=_spherical_harmonics.channel_convention,
-        inverse_transform=_spherical_harmonics.inverse_transform,
-        normalization=_spherical_harmonics.normalization)
+        ambisonics_signal.n_max,
+        coordinates=coordinates,
+        basis_type=ambisonics_signal.basis_type,
+        channel_convention=ambisonics_signal.channel_convention,
+        normalization=ambisonics_signal.normalization,
+        condon_shortley=ambisonics_signal.condon_shortley)
 
     if ambisonics_signal.domain == "time":
         data_nm = ambisonics_signal.time
