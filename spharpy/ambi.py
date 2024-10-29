@@ -71,23 +71,27 @@ class AmbisonicsSignal(Signal):
         comment : str
             A comment related to `data`. The default is ``None``.
 
-        To discuss: ambisonics channels always on first dimension?
         References
         ----------
         ..
 
         """
+        # TODO: discuss if ambisonics channels always on first dimension?
+        if not data.shape[1] >= (n_max + 1) ** 2:
+            raise ValueError('Data has to few coefficients '
+                             'for N = {n_max}.')
 
         self._n_max = n_max
+
+        if basis_type == 'complex' and not is_complex:
+            raise ValueError('Data are real-valued while '
+                             'spherical harmonics bases are complex-valued.')
+
         self._basis_type = basis_type
         self._condon_shortley = condon_shortley
 
         self.normalization = normalization
         self.channel_convention = channel_convention
-
-        if self.basis_type == 'complex' and not is_complex:
-            raise ValueError('Data are real-valued while '
-                             'spherical harmonics bases are complex-valued.')
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -155,7 +159,6 @@ class AmbisonicsSignal(Signal):
                 elif normalization == "sn3d":
                     self._data[:, acn, :] *= \
                         SphericalHarmonics.maxN_to_sn3d(acn)
-
 
     def _recalculate_channel_convention(self, value):
         pass
