@@ -1,6 +1,6 @@
 from pyfar import Signal
 import numpy as np
-from spharpy.spherical import SphericalHarmonics
+from spharpy.spherical import SphericalHarmonics, n3d_to_maxn, n3d_to_sn3d_norm
 import warnings
 
 
@@ -129,7 +129,7 @@ class AmbisonicsSignal(Signal):
     def condon_shortley(self):
         return self._condon_shortley
 
-    def _recalculate_normalization(self, normalization):
+    def _renormalize(self, normalization):
         n_coeff = (self.n_max + 1) ** 2
 
         for acn in range(n_coeff):
@@ -160,7 +160,7 @@ class AmbisonicsSignal(Signal):
                     self._data[:, acn, :] *= \
                         SphericalHarmonics.maxN_to_sn3d(acn)
 
-    def _recalculate_channel_convention(self, value):
+    def _change_channel_convention(self, value):
         pass
 
 
