@@ -1,10 +1,9 @@
 from pyfar import Signal
-import numpy as np
-from spharpy.spherical import SphericalHarmonics, n3d_to_maxn, n3d_to_sn3d_norm
-import warnings
+from spharpy.spherical import n3d_to_maxn, n3d_to_sn3d_norm
+from spharpy.spherical import fuma_to_nm, acn_to_nm
 
 
-class AmbisonicsSignal(Signal):
+class SphericalHarmonicSignal(Signal):
     """Class for ambisonics signals.
 
     Objects of this class contain data which is directly convertible between
@@ -21,13 +20,13 @@ class AmbisonicsSignal(Signal):
             basis_type,
             normalization,
             channel_convention,
-            condon_shortley,
+            phase_convention,
             n_samples=None,
             domain='time',
             fft_norm='none',
             comment="",
             is_complex=False):
-        """Create Ambisonicssignal with data, and sampling rate.
+        """Create SphericalHarmonicSignal with data, and sampling rate.
 
         Parameters
         ----------
@@ -88,7 +87,7 @@ class AmbisonicsSignal(Signal):
                              'spherical harmonics bases are complex-valued.')
 
         self._basis_type = basis_type
-        self._condon_shortley = condon_shortley
+        self._phase_convention = phase_convention
 
         self.normalization = normalization
         self.channel_convention = channel_convention
@@ -126,39 +125,39 @@ class AmbisonicsSignal(Signal):
             self._recalculate_channel_convention(value)
 
     @property
-    def condon_shortley(self):
-        return self._condon_shortley
+    def phase_convention(self):
+        return self._phase_convention
 
     def _renormalize(self, normalization):
         n_coeff = (self.n_max + 1) ** 2
 
         for acn in range(n_coeff):
             if self.channel_convention == "fuma":
-                order, degree = SphericalHarmonics.fuma_to_nm(acn)
+                order, degree = fuma_to_nm(acn)
             else:
-                order, degree = SphericalHarmonics.acn_to_nm(acn)
+                order, degree = acn_to_nm(acn)
 
             if self._normalization == 'n3d':
                 if normalization == "sn3d":
                     self._data[:, acn, ...] *= \
-                        SphericalHarmonics.n3d_to_sn3d_norm(degree, order)
+                        n3d_to_sn3d_norm(degree, order)
                 elif normalization == "maxN":
                     self._data[:, acn, ...] *= \
-                        SphericalHarmonics.n3d_to_maxn(acn)
+                        n3d_to_maxn(acn)
             if self._normalization == 'sn3d':
                 if normalization == 'n3d':
                     self._data[:, acn, :] *= \
-                        SphericalHarmonics.sn3d_to_n3d_norm(degree, order)
+                        sn3d_to_n3d_norm(degree, order)
                 elif normalization == "maxN":
                     self._data[:, acn, :] *= \
-                        SphericalHarmonics.sn3d_to_maxN(acn)
+                        sn3d_to_maxN(acn)
             if self._normalization == 'maxN':
                 if normalization == 'n3d':
                     self._data[:, acn, :] *= \
-                        SphericalHarmonics.maxN_to_n3d(acn)
+                        maxN_to_n3d(acn)
                 elif normalization == "sn3d":
                     self._data[:, acn, :] *= \
-                        SphericalHarmonics.maxN_to_sn3d(acn)
+                        maxN_to_sn3d(acn)
 
     def _change_channel_convention(self, value):
         raise NotImplementedError("Not implemented.")
