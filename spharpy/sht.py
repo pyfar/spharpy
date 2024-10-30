@@ -1,4 +1,6 @@
 import numpy as np
+from pyfar import Signal
+import warnings
 
 
 def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,

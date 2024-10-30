@@ -11,6 +11,7 @@ from . import beamforming
 from . import interpolate
 from . import spatial
 from . import special
+from . import sht
 
 
 __all__ = [
@@ -23,4 +24,5 @@ __all__ = [
     'spatial',
     'special',
     'SamplingSphere',
+    'sht'
 ]
