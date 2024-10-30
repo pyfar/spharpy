@@ -23,4 +23,5 @@ __all__ = [
     'spatial',
     'special',
     'SamplingSphere',
+    'classes',
 ]

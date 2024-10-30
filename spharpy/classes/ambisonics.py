@@ -1,6 +1,6 @@
 from pyfar import Signal
 from spharpy.spherical import n3d_to_maxn, n3d_to_sn3d_norm
-from spharpy.spherical import fuma_to_nm, acn_to_nm
+from spharpy.spherical import fuma_to_nm, acn_to_nm, nm_to_acn
 
 
 class SphericalHarmonicSignal(Signal):
@@ -52,7 +52,7 @@ class SphericalHarmonicSignal(Signal):
             Channel ordering convention, either ``'acn'`` or ``'fuma'``.
             The default is ``'acn'``.
             (FuMa is only supported up to 3rd order)
-        condon_shortley : bool, optional
+        phase_convention : bool, optional
             Whether to include the Condon-Shortley phase term.
             The default is True.
         n_samples : int, optional
@@ -111,7 +111,7 @@ class SphericalHarmonicSignal(Signal):
     @normalization.setter
     def normalization(self, value):
         if self.normalization is not value:
-            self._recalculate_normalization(self, value)
+            self._renormalize(self, value)
 
         self._normalization = value
 
@@ -122,42 +122,51 @@ class SphericalHarmonicSignal(Signal):
     @channel_convention.setter
     def channel_convention(self, value):
         if self.channel_convention is not value:
-            self._recalculate_channel_convention(value)
+            self._change_channel_convention(value)
 
     @property
     def phase_convention(self):
         return self._phase_convention
 
     def _renormalize(self, normalization):
-        n_coeff = (self.n_max + 1) ** 2
+        acn = range(0, (self.n_max + 1) ** 2)
 
-        for acn in range(n_coeff):
-            if self.channel_convention == "fuma":
-                order, degree = fuma_to_nm(acn)
-            else:
-                order, degree = acn_to_nm(acn)
+        if self.channel_convention == "fuma":
+            orders, degrees = fuma_to_nm(acn)
+        else:
+            orders, degrees = acn_to_nm(acn)
 
-            if self._normalization == 'n3d':
-                if normalization == "sn3d":
-                    self._data[:, acn, ...] *= \
-                        n3d_to_sn3d_norm(degree, order)
-                elif normalization == "maxN":
-                    self._data[:, acn, ...] *= \
-                        n3d_to_maxn(acn)
-            if self._normalization == 'sn3d':
-                if normalization == 'n3d':
-                    self._data[:, acn, :] *= \
-                        sn3d_to_n3d_norm(degree, order)
-                elif normalization == "maxN":
-                    self._data[:, acn, :] *= \
-                        sn3d_to_maxN(acn)
-            if self._normalization == 'maxN':
-                if normalization == 'n3d':
-                    self._data[:, acn, :] *= \
-                        maxN_to_n3d(acn)
-                elif normalization == "sn3d":
-                    self._data[:, acn, :] *= \
-                        maxN_to_sn3d(acn)
+        if self._normalization == 'n3d':
+            if normalization == "sn3d":
+                self._data[:, :, ...] *= \
+                    n3d_to_sn3d_norm(degrees, orders)
+            elif normalization == "maxN":
+                self._data[:, :, ...] *= \
+                    n3d_to_maxn(acn)
+
+        if self._normalization == 'sn3d':
+            # convert to sn3d
+            self._data[:, :, :] /= \
+                    n3d_to_sn3d_norm(degrees, orders)
+            if normalization == "maxN":
+                self._data[:, acn, :] *= n3d_to_maxn(acn)
+
+        if self._normalization == 'maxN':
+            # convert to n3d
+            self._data[:, acn, :] /= \
+                    n3d_to_maxn(acn)
+            if normalization == "sn3d":
+                self._data[:, acn, :] *= \
+                    n3d_to_sn3d_norm(acn)
 
     def _change_channel_convention(self, value):
-        raise NotImplementedError("Not implemented.")
+        n_coeffs = (self.n_max + 1) ** 2
+        if self._channel_convention == 'acn':
+            n, m = acn_to_nm(n_coeffs)
+            #  idx = nm_to_fuma(n, m)
+            raise NotImplementedError('not implemented')
+        elif self._channel_convention == 'fuma':
+            n, m = fuma_to_nm(n_coeffs)
+            idx = nm_to_acn(n, m)
+
+        self._data = self._data[:, idx, ...]
