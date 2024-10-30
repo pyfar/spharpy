@@ -31,16 +31,20 @@ class SphericalHarmonicSignal(Signal):
         Parameters
         ----------
         data : ndarray, double
-            Raw data of the signal in the time or frequency domain. The memory
-            layout of data is 'C'. E.g. data of ``shape = (3, 2, 1024)`` has
-            3 x 2 channels with 1024 samples or frequency bins each. Time data
-            is converted to ``float``. Frequency is converted to ``complex``
-            and must be provided as single sided spectra, i.e., for all
-            frequencies between 0 Hz and half the sampling rate.
+            Raw data of the spherical harmonics signal in the time or
+            frequency domain. The memory layout of data is 'C'. E.g.
+            data of ``shape = (3, 4, 1024)`` has 3 channels with 4
+            spherical harmonics coefficients with 1024 samples or frequency
+            bins each. Time data is converted to ``float``. Frequency is
+            converted to ``complex`` and must be provided as single
+            sided spectra, i.e., for all frequencies between 0 Hz and
+            half the sampling rate.
         sampling_rate : double
             Sampling rate in Hz
         n_max : int
-            Maximum spherical harmonic order
+            Maximum spherical harmonic order. Has to match the number of
+            coefficients, such that the number of coefficients
+            >= (n_max + 1) ** 2.
         basis_type : str, optional
             Type of spherical harmonic basis, either ``'complex'`` or
             ``'real'``. The default is ``'complex'``.
@@ -75,10 +79,10 @@ class SphericalHarmonicSignal(Signal):
         ..
 
         """
-        # TODO: discuss if ambisonics channels always on first dimension?
-        if not data.shape[1] >= (n_max + 1) ** 2:
-            raise ValueError('Data has to few coefficients '
-                             'for N = {n_max}.')
+
+        if not data.shape[-2] >= (n_max + 1) ** 2:
+            raise ValueError('Data has to few sh coefficients '
+                             'for n_max = {n_max}.')
 
         self._n_max = n_max
 
