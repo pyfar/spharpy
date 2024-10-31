@@ -45,20 +45,20 @@ class SphericalHarmonicSignal(Signal):
             Maximum spherical harmonic order. Has to match the number of
             coefficients, such that the number of coefficients
             >= (n_max + 1) ** 2.
-        basis_type : str, optional
+        basis_type : str
             Type of spherical harmonic basis, either ``'complex'`` or
             ``'real'``. The default is ``'complex'``.
-        normalization : str, optional
+        normalization : str
             Normalization convention, either ``'n3d'``, ``'maxN'`` or
             ``'sn3d'``. The default is ``'n3d'``.
             (maxN is only supported up to 3rd order)
-        channel_convention : str, optional
+        channel_convention : str
             Channel ordering convention, either ``'acn'`` or ``'fuma'``.
             The default is ``'acn'``.
             (FuMa is only supported up to 3rd order)
-        phase_convention : bool, optional
-            Whether to include the Condon-Shortley phase term.
-            The default is True.
+        phase_convention : str
+            Either 'condon-shortley', or 'ambix'.
+            TODO: discuss ...
         n_samples : int, optional
             Number of samples of the time signal. Required if domain is
             ``'freq'``. The default is ``None``, which assumes an even number
@@ -93,8 +93,17 @@ class SphericalHarmonicSignal(Signal):
         self._basis_type = basis_type
         self._phase_convention = phase_convention
 
-        self.normalization = normalization
-        self.channel_convention = channel_convention
+        if normalization in ['sn3d', 'n3d', 'maxN']:
+            self._normalization = normalization
+        else:
+            raise ValueError("Invalid normalization, has to be 'sn3d', "
+                             f"'n3d', or 'maxN, but is {normalization}")
+
+        if channel_convention in ['acn', 'fuma']:
+            self._channel_convention = channel_convention
+        else:
+            raise ValueError("Invalid channel convention, has to be 'acn' "
+                             f"or 'fuma', but is {channel_convention}")
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
