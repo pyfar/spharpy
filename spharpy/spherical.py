@@ -6,7 +6,7 @@ import pyfar as pf
 import warnings
 
 
-def acn_to_nm(acn):
+def acn2nm(acn):
     r"""
     Calculate the order n and degree m from the linear coefficient index.
 
@@ -52,7 +52,7 @@ def acn_to_nm(acn):
     return n, m
 
 
-def nm_to_acn(n, m):
+def nm2acn(n, m):
     r"""
     Calculate the linear index coefficient for a order n and degree m,
 
@@ -93,7 +93,7 @@ def nm_to_acn(n, m):
     return n**2 + n + m
 
 
-def n3d_to_maxn(acn):
+def n3d2maxn(acn):
     """
     Converts N3D normalization to max N normalization
     Parameters
@@ -129,7 +129,7 @@ def n3d_to_maxn(acn):
     return maxN[acn]
 
 
-def n3d_to_sn3d_norm(m, n):
+def n3d2sn3d_norm(m, n):
     """
     Converts N3D normalization to SN3D normalization
     Parameters
@@ -147,7 +147,7 @@ def n3d_to_sn3d_norm(m, n):
     return 1 / np.sqrt(2 * n + 1)
 
 
-def fuma_to_nm(fuma):
+def fuma2nm(fuma):
     r"""
     Calculate the spherical harmonic order n and degree m for a linear
     coefficient index, according to the FuMa (Furse-Malham)
@@ -185,13 +185,13 @@ def fuma_to_nm(fuma):
         )
 
     acn = fuma_mapping[fuma]
-    n, m = acn_to_nm(acn)  # Assuming you have the acn_to_nm function defined
+    n, m = acn2nm(acn)
     return n, m
 
 
 def spherical_harmonic_basis(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
-        condon_shortley=True
+        n_sh, coordinates, normalization="n3d", channel_convention="acn",
+        phase_convention=True
     ):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
@@ -218,10 +218,11 @@ def spherical_harmonic_basis(
 
     Parameters
     ----------
-    n_max : integer
+    n_sh : integer
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+        objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
         Normalization convention, either 'n3d', 'maxN' or 'sn3d'.
@@ -231,7 +232,7 @@ def spherical_harmonic_basis(
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
-    condon_shortley : bool, optional
+    phase_convention : bool, optional
         Whether to include the Condon-Shortley phase term.
         The default is True.
 
@@ -243,29 +244,29 @@ def spherical_harmonic_basis(
     Examples
     --------
     >>> import spharpy
-    >>> n_max = 2
+    >>> n_sh = 2
     >>> coordinates = spharpy.samplings.icosahedron()
-    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)
+    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_sh, coordinates)
 
     """
 
-    n_coeff = (n_max + 1) ** 2
+    n_coeff = (n_sh + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
         if channel_convention == "fuma":
-            order, degree = fuma_to_nm(acn)
+            order, degree = fuma2nm(acn)
         else:
-            order, degree = acn_to_nm(acn)
+            order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
         if normalization == "sn3d":
-            basis[:, acn] *= n3d_to_sn3d_norm(degree, order)
+            basis[:, acn] *= n3d2sn3d_norm(degree, order)
         elif normalization == "maxN":
-            basis[:, acn] *= n3d_to_maxn(acn)
-        if not condon_shortley:
+            basis[:, acn] *= n3d2maxn(acn)
+        if not phase_convention:
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
@@ -273,7 +274,7 @@ def spherical_harmonic_basis(
     return basis
 
 
-def spherical_harmonic_basis_gradient(n_max, coordinates):
+def spherical_harmonic_basis_gradient(n_sh, coordinates):
     r"""
     Calulcates the unit sphere gradients of the complex spherical harmonics.
 
@@ -303,10 +304,11 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Pyfar ``Coordinate`` object with sampling points for which the basis matrix is
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+        objects with sampling points for which the basis matrix is
         calculated
 
     Returns
@@ -319,9 +321,9 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
     Examples
     --------
     >>> import spharpy
-    >>> n_max = 2
+    >>> n_sh = 2
     >>> coordinates = spharpy.samplings.icosahedron()
-    >>> grad_theta, grad_phi = spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)
+    >>> grad_theta, grad_phi = spharpy.spherical.spherical_harmonic_basis_gradient(n_sh, coordinates)
 
 
     """  # noqa: 501
@@ -332,14 +334,14 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
         coordinates = pf.Coordinates(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2])
 
     n_points = coordinates.csize
-    n_coeff = (n_max + 1) ** 2
+    n_coeff = (n_sh + 1) ** 2
     theta = coordinates.colatitude
     phi = coordinates.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
     grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        n, m = acn_to_nm(acn)
+        n, m = acn2nm(acn)
 
         grad_theta[:, acn] = _special.spherical_harmonic_derivative_theta(
             n, m, theta, phi
@@ -351,8 +353,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
 
 
 def spherical_harmonic_basis_real(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
-        condon_shortley=True
+        n_sh, coordinates, normalization="n3d", channel_convention="acn",
+        phase_convention=True
     ):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
@@ -369,10 +371,11 @@ def spherical_harmonic_basis_real(
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+        objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
         Normalization convention, either 'n3d', 'maxN' or 'sn3d'.
@@ -382,7 +385,7 @@ def spherical_harmonic_basis_real(
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
-    condon_shortley : bool, optional
+    phase_convention : bool, optional
 
     Returns
     -------
@@ -391,23 +394,23 @@ def spherical_harmonic_basis_real(
 
 
     """
-    n_coeff = (n_max + 1) ** 2
+    n_coeff = (n_sh + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
         if channel_convention == "fuma":
-            order, degree = fuma_to_nm(acn)
+            order, degree = fuma2nm(acn)
         else:
-            order, degree = acn_to_nm(acn)
+            order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
         if normalization == "sn3d":
-            basis[:, acn] *= n3d_to_sn3d_norm(degree, order)
+            basis[:, acn] *= n3d2sn3d_norm(degree, order)
         elif normalization == "maxN":
-            basis[:, acn] *= n3d_to_maxn(acn)
-        if not condon_shortley:
+            basis[:, acn] *= n3d2maxn(acn)
+        if not phase_convention:
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
@@ -416,7 +419,7 @@ def spherical_harmonic_basis_real(
     return basis
 
 
-def spherical_harmonic_basis_gradient_real(n_max, coordinates):
+def spherical_harmonic_basis_gradient_real(n_sh, coordinates):
     r"""
     Calulcates the unit sphere gradients of the real valued spherical hamonics.
 
@@ -451,10 +454,11 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates):
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+        objects with sampling points for which the basis matrix is
         calculated
 
     Returns
@@ -471,14 +475,14 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates):
             coordinates = coordinates.T
         coordinates = pf.Coordinates(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2])
     n_points = coordinates.csize
-    n_coeff = (n_max + 1) ** 2
+    n_coeff = (n_sh + 1) ** 2
     theta = coordinates.colatitude
     phi = coordinates.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=float)
     grad_phi = np.zeros((n_points, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        n, m = acn_to_nm(acn)
+        n, m = acn2nm(acn)
 
         grad_theta[:, acn] = \
             _special.spherical_harmonic_derivative_theta_real(
@@ -490,7 +494,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates):
     return grad_theta, grad_phi
 
 
-def modal_strength(n_max,
+def modal_strength(n_sh,
                    kr,
                    arraytype='rigid'):
     r"""
@@ -519,7 +523,7 @@ def modal_strength(n_max,
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         The spherical harmonic order
     kr : ndarray, float
         Wave number * radius
@@ -533,12 +537,12 @@ def modal_strength(n_max,
         Modal strength diagonal matrix
 
     """
-    n_coeff = (n_max+1)**2
+    n_coeff = (n_sh+1)**2
     n_bins = kr.shape[0]
 
     modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=complex)
 
-    for n in range(n_max+1):
+    for n in range(n_sh+1):
         bn = _modal_strength(n, kr, arraytype)
         for m in range(-n, n+1):
             acn = n*n + n + m
@@ -566,7 +570,7 @@ def _modal_strength(n, kr, config):
 
 
 def aperture_vibrating_spherical_cap(
-        n_max,
+        n_sh,
         rad_sphere,
         rad_cap):
     r"""
@@ -591,7 +595,7 @@ def aperture_vibrating_spherical_cap(
 
     Parameters
     ----------
-    n_max : integer, ndarray
+    n_sh : integer, ndarray
         Maximal spherical harmonic order
     r_sphere : double, ndarray
         Radius of the sphere
@@ -620,24 +624,24 @@ def aperture_vibrating_spherical_cap(
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
     arg = np.cos(angle_cap)
-    n_sh = (n_max+1)**2
+    n_sh = (n_sh+1)**2
 
     aperture = np.zeros((n_sh, n_sh), dtype=float)
 
     aperture[0, 0] = (1-arg)*2*np.pi
-    for n in range(1, n_max+1):
+    for n in range(1, n_sh+1):
         legendre_minus = special.legendre(n-1)(arg)
         legendre_plus = special.legendre(n+1)(arg)
         legendre_term = legendre_minus - legendre_plus
         for m in range(-n, n+1):
-            acn = nm_to_acn(n, m)
+            acn = nm2acn(n, m)
             aperture[acn, acn] = legendre_term * 4 * np.pi / (2*n+1)
 
     return aperture
 
 
 def radiation_from_sphere(
-        n_max,
+        n_sh,
         rad_sphere,
         k,
         distance,
@@ -663,7 +667,7 @@ def radiation_from_sphere(
 
     Parameters
     ----------
-    n_max : integer
+    n_sh : integer
         Maximal spherical harmonic order
     r_sphere : float
         Radius of the sphere
@@ -683,33 +687,33 @@ def radiation_from_sphere(
         :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
     """
-    n_sh = (n_max+1)**2
+    n_sh = (n_sh+1)**2
 
     k = np.atleast_1d(k)
     n_bins = k.shape[0]
     radiation = np.zeros((n_bins, n_sh, n_sh), dtype=complex)
 
-    for n in range(n_max+1):
+    for n in range(n_sh+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
         hankel_prime = _special.spherical_hankel(
             n, k*rad_sphere, kind=2, derivative=True)
         radiation_order = -1j * hankel/hankel_prime * \
             density_medium * speed_of_sound
         for m in range(-n, n+1):
-            acn = nm_to_acn(n, m)
+            acn = nm2acn(n, m)
             radiation[:, acn, acn] = radiation_order
 
     return radiation
 
 
-def sid(n_max):
-    """Calculates the SID indices up to spherical harmonic order n_max.
+def sid(n_sh):
+    """Calculates the SID indices up to spherical harmonic order n_sh.
     The SID indices were originally proposed by Daniel [#]_, more recently
     ACN indexing has been favored and is used in the AmbiX format [#]_.
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         The maximum spherical harmonic order
 
     Returns
@@ -732,11 +736,11 @@ def sid(n_max):
             vol. 3, pp. 1-11, 2011.
 
     """
-    n_sh = (n_max+1)**2
-    sid_n = sph_identity_matrix(n_max, 'n-nm').T @ np.arange(0, n_max+1)
+    n_sh = (n_sh+1)**2
+    sid_n = sph_identity_matrix(n_sh, 'n-nm').T @ np.arange(0, n_sh+1)
     sid_m = np.zeros(n_sh, dtype=int)
     idx_n = 0
-    for n in range(1, n_max+1):
+    for n in range(1, n_sh+1):
         for m in range(1, n+1):
             sid_m[idx_n + 2*m-1] = n-m+1
             sid_m[idx_n + 2*m] = -(n-m+1)
@@ -746,13 +750,13 @@ def sid(n_max):
     return sid_n, sid_m
 
 
-def sid2acn(n_max):
+def sid2acn(n_sh):
     """Convert from SID channel indexing to ACN indeces.
     Returns the indices to achieve a corresponding linear acn indexing.
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         The maximum spherical harmonic order.
 
     Returns
@@ -760,17 +764,17 @@ def sid2acn(n_max):
     acn : ndarray, int
         The SID indices sorted according to a respective linear ACN indexing.
     """
-    sid_n, sid_m = sid(n_max)
-    linear_sid = nm_to_acn(sid_n, sid_m)
+    sid_n, sid_m = sid(n_sh)
+    linear_sid = nm2acn(sid_n, sid_m)
     return np.argsort(linear_sid)
 
 
-def sph_identity_matrix(n_max, type='n-nm'):
+def sph_identity_matrix(n_sh, type='n-nm'):
     """Calculate a spherical harmonic identity matrix.
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         The spherical harmonic order.
     type : str, optional
         The type of identity matrix. Currently only 'n-nm' is implemented.
@@ -788,8 +792,8 @@ def sph_identity_matrix(n_max, type='n-nm'):
 
     >>> import spharpy
     >>> import matplotlib.pyplot as plt
-    >>> n_max = 2
-    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+    >>> n_sh = 2
+    >>> E = spharpy.spherical.sph_identity_matrix(n_sh, type='n-nm')
     >>> a_n = [1, 2, 3]
     >>> a_nm = E.T @ a_n
     >>> a_nm
@@ -801,22 +805,22 @@ def sph_identity_matrix(n_max, type='n-nm'):
 
         >>> import spharpy
         >>> import matplotlib.pyplot as plt
-        >>> n_max = 2
-        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+        >>> n_sh = 2
+        >>> E = spharpy.spherical.sph_identity_matrix(n_sh, type='n-nm')
         >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
         >>> plt.gca().set_aspect('equal')
 
     """
-    n_sh = (n_max+1)**2
+    n_sh = (n_sh+1)**2
 
     if type != 'n-nm':
         raise NotImplementedError
 
-    identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)
+    identity_matrix = np.zeros((n_sh+1, n_sh), dtype=int)
 
-    for n in range(n_max+1):
+    for n in range(n_sh+1):
         m = np.arange(-n, n+1)
-        linear_nm = nm_to_acn(np.tile(n, m.shape), m)
+        linear_nm = nm2acn(np.tile(n, m.shape), m)
         identity_matrix[n, linear_nm] = 1
 
     return identity_matrix
@@ -907,11 +911,12 @@ class SphericalHarmonics:
 
     Parameters
     ----------
-    n_max : int
+    n_sh : int
         Maximum spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for
-        which the basis matrix is calculated
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+        objects with sampling points for which the basis matrix is
+        calculated
     basis_type : str, optional
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``. The default is ``'complex'``.
@@ -929,37 +934,31 @@ class SphericalHarmonics:
     weights : array-like, optional
         Sampling weights for the quadrature transform.
         Required if `quadrature` is chosen.
-    condon_shortley : bool, optional
+    phase_convention : bool, optional
         Whether to include the Condon-Shortley phase term.
         The default is True.
     """
 
     def __init__(
         self,
-        n_max,
+        n_sh,
         coordinates,
         basis_type="real",
         normalization="n3d",
         channel_convention="acn",
         inverse_transform=None,
         weights=None,
-        condon_shortley=True
+        phase_convention=True
     ):
-        # self.n_max = n_max
-        # self.weights = weights
-        # self.coordinates = coordinates
-        # self.basis_type = basis_type
-        # self.inverse_transform = inverse_transform
-        # self.channel_convention = channel_convention  # ch. ord. conv.
-        # self.normalization = normalization  # gain norm. conv.
-        self._n_max = n_max
-        self._weights = weights
-        self._coordinates = coordinates
-        self._basis_type = basis_type
-        self._inverse_transform = inverse_transform
-        self._channel_convention = channel_convention  # ch. ord. conv.
-        self._normalization = normalization  # gain norm. conv.
-        self._condon_shortley = condon_shortley
+        self.n_sh = n_sh
+        self.weights = weights
+        self.coordinates = coordinates
+        self.basis_type = basis_type
+        self.inverse_transform = inverse_transform
+        self.channel_convention = channel_convention  # ch. ord. conv.
+        self.normalization = normalization  # gain norm. conv.
+        self.phase_convention = phase_convention
+
         self._recompute_basis = True
         self._recompute_basis_gradient = True
         self._recompute_inverse = True
@@ -971,38 +970,35 @@ class SphericalHarmonics:
         self._basis_inv = None
         (self._basis_inv_gradient_theta,
          self._basis_inv_gradient_phi) = (None, None)
-        # Store previous values for comparison
-        self._prev_n_max = self.n_max
-        self._prev_coordinates = self.coordinates
-        self._prev_basis_type = self.basis_type
-        self._prev_inverse_transform = self.inverse_transform
-        self._prev_channel_convention = self.channel_convention
-        self._prev_normalization = self.normalization
-        self._prev_condon_shortley = self.condon_shortley
 
     # Properties
-    # property for condon_shortley
+    # property for phase_convention
     @property
-    def condon_shortley(self):
-        return self._condon_shortley
+    def phase_convention(self):
+        """bool: Whether to include the Condon-Shortley phase term."""
+        return self._phase_convention
 
-    @condon_shortley.setter
-    def condon_shortley(self, value):
+    @phase_convention.setter
+    def phase_convention(self, value):
+        """Set the phase convention."""
         if not isinstance(value, bool):
-            raise TypeError("condon_shortley must be a boolean value")
-        if value != self._condon_shortley:
+            raise TypeError("phase_convention must be a boolean value")
+        if value != self._phase_convention:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
             self._recompute_inverse = True
             self._recompute_inverse_gradient = True
-        self._condon_shortley = value
+        self._phase_convention = value
 
     @property
     def weights(self):
+        """array-like: Sampling weights for the quadrature transform.
+        Weights are normalized to a sum of 4*pi."""
         return self._weights
 
     @weights.setter
     def weights(self, value):
+        """Set the sampling weights."""
         if value is not None:
             if not isinstance(value, (list, np.ndarray)):
                 raise TypeError("weights must be a list or numpy array")
@@ -1021,28 +1017,32 @@ class SphericalHarmonics:
         self._weights = value
 
     @property
-    def n_max(self):
-        return self._n_max
+    def n_sh(self):
+        """int: Maximum spherical harmonic order."""
+        return self._n_sh
 
-    @n_max.setter
-    def n_max(self, value):
+    @n_sh.setter
+    def n_sh(self, value):
+        """Set the maximum spherical harmonic order."""
         if value < 0:
-            raise ValueError("n_max must be a positive integer")
+            raise ValueError("n_sh must be a positive integer")
         if value % 1 != 0:
-            raise ValueError("n_max must be an integer value")
-        if value != self._n_max:
+            raise ValueError("n_sh must be an integer value")
+        if value != self._n_sh:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
             self._recompute_inverse = True
             self._recompute_inverse_gradient = True
-        self._n_max = int(value)  # Cast to int for safety
+        self._n_sh = int(value)  # Cast to int for safety
 
     @property
     def coordinates(self):
+        """Coordinates: pyfar Coordinates object."""
         return self._coordinates
 
     @coordinates.setter
     def coordinates(self, value):
+        """Set the coordinates."""
         if not isinstance(value, pf.Coordinates):
             raise TypeError("coordinates must be a pyfar.Coordinates "
                             "object or spharpy.SamplingSphere object")
@@ -1058,12 +1058,14 @@ class SphericalHarmonics:
 
     @property
     def basis_type(self):
+        """str: Type of spherical harmonic basis."""
         return self._basis_type
 
     @basis_type.setter
     def basis_type(self, value):
+        """Set the basis type."""
         if value not in ["complex", "real"]:
-            raise ValueError("Invalid basis type, currently only "
+            raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
         if value != self._basis_type:
             self._recompute_basis = True
@@ -1074,10 +1076,12 @@ class SphericalHarmonics:
 
     @property
     def inverse_transform(self):
+        """str: Type of inverse transform."""
         return self._inverse_transform
 
     @inverse_transform.setter
     def inverse_transform(self, value):
+        """Set the inverse transform type."""
         if value not in ["pseudo_inverse", "quadrature", None]:
             raise ValueError("Invalid inverse transform type, "
                              "currently only 'pseudo_inverse' "
@@ -1091,10 +1095,12 @@ class SphericalHarmonics:
 
     @property
     def channel_convention(self):
+        """str: Channel ordering convention."""
         return self._channel_convention
 
     @channel_convention.setter
     def channel_convention(self, value):
+        """Set the channel convention."""
         if value not in ["complex", "real"]:
             raise ValueError("Invalid channel convention, "
                              "currently only 'acn' "
@@ -1109,10 +1115,12 @@ class SphericalHarmonics:
 
     @property
     def normalization(self):
+        """str: Normalization convention."""
         return self._normalization
 
     @normalization.setter
     def normalization(self, value):
+        """Set the normalization convention."""
         if value not in ["n3d", "maxN", "sn3d"]:
             raise ValueError(
                 "Invalid normalization, "
@@ -1128,6 +1136,7 @@ class SphericalHarmonics:
 
     @property
     def basis(self):
+        """ndarray: Spherical harmonic basis matrix."""
         if self._basis is None or self._recompute_basis:
             self._compute_basis()
             self._recompute_basis = False
@@ -1135,6 +1144,7 @@ class SphericalHarmonics:
 
     @property
     def basis_gradient_theta(self):
+        """ndarray: Gradient of the basis matrix with respect to theta."""
         if (self._basis_gradient_theta is None or
                 self._recompute_basis_gradient):
             self._compute_basis_gradient()
@@ -1143,13 +1153,13 @@ class SphericalHarmonics:
 
     @property
     def basis_gradient_phi(self):
+        """ndarray: Gradient of the basis matrix with respect to phi."""
         if (self._basis_gradient_phi is None or
                 self._recompute_basis_gradient):
             self._compute_basis_gradient()
             self._recompute_basis_gradient = False
         return self._basis_gradient_phi
 
-    # @lru_cache(maxsize=128)
     def _compute_basis(self):
         """
         Compute the basis matrix for the SphericalHarmonics class.
@@ -1163,7 +1173,7 @@ class SphericalHarmonics:
                 "Invalid signal type, should be either 'complex' or 'real'"
             )
         self._basis = function(
-            self.n_max, self.coordinates,
+            self.n_sh, self.coordinates,
             self.normalization, self.channel_convention)
 
     def compute_basis(self):
@@ -1172,8 +1182,10 @@ class SphericalHarmonics:
         except Exception as e:
             raise ValueError("Error computing basis:", e) from e
 
-    # @lru_cache(maxsize=128)
     def _compute_basis_gradient(self):
+        """
+        Compute the gradient of the basis matrix for the SphericalHarmonics class
+        """
         if any(
             (self.normalization in ["maxN", "sn3d"],
              self.channel_convention == "fuma")
@@ -1189,10 +1201,10 @@ class SphericalHarmonics:
                 function = spherical_harmonic_basis_gradient_real
             else:
                 raise ValueError(
-                    "Invalid signal type, should be either 'complex' or 'real'"
+                    "Invalid basis type, should be either 'complex' or 'real'"
                 )
             self._basis_gradient_theta, self._basis_gradient_phi = function(
-                self.n_max, self.coordinates)
+                self.n_sh, self.coordinates)
 
     def compute_basis_gradient(self):
         try:
@@ -1210,18 +1222,7 @@ class SphericalHarmonics:
 
     def _compute_inverse(self):
         """
-        Compute the inverse transform matrix for the specified transform type
-
-        The inverse transform matrix is calculated based on the specified
-        `inverse_transform`. If ``'pseudo_inverse' is chosen,
-        the Moore-Penrose pseudo-inverse is used.
-        If ``'quadrature'`` is chosen, the inverse is computed
-        using the conjugate transpose of the basis matrix
-        multiplied by 4 * pi * weights.
-
-        Returns
-        -------
-        None
+        Compute the inverse basis matrix for the SphericalHarmonics class
         """
         if self.basis is None:
             self.compute_basis()
@@ -1233,7 +1234,6 @@ class SphericalHarmonics:
                     "currently only 'pseudo_inverse' "
                     "and 'quadrature' are supported"
                 )
-        # print("computing inverse basis using ", self.inverse_transform)
         elif self.inverse_transform is None:
             ValueError("Inverse transform type not specified")
         if self.inverse_transform == "pseudo_inverse":
@@ -1255,6 +1255,7 @@ class SphericalHarmonics:
 
     @property
     def basis_inv_gradient_theta(self):
+        """ Gradient of the inverse basis matrix with respect to theta."""
         if (
             self._basis_inv_gradient_theta is None
             or self._basis_inv_gradient_phi is None
@@ -1266,6 +1267,7 @@ class SphericalHarmonics:
 
     @property
     def basis_inv_gradient_phi(self):
+        """ Gradient of the inverse basis matrix with respect to phi."""
         if (
             self._basis_inv_gradient_theta is None
             or self._basis_inv_gradient_phi is None
@@ -1276,6 +1278,9 @@ class SphericalHarmonics:
         return self._basis_inv_gradient_phi
 
     def compute_inverse_gradient(self):
+        """
+        Compute the gradient of the inverse basis matrix for the SphericalHarmonics class
+        """
         if self.inverse_transform is None:
             ValueError("Inverse transform type not specified")
         elif self.inverse_transform == "pseudo_inverse":
