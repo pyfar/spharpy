@@ -595,10 +595,10 @@ def aperture_vibrating_spherical_cap(
     ----------
     n_sh : integer, ndarray
         Maximal spherical harmonic order
-    r_sphere : double, ndarray
+    rad_sphere : double
         Radius of the sphere
-    r_cap : double
-        Radius of the vibrating cap
+    rad_cap : double
+        Radius of the cap
 
     Returns
     -------
@@ -667,7 +667,7 @@ def radiation_from_sphere(
     ----------
     n_sh : integer
         Maximal spherical harmonic order
-    r_sphere : float
+    rad_sphere : float
         Radius of the sphere
     k : ndarray, float
         Wave number
@@ -929,9 +929,6 @@ class SphericalHarmonics:
     inverse_transform : str, optional
         Inverse transform type, either ``'pseudo_inverse'`` or
         ``'quadrature'``. The default is None.
-    weights : array-like, optional
-        Sampling weights for the quadrature transform.
-        Required if `quadrature` is chosen.
     phase_convention : bool, optional
         Whether to include the Condon-Shortley phase term.
         The default is True.
@@ -947,8 +944,17 @@ class SphericalHarmonics:
         inverse_transform=None,
         phase_convention=True
     ):
+        # hidden attributes
+        self._n_sh = None
+        self._coordinates = pf.Coordinates()
+        self._basis_type = None
+        self._weights = None
+        self._inverse_transform = None
+        self._channel_convention = None  # ch. ord. conv.
+        self._normalization = None  # gain norm. conv.
+        self._phase_convention = None
+
         self.n_sh = n_sh
-        self.weights = None
         self.coordinates = coordinates
         self.basis_type = basis_type
         self.inverse_transform = inverse_transform
@@ -996,6 +1002,9 @@ class SphericalHarmonics:
         return self.coordinates.weights
 
 
+    @weights.setter
+    def weights(self, value):
+        self._weights = value
 
     @property
     def n_sh(self):
@@ -1082,7 +1091,7 @@ class SphericalHarmonics:
     @channel_convention.setter
     def channel_convention(self, value):
         """Set the channel order convention."""
-        if value not in ["complex", "real"]:
+        if value not in ["acn", "fuma"]:
             raise ValueError("Invalid channel convention, "
                              "currently only 'acn' "
                              "and 'fuma' are supported"
@@ -1212,15 +1221,5 @@ class SphericalHarmonics:
             self._basis_inv = np.linalg.pinv(self._basis)
         elif self.inverse_transform == "quadrature":
             if self.weights is None:
-                self.weights = calculate_sampling_weights(self.coordinates)
+                self.coordinates.weights = calculate_sampling_weights(self.coordinates)
             self._basis_inv = np.conj(self.basis).T * self.weights
-
-    def compute_inverse(self):
-        try:
-            return self._compute_inverse()
-        except Exception as e:
-            raise ValueError("Error computing inverse:", e) from e
-
-    @weights.setter
-    def weights(self, value):
-        self._weights = value
