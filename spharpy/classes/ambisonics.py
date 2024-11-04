@@ -4,19 +4,20 @@ from spharpy.spherical import fuma_to_nm, acn_to_nm, nm_to_acn
 
 
 class SphericalHarmonicSignal(Signal):
-    """Class for ambisonics signals.
-
-    Objects of this class contain data which is directly convertible between
-    time and frequency domain (equally spaced samples and frequency bins). The
-    data is always real valued in the time domain and complex valued in the
+    """Create audio object with spherical harmonics coefficients in time or
     frequency domain.
+
+    Objects of this class contain spherical harmonics coefficients which are
+    directly convertible between time and frequency domain (equally spaced
+    samples and frequency bins), the channel conventions `acn` and `fuma`, as well
+    as the normalizations `n3d`, `sn3d`, or `maxn`.
 
     """
     def __init__(
             self,
             data,
             sampling_rate,
-            n_max,
+            n_sh,
             basis_type,
             normalization,
             channel_convention,
@@ -41,7 +42,7 @@ class SphericalHarmonicSignal(Signal):
             half the sampling rate.
         sampling_rate : double
             Sampling rate in Hz
-        n_max : int
+        n_sh : int
             Maximum spherical harmonic order. Has to match the number of
             coefficients, such that the number of coefficients
             >= (n_max + 1) ** 2.
@@ -76,21 +77,19 @@ class SphericalHarmonicSignal(Signal):
 
         References
         ----------
-        ..
+        .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
+        .. [#] B. Rafely, "Fundamentals of Spherical Array Processing", (2015),
+               Springer-Verlag
+        .. [#] F. Zotter, M. Frank, "Ambisonics A Practical 3D Audio Theory
+               for Recording, Studio Production, Sound Reinforcement, and
+               Virtual Reality", (2019), Springer-Verlag
 
         """
 
-        if not data.shape[-2] >= (n_max + 1) ** 2:
-            raise ValueError('Data has to few sh coefficients '
-                             'for n_max = {n_max}.')
-
-        self._n_max = n_max
-
-        if basis_type == 'complex' and not is_complex:
-            raise ValueError('Data are real-valued while '
-                             'spherical harmonics bases are complex-valued.')
-
-        self._basis_type = basis_type
+        self._init_n_sh(n_sh, data)
+        self._init_basis_type(basis_type, is_complex)
+        self._init_normalization(normalization)
+        self._init_channel_convention(channel_convention)
         self._phase_convention = phase_convention
 
         if normalization in ['sn3d', 'n3d', 'maxN']:
@@ -110,8 +109,8 @@ class SphericalHarmonicSignal(Signal):
                         comment=comment, is_complex=is_complex)
 
     @property
-    def n_max(self):
-        return self.n_max
+    def n_sh(self):
+        return self.n_sh
 
     @property
     def basis_type(self):
@@ -125,7 +124,6 @@ class SphericalHarmonicSignal(Signal):
     def normalization(self, value):
         if self.normalization is not value:
             self._renormalize(self, value)
-
         self._normalization = value
 
     @property
@@ -134,14 +132,57 @@ class SphericalHarmonicSignal(Signal):
 
     @channel_convention.setter
     def channel_convention(self, value):
+        if value not in ["acn", "fuma"]:
+            raise ValueError("Invalid channel convention, has to be 'acn' "
+                             f"or 'fuma', but is {value}")
+
         if self.channel_convention is not value:
-            self._change_channel_convention(value)
+            self._change_channel_convention()
 
     @property
     def phase_convention(self):
         return self._phase_convention
 
-    def _renormalize(self, normalization):
+    def _init_n_sh(self, value, data):
+        """Set the spherical harmonic order."""
+        if value < 0:
+            raise ValueError("n_sh must be a positive integer")
+        if value % 1 != 0:
+            raise ValueError("n_sh must be an integer value")
+        if not data.shape[-2] >= (value + 1) ** 2:
+            raise ValueError('Data has to few sh coefficients '
+                             'for n_sh = {n_sh}.')
+        self._n_sh = int(value)
+
+    def _init_basis_type(self, value, is_complex):
+        """Set the basis type."""
+        if value == 'complex' and not is_complex:
+            raise ValueError('Data are real-valued while '
+                             'spherical harmonics bases are complex-valued.')
+
+        if value not in ["complex", "real"]:
+            raise ValueError("Invalid basis type, only "
+                             "'complex' and 'real' are supported")
+        self._basis_type = value
+
+    def _init_normalization(self, value):
+        """Set the normalization convention."""
+        if value not in ["n3d", "maxN", "sn3d"]:
+            raise ValueError("Invalid normalization, has to be 'sn3d', "
+                             f"'n3d', or 'maxN, but is {value}")
+        self._normalization = value
+
+    def _init_channel_convention(self, value):
+        """Set the channel order convention."""
+        if value not in ["acn", "fuma"]:
+            raise ValueError("Invalid channel convention, has to be 'acn' "
+                             f"or 'fuma', but is {value}")
+        self._channel_convention = value
+
+    def _renormalize(self, value):
+        if value not in ["n3d", "maxN", "sn3d"]:
+            raise ValueError("Invalid normalization, has to be 'sn3d', "
+                             f"'n3d', or 'maxN, but is {value}")
         acn = range(0, (self.n_max + 1) ** 2)
 
         if self.channel_convention == "fuma":
@@ -150,10 +191,10 @@ class SphericalHarmonicSignal(Signal):
             orders, degrees = acn_to_nm(acn)
 
         if self._normalization == 'n3d':
-            if normalization == "sn3d":
+            if value == "sn3d":
                 self._data[:, :, ...] *= \
                     n3d_to_sn3d_norm(degrees, orders)
-            elif normalization == "maxN":
+            elif value == "maxN":
                 self._data[:, :, ...] *= \
                     n3d_to_maxn(acn)
 
@@ -161,19 +202,19 @@ class SphericalHarmonicSignal(Signal):
             # convert to sn3d
             self._data[:, :, :] /= \
                     n3d_to_sn3d_norm(degrees, orders)
-            if normalization == "maxN":
+            if value == "maxN":
                 self._data[:, acn, :] *= n3d_to_maxn(acn)
 
         if self._normalization == 'maxN':
             # convert to n3d
             self._data[:, acn, :] /= \
                     n3d_to_maxn(acn)
-            if normalization == "sn3d":
+            if value == "sn3d":
                 self._data[:, acn, :] *= \
                     n3d_to_sn3d_norm(acn)
 
-    def _change_channel_convention(self, value):
-        n_coeffs = (self.n_max + 1) ** 2
+    def _change_channel_convention(self):
+        n_coeffs = (self.n_sh + 1) ** 2
         if self._channel_convention == 'acn':
             n, m = acn_to_nm(n_coeffs)
             #  idx = nm_to_fuma(n, m)
