@@ -9,15 +9,17 @@ class SphericalHarmonicSignal(Signal):
 
     Objects of this class contain spherical harmonics coefficients which are
     directly convertible between time and frequency domain (equally spaced
-    samples and frequency bins), the channel conventions `acn` and `fuma`, as well
-    as the normalizations `n3d`, `sn3d`, or `maxn`.
+    samples and frequency bins), the channel conventions `acn` and `fuma`, as
+    well as the normalizations `n3d`, `sn3d`, or `maxn`. The default
+    parameters for `basis_type`, `normalization`, and `channel_convention`
+    corresponds to the AmbiX standard.
 
     """
     def __init__(
             self,
             data,
             sampling_rate,
-            n_sh,
+            n_max,
             basis_type,
             normalization,
             channel_convention,
@@ -42,13 +44,13 @@ class SphericalHarmonicSignal(Signal):
             half the sampling rate.
         sampling_rate : double
             Sampling rate in Hz
-        n_sh : int
+        n_max : int
             Maximum spherical harmonic order. Has to match the number of
             coefficients, such that the number of coefficients
-            >= (n_max + 1) ** 2.
+            .. math:: >= (n_max + 1) ** 2.
         basis_type : str
             Type of spherical harmonic basis, either ``'complex'`` or
-            ``'real'``. The default is ``'complex'``.
+            ``'real'``. The default is ``'real'``.
         normalization : str
             Normalization convention, either ``'n3d'``, ``'maxN'`` or
             ``'sn3d'``. The default is ``'n3d'``.
@@ -86,7 +88,7 @@ class SphericalHarmonicSignal(Signal):
 
         """
 
-        self._init_n_sh(n_sh, data)
+        self._init_n_max(n_max, data)
         self._init_basis_type(basis_type, is_complex)
         self._init_normalization(normalization)
         self._init_channel_convention(channel_convention)
@@ -109,7 +111,7 @@ class SphericalHarmonicSignal(Signal):
                         comment=comment, is_complex=is_complex)
 
     @property
-    def n_sh(self):
+    def n_max(self):
         return self.n_sh
 
     @property
@@ -143,15 +145,15 @@ class SphericalHarmonicSignal(Signal):
     def phase_convention(self):
         return self._phase_convention
 
-    def _init_n_sh(self, value, data):
+    def _init_n_max(self, value, data):
         """Set the spherical harmonic order."""
         if value < 0:
-            raise ValueError("n_sh must be a positive integer")
+            raise ValueError("n_max must be a positive integer")
         if value % 1 != 0:
-            raise ValueError("n_sh must be an integer value")
+            raise ValueError("n_max must be an integer value")
         if not data.shape[-2] >= (value + 1) ** 2:
             raise ValueError('Data has to few sh coefficients '
-                             'for n_sh = {n_sh}.')
+                             'for n_max = {n_max}.')
         self._n_sh = int(value)
 
     def _init_basis_type(self, value, is_complex):
