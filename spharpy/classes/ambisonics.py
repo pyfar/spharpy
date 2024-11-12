@@ -14,22 +14,6 @@ class SphericalHarmonicSignal(Signal):
     parameters for `basis_type`, `normalization`, and `channel_convention`
     corresponds to the AmbiX standard.
 
-    """
-    def __init__(
-            self,
-            data,
-            sampling_rate,
-            n_max,
-            basis_type,
-            normalization,
-            channel_convention,
-            phase_convention,
-            n_samples=None,
-            domain='time',
-            fft_norm='none',
-            comment="",
-            is_complex=False):
-        """Create SphericalHarmonicSignal with data, and sampling rate.
 
         Parameters
         ----------
@@ -87,7 +71,23 @@ class SphericalHarmonicSignal(Signal):
                Virtual Reality", (2019), Springer-Verlag
 
         """
-
+    def __init__(
+            self,
+            data,
+            sampling_rate,
+            n_max,
+            basis_type,
+            normalization,
+            channel_convention,
+            phase_convention,
+            n_samples=None,
+            domain='time',
+            fft_norm='none',
+            comment="",
+            is_complex=False):
+        """
+        Create SphericalHarmonicSignal with data, and sampling rate.
+        """
         self._init_n_max(n_max, data)
         self._init_basis_type(basis_type, is_complex)
         self._init_normalization(normalization)
