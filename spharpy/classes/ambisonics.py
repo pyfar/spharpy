@@ -12,7 +12,9 @@ class SphericalHarmonicSignal(Signal):
     samples and frequency bins), the channel conventions `acn` and `fuma`, as
     well as the normalizations `n3d`, `sn3d`, or `maxn`. The default
     parameters for `basis_type`, `normalization`, and `channel_convention`
-    corresponds to the AmbiX standard.
+    corresponds to the AmbiX standard. The definition of the spherical
+    harmonics basis functions is based on the scipy convention which includes
+    the Condon-Shortley phase.
 
 
         Parameters
@@ -43,9 +45,6 @@ class SphericalHarmonicSignal(Signal):
             Channel ordering convention, either ``'acn'`` or ``'fuma'``.
             The default is ``'acn'``.
             (FuMa is only supported up to 3rd order)
-        phase_convention : str
-            Either 'condon-shortley', or 'ambix'.
-            TODO: discuss ...
         n_samples : int, optional
             Number of samples of the time signal. Required if domain is
             ``'freq'``. The default is ``None``, which assumes an even number
@@ -79,7 +78,6 @@ class SphericalHarmonicSignal(Signal):
             basis_type,
             normalization,
             channel_convention,
-            phase_convention,
             n_samples=None,
             domain='time',
             fft_norm='none',
@@ -88,23 +86,37 @@ class SphericalHarmonicSignal(Signal):
         """
         Create SphericalHarmonicSignal with data, and sampling rate.
         """
-        self._init_n_max(n_max, data)
-        self._init_basis_type(basis_type, is_complex)
-        self._init_normalization(normalization)
-        self._init_channel_convention(channel_convention)
-        self._phase_convention = phase_convention
+        # set n_max
+        if n_max < 0:
+            raise ValueError("n_max must be a positive integer")
+        if n_max % 1 != 0:
+            raise ValueError("n_max must be an integer value")
+        if not data.shape[-2] >= (n_max + 1) ** 2:
+            raise ValueError('Data has to few sh coefficients '
+                             'for n_max = {n_max}.')
+        self._n_max = int(n_max)
 
-        if normalization in ['sn3d', 'n3d', 'maxN']:
-            self._normalization = normalization
-        else:
+        # set basis_type
+        if basis_type == 'complex' and not is_complex:
+            raise ValueError('Data are real-valued while '
+                             'spherical harmonics bases are complex-valued.')
+
+        if basis_type not in ["complex", "real"]:
+            raise ValueError("Invalid basis type, only "
+                             "'complex' and 'real' are supported")
+        self._basis_type = basis_type
+
+        # set normalization
+        if normalization not in ["n3d", "maxN", "sn3d"]:
             raise ValueError("Invalid normalization, has to be 'sn3d', "
                              f"'n3d', or 'maxN, but is {normalization}")
+        self._normalization = normalization
 
-        if channel_convention in ['acn', 'fuma']:
-            self._channel_convention = channel_convention
-        else:
+        # set channel_convention
+        if channel_convention not in ["acn", "fuma"]:
             raise ValueError("Invalid channel convention, has to be 'acn' "
                              f"or 'fuma', but is {channel_convention}")
+        self._channel_convention = channel_convention
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -112,7 +124,7 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def n_max(self):
-        return self.n_sh
+        return self.n_max
 
     @property
     def basis_type(self):
@@ -140,46 +152,6 @@ class SphericalHarmonicSignal(Signal):
 
         if self.channel_convention is not value:
             self._change_channel_convention()
-
-    @property
-    def phase_convention(self):
-        return self._phase_convention
-
-    def _init_n_max(self, value, data):
-        """Set the spherical harmonic order."""
-        if value < 0:
-            raise ValueError("n_max must be a positive integer")
-        if value % 1 != 0:
-            raise ValueError("n_max must be an integer value")
-        if not data.shape[-2] >= (value + 1) ** 2:
-            raise ValueError('Data has to few sh coefficients '
-                             'for n_max = {n_max}.')
-        self._n_sh = int(value)
-
-    def _init_basis_type(self, value, is_complex):
-        """Set the basis type."""
-        if value == 'complex' and not is_complex:
-            raise ValueError('Data are real-valued while '
-                             'spherical harmonics bases are complex-valued.')
-
-        if value not in ["complex", "real"]:
-            raise ValueError("Invalid basis type, only "
-                             "'complex' and 'real' are supported")
-        self._basis_type = value
-
-    def _init_normalization(self, value):
-        """Set the normalization convention."""
-        if value not in ["n3d", "maxN", "sn3d"]:
-            raise ValueError("Invalid normalization, has to be 'sn3d', "
-                             f"'n3d', or 'maxN, but is {value}")
-        self._normalization = value
-
-    def _init_channel_convention(self, value):
-        """Set the channel order convention."""
-        if value not in ["acn", "fuma"]:
-            raise ValueError("Invalid channel convention, has to be 'acn' "
-                             f"or 'fuma', but is {value}")
-        self._channel_convention = value
 
     def _renormalize(self, value):
         if value not in ["n3d", "maxN", "sn3d"]:
