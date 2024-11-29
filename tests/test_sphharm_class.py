@@ -32,7 +32,6 @@ def test_sphharm_compute_basis_gradient():
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.basis_gradient_theta is not None
     assert sph_harm.basis_gradient_phi is not None
-
 def test_sphharm_compute_inverse_quad():
     coordinates = gaussian(n_points=4)
     # coordinates = pf.Coordinates(1, 0, 0)
