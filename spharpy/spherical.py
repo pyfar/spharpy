@@ -189,7 +189,7 @@ def fuma2nm(fuma):
 
 def spherical_harmonic_basis(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=True
+        phase_convention=None
     ):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
@@ -230,9 +230,9 @@ def spherical_harmonic_basis(
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
-    phase_convention : bool, optional
+    phase_convention : string or None, optional
         Whether to include the Condon-Shortley phase term.
-        The default is True.
+        The default is None.
 
     Returns
     -------
@@ -264,7 +264,7 @@ def spherical_harmonic_basis(
             basis[:, acn] *= n3d2sn3d_norm(degree, order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d2maxn(acn)
-        if not phase_convention:
+        if phase_convention is None:
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
@@ -352,7 +352,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
 
 def spherical_harmonic_basis_real(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=True
+        phase_convention=None
     ):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
@@ -383,7 +383,9 @@ def spherical_harmonic_basis_real(
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
-    phase_convention : bool, optional
+    phase_convention : string or None, optional
+        Whether to include the Condon-Shortley phase term.
+        The default is None.
 
     Returns
     -------
@@ -408,11 +410,10 @@ def spherical_harmonic_basis_real(
             basis[:, acn] *= n3d2sn3d_norm(degree, order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d2maxn(acn)
-        if not phase_convention:
-            # Condon-Shortley phase term is already included in
-            # the special.spherical_harmonic function
-            # so need to divide by (-1)^m
-            basis[:, acn] /= (-1) ** degree
+        # Condon-Shortley phase term is already included in
+        # the special.spherical_harmonic function
+        # so need to divide by (-1)^m
+        basis[:, acn] /= (-1) ** degree
 
     return basis
 
@@ -929,9 +930,9 @@ class SphericalHarmonics:
     inverse_transform : str, optional
         Inverse transform type, either ``'pseudo_inverse'`` or
         ``'quadrature'``. The default is None.
-    phase_convention : bool, optional
+    phase_convention : string or None, optional
         Whether to include the Condon-Shortley phase term.
-        The default is True.
+        The default is None.
     """
 
     def __init__(
@@ -942,7 +943,7 @@ class SphericalHarmonics:
         normalization="n3d",
         channel_convention="acn",
         inverse_transform=None,
-        phase_convention=True
+        phase_convention=None
     ):
         # hidden attributes
         self._n_max = None
@@ -984,8 +985,8 @@ class SphericalHarmonics:
     @phase_convention.setter
     def phase_convention(self, value):
         """Set the phase convention."""
-        if not isinstance(value, bool):
-            raise TypeError("phase_convention must be a boolean value")
+        if not isinstance(value, (str, type(None))):
+            raise TypeError("phase_convention must be a string or None")
         if value != self._phase_convention:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
