@@ -188,7 +188,7 @@ def fuma2nm(fuma):
 
 
 def spherical_harmonic_basis(
-        n_sh, coordinates, normalization="n3d", channel_convention="acn",
+        n_max, coordinates, normalization="n3d", channel_convention="acn",
         phase_convention=True
     ):
     r"""
@@ -216,7 +216,7 @@ def spherical_harmonic_basis(
 
     Parameters
     ----------
-    n_sh : integer
+    n_max : integer
         Spherical harmonic order
     coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
         `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
@@ -242,13 +242,13 @@ def spherical_harmonic_basis(
     Examples
     --------
     >>> import spharpy
-    >>> n_sh = 2
+    >>> n_max = 2
     >>> coordinates = spharpy.samplings.icosahedron()
-    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_sh, coordinates)
+    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)
 
     """
 
-    n_coeff = (n_sh + 1) ** 2
+    n_coeff = (n_max + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=complex)
 
@@ -272,7 +272,7 @@ def spherical_harmonic_basis(
     return basis
 
 
-def spherical_harmonic_basis_gradient(n_sh, coordinates):
+def spherical_harmonic_basis_gradient(n_max, coordinates):
     r"""
     Calulcates the unit sphere gradients of the complex spherical harmonics.
 
@@ -302,7 +302,7 @@ def spherical_harmonic_basis_gradient(n_sh, coordinates):
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         Spherical harmonic order
     coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
         `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
@@ -319,9 +319,9 @@ def spherical_harmonic_basis_gradient(n_sh, coordinates):
     Examples
     --------
     >>> import spharpy
-    >>> n_sh = 2
+    >>> n_max = 2
     >>> coordinates = spharpy.samplings.icosahedron()
-    >>> grad_theta, grad_phi = spharpy.spherical.spherical_harmonic_basis_gradient(n_sh, coordinates)
+    >>> grad_theta, grad_phi = spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)
 
 
     """  # noqa: 501
@@ -332,7 +332,7 @@ def spherical_harmonic_basis_gradient(n_sh, coordinates):
         coordinates = pf.Coordinates(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2])
 
     n_points = coordinates.csize
-    n_coeff = (n_sh + 1) ** 2
+    n_coeff = (n_max + 1) ** 2
     theta = coordinates.colatitude
     phi = coordinates.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
@@ -351,7 +351,7 @@ def spherical_harmonic_basis_gradient(n_sh, coordinates):
 
 
 def spherical_harmonic_basis_real(
-        n_sh, coordinates, normalization="n3d", channel_convention="acn",
+        n_max, coordinates, normalization="n3d", channel_convention="acn",
         phase_convention=True
     ):
     r"""
@@ -369,7 +369,7 @@ def spherical_harmonic_basis_real(
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         Spherical harmonic order
     coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
         `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
@@ -392,7 +392,7 @@ def spherical_harmonic_basis_real(
 
 
     """
-    n_coeff = (n_sh + 1) ** 2
+    n_coeff = (n_max + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=float)
 
@@ -417,7 +417,7 @@ def spherical_harmonic_basis_real(
     return basis
 
 
-def spherical_harmonic_basis_gradient_real(n_sh, coordinates):
+def spherical_harmonic_basis_gradient_real(n_max, coordinates):
     r"""
     Calulcates the unit sphere gradients of the real valued spherical hamonics.
 
@@ -452,7 +452,7 @@ def spherical_harmonic_basis_gradient_real(n_sh, coordinates):
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         Spherical harmonic order
     coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
         `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
@@ -473,7 +473,7 @@ def spherical_harmonic_basis_gradient_real(n_sh, coordinates):
             coordinates = coordinates.T
         coordinates = pf.Coordinates(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2])
     n_points = coordinates.csize
-    n_coeff = (n_sh + 1) ** 2
+    n_coeff = (n_max + 1) ** 2
     theta = coordinates.colatitude
     phi = coordinates.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=float)
@@ -492,7 +492,7 @@ def spherical_harmonic_basis_gradient_real(n_sh, coordinates):
     return grad_theta, grad_phi
 
 
-def modal_strength(n_sh,
+def modal_strength(n_max,
                    kr,
                    arraytype='rigid'):
     r"""
@@ -521,7 +521,7 @@ def modal_strength(n_sh,
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         The spherical harmonic order
     kr : ndarray, float
         Wave number * radius
@@ -535,12 +535,12 @@ def modal_strength(n_sh,
         Modal strength diagonal matrix
 
     """
-    n_coeff = (n_sh+1)**2
+    n_coeff = (n_max+1)**2
     n_bins = kr.shape[0]
 
     modal_strength_mat = np.zeros((n_bins, n_coeff, n_coeff), dtype=complex)
 
-    for n in range(n_sh+1):
+    for n in range(n_max+1):
         bn = _modal_strength(n, kr, arraytype)
         for m in range(-n, n+1):
             acn = n*n + n + m
@@ -568,7 +568,7 @@ def _modal_strength(n, kr, config):
 
 
 def aperture_vibrating_spherical_cap(
-        n_sh,
+        n_max,
         rad_sphere,
         rad_cap):
     r"""
@@ -593,7 +593,7 @@ def aperture_vibrating_spherical_cap(
 
     Parameters
     ----------
-    n_sh : integer, ndarray
+    n_max : integer, ndarray
         Maximal spherical harmonic order
     rad_sphere : double
         Radius of the sphere
@@ -622,12 +622,12 @@ def aperture_vibrating_spherical_cap(
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
     arg = np.cos(angle_cap)
-    n_sh = (n_sh+1)**2
+    n_max = (n_max+1)**2
 
-    aperture = np.zeros((n_sh, n_sh), dtype=float)
+    aperture = np.zeros((n_max, n_max), dtype=float)
 
     aperture[0, 0] = (1-arg)*2*np.pi
-    for n in range(1, n_sh+1):
+    for n in range(1, n_max+1):
         legendre_minus = special.legendre(n-1)(arg)
         legendre_plus = special.legendre(n+1)(arg)
         legendre_term = legendre_minus - legendre_plus
@@ -639,7 +639,7 @@ def aperture_vibrating_spherical_cap(
 
 
 def radiation_from_sphere(
-        n_sh,
+        n_max,
         rad_sphere,
         k,
         distance,
@@ -665,7 +665,7 @@ def radiation_from_sphere(
 
     Parameters
     ----------
-    n_sh : integer
+    n_max : integer
         Maximal spherical harmonic order
     rad_sphere : float
         Radius of the sphere
@@ -685,13 +685,13 @@ def radiation_from_sphere(
         :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
     """
-    n_sh = (n_sh+1)**2
+    n_max = (n_max+1)**2
 
     k = np.atleast_1d(k)
     n_bins = k.shape[0]
-    radiation = np.zeros((n_bins, n_sh, n_sh), dtype=complex)
+    radiation = np.zeros((n_bins, n_max, n_max), dtype=complex)
 
-    for n in range(n_sh+1):
+    for n in range(n_max+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
         hankel_prime = _special.spherical_hankel(
             n, k*rad_sphere, kind=2, derivative=True)
@@ -704,14 +704,14 @@ def radiation_from_sphere(
     return radiation
 
 
-def sid(n_sh):
-    """Calculates the SID indices up to spherical harmonic order n_sh.
+def sid(n_max):
+    """Calculates the SID indices up to spherical harmonic order n_max.
     The SID indices were originally proposed by Daniel [#]_, more recently
     ACN indexing has been favored and is used in the AmbiX format [#]_.
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         The maximum spherical harmonic order
 
     Returns
@@ -734,11 +734,11 @@ def sid(n_sh):
             vol. 3, pp. 1-11, 2011.
 
     """
-    n_sh = (n_sh+1)**2
-    sid_n = sph_identity_matrix(n_sh, 'n-nm').T @ np.arange(0, n_sh+1)
-    sid_m = np.zeros(n_sh, dtype=int)
+    n_max = (n_max+1)**2
+    sid_n = sph_identity_matrix(n_max, 'n-nm').T @ np.arange(0, n_max+1)
+    sid_m = np.zeros(n_max, dtype=int)
     idx_n = 0
-    for n in range(1, n_sh+1):
+    for n in range(1, n_max+1):
         for m in range(1, n+1):
             sid_m[idx_n + 2*m-1] = n-m+1
             sid_m[idx_n + 2*m] = -(n-m+1)
@@ -748,13 +748,13 @@ def sid(n_sh):
     return sid_n, sid_m
 
 
-def sid2acn(n_sh):
+def sid2acn(n_max):
     """Convert from SID channel indexing to ACN indeces.
     Returns the indices to achieve a corresponding linear acn indexing.
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         The maximum spherical harmonic order.
 
     Returns
@@ -762,17 +762,17 @@ def sid2acn(n_sh):
     acn : ndarray, int
         The SID indices sorted according to a respective linear ACN indexing.
     """
-    sid_n, sid_m = sid(n_sh)
+    sid_n, sid_m = sid(n_max)
     linear_sid = nm2acn(sid_n, sid_m)
     return np.argsort(linear_sid)
 
 
-def sph_identity_matrix(n_sh, type='n-nm'):
+def sph_identity_matrix(n_max, type='n-nm'):
     """Calculate a spherical harmonic identity matrix.
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         The spherical harmonic order.
     type : str, optional
         The type of identity matrix. Currently only 'n-nm' is implemented.
@@ -790,8 +790,8 @@ def sph_identity_matrix(n_sh, type='n-nm'):
 
     >>> import spharpy
     >>> import matplotlib.pyplot as plt
-    >>> n_sh = 2
-    >>> E = spharpy.spherical.sph_identity_matrix(n_sh, type='n-nm')
+    >>> n_max = 2
+    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
     >>> a_n = [1, 2, 3]
     >>> a_nm = E.T @ a_n
     >>> a_nm
@@ -803,20 +803,20 @@ def sph_identity_matrix(n_sh, type='n-nm'):
 
         >>> import spharpy
         >>> import matplotlib.pyplot as plt
-        >>> n_sh = 2
-        >>> E = spharpy.spherical.sph_identity_matrix(n_sh, type='n-nm')
+        >>> n_max = 2
+        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
         >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
         >>> plt.gca().set_aspect('equal')
 
     """
-    n_sh = (n_sh+1)**2
+    n_max = (n_max+1)**2
 
     if type != 'n-nm':
         raise NotImplementedError
 
-    identity_matrix = np.zeros((n_sh+1, n_sh), dtype=int)
+    identity_matrix = np.zeros((n_max+1, n_max), dtype=int)
 
-    for n in range(n_sh+1):
+    for n in range(n_max+1):
         m = np.arange(-n, n+1)
         linear_nm = nm2acn(np.tile(n, m.shape), m)
         identity_matrix[n, linear_nm] = 1
@@ -909,7 +909,7 @@ class SphericalHarmonics:
 
     Parameters
     ----------
-    n_sh : int
+    n_max : int
         Maximum spherical harmonic order
     coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
         `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
@@ -936,7 +936,7 @@ class SphericalHarmonics:
 
     def __init__(
         self,
-        n_sh,
+        n_max,
         coordinates,
         basis_type="real",
         normalization="n3d",
@@ -945,7 +945,7 @@ class SphericalHarmonics:
         phase_convention=True
     ):
         # hidden attributes
-        self._n_sh = None
+        self._n_max = None
         self._coordinates = pf.Coordinates()
         self._basis_type = None
         self._weights = None
@@ -954,7 +954,7 @@ class SphericalHarmonics:
         self._normalization = None  # gain norm. conv.
         self._phase_convention = None
 
-        self.n_sh = n_sh
+        self.n_max = n_max
         self.coordinates = coordinates
         self.basis_type = basis_type
         self.inverse_transform = inverse_transform
@@ -1007,23 +1007,23 @@ class SphericalHarmonics:
         self._weights = value
 
     @property
-    def n_sh(self):
+    def n_max(self):
         """int: Get the spherical harmonic order."""
-        return self._n_sh
+        return self._n_max
 
-    @n_sh.setter
-    def n_sh(self, value):
+    @n_max.setter
+    def n_max(self, value):
         """Set the spherical harmonic order."""
         if value < 0:
-            raise ValueError("n_sh must be a positive integer")
+            raise ValueError("n_max must be a positive integer")
         if value % 1 != 0:
-            raise ValueError("n_sh must be an integer value")
-        if value != self._n_sh:
+            raise ValueError("n_max must be an integer value")
+        if value != self._n_max:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
             self._recompute_inverse = True
             self._recompute_inverse_gradient = True
-        self._n_sh = int(value)  # Cast to int for safety
+        self._n_max = int(value)  # Cast to int for safety
 
     @property
     def coordinates(self):
@@ -1165,7 +1165,7 @@ class SphericalHarmonics:
                 "Invalid signal type, should be either 'complex' or 'real'"
             )
         self._basis = function(
-            self.n_sh, self.coordinates,
+            self.n_max, self.coordinates,
             self.normalization, self.channel_convention)
 
     def _compute_basis_gradient(self):
@@ -1190,7 +1190,7 @@ class SphericalHarmonics:
                     "Invalid basis type, should be either 'complex' or 'real'"
                 )
             self._basis_gradient_theta, self._basis_gradient_phi = function(
-                self.n_sh, self.coordinates)
+                self.n_max, self.coordinates)
 
     @property
     def basis_inv(self):

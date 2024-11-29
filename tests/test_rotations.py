@@ -30,7 +30,7 @@ def test_rotation_matrix_z_axis_complex():
     np.testing.assert_allclose(rot_mat, reference)
 
 
-def test_rotation_sh_basis_z_axis_complex():
+def test_rotation_max_basis_z_axis_complex():
     rot_angle = np.pi/2
     n_max = 2
     coords_x = Coordinates(1, 0, 0)
@@ -64,7 +64,7 @@ def test_rotation_maxtrix_z_axis_real():
     np.testing.assert_allclose(rot_matrix, reference)
 
 
-def test_rotation_sh_basis_z_axis_real():
+def test_rotation_max_basis_z_axis_real():
     rot_angle = np.pi/2
     n_max = 2
     coords_x = Coordinates(1, 0, 0)

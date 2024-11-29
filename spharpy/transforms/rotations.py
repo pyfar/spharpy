@@ -263,7 +263,7 @@ class RotationSH(Rotation):
         euler_angles = np.atleast_2d(self.as_euler('zyz'))
         n_matrices = euler_angles.shape[0]
 
-        n_sh = (self.n_max+1)**2
+        n_max = (self.n_max+1)**2
         if type == 'real':
             dtype = float
             rot_func = wigner_d_rotation_real
@@ -273,7 +273,7 @@ class RotationSH(Rotation):
         else:
             raise ValueError("Invalid spherical harmonic type {}".format(type))
 
-        D = np.zeros((n_matrices, n_sh, n_sh), dtype=dtype)
+        D = np.zeros((n_matrices, n_max, n_max), dtype=dtype)
 
         for idx, angles in enumerate(euler_angles):
             D[idx, :, :] = rot_func(
@@ -453,9 +453,9 @@ def wigner_d_rotation(n_max, alpha, beta, gamma):
 
     """
 
-    n_sh = (n_max+1)**2
+    n_max = (n_max+1)**2
 
-    R = np.zeros((n_sh, n_sh), dtype=complex)
+    R = np.zeros((n_max, n_max), dtype=complex)
 
     for row in np.arange(0, (n_max+1)**2):
         n_dash, m_dash = spharpy.spherical.acn_to_nm(row)
@@ -510,8 +510,8 @@ def wigner_d_rotation_real(n_max, alpha, beta, gamma):
             pp. 19–27, Dec. 1997, doi: 10.1016/S0166-1280(97)00185-1.
 
     """
-    n_sh = (n_max+1)**2
-    R = np.zeros((n_sh, n_sh), dtype=float)
+    n_max = (n_max+1)**2
+    R = np.zeros((n_max, n_max), dtype=float)
 
     for row_acn in np.arange(0, (n_max+1)**2):
         for col_acn in np.arange(0, (n_max+1)**2):

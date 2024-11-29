@@ -15,8 +15,8 @@ def test_aperture_diag():
 
     angle_cap = np.arcsin(rad_cap / rad_sphere)
     arg = np.cos(angle_cap)
-    n_sh = n_max+1
-    reference = np.zeros(n_sh, dtype=float)
+    n_max = n_max+1
+    reference = np.zeros(n_max, dtype=float)
     reference[0] = (1-arg)*2*np.pi
     for n in range(1, n_max+1):
         legendre_minus = legendre(n-1)(arg)
