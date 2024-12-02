@@ -34,8 +34,8 @@ def test_acn_to_nm_array():
     m_ref = np.array([0, -1, 0, 1])
 
     n_max = 1
-    n_sh = (n_max + 1)**2
-    acn = np.arange(0, n_sh)
+    n_max = (n_max + 1)**2
+    acn = np.arange(0, n_max)
     n, m = sh.acn_to_nm(acn)
 
     np.testing.assert_equal(n, n_ref)
@@ -47,8 +47,8 @@ def test_nm_to_acn_array():
     m = np.array([0, -1, 0, 1])
 
     n_max = 1
-    n_sh = (n_max + 1)**2
-    acn_ref = np.arange(0, n_sh)
+    n_max = (n_max + 1)**2
+    acn_ref = np.arange(0, n_max)
 
     acn = sh.nm_to_acn(n, m)
 

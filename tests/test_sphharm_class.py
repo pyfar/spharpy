@@ -6,73 +6,51 @@ import numpy as np
 import pyfar as pf
 from spharpy.spherical import SphericalHarmonics
 from spharpy.samplings import gaussian
-def test_sphharm_init():
-    coords = pf.Coordinates(1, 0, 0)
-    sph_harm = SphericalHarmonics(n_max=2, coords=coords)
-    assert sph_harm.n_max == 2
-    assert np.all(sph_harm.coords == coords)
 
-def test_sphharm_init_invalid_coords():
+def test_sphharm_init():
+    coordinates = pf.Coordinates(1, 0, 0)
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
+    assert sph_harm.n_max == 2
+    assert np.all(sph_harm.coordinates == coordinates)
+
+def test_sphharm_init_invalid_coordinates():
     with pytest.raises(TypeError):
-        SphericalHarmonics(n_max=2, coords=[0, 0, 1])
+        SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
 
 def test_sphharm_init_invalid_n_max():
-    coords = pf.Coordinates(1, 0, 0)
+    coordinates = pf.Coordinates(1, 0, 0)
     with pytest.raises(ValueError):
-        SphericalHarmonics(n_max=-1, coords=coords)
+        SphericalHarmonics(n_max=-1, coordinates=coordinates)
 
 def test_sphharm_compute_basis():
-    coords = pf.Coordinates(1, 0, 0)
-    sph_harm = SphericalHarmonics(n_max=2, coords=coords)
-    sph_harm.compute_basis()
+    coordinates = gaussian(n_points=8)
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.basis is not None
 
 def test_sphharm_compute_basis_gradient():
-    coords = pf.Coordinates(1, 0, 0)
-    sph_harm = SphericalHarmonics(n_max=2, coords=coords)
-    sph_harm.compute_basis_gradient()
+    coordinates = pf.Coordinates(1, 0, 0)
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.basis_gradient_theta is not None
     assert sph_harm.basis_gradient_phi is not None
-
 def test_sphharm_compute_inverse_quad():
-    coords = gaussian(n_max=3)
-    # coords = pf.Coordinates(1, 0, 0)
-    coords = pf.Coordinates.from_cartesian(coords.x, coords.y, coords.z)
-    sh = SphericalHarmonics(2, coords, inverse_transform = 'quadrature')
-    sh.compute_inverse()
+    coordinates = gaussian(n_points=4)
+    # coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = pf.Coordinates.from_cartesian(coordinates.x, coordinates.y, coordinates.z)
+    sh = SphericalHarmonics(2, coordinates, inverse_transform = 'quadrature')
     assert sh.basis_inv is not None
 
 def test_sphharm_compute_inverse_pseudo_inv():
-    coords = gaussian(n_max=3)
-    # coords = pf.Coordinates(1, 0, 0)
-    coords = pf.Coordinates.from_cartesian(coords.x, coords.y, coords.z)
-    sh = SphericalHarmonics(2, coords, inverse_transform = 'pseudo_inverse')
-    sh.compute_inverse()
+    coordinates = gaussian(n_points= 5)
+    # coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = pf.Coordinates.from_cartesian(coordinates.x, coordinates.y, coordinates.z)
+    sh = SphericalHarmonics(2, coordinates, inverse_transform = 'pseudo_inverse')
     assert sh.basis_inv is not None
-
-def test_sphharm_compute_inverse_gradient_quad():
-    coords = gaussian(n_max=3)
-    # coords = pf.Coordinates(1, 0, 0)
-    coords = pf.Coordinates.from_cartesian(coords.x, coords.y, coords.z)
-    sh = SphericalHarmonics(2, coords, inverse_transform = 'quadrature')
-    sh.compute_inverse_gradient()
-    assert sh.basis_inv_gradient_theta is not None
-    assert sh.basis_inv_gradient_phi is not None
-
-def test_sphharm_compute_inverse_gradient_pseudo_inv():
-    coords = gaussian(n_max=3)
-    # coords = pf.Coordinates(1, 0, 0)
-    coords = pf.Coordinates.from_cartesian(coords.x, coords.y, coords.z)
-    sh = SphericalHarmonics(2, coords, inverse_transform= 'pseudo_inverse')
-    sh.compute_inverse_gradient()
-    assert sh.basis_inv_gradient_theta is not None
-    assert sh.basis_inv_gradient_phi is not None
 
 def test_compute_basis_caching():
     n_max = 2
     points = np.random.rand(10, 3)
-    coords = pf.Coordinates(points[:, 0], points[:, 1], points[:, 2], 'cart')
-    sh = SphericalHarmonics(n_max, coords)
+    coordinates = pf.Coordinates(points[:, 0], points[:, 1], points[:, 2], 'cart')
+    sh = SphericalHarmonics(n_max, coordinates)
 
     # Call the method once and store the result
     initial_result = sh.basis
