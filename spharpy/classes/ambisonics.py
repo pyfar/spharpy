@@ -1,6 +1,7 @@
 from pyfar import Signal
-from spharpy.spherical import n3d_to_maxn, n3d_to_sn3d_norm
-from spharpy.spherical import fuma_to_nm, acn_to_nm, nm_to_acn
+from spharpy.spherical import n3d2maxn, n3d2sn3d_norm
+from spharpy.spherical import fuma2nm, acn2nm, nm2acn
+import numpy as np
 
 
 class SphericalHarmonicSignal(Signal):
@@ -78,6 +79,7 @@ class SphericalHarmonicSignal(Signal):
             basis_type,
             normalization,
             channel_convention,
+            phase_convention=None,
             n_samples=None,
             domain='time',
             fft_norm='none',
@@ -92,8 +94,9 @@ class SphericalHarmonicSignal(Signal):
         if n_max % 1 != 0:
             raise ValueError("n_max must be an integer value")
         if not data.shape[-2] >= (n_max + 1) ** 2:
-            raise ValueError('Data has to few sh coefficients '
-                             'for n_max = {n_max}.')
+            raise ValueError('Data has to few sh coefficients for '
+                             f'{n_max=}. Highest possible n_max is '
+                             f'{int(np.sqrt(data.shape[-2]))-1}')
         self._n_max = int(n_max)
 
         # set basis_type
@@ -117,6 +120,15 @@ class SphericalHarmonicSignal(Signal):
             raise ValueError("Invalid channel convention, has to be 'acn' "
                              f"or 'fuma', but is {channel_convention}")
         self._channel_convention = channel_convention
+
+        # set phase convention
+        if not isinstance(phase_convention, type(None)):
+            if not isinstance(phase_convention, type(str)):
+                raise TypeError("phase_convention must be a string or None")
+            elif (not phase_convention == "Condon-Shortley"):
+                raise TypeError("Only Condon-Shortley phase convention is "
+                                "implemented yet.")
+        self._phase_convention = phase_convention
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -144,6 +156,10 @@ class SphericalHarmonicSignal(Signal):
     def channel_convention(self):
         return self._channel_convention
 
+    @property
+    def phase_convention(self):
+        return self._phase_convention
+
     @channel_convention.setter
     def channel_convention(self, value):
         if value not in ["acn", "fuma"]:
@@ -160,41 +176,41 @@ class SphericalHarmonicSignal(Signal):
         acn = range(0, (self.n_max + 1) ** 2)
 
         if self.channel_convention == "fuma":
-            orders, degrees = fuma_to_nm(acn)
+            orders, degrees = fuma2nm(acn)
         else:
-            orders, degrees = acn_to_nm(acn)
+            orders, degrees = acn2nm(acn)
 
         if self._normalization == 'n3d':
             if value == "sn3d":
                 self._data[:, :, ...] *= \
-                    n3d_to_sn3d_norm(degrees, orders)
+                    n3d2sn3d_norm(degrees, orders)
             elif value == "maxN":
                 self._data[:, :, ...] *= \
-                    n3d_to_maxn(acn)
+                    n3d2maxn(acn)
 
         if self._normalization == 'sn3d':
             # convert to sn3d
             self._data[:, :, :] /= \
-                    n3d_to_sn3d_norm(degrees, orders)
+                    n3d2sn3d_norm(degrees, orders)
             if value == "maxN":
-                self._data[:, acn, :] *= n3d_to_maxn(acn)
+                self._data[:, acn, :] *= n3d2maxn(acn)
 
         if self._normalization == 'maxN':
             # convert to n3d
             self._data[:, acn, :] /= \
-                    n3d_to_maxn(acn)
+                    n3d2maxn(acn)
             if value == "sn3d":
                 self._data[:, acn, :] *= \
-                    n3d_to_sn3d_norm(acn)
+                    n3d2sn3d_norm(acn)
 
     def _change_channel_convention(self):
-        n_coeffs = (self.n_sh + 1) ** 2
+        n_coeffs = (self.n_max + 1) ** 2
         if self._channel_convention == 'acn':
-            n, m = acn_to_nm(n_coeffs)
-            #  idx = nm_to_fuma(n, m)
+            n, m = acn2nm(n_coeffs)
+            #  idx = nm2fuma(n, m)
             raise NotImplementedError('not implemented')
         elif self._channel_convention == 'fuma':
-            n, m = fuma_to_nm(n_coeffs)
-            idx = nm_to_acn(n, m)
+            n, m = fuma2nm(n_coeffs)
+            idx = nm2acn(n, m)
 
         self._data = self._data[:, idx, ...]

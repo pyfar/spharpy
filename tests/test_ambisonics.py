@@ -13,7 +13,6 @@ def test_spherical_harmonic_signal_init():
                                                [1., 2., 3.]]),
                                      44100, n_max=1, basis_type='real',
                                      channel_convention='acn',
-                                     phase_convention=True,
                                      normalization='n3d')
     assert isinstance(signal, SphericalHarmonicSignal)
 
@@ -28,7 +27,6 @@ def test_spherical_harmonic_signal_init_wrong_shape():
                                           [1., 2., 3.]]),
                                 44100, n_max=1, basis_type='real',
                                 channel_convention='acn',
-                                phase_convention=True,
                                 normalization='n3d')
 
 
