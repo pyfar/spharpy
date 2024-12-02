@@ -88,6 +88,40 @@ def nm2acn(n, m):
     return n**2 + n + m
 
 
+def nm2fuma(n, m):
+    r"""
+    Calculate the FuMa channel index for a given spherical harmonic order n
+    and degree m, according to the FuMa (Furse-Malham)
+    Channel Ordering Convention.
+
+    Parameters
+    ----------
+    n : integer
+        Spherical harmonic order
+    m : integer
+        Spherical harmonic degree
+
+    Returns
+    -------
+    fuma : integer
+        FuMa channel index
+    """
+
+    fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
+
+    # convert (n, m) to the ACN index
+    acn = nm2acn(n, m)
+
+    if acn < 0 or acn >= len(fuma_mapping):
+        raise ValueError(
+            "nm2fuma only supports up to 3rd order"
+        )
+
+    # convert to fuma
+    fuma = fuma_mapping.index(acn)
+    return fuma
+
+
 def spherical_harmonic_basis(n_max, coords):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
