@@ -83,3 +83,8 @@ def test_sid2acn():
 
     acn_indices = sh.sid2acn(n_max)
     np.testing.assert_equal(reference_acn, acn_indices)
+
+
+def test_nm2fuma_signle_val():
+    fuma = sh.nm2fuma(0, 0)
+    assert fuma == 0
