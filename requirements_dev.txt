@@ -9,7 +9,6 @@ bump2version
 wheel
 watchdog
 ruff
-tox
 coverage
 Sphinx
 twine
@@ -17,9 +16,13 @@ cryptography
 PyYAML
 pytest-runner
 numpydoc
-insipid-sphinx-theme
+pydata-sphinx-theme
 autodocsumm
 nbmake
-pyfar>=0.6.0
+pyfar>=0.6.0,<0.8.0
 nbsphinx
 nbsphinx-link
+ipykernel
+pydata-sphinx-theme
+sphinx-design
+sphinx-favicon

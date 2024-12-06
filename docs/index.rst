@@ -22,15 +22,14 @@ Documentation
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    modules
 
 Contributing
-===============
+============
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     contributing
 
