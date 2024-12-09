@@ -88,7 +88,7 @@ def nm2acn(n, m):
     return n**2 + n + m
 
 
-def nm2fuma(n, m):
+def nm_to_fuma(n, m):
     r"""
     Calculate the FuMa channel index for a given spherical harmonic order n
     and degree m, according to the FuMa (Furse-Malham)
@@ -109,16 +109,25 @@ def nm2fuma(n, m):
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
 
+    n = np.asarray([n], dtype=int)
+    m = np.asarray([m], dtype=int)
+
+    if n.shape != m.shape:
+        raise ValueError("n and m need to be of the same size")
+
     # convert (n, m) to the ACN index
     acn = nm2acn(n, m)
 
-    if acn < 0 or acn >= len(fuma_mapping):
+    if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
         raise ValueError(
             "nm2fuma only supports up to 3rd order"
         )
 
-    # convert to fuma
-    fuma = fuma_mapping.index(acn)
+    acn = np.atleast_2d(acn).T
+    fuma = np.array([], dtype=int)
+    for a in acn:
+        fuma = np.append(fuma, fuma_mapping.index(a))
+
     return fuma
 
 
