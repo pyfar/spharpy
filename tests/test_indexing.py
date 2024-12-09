@@ -86,13 +86,13 @@ def test_sid2acn():
 
 
 def test_nm2fuma_single_val():
-    fuma = sh.nm2fuma(0, 0)
+    fuma = sh.nm_to_fuma(0, 0)
     assert fuma == 0
 
-    fuma = sh.nm2fuma(1, 0)
+    fuma = sh.nm_to_fuma(1, 0)
     assert fuma == 1
 
-    fuma = sh.nm2fuma(1, -1)
+    fuma = sh.nm_to_fuma(1, -1)
     assert fuma == 3
 
 
@@ -100,7 +100,7 @@ def test_nm2fuma_array():
     n = np.array([0, 1, 1])
     m = np.array([0, 0, -1])
 
-    fuma = sh.nm2fuma(n, m)
+    fuma = sh.nm_to_fuma(n, m)
     assert fuma[0] == 0
     assert fuma[1] == 1
     assert fuma[2] == 3
