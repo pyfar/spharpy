@@ -46,9 +46,7 @@ Ready to contribute? Here's how to set up `spharpy` for local development using 
 
     $ conda create --name spharpy python
     $ conda activate spharpy
-    $ conda install pip
-    $ pip install -e .
-    $ pip install -r requirements_dev.txt
+    $ pip install -e ".[dev]"
 
 4. Create a branch for local development. Indicate the intention of your branch in its respective name (i.e. `feature/branch-name` or `bugfix/branch-name`)::
 
@@ -59,7 +57,7 @@ Ready to contribute? Here's how to set up `spharpy` for local development using 
 5. When you're done making changes, check that your changes pass ruff and the
    tests::
 
-    $ ruff pyfar tests
+    $ ruff check
     $ pytest
 
    ruff must pass without any warnings for `./spharpy` and `./tests` using the default or a stricter configuration. Ruff ignores a couple of PEP Errors (see `./pyproject.toml`). If necessary, adjust your linting configuration in your IDE accordingly.

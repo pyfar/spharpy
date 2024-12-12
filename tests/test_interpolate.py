@@ -1,40 +1,28 @@
 import spharpy
-from spharpy.samplings import Coordinates
+from pyfar import Coordinates
 import spharpy.interpolate as interpolate
 import numpy as np
 
 
 def test_smooth_sphere_bivariate_spline_interpolation():
     n_max = 10
-    sampling = spharpy.samplings.equalarea(
+    sampling = spharpy.samplings.equal_area(
         n_max, n_points=500, condition_num=np.inf)
     Y = spharpy.spherical.spherical_harmonic_basis_real(n_max, sampling)
     y_vec = spharpy.spherical.spherical_harmonic_basis_real(
         n_max, Coordinates(1, 0, 0))
     data = Y @ y_vec.T
 
-    data = np.sin(sampling.elevation)*np.sin(2*sampling.azimuth)
+    data = np.sin(sampling.colatitude)*np.sin(2*sampling.azimuth)
 
-    interp_grid = spharpy.samplings.hyperinterpolation(35)
+    interp_grid = spharpy.samplings.hyperinterpolation(n_max=35)
 
-    data_grid = np.sin(interp_grid.elevation)*np.sin(2*interp_grid.azimuth)
+    data_grid = np.sin(interp_grid.colatitude)*np.sin(2*interp_grid.azimuth)
 
     interpolator = interpolate.SmoothSphereBivariateSpline(
         sampling, data, s=1e-4)
 
     interp_data = interpolator(interp_grid)
-
-    # check if error over entire sphere sufficiently small
-    assert np.linalg.norm(np.abs(interp_data - data_grid)) / \
-        np.linalg.norm(np.abs(data_grid)) < 1e-2
-
-    # convert to pyfar to coordinates and check the results
-    pf_sampling = sampling.to_pyfar()
-    interpolator = interpolate.SmoothSphereBivariateSpline(
-        pf_sampling, data, s=1e-4)
-
-    pf_interp_grid = interp_grid.to_pyfar()
-    interp_data = interpolator(pf_interp_grid)
 
     # check if error over entire sphere sufficiently small
     assert np.linalg.norm(np.abs(interp_data - data_grid)) / \

@@ -127,10 +127,7 @@ def spherical_hankel(n, z, kind=2, derivative=False):
     n = np.asarray(n, dtype=int)
     z = np.asarray(z, dtype=float)
 
-    if derivative:
-        ufunc = _spherical_hankel_derivative
-    else:
-        ufunc = _spherical_hankel
+    ufunc = _spherical_hankel_derivative if derivative else _spherical_hankel
 
     if n.size > 1:
         hankel = np.zeros((n.size, z.size), dtype=complex)
@@ -156,10 +153,8 @@ def _spherical_hankel(n, z, kind):
 
 
 def _spherical_hankel_derivative(n, z, kind):
-    hankel = _spherical_hankel(n-1, z, kind) - \
-        (n+1)/z * _spherical_hankel(n, z, kind)
-
-    return hankel
+    return _spherical_hankel(n - 1, z, kind) - (n + 1) / z * _spherical_hankel(
+        n, z, kind)
 
 
 def spherical_harmonic(n, m, theta, phi):
@@ -177,13 +172,13 @@ def spherical_harmonic(n, m, theta, phi):
     Returns
     -------
     spherical_harmonic : ndarray, double
-        The complex valued spherial harmonic of order n and degree m
+        The complex valued spherical harmonic of order n and degree m
 
     Note
     ----
     This function wraps the spherical harmonic implementation from scipy.
     The only difference is that we return zeros instead of nan values
-    if $n < |m|$.
+    if n < abs(m).
 
     """
     theta = np.asarray(theta, dtype=float)
@@ -211,6 +206,15 @@ def spherical_harmonic_real(n, m, theta, phi):
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
         \end{cases}
 
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1–11, 2011.
+
+
+
     Parameters
     ----------
     n : unsigned int
@@ -226,13 +230,6 @@ def spherical_harmonic_real(n, m, theta, phi):
     -------
     spherical_harmonic : ndarray, double
         The real valued spherial harmonic of order n and degree m
-
-    References
-    ----------
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1-11, 2011.
 
     """
     # careful here, scipy uses phi as the elevation angle and
@@ -306,18 +303,17 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     """
     if m == 0:
-        res = np.zeros(theta.shape, dtype=complex)
-    else:
-        factor = np.sqrt((2*n+1)/(2*n-1))/2
-        exp_phi = np.exp(1j*phi)
-        first = np.sqrt((n+m)*(n+m-1)) * exp_phi * \
-            spherical_harmonic(n-1, m-1, theta, phi)
-        second = np.sqrt((n-m) * (n-m-1)) / exp_phi * \
-            spherical_harmonic(n-1, m+1, theta, phi)
-        Ynm_sin_theta = (-1) * factor * (first + second)
-        res = Ynm_sin_theta * 1j
+        return np.zeros(theta.shape, dtype=complex)
 
-    return res
+    factor = np.sqrt((2*n+1)/(2*n-1))/2
+    exp_phi = np.exp(1j*phi)
+    first = np.sqrt((n+m)*(n+m-1)) * exp_phi * spherical_harmonic(
+        n-1, m-1, theta, phi)
+    second = np.sqrt((n-m) * (n-m-1)) / exp_phi * spherical_harmonic(
+        n-1, m+1, theta, phi)
+    Ynm_sin_theta = (-1) * factor * (first + second)
+
+    return Ynm_sin_theta * 1j
 
 
 def spherical_harmonic_derivative_theta(n, m, theta, phi):
@@ -344,16 +340,14 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     """
     if n == 0:
-        res = np.zeros(theta.shape, dtype=complex)
-    else:
-        exp_phi = np.exp(1j*phi)
-        first = np.sqrt((n-m+1) * (n+m)) * exp_phi * \
-            spherical_harmonic(n, m-1, theta, phi)
-        second = np.sqrt((n-m) * (n+m+1)) / exp_phi * \
-            spherical_harmonic(n, m+1, theta, phi)
-        res = (first-second)/2 * (-1)
+        return np.zeros(theta.shape, dtype=complex)
 
-    return res
+    exp_phi = np.exp(1j*phi)
+    first = np.sqrt((n-m+1) * (n+m)) * exp_phi * spherical_harmonic(
+        n, m-1, theta, phi)
+    second = np.sqrt((n-m) * (n+m+1)) / exp_phi * spherical_harmonic(
+        n, m+1, theta, phi)
+    return (first-second)/2 * (-1)
 
 
 def legendre_function(n, m, z, cs_phase=True):
@@ -419,7 +413,7 @@ def spherical_harmonic_normalization(n, m, norm='full'):
     m : int
         The spherical harmonic degree.
     norm : 'full', 'semi', optional
-        Normalization to use. Can be either fully normalzied on the sphere or
+        Normalization to use. Can be either fully normalized on the sphere or
         semi-normalized.
 
     Returns
@@ -431,22 +425,22 @@ def spherical_harmonic_normalization(n, m, norm='full'):
     """
     if np.abs(m) > n:
         factor = 0.0
+    elif norm == 'full':
+        z = n+m+1
+        factor = _spspecial.poch(z, -2*m)
+        factor *= (2*n+1)/(4*np.pi)
+        if int(m) != 0:
+            factor *= 2
+        factor = np.sqrt(factor)
+    elif norm == 'semi':
+        z = n+m+1
+        factor = _spspecial.poch(z, -2*m)
+        if int(m) != 0:
+            factor *= 2
+        factor = np.sqrt(factor)
     else:
-        if norm == 'full':
-            z = n+m+1
-            factor = _spspecial.poch(z, -2*m)
-            factor *= (2*n+1)/(4*np.pi)
-            if int(m) != 0:
-                factor *= 2
-            factor = np.sqrt(factor)
-        elif norm == 'semi':
-            z = n+m+1
-            factor = _spspecial.poch(z, -2*m)
-            if int(m) != 0:
-                factor *= 2
-            factor = np.sqrt(factor)
-        else:
-            raise ValueError("Unknown normalization.")
+        raise ValueError("Unknown normalization.")
+
     return factor
 
 
@@ -478,32 +472,27 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
     """
 
     m_abs = np.abs(m)
+
     if n == 0:
-        res = np.zeros(theta.shape, dtype=float)
-    else:
-        first = (n+m_abs)*(n-m_abs+1) * \
-            legendre_function(
-                n,
-                m_abs-1,
-                np.cos(theta),
-                cs_phase=False)
-        second = legendre_function(
+        return np.zeros(theta.shape, dtype=float)
+
+    first = (n+m_abs)*(n-m_abs+1) * \
+        legendre_function(
             n,
-            m_abs+1,
+            m_abs-1,
             np.cos(theta),
             cs_phase=False)
-        legendre_diff = 0.5*(first - second)
+    second = legendre_function(
+        n,
+        m_abs+1,
+        np.cos(theta),
+        cs_phase=False)
+    legendre_diff = 0.5*(first - second)
 
-        N_nm = spherical_harmonic_normalization(n, m_abs)
+    N_nm = spherical_harmonic_normalization(n, m_abs)
 
-        if m < 0:
-            phi_term = np.sin(m_abs*phi)
-        else:
-            phi_term = np.cos(m_abs*phi)
-
-        res = N_nm * legendre_diff * phi_term
-
-    return res
+    phi_term = np.sin(m_abs*phi) if m < 0 else np.cos(m_abs*phi)
+    return N_nm * legendre_diff * phi_term
 
 
 def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
@@ -534,24 +523,24 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
     """
     m_abs = np.abs(m)
     if m == 0:
-        res = np.zeros(theta.shape, dtype=float)
+        return np.zeros(theta.shape, dtype=float)
+
+    legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
+    N_nm = spherical_harmonic_normalization(n, m_abs)
+
+    if m < 0:
+        phi_term = np.cos(m_abs*phi) * m_abs
     else:
-        legendre = legendre_function(n, m_abs, np.cos(theta), cs_phase=False)
-        N_nm = spherical_harmonic_normalization(n, m_abs)
+        phi_term = -np.sin(m_abs*phi) * m_abs
 
-        if m < 0:
-            phi_term = np.cos(m_abs*phi) * m_abs
-        else:
-            phi_term = -np.sin(m_abs*phi) * m_abs
-
-        res = N_nm * legendre * phi_term
-
-    return res
+    return N_nm * legendre * phi_term
 
 
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     r"""The gradient of the real valued spherical harmonics with respect
-    to the azimuth angle $\phi$ [#]_.
+    to the azimuth angle phi.
+    The singularities at the poles are avoided using the formulation proposed
+    in [#]_.
 
     Parameters
     ----------
@@ -579,35 +568,30 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
+            Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
 
     """
     m_abs = np.abs(m)
+
     if m == 0:
-        res = np.zeros(theta.shape, dtype=float)
-    else:
-        first = (n+m_abs)*(n+m_abs-1) * \
-            legendre_function(
-                n-1,
-                m_abs-1,
-                np.cos(theta),
-                cs_phase=False)
-        second = legendre_function(
+        return np.zeros(theta.shape, dtype=float)
+
+    first = (n+m_abs)*(n+m_abs-1) * \
+        legendre_function(
             n-1,
-            m_abs+1,
+            m_abs-1,
             np.cos(theta),
             cs_phase=False)
-        legendre_diff = 0.5*(first + second)
-        N_nm = spherical_harmonic_normalization(n, m_abs)
+    second = legendre_function(
+        n-1,
+        m_abs+1,
+        np.cos(theta),
+        cs_phase=False)
+    legendre_diff = 0.5*(first + second)
+    N_nm = spherical_harmonic_normalization(n, m_abs)
 
-        if m < 0:
-            phi_term = np.cos(m_abs*phi)
-        else:
-            phi_term = -np.sin(m_abs*phi)
-
-        res = N_nm * legendre_diff * phi_term
-
-    return res
+    phi_term = np.cos(m_abs*phi) if m < 0 else -np.sin(m_abs*phi)
+    return N_nm * legendre_diff * phi_term
 
 
 def legendre_coefficients(order):
@@ -626,9 +610,7 @@ def legendre_coefficients(order):
 
     """
     leg = np.polynomial.legendre.Legendre.basis(order)
-    coefficients = np.polynomial.legendre.leg2poly(leg.coef)
-
-    return coefficients
+    return np.polynomial.legendre.leg2poly(leg.coef)
 
 
 def chebyshev_coefficients(order):
@@ -647,6 +629,4 @@ def chebyshev_coefficients(order):
 
     """
     cheb = np.polynomial.chebyshev.Chebyshev.basis(order)
-    coefficients = np.polynomial.chebyshev.cheb2poly(cheb.coef)
-
-    return coefficients
+    return np.polynomial.chebyshev.cheb2poly(cheb.coef)

@@ -1,34 +1,20 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-from spharpy._deprecation import convert_coordinates
 
 
 def acn2nm(acn):
     r"""
-    Calculate the spherical harmonic order n and degree m for a linear
-    coefficient index, according to the Ambisonics Channel Convention.
+    Calculate the order n and degree m from the linear coefficient index.
+
+    The linear index corresponds to the Ambisonics Channel Convention [#]_.
 
     .. math::
 
-        n = \lfloor \sqrt{acn + 1} \rfloor - 1
+        n = \lfloor \sqrt{\mathrm{acn} + 1} \rfloor - 1
 
-        m = acn - n^2 -n
+        m = \mathrm{acn} - n^2 -n
 
-
-    See [#]_ for more details.
-
-    Parameters
-    ----------
-    n : integer, ndarray
-        Spherical harmonic order
-    m : integer, ndarray
-        Spherical harmonic degree
-
-    Returns
-    -------
-    acn : integer, ndarray
-        Linear index
 
     References
     ----------
@@ -36,6 +22,19 @@ def acn2nm(acn):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
+
+
+    Parameters
+    ----------
+    acn : ndarray, int
+        Linear index
+
+    Parameters
+    ----------
+    n : ndarray, int
+        Spherical harmonic order
+    m : ndarray, int
+        Spherical harmonic degree
 
     """
     acn = np.asarray(acn, dtype=int)
@@ -50,27 +49,14 @@ def acn2nm(acn):
 
 
 def nm2acn(n, m):
-    """
-    Calculate the linear index coefficient for a spherical harmonic order n
-    and degree m, according to the Ambisonics Channel Convention.
+    r"""
+    Calculate the linear index coefficient for a order n and degree m,
+
+    The linear index corresponds to the Ambisonics Channel Convention [#]_.
 
     .. math::
 
-        acn = n^2 + n + m
-
-    See [#]_ for more details.
-
-    Parameters
-    ----------
-    n : integer, ndarray
-        Spherical harmonic order
-    m : integer, ndarray
-        Spherical harmonic degree
-
-    Returns
-    -------
-    acn : integer, ndarray
-        Linear index
+        \mathrm{acn} = n^2 + n + m
 
     References
     ----------
@@ -78,6 +64,19 @@ def nm2acn(n, m):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
+
+
+    Parameters
+    ----------
+    n : ndarray, int
+        Spherical harmonic order
+    m : ndarray, int
+        Spherical harmonic degree
+
+    Returns
+    -------
+    acn : ndarray, int
+        Linear index
 
     """
     n = np.asarray(n, dtype=int)
@@ -91,30 +90,15 @@ def nm2acn(n, m):
 
 def spherical_harmonic_basis(n_max, coords):
     r"""
-    Calulcates the complex valued spherical harmonic basis matrix of order Nmax
-    for a set of points given by their elevation and azimuth angles.
+    Calculates the complex valued spherical harmonic basis matrix.
+
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m`.
+    Condon-Shotley phase term :math:`(-1)^m` [#]_, [#]_.
 
     .. math::
 
         Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
         \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
-
-    See [#]_ and [#]_ for more details.
-
-    Parameters
-    ----------
-    n_max : integer
-        Spherical harmonic order
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
-        calculated
-
-    Returns
-    -------
-    Y : double, ndarray, matrix
-        Complex spherical harmonic basis matrix
 
     References
     ----------
@@ -122,20 +106,40 @@ def spherical_harmonic_basis(n_max, coords):
     .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
             Springer, 2015.
 
-    """ # noqa: 501
 
-    coords = convert_coordinates(coords)
+    Parameters
+    ----------
+    n_max : integer
+        Spherical harmonic order
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
+
+    Returns
+    -------
+    Y : ndarray, complex
+        Complex spherical harmonic basis matrix
+
+    Examples
+    --------
+
+    >>> import spharpy
+    >>> n_max = 2
+    >>> coords = spharpy.samplings.icosahedron()
+    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coords)
+
+    """
 
     n_coeff = (n_max+1)**2
 
-    basis = np.zeros((coords.n_points, n_coeff), dtype=complex)
+    basis = np.zeros((coords.csize, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
             order,
             degree,
-            coords.elevation,
+            coords.colatitude,
             coords.azimuth)
 
     return basis
@@ -143,44 +147,62 @@ def spherical_harmonic_basis(n_max, coords):
 
 def spherical_harmonic_basis_gradient(n_max, coords):
     r"""
-    Calulcates the gradient on the unit sphere of the complex valued spherical
-    harmonic basis matrix of order N for a set of points given by their
-    elevation and azimuth angles.
+    Calulcates the unit sphere gradients of the complex spherical harmonics.
+
     The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [#]_. This implementation avoids
-    singularities at the poles using identities derived in [#]_.
+    Condon-Shotley phase term :math:`(-1)^m` [#]_.
 
-    Parameters
-    ----------
-    n_max : integer
-        Spherical harmonic order
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
-        calculated
+    The angular parts of the gradient are defined as
 
-    Returns
-    -------
-    grad_elevation : double, ndarray, matrix
-        Gradient with regard to the elevation angle.
-    grad_azimuth : double, ndarray, matrix
-        Gradient with regard to the azimuth angle.
+    .. math::
+
+        \nabla_{(\theta, \phi)} Y_n^m(\theta, \phi) =
+        \frac{1}{\sin \theta} \frac{\partial Y_n^m(\theta, \phi)}
+        {\partial \phi} \vec{e}_\phi +
+        \frac{\partial Y_n^m(\theta, \theta)}
+        {\partial \theta} \vec{e}_\theta .
+
+
+    This implementation avoids singularities at the poles using identities
+    derived in [#]_.
 
 
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-
     .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
-    """ # noqa: 501
-    coords = convert_coordinates(coords)
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
 
-    n_points = coords.n_points
+    Returns
+    -------
+    grad_theta : ndarray, complex
+        Gradient with regard to the co-latitude angle.
+    grad_azimuth : ndarray, complex
+        Gradient with regard to the azimuth angle.
+
+    Examples
+    --------
+
+    >>> import spharpy
+    >>> n_max = 2
+    >>> coords = spharpy.samplings.icosahedron()
+    >>> Y_theta, Y_phi = spharpy.spherical.spherical_harmonic_basis_gradient(
+            n_max, coords)
+
+    """
+    n_points = coords.csize
     n_coeff = (n_max+1)**2
-    theta = coords.elevation
+    theta = coords.colatitude
     phi = coords.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
     grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
@@ -200,8 +222,8 @@ def spherical_harmonic_basis_gradient(n_max, coords):
 
 def spherical_harmonic_basis_real(n_max, coords):
     r"""
-    Calulcates the real valued spherical harmonic basis matrix of order Nmax
-    for a set of points given by their elevation and azimuth angles.
+    Calculates the real valued spherical harmonic basis matrix.
+
     The spherical harmonic functions are fully normalized (N3D) and follow
     the AmbiX phase convention [#]_.
 
@@ -214,20 +236,6 @@ def spherical_harmonic_basis_real(n_max, coords):
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
         \end{cases}
 
-
-    Parameters
-    ----------
-    n : integer
-        Spherical harmonic order
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
-        calculated
-
-    Returns
-    -------
-    Y : double, ndarray, matrix
-        Real valued spherical harmonic basis matrix
-
     References
     ----------
     .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
@@ -235,19 +243,32 @@ def spherical_harmonic_basis_real(n_max, coords):
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
 
-    """ # noqa: 501
-    coords = convert_coordinates(coords)
 
+    Parameters
+    ----------
+    n : int
+        Spherical harmonic order
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
+
+    Returns
+    -------
+    Y : ndarray, float
+        Real valued spherical harmonic basis matrix.
+
+
+    """
     n_coeff = (n_max+1)**2
 
-    basis = np.zeros((coords.n_points, n_coeff), dtype=float)
+    basis = np.zeros((coords.csize, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
         order, degree = acn2nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
             order,
             degree,
-            coords.elevation,
+            coords.colatitude,
             coords.azimuth)
 
     return basis
@@ -255,25 +276,25 @@ def spherical_harmonic_basis_real(n_max, coords):
 
 def spherical_harmonic_basis_gradient_real(n_max, coords):
     r"""
-    Calulcates the gradient on the unit sphere of the real valued spherical
-    harmonic basis matrix of order N for a set of points given by their
-    elevation and azimuth angles.
+    Calulcates the unit sphere gradients of the real valued spherical hamonics.
+
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [#]_. This implementation avoids
-    singularities at the poles using identities derived in [#]_.
+    the AmbiX phase convention [#]_.
 
-    Parameters
-    ----------
-    n_max : integer
-        Spherical harmonic order
-    coordinates : :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
-        calculated
+    The angular parts of the gradient are defined as
 
-    Returns
-    -------
-    Y : double, ndarray, matrix
-        Complex spherical harmonic basis matrix
+    .. math::
+
+        \nabla_{(\theta, \phi)} Y_n^m(\theta, \phi) =
+        \frac{1}{\sin \theta} \frac{\partial Y_n^m(\theta, \phi)}
+        {\partial \phi} \vec{e}_\phi +
+        \frac{\partial Y_n^m(\theta, \theta)}
+        {\partial \theta} \vec{e}_\theta .
+
+
+    This implementation avoids singularities at the poles using identities
+    derived in [#]_.
+
 
     References
     ----------
@@ -281,18 +302,30 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
-
     .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
-    """ # noqa: 501
-    coords = convert_coordinates(coords)
+    Parameters
+    ----------
+    n_max : int
+        Spherical harmonic order
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        Coordinate object with sampling points for which the basis matrix is
+        calculated
 
-    n_points = coords.n_points
+    Returns
+    -------
+    grad_theta : ndarray, float
+        Gradient with respect to the co-latitude angle.
+    grad_phi : ndarray, float
+        Gradient with respect to the azimuth angle.
+
+    """
+    n_points = coords.csize
     n_coeff = (n_max+1)**2
-    theta = coords.elevation
+    theta = coords.colatitude
     phi = coords.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=float)
     grad_phi = np.zeros((n_points, n_coeff), dtype=float)
@@ -328,16 +361,20 @@ def modal_strength(n_max,
         \end{cases}
 
 
-    Notes
-    -----
     This implementation uses the second order Hankel function, see [#]_ for an
     overview of the corresponding sign conventions.
 
+    References
+    ----------
+    .. [#]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+            Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.
+
+
     Parameters
     ----------
-    n : integer, ndarray
-        Spherical harmonic order
-    kr : double, ndarray
+    n_max : int
+        The spherical harmonic order
+    kr : ndarray, float
         Wave number * radius
     arraytype : string
         Array configuration. Can be a microphones mounted on a rigid sphere,
@@ -345,13 +382,8 @@ def modal_strength(n_max,
 
     Returns
     -------
-    B : double, ndarray
+    B : ndarray, float
         Modal strength diagonal matrix
-
-    References
-    ----------
-    .. [#]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
-            Time Conventions in Array Processing,” vol. 101, pp. 470-473, 2015.
 
     """
     n_coeff = (n_max+1)**2
@@ -391,8 +423,10 @@ def aperture_vibrating_spherical_cap(
         rad_sphere,
         rad_cap):
     r"""
-    Aperture  function for a vibrating cap with radius :math:`r_c` in a rigid
-    sphere with radius :math:`r_s`. See [#]_.
+    Aperture function for a vibrating spherical cap.
+
+    The cap has radius :math:`r_c` and is mounted in a rigid sphere with
+    radius :math:`r_s` [#]_, [#]_
 
     .. math::
 
@@ -419,23 +453,22 @@ def aperture_vibrating_spherical_cap(
 
     Returns
     -------
-    A : double, ndarray
+    A : ndarray, float
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
-
-    Notes
-    -----
-    Eq. (3) in Ref. [#]_ contains an error, here, the power of 2 on pi is
-    omitted on the normalization term.
-
 
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
     .. [#]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
-            Independent Steering for Spherical Loudspeaker Arrays,” IEEE
-            Transactions on Audio, Speech, and Language Processing, vol. 19,
-            no. 7, pp. 2234-2238, 2011
+             Independent Steering for Spherical Loudspeaker Arrays,” IEEE
+             Transactions on Audio, Speech, and Language Processing, vol. 19,
+             no. 7, pp. 2234-2238, 2011
+
+    Notes
+    -----
+    Eq. (3) in the second Ref. contains an error, here, the power of 2 on pi is
+    omitted on the normalization term.
 
     """
     angle_cap = np.arcsin(rad_cap / rad_sphere)
@@ -464,41 +497,43 @@ def radiation_from_sphere(
         density_medium=1.2,
         speed_of_sound=343.0):
     r"""
-    Radiation function in SH for a vibrating sphere including the radiation
-    impedance and the propagation to a arbitrary distance from the sphere.
+    Radiation function in SH for a vibrating spherical cap.
+    Includes the radiation impedance and the propagation to a arbitrary
+    distance from the sphere.
     The sign and phase conventions result in a positive pressure response for
     a positive cap velocity with the intensity vector pointing away from the
-    source. See also [#]_ and [#]_.
+    source. [#]_, [#]_
 
-    Parameters
-    ----------
-    n_max : integer, ndarray
-        Maximal spherical harmonic order
-    r_sphere : double, ndarray
-        Radius of the sphere
-    k : double, ndarray
-        Wave number
-    distance : double
-        Distance from the origin
-    density_medium : double
-        Density of the medium surrounding the sphere. Default is 1.2 for air.
-    speed_of_sound : double
-        Speed of sound in m/s
-
-    Returns
-    -------
-    R : double, ndarray
-        Radiation function in diagonal matrix form with shape
-        :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`
-
+    TODO: This function does not have a test yet.
 
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-
     .. [#]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
             loudspeaker system as multipole source,” in Proceedings of the 33rd
             DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.
+
+
+    Parameters
+    ----------
+    n_max : integer
+        Maximal spherical harmonic order
+    r_sphere : float
+        Radius of the sphere
+    k : ndarray, float
+        Wave number
+    distance : float
+        Radial distance from the center of the sphere
+    density_medium : float
+        Density of the medium surrounding the sphere. Default is 1.2 for air.
+    speed_of_sound : float
+        Speed of sound in m/s
+
+    Returns
+    -------
+    R : ndarray, float
+        Radiation function in diagonal matrix form with shape
+        :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
     """
     n_sh = (n_max+1)**2
@@ -518,3 +553,123 @@ def radiation_from_sphere(
             radiation[:, acn, acn] = radiation_order
 
     return radiation
+
+
+def sid(n_max):
+    """Calculates the SID indices up to spherical harmonic order n_max.
+    The SID indices were originally proposed by Daniel [#]_, more recently
+    ACN indexing has been favored and is used in the AmbiX format [#]_.
+
+    Parameters
+    ----------
+    n_max : int
+        The maximum spherical harmonic order
+
+    Returns
+    -------
+    sid_n : ndarray, int
+        The SID indices for all orders
+    sid_m : ndarray, int
+        The SID indices for all degrees
+
+    References
+    ----------
+    .. [#]  J. Daniel, “Représentation de champs acoustiques, application à la
+            transmission et à la reproduction de scènes sonores complexes dans
+            un contexte multimédia,” Dissertation, l’Université Paris 6, Paris,
+            2001.
+
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
+
+    """
+    n_sh = (n_max+1)**2
+    sid_n = sph_identity_matrix(n_max, 'n-nm').T @ np.arange(0, n_max+1)
+    sid_m = np.zeros(n_sh, dtype=int)
+    idx_n = 0
+    for n in range(1, n_max+1):
+        for m in range(1, n+1):
+            sid_m[idx_n + 2*m-1] = n-m+1
+            sid_m[idx_n + 2*m] = -(n-m+1)
+        sid_m[idx_n + 2*n + 1] = 0
+        idx_n += 2*n+1
+
+    return sid_n, sid_m
+
+
+def sid2acn(n_max):
+    """Convert from SID channel indexing to ACN indeces.
+    Returns the indices to achieve a corresponding linear acn indexing.
+
+    Parameters
+    ----------
+    n_max : int
+        The maximum spherical harmonic order.
+
+    Returns
+    -------
+    acn : ndarray, int
+        The SID indices sorted according to a respective linear ACN indexing.
+    """
+    sid_n, sid_m = sid(n_max)
+    linear_sid = nm2acn(sid_n, sid_m)
+    return np.argsort(linear_sid)
+
+
+def sph_identity_matrix(n_max, type='n-nm'):
+    """Calculate a spherical harmonic identity matrix.
+
+    Parameters
+    ----------
+    n_max : int
+        The spherical harmonic order.
+    type : str, optional
+        The type of identity matrix. Currently only 'n-nm' is implemented.
+
+    Returns
+    -------
+    identity_matrix : ndarray, int
+        The spherical harmonic identity matrix.
+
+    Examples
+    --------
+
+    The identity matrix can for example be used to decompress from order only
+    vectors to a full order and degree representation.
+
+    >>> import spharpy
+    >>> import matplotlib.pyplot as plt
+    >>> n_max = 2
+    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+    >>> a_n = [1, 2, 3]
+    >>> a_nm = E.T @ a_n
+    >>> a_nm
+    array([1, 2, 2, 2, 3, 3, 3, 3, 3])
+
+    The matrix E in this case has the following form.
+
+    .. plot::
+
+        >>> import spharpy
+        >>> import matplotlib.pyplot as plt
+        >>> n_max = 2
+        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+        >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
+        >>> plt.gca().set_aspect('equal')
+
+    """
+    n_sh = (n_max+1)**2
+
+    if type != 'n-nm':
+        raise NotImplementedError
+
+    identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)
+
+    for n in range(n_max+1):
+        m = np.arange(-n, n+1)
+        linear_nm = nm2acn(np.tile(n, m.shape), m)
+        identity_matrix[n, linear_nm] = 1
+
+    return identity_matrix
