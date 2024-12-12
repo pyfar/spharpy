@@ -46,7 +46,7 @@ jobs:
           name: Run tests
           command: pytest
 
-  flake:
+  ruff:
     parameters:
       version:
         description: "version tag"
@@ -61,8 +61,8 @@ jobs:
           name: install dependencies
           command: pip install ".[tests]"
       - run:
-          name: Flake8
-          command: flake8 spharpy
+          name: ruff
+          command: ruff check
 
   test_documentation_build:
     parameters:
