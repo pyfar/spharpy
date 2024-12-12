@@ -12,7 +12,7 @@ import urllib3
 import shutil
 sys.path.insert(0, os.path.abspath('..'))
 
-import sparapy  # noqa
+import spharpy  # noqa
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -54,7 +54,7 @@ source_suffix = {
 master_doc = 'index'
 
 # General information about the project.
-project = 'sparapy'
+project = 'spharpy'
 copyright = "2024, The pyfar developers"
 author = "The pyfar developers"
 
@@ -63,9 +63,9 @@ author = "The pyfar developers"
 # the built documents.
 #
 # The short X.Y version.
-version = sparapy.__version__
+version = spharpy.__version__
 # The full version, including alpha/beta/rc tags.
-release = sparapy.__version__
+release = spharpy.__version__
 
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
@@ -103,14 +103,14 @@ intersphinx_mapping = {
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
-html_logo = 'resources/logos/pyfar_logos_fixed_size_sparapy.png'
-html_title = "sparapy"
+html_logo = 'resources/logos/pyfar_logos_fixed_size_spharpy.png'
+html_title = "spharpy"
 html_favicon = '_static/favicon.ico'
 
 # -- HTML theme options
 # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/layout.html
 html_sidebars = {
-  "sparapy": []
+  "spharpy": []
 }
 
 html_theme_options = {
@@ -140,7 +140,7 @@ html_context = {
 
 # redirect index to pyfar.html
 redirects = {
-     "index": "sparapy.html"
+     "index": "spharpy.html"
 }
 
 # -- download navbar and style files from gallery -----------------------------
@@ -150,7 +150,7 @@ folders_in = [
     '_static/css/custom.css',
     '_static/favicon.ico',
     '_static/header.rst',
-    'resources/logos/pyfar_logos_fixed_size_sparapy.png',
+    'resources/logos/pyfar_logos_fixed_size_spharpy.png',
     ]
 c = urllib3.PoolManager()
 for file in folders_in:
@@ -160,7 +160,7 @@ for file in folders_in:
     with c.request('GET', url, preload_content=False) as res, open(filename, 'wb') as out_file:
         shutil.copyfileobj(res, out_file)
 
-# replace sparapy hard link to internal link
+# replace spharpy hard link to internal link
 with open("_static/header.rst", "rt") as fin:
     with open("header.rst", "wt") as fout:
         for line in fin:

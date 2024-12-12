@@ -6,7 +6,7 @@ Contributing
 
 Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given. The following helps you to start
-contributing specifically to sparapy. Please also consider the
+contributing specifically to spharpy. Please also consider the
 `general contributing guidelines`_ for example regarding the style
 of code and documentation and some helpful hints.
 
@@ -16,36 +16,36 @@ Types of Contributions
 Report Bugs or Suggest Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The best place for this is https://github.com/pyfar/sparapy/issues.
+The best place for this is https://github.com/pyfar/spharpy/issues.
 
 Fix Bugs or Implement Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Look through https://github.com/pyfar/sparapy/issues for bugs or feature request
+Look through https://github.com/pyfar/spharpy/issues for bugs or feature request
 and contact us or comment if you are interested in implementing.
 
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-sparapy could always use more documentation, whether as part of the
-official sparapy docs, in docstrings, or even on the web in blog posts,
+spharpy could always use more documentation, whether as part of the
+official spharpy docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `sparapy` for local development using the command-line interface. Note that several alternative user interfaces exist, e.g., the Git GUI, `GitHub Desktop <https://desktop.github.com/>`_, extensions in `Visual Studio Code <https://code.visualstudio.com/>`_ ...
+Ready to contribute? Here's how to set up `spharpy` for local development using the command-line interface. Note that several alternative user interfaces exist, e.g., the Git GUI, `GitHub Desktop <https://desktop.github.com/>`_, extensions in `Visual Studio Code <https://code.visualstudio.com/>`_ ...
 
-1. `Fork <https://docs.github.com/en/get-started/quickstart/fork-a-repo/>`_ the `sparapy` repo on GitHub.
-2. Clone your fork locally and cd into the sparapy directory::
+1. `Fork <https://docs.github.com/en/get-started/quickstart/fork-a-repo/>`_ the `spharpy` repo on GitHub.
+2. Clone your fork locally and cd into the spharpy directory::
 
-    $ git clone https://github.com/YOUR_USERNAME/sparapy.git
-    $ cd sparapy
+    $ git clone https://github.com/YOUR_USERNAME/spharpy.git
+    $ cd spharpy
 
 3. Install your local copy into a virtualenv. Assuming you have Anaconda or Miniconda installed, this is how you set up your fork for local development::
 
-    $ conda create --name sparapy python
-    $ conda activate sparapy
+    $ conda create --name spharpy python
+    $ conda activate spharpy
     $ pip install -e ".[dev]"
 
 4. Create a branch for local development. Indicate the intention of your branch in its respective name (i.e. `feature/branch-name` or `bugfix/branch-name`)::
@@ -60,7 +60,7 @@ Ready to contribute? Here's how to set up `sparapy` for local development using 
     $ ruff check
     $ pytest
 
-   ruff must pass without any warnings for `./sparapy` and `./tests` using the default or a stricter configuration. Ruff ignores a couple of PEP Errors (see `./pyproject.toml`). If necessary, adjust your linting configuration in your IDE accordingly.
+   ruff must pass without any warnings for `./spharpy` and `./tests` using the default or a stricter configuration. Ruff ignores a couple of PEP Errors (see `./pyproject.toml`). If necessary, adjust your linting configuration in your IDE accordingly.
 
 6. Commit your changes and push your branch to GitHub::
 

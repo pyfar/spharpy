@@ -1,9 +1,8 @@
-spharpy.beamforming
--------------------
+spharpy.spatial
+===============
 
-.. automodule:: spharpy.beamforming
+.. automodule:: spharpy.spatial
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
-

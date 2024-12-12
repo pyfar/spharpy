@@ -1,4 +1,4 @@
-sparapy
+spharpy
 =======
 
 .. toctree::

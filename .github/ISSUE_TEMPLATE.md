@@ -1,6 +1,6 @@
 ## General
 
-* sparapy version:
+* spharpy version:
 * Python version:
 * Operating System:
 * Did you install pyfar via pip:

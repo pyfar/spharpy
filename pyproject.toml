@@ -1,5 +1,5 @@
 [project]
-name = "sparapy"
+name = "spharpy"
 version = "0.6.1"
 description = "Spherical array processing in python."
 readme = "README.md"
@@ -58,15 +58,15 @@ docs = [
     "sphinx-favicon",
     "sphinx-reredirects",
 ]
-dev = ["sparapy[deploy,tests,docs]"]
+dev = ["spharpy[deploy,tests,docs]"]
 
 [project.urls]
-Tracker = "https://github.com/pyfar/sparapy/issues"
-Documentation = "https://sparapy.readthedocs.io/"
-Download = "https://pypi.org/project/sparapy/"
+Tracker = "https://github.com/pyfar/spharpy/issues"
+Documentation = "https://spharpy.readthedocs.io/"
+Download = "https://pypi.org/project/spharpy/"
 Homepage = "https://pyfar.org/"
-Source = "https://github.com/pyfar/sparapy"
-Changelog = "https://github.com/pyfar/sparapy/blob/main/HISTORY.rst"
+Source = "https://github.com/pyfar/spharpy"
+Changelog = "https://github.com/pyfar/spharpy/blob/main/HISTORY.rst"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
@@ -153,6 +153,6 @@ search = '\nversion = "{current_version}"'
 replace = '\nversion = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "sparapy/__init__.py"
+filename = "spharpy/__init__.py"
 search = "__version__ = '{current_version}'"
 replace = "__version__ = '{new_version}'"
