@@ -8,12 +8,9 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.10"
-  apt_packages:
-    - pandoc
-  jobs:
-    pre_build:
-      - python -m pip install -e .
+    python: "3.12"
+  # apt_packages:
+  #   - libsndfile1
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
@@ -23,7 +20,8 @@ sphinx:
 formats:
   - pdf
 
-# use pip to install dependencies
+# Optionally set the version of Python and requirements required to build your docs
 python:
   install:
-    - requirements: requirements_dev.txt
+    - method: pip
+      path: ".[docs]"

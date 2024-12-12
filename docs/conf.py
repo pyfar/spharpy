@@ -8,16 +8,17 @@
 
 import os
 import sys
+import urllib3
+import shutil
 sys.path.insert(0, os.path.abspath('..'))
-import spharpy  # noqa: E402
+
+import sparapy  # noqa
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosummary',
@@ -25,37 +26,46 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
     'autodocsumm',
-    'nbsphinx',
-    'nbsphinx_link',
+    'sphinx_design',
+    'sphinx_favicon',
+    'sphinx_reredirects',
+    'sphinx_mdinclude',
 ]
 
 # show tocs for classes and functions of modules using the autodocsumm
 # package
 autodoc_default_options = {'autosummary': True}
 
+# show the code of plots that follows the command .. plot:: based on the
+# package matplotlib.sphinxext.plot_directive
+plot_include_source = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = 'spharpy'
-copyright = ', 2020 - 2023, Marco Berzborn; 2023, The pyfar developers'
-author = 'The pyfar developers'
+project = 'sparapy'
+copyright = "2024, The pyfar developers"
+author = "The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
 # the built documents.
 #
 # The short X.Y version.
-version = spharpy.__version__
+version = sparapy.__version__
 # The full version, including alpha/beta/rc tags.
-release = spharpy.__version__
+release = sparapy.__version__
 
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
@@ -73,25 +83,18 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = False
 
-# If true, '()' will be appended to :func: etc. cross-reference text.
-add_function_parentheses = False
-
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 # default language for highlighting in source code
 highlight_language = "python3"
 
-# show the code of plots that follows the command .. plot:: based on the
-# package matplotlib.sphinxext.plot_directive
-plot_include_source = True
-
 # intersphinx mapping
 intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
-    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None)
+    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None),
     }
 
 # -- Options for HTML output -------------------------------------------------
@@ -100,17 +103,21 @@ intersphinx_mapping = {
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
-html_logo = 'resources/logos/pyfar_logos_fixed_size_spharpy.png'
-html_title = "pyfar"
+html_logo = 'resources/logos/pyfar_logos_fixed_size_sparapy.png'
+html_title = "sparapy"
 html_favicon = '_static/favicon.ico'
 
 # -- HTML theme options
 # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/layout.html
+html_sidebars = {
+  "sparapy": []
+}
 
 html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "navbar_end": ["navbar-icon-links", "theme-switcher"],
     "navbar_align": "content",
+    "header_links_before_dropdown": 8,
     "icon_links": [
         {
           "name": "GitHub",
@@ -123,8 +130,38 @@ html_theme_options = {
     "show_toc_level": 3,  # Show all subsections of notebooks
     "secondary_sidebar_items": ["page-toc"],  # Omit 'show source' link that that shows notebook in json format
     "navigation_with_keys": True,
+    # Configure navigation depth for section navigation
+    "navigation_depth": 1,
 }
 
 html_context = {
    "default_mode": "light"
 }
+
+# redirect index to pyfar.html
+redirects = {
+     "index": "sparapy.html"
+}
+
+# -- download navbar and style files from gallery -----------------------------
+branch = 'main'
+link = f'https://github.com/pyfar/gallery/raw/{branch}/docs/'
+folders_in = [
+    '_static/css/custom.css',
+    '_static/favicon.ico',
+    '_static/header.rst',
+    'resources/logos/pyfar_logos_fixed_size_sparapy.png',
+    ]
+c = urllib3.PoolManager()
+for file in folders_in:
+    url = link + file
+    filename = file
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with c.request('GET', url, preload_content=False) as res, open(filename, 'wb') as out_file:
+        shutil.copyfileobj(res, out_file)
+
+# replace sparapy hard link to internal link
+with open("_static/header.rst", "rt") as fin:
+    with open("header.rst", "wt") as fout:
+        for line in fin:
+            fout.write(line.replace(f'https://{project}.readthedocs.io', project))
