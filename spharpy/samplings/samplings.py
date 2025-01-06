@@ -108,6 +108,10 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
 
     .. plot::
 
+        >>> import numpy as np
+        >>> from spharpy.samplings.samplings import _sph_extremal_load_data
+        >>> _sph_extremal_load_data(3):
+
         >>> import spharpy as sp
         >>> coords = sp.samplings.hyperinterpolation(n_max=3)
         >>> sp.plot.scatter(coords)
@@ -231,6 +235,10 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     --------
 
     .. plot::
+
+        >>> import numpy as np
+        >>> from spharpy.samplings.samplings import _sph_t_design_load_data
+        >>> _sph_t_design_load_data(np.arange(1, 11)):
 
         >>> import spharpy as sp
         >>> coords = sp.samplings.spherical_t_design(n_max=3)
