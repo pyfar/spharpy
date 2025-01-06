@@ -136,7 +136,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)
     filename = os.path.join(os.path.dirname(__file__), "_eqsp",  filename)
     if not os.path.exists(filename):
-        if n_max < 15:
+        if n_max < 21:
             _sph_extremal_load_data(np.arange(1, 21))
         else:
             _sph_extremal_load_data(n_max)
@@ -279,7 +279,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     filename = "samplings_t_design_sf%03d.%05d" % (degree, n_points)
     filename = os.path.join(os.path.dirname(__file__), "_eqsp",  filename)
     if not os.path.exists(filename):
-        if degree < 15:
+        if degree < 21:
             _sph_t_design_load_data(np.arange(1, 21))
         else:
             _sph_t_design_load_data(degree)
