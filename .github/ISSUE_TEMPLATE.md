@@ -3,7 +3,7 @@
 * spharpy version:
 * Python version:
 * Operating System:
-* Did you install pyfar via pip:
+* Did you install spharpy via pip:
 
 ## Description
 
