@@ -83,3 +83,22 @@ def test_sid2acn():
 
     acn_indices = sh.sid2acn(n_max)
     np.testing.assert_equal(reference_acn, acn_indices)
+
+
+def test_nm2fuma_single_val():
+    fuma = sh.nm_to_fuma(0, 0)
+    assert fuma == 0
+
+    fuma = sh.nm_to_fuma(1, 0)
+    assert fuma == 1
+
+    fuma = sh.nm_to_fuma(1, -1)
+    assert fuma == 3
+
+
+def test_nm2fuma_array():
+    n = np.array([0, 1, 1])
+    m = np.array([0, 0, -1])
+
+    fuma = sh.nm_to_fuma(n, m)
+    np.testing.assert_equal(np.array([0, 1, 3], int), fuma)
