@@ -101,6 +101,4 @@ def test_nm2fuma_array():
     m = np.array([0, 0, -1])
 
     fuma = sh.nm_to_fuma(n, m)
-    assert fuma[0] == 0
-    assert fuma[1] == 1
-    assert fuma[2] == 3
+    np.testing.assert_equal(np.array([0, 1, 3], int), fuma)
