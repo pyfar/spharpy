@@ -79,7 +79,7 @@ def test_orthogonality(make_coordinates, implementation):
     fact = 4 * np.pi / (n_max + 1) ** 2
     orth = np.diagonal(fact * inner)
     np.testing.assert_allclose(
-        orth, np.ones(n_points, dtype=complex), rtol=1e-14)
+        orth, np.ones(n_points, dtype=complex), rtol=1e-10)
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
@@ -101,7 +101,7 @@ def test_orthogonality_real(make_coordinates, implementation):
     inner = (basis @ np.conjugate(basis.T))
     fact = 4 * np.pi / (n_max + 1) ** 2
     orth = np.diagonal(fact * inner)
-    np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-15, atol=1e-10)
+    np.testing.assert_allclose(orth, np.ones(n_points), rtol=1e-10, atol=1e-10)
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])

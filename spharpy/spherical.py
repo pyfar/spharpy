@@ -91,109 +91,55 @@ def nm2acn(n, m):
     return n**2 + n + m
 
 
-def n3d2maxn(acn):
-    """
-    Converts N3D normalization to max N normalization
-    Parameters
-    ----------
-    acn : int
-
-    Returns
-    -------
-    maxN : float
-        Maximum norm for spherical harmonics of order N
-    """
-    if acn > 15:
-        raise ValueError("acn must be less than or "
-                         "equal to 15")
-    maxN = [
-        np.sqrt(1 / 2),
-        np.sqrt(1 / 3),
-        np.sqrt(1 / 3),
-        np.sqrt(1 / 3),
-        2 / np.sqrt(15),
-        2 / np.sqrt(15),
-        np.sqrt(1 / 5),
-        2 / np.sqrt(15),
-        2 / np.sqrt(15),
-        np.sqrt(8 / 35),
-        3 / np.sqrt(35),
-        np.sqrt(45 / 224),
-        np.sqrt(1 / 7),
-        np.sqrt(45 / 224),
-        3 / np.sqrt(35),
-        np.sqrt(8 / 35),
-    ]
-    return maxN[acn]
-
-
-def n3d2sn3d_norm(m, n):
-    """
-    Converts N3D normalization to SN3D normalization
-    Parameters
-    ----------
-    m : int
-        Spherical harmonic degree
-    n : int
-        Spherical harmonic order (n >= |m|)
-
-    Returns
-    -------
-    sn3d : float
-        SN3D normalization factor
-    """
-    return 1 / np.sqrt(2 * n + 1)
-
-
-def fuma2nm(fuma):
+def nm_to_fuma(n, m):
     r"""
-    Calculate the spherical harmonic order n and degree m for a linear
-    coefficient index, according to the FuMa (Furse-Malham)
-    Channel Ordering Convention [#]_.
-
-    FuMa = WXYZ | RSTUV | KLMNOPQ
-    ACN = WYZX | VTRSU | QOMKLNP
-
-
-    References
-    ----------
-    [#]  D. Malham, "Higher order Ambisonic systems” Space in Music –
-    Music in Space (Mphil thesis).
-         University of York. pp. 2–3. , 2003.
+    Calculate the FuMa channel index for a given spherical harmonic order n
+    and degree m, according to the FuMa (Furse-Malham)
+    Channel Ordering Convention.
 
     Parameters
     ----------
-    fuma : integer, ndarray
-        FuMa channel index
+    n : integer
+        Spherical harmonic order
+    m : integer
+        Spherical harmonic degree
 
     Returns
     -------
-    n : integer, ndarray
-        Spherical harmonic order
-    m : integer, ndarray
-        Spherical harmonic degree
+    fuma : integer
+        FuMa channel index
     """
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
 
-    if fuma < 0 or fuma >= len(fuma_mapping):
+    n = np.asarray([n], dtype=int)
+    m = np.asarray([m], dtype=int)
+
+    if n.shape != m.shape:
+        raise ValueError("n and m need to be of the same size")
+
+    # convert (n, m) to the ACN index
+    acn = nm2acn(n, m)
+
+    if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
         raise ValueError(
-            "Invalid FuMa channel index, must be between 0 and 15 "
-            "(supported up to 3rd order)"
+            "nm2fuma only supports up to 3rd order"
         )
 
-    acn = fuma_mapping[fuma]
-    n, m = acn2nm(acn)
-    return n, m
+    acn = np.atleast_2d(acn).T
+    fuma = np.array([], dtype=int)
+    for a in acn:
+        fuma = np.append(fuma, fuma_mapping.index(a))
+
+    return fuma
 
 
-def spherical_harmonic_basis(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=None
-    ):
+def spherical_harmonic_basis(n_max, coords):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
-    See also :func:`spherical_harmonic_basis_real`.
+
+    The spherical harmonic functions are fully normalized (N3D) and include the
+    Condon-Shotley phase term :math:`(-1)^m` [#]_, [#]_.
 
     .. math::
         Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
