@@ -3,7 +3,7 @@ import scipy.special as special
 import spharpy.special as _special
 
 
-def acn2nm(acn):
+def acn_to_nm(acn):
     r"""
     Calculate the order n and degree m from the linear coefficient index.
 
@@ -48,7 +48,7 @@ def acn2nm(acn):
     return n, m
 
 
-def nm2acn(n, m):
+def nm_to_acn(n, m):
     r"""
     Calculate the linear index coefficient for a order n and degree m,
 
@@ -232,7 +232,7 @@ def spherical_harmonic_basis(n_max, coords):
     basis = np.zeros((coords.csize, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        order, degree = acn2nm(acn)
+        order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
             order,
             degree,
@@ -305,7 +305,7 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        n, m = acn2nm(acn)
+        n, m = acn_to_nm(acn)
 
         grad_theta[:, acn] = \
             _special.spherical_harmonic_derivative_theta(
@@ -361,7 +361,7 @@ def spherical_harmonic_basis_real(n_max, coords):
     basis = np.zeros((coords.csize, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        order, degree = acn2nm(acn)
+        order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
             order,
             degree,
@@ -428,7 +428,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     grad_phi = np.zeros((n_points, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        n, m = acn2nm(acn)
+        n, m = acn_to_nm(acn)
 
         grad_theta[:, acn] = \
             _special.spherical_harmonic_derivative_theta_real(
@@ -580,7 +580,7 @@ def aperture_vibrating_spherical_cap(
         legendre_plus = special.legendre(n+1)(arg)
         legendre_term = legendre_minus - legendre_plus
         for m in range(-n, n+1):
-            acn = nm2acn(n, m)
+            acn = nm_to_acn(n, m)
             aperture[acn, acn] = legendre_term * 4 * np.pi / (2*n+1)
 
     return aperture
@@ -646,7 +646,7 @@ def radiation_from_sphere(
         radiation_order = -1j * hankel/hankel_prime * \
             density_medium * speed_of_sound
         for m in range(-n, n+1):
-            acn = nm2acn(n, m)
+            acn = nm_to_acn(n, m)
             radiation[:, acn, acn] = radiation_order
 
     return radiation
@@ -696,7 +696,7 @@ def sid(n_max):
     return sid_n, sid_m
 
 
-def sid2acn(n_max):
+def sid_to_acn(n_max):
     """Convert from SID channel indexing to ACN indeces.
     Returns the indices to achieve a corresponding linear acn indexing.
 
@@ -711,7 +711,7 @@ def sid2acn(n_max):
         The SID indices sorted according to a respective linear ACN indexing.
     """
     sid_n, sid_m = sid(n_max)
-    linear_sid = nm2acn(sid_n, sid_m)
+    linear_sid = nm_to_acn(sid_n, sid_m)
     return np.argsort(linear_sid)
 
 
@@ -766,7 +766,7 @@ def sph_identity_matrix(n_max, type='n-nm'):
 
     for n in range(n_max+1):
         m = np.arange(-n, n+1)
-        linear_nm = nm2acn(np.tile(n, m.shape), m)
+        linear_nm = nm_to_acn(np.tile(n, m.shape), m)
         identity_matrix[n, linear_nm] = 1
 
     return identity_matrix

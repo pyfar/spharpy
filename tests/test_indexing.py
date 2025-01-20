@@ -4,45 +4,45 @@ import spharpy.spherical as sh
 import numpy as np
 
 
-def test_acn2nm_single_val():
-    n, m = sh.acn2nm(0)
+def test_acn_to_nm_single_val():
+    n, m = sh.acn_to_nm(0)
     assert n == 0
     assert m == 0
 
-    n, m = sh.acn2nm(2)
+    n, m = sh.acn_to_nm(2)
     assert n == 1
     assert m == 0
 
-    n, m = sh.acn2nm(1)
+    n, m = sh.acn_to_nm(1)
     assert n == 1
     assert m == -1
 
 
-def test_nm2acn_single_val():
-    acn = sh.nm2acn(0, 0)
+def test_nm_to_acn_single_val():
+    acn = sh.nm_to_acn(0, 0)
     assert acn == 0
 
-    acn = sh.nm2acn(1, 0)
+    acn = sh.nm_to_acn(1, 0)
     assert acn == 2
 
-    acn = sh.nm2acn(1, -1)
+    acn = sh.nm_to_acn(1, -1)
     assert acn == 1
 
 
-def test_acn2nm_array():
+def test_acn_to_nm_array():
     n_ref = np.array([0, 1, 1, 1])
     m_ref = np.array([0, -1, 0, 1])
 
     n_max = 1
     n_sh = (n_max + 1)**2
     acn = np.arange(0, n_sh)
-    n, m = sh.acn2nm(acn)
+    n, m = sh.acn_to_nm(acn)
 
     np.testing.assert_equal(n, n_ref)
     np.testing.assert_equal(m, m_ref)
 
 
-def test_nm2acn_array():
+def test_nm_to_acn_array():
     n = np.array([0, 1, 1, 1])
     m = np.array([0, -1, 0, 1])
 
@@ -50,7 +50,7 @@ def test_nm2acn_array():
     n_sh = (n_max + 1)**2
     acn_ref = np.arange(0, n_sh)
 
-    acn = sh.nm2acn(n, m)
+    acn = sh.nm_to_acn(n, m)
 
     np.testing.assert_equal(acn, acn_ref)
 
@@ -75,13 +75,13 @@ def test_sid_indexing():
     np.testing.assert_equal(reference_m, sid_m)
 
 
-def test_sid2acn():
+def test_sid_to_acn():
     n_max = 2
     # indexing starts at 0 here, reference was calculated
     # with indexing starting at 1.
     reference_acn = np.array([1, 3, 4, 2, 6, 8, 9, 7, 5]) - 1
 
-    acn_indices = sh.sid2acn(n_max)
+    acn_indices = sh.sid_to_acn(n_max)
     np.testing.assert_equal(reference_acn, acn_indices)
 
 
