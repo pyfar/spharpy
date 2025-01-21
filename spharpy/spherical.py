@@ -162,7 +162,8 @@ def fuma_to_nm(fuma):
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
 
-    fuma = np.asarray([fuma], dtype=int)
+    if not isinstance(fuma, np.ndarray):
+        fuma = np.asarray([fuma], dtype=int)
 
     if np.any(fuma) < 0 or np.any(fuma >= len(fuma_mapping)):
         raise ValueError(
@@ -172,9 +173,8 @@ def fuma_to_nm(fuma):
 
     acn = np.array([], dtype=int)
     for f in fuma:
-        print(f)
         acn = np.append(acn, fuma_mapping[int(f)])
-    #acn = fuma_mapping[fuma]
+
     n, m = acn_to_nm(acn)
     return n, m
 
