@@ -167,7 +167,7 @@ def n3d2_to_maxn(acn):
     return maxN[acn]
 
 
-def n3d2_to_sn3d_norm(m, n):
+def n3d_to_sn3d_norm(m, n):
     """
     Converts N3D normalization to SN3D normalization
     Parameters
