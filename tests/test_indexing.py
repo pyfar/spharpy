@@ -105,8 +105,23 @@ def test_nm_to_fuma_array():
 
 
 def test_fuma_to_nm_single_val():
-    raise NotImplementedError()
+    n, m = sh.fuma_to_nm(0)
+    assert n == 0
+    assert m == 0
+
+    n, m = sh.fuma_to_nm(1)
+    assert n == 1
+    assert m == 0
+
+    n, m = sh.fuma_to_nm(3)
+    assert n == 1
+    assert m == -1
 
 
 def test_fuma_to_nm_array():
-    raise NotImplementedError()
+    n_ref = np.array([0, 1, 1])
+    m_ref = np.array([0, 0, -1])
+
+    n, m = sh.fuma_to_nm(np.array([0, 1, 3]))
+    np.testing.assert_equal(n_ref, n)
+    np.testing.assert_equal(m_ref, m)

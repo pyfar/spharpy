@@ -162,14 +162,20 @@ def fuma_to_nm(fuma):
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
 
-    if fuma < 0 or fuma >= len(fuma_mapping):
+    fuma = np.asarray([fuma], dtype=int)
+
+    if np.any(fuma) < 0 or np.any(fuma >= len(fuma_mapping)):
         raise ValueError(
             "Invalid FuMa channel index, must be between 0 and 15 "
             "(supported up to 3rd order)"
         )
 
-    acn = fuma_mapping[fuma]
-    n, m = acn2nm(acn)
+    acn = np.array([], dtype=int)
+    for f in fuma:
+        print(f)
+        acn = np.append(acn, fuma_mapping[int(f)])
+    #acn = fuma_mapping[fuma]
+    n, m = acn_to_nm(acn)
     return n, m
 
 
