@@ -105,6 +105,11 @@ def nm_to_fuma(n, m):
     -------
     fuma : integer
         FuMa channel index
+
+    References
+    ----------
+    .. [#]  D. Malham, "Higher order Ambisonic systems” Space in Music –
+             Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.
     """
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
@@ -140,13 +145,6 @@ def fuma_to_nm(fuma):
     FuMa = WXYZ | RSTUV | KLMNOPQ
     ACN = WYZX | VTRSU | QOMKLNP
 
-
-    References
-    ----------
-    [#]  D. Malham, "Higher order Ambisonic systems” Space in Music –
-    Music in Space (Mphil thesis).
-         University of York. pp. 2–3. , 2003.
-
     Parameters
     ----------
     fuma : integer, ndarray
@@ -158,6 +156,11 @@ def fuma_to_nm(fuma):
         Spherical harmonic order
     m : integer, ndarray
         Spherical harmonic degree
+
+    References
+    ----------
+    .. [#]  D. Malham, "Higher order Ambisonic systems” Space in Music –
+             Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.
     """
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
