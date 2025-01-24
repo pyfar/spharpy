@@ -34,8 +34,8 @@ def test_acn_to_nm_array():
     m_ref = np.array([0, -1, 0, 1])
 
     n_max = 1
-    n_max = (n_max + 1)**2
-    acn = np.arange(0, n_max)
+    n_sh = (n_max + 1)**2
+    acn = np.arange(0, n_sh)
     n, m = sh.acn_to_nm(acn)
 
     np.testing.assert_equal(n, n_ref)
@@ -75,11 +75,30 @@ def test_sid_indexing():
     np.testing.assert_equal(reference_m, sid_m)
 
 
-def test_sid2acn():
+def test_sid_to_acn():
     n_max = 2
     # indexing starts at 0 here, reference was calculated
     # with indexing starting at 1.
     reference_acn = np.array([1, 3, 4, 2, 6, 8, 9, 7, 5]) - 1
 
-    acn_indices = sh.sid2acn(n_max)
+    acn_indices = sh.sid_to_acn(n_max)
     np.testing.assert_equal(reference_acn, acn_indices)
+
+
+def test_nm_to_fuma_single_val():
+    fuma = sh.nm_to_fuma(0, 0)
+    assert fuma == 0
+
+    fuma = sh.nm_to_fuma(1, 0)
+    assert fuma == 1
+
+    fuma = sh.nm_to_fuma(1, -1)
+    assert fuma == 3
+
+
+def test_nm_to_fuma_array():
+    n = np.array([0, 1, 1])
+    m = np.array([0, 0, -1])
+
+    fuma = sh.nm_to_fuma(n, m)
+    np.testing.assert_equal(np.array([0, 1, 3], int), fuma)

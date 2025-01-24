@@ -49,3 +49,16 @@ def icosahedron():
     rad = np.ones(20)
 
     return rad, theta, phi
+
+
+@pytest.fixture
+def download_sampling():
+    def download_sampling(kind, degree):
+        if kind in ['extremal', 'hyperinterpolation']:
+            from spharpy.samplings.samplings import _sph_extremal_load_data
+            return _sph_extremal_load_data(degree)
+        elif kind == 't-design':
+            from spharpy.samplings.samplings import _sph_t_design_load_data
+            return _sph_t_design_load_data(degree)
+
+    return download_sampling

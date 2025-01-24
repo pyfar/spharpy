@@ -30,16 +30,16 @@ def test_cube_equidistant_pyfar():
     assert c.csize == 3*2*4
 
 
-def test_hyperinterpolation():
+def test_hyperinterpolation(download_sampling):
     n_max = 1
-    samplings.samplings._sph_extremal_load_data(n_max)
+    download_sampling('hyperinterpolation', n_max)
     sampling = samplings.hyperinterpolation(n_max=n_max)
     assert sampling.radius.size == (n_max+1)**2
 
 
-def test_sph_extremal():
+def test_sph_extremal(download_sampling):
     # load test data
-    samplings.samplings._sph_extremal_load_data([1, 10])
+    download_sampling('hyperinterpolation', [1, 10])
 
     # test without parameters
     assert samplings.hyperinterpolation() is None
@@ -74,32 +74,32 @@ def test_sph_extremal():
         c = samplings.hyperinterpolation(n_max=0)
 
 
-def test_spherical_t_design_const_e():
+def test_spherical_t_design_const_e(download_sampling):
     order = 2
-    samplings.samplings._sph_t_design_load_data(range(1, 11))
+    download_sampling('t-design', np.arange(1, 11))
     coords = samplings.spherical_t_design(
         n_max=order, criterion='const_energy')
     assert isinstance(coords, SamplingSphere)
 
 
-def test_spherical_t_design_const_angle():
+def test_spherical_t_design_const_angle(download_sampling):
     order = 2
-    samplings.samplings._sph_t_design_load_data(range(1, 11))
+    download_sampling('t-design', np.arange(1, 11))
     coords = samplings.spherical_t_design(
         n_max=order, criterion='const_angular_spread')
     assert isinstance(coords, SamplingSphere)
 
 
-def test_spherical_t_design_invalid():
+def test_spherical_t_design_invalid(download_sampling):
     order = 2
-    samplings.samplings._sph_t_design_load_data(range(1, 11))
+    download_sampling('t-design', np.arange(1, 11))
     with pytest.raises(ValueError, match='Invalid design'):
         samplings.spherical_t_design(n_max=order, criterion='bla')
 
 
-def test_sph_t_design():
+def test_sph_t_design(download_sampling):
     # load test data
-    samplings.samplings._sph_t_design_load_data(np.arange(1, 11))
+    download_sampling('t-design', np.arange(1, 11))
 
     # test without parameters
     assert samplings.spherical_t_design() is None
