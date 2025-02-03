@@ -772,6 +772,8 @@ def contour_map(
 
     interp = interpolate_data_on_sphere(coordinates, data)
     zi = interp(xi, yi)
+    # convert to normal array
+    # zi = np.array(zi)
 
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection=projection)
@@ -799,7 +801,7 @@ def contour_map(
         elif not np.any(mask_max) and np.any(mask_min):
             extend = 'min'
 
-    ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
+    ax.contourf(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
                vmin=limits[0], vmax=limits[1], extend=extend)
     cf = ax.pcolormesh(xi, yi, zi, cmap=cmap, shading='gouraud',
                        vmin=limits[0], vmax=limits[1])
