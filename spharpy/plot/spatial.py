@@ -799,7 +799,7 @@ def contour_map(
         elif not np.any(mask_max) and np.any(mask_min):
             extend = 'min'
 
-    ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
+    ax.contourf(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
                vmin=limits[0], vmax=limits[1], extend=extend)
     cf = ax.pcolormesh(xi, yi, zi, cmap=cmap, shading='gouraud',
                        vmin=limits[0], vmax=limits[1])

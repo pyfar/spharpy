@@ -1,18 +1,18 @@
 import matplotlib as mpl
-# Use Agg backend to prevent matplotlib from creating interactive plots. This
-# has to be set before the importing matplotlib.pyplot. Use switch backend in
-# case the wrong backend has already been set.
 mpl.use('agg')
-import matplotlib.pyplot as plt
-plt.switch_backend('agg')
 import spharpy
 import numpy as np
 import pytest
 from spharpy import plot
-import pytest
-
+import matplotlib.pyplot as plt
+# plt.switch_backend('agg')
+from matplotlib.testing.decorators import image_comparison
+# Use Agg backend to prevent matplotlib from creating interactive plots. This
+# has to be set before the importing matplotlib.pyplot. Use switch backend in
+# case the wrong backend has already been set.
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+@image_comparison(baseline_images=['balloon_plot'], extensions=['png'])
 def test_balloon_plot(icosahedron, make_coordinates, implementation):
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
@@ -22,16 +22,17 @@ def test_balloon_plot(icosahedron, make_coordinates, implementation):
 
     spharpy.plot.balloon(coords, data, phase=True, show=False)
 
-
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+@image_comparison(baseline_images=['contour_plot'], extensions=['png'])
 def test_contour_plot(icosahedron, make_coordinates, implementation):
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
         implementation, rad, theta, phi)
     data = np.cos(phi)*np.sin(theta)
 
+    plt.figure(figsize=(8, 6))
     spharpy.plot.contour(coords, np.abs(data), show=False)
-
+    
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_scatter(icosahedron, make_coordinates, implementation):
@@ -239,3 +240,4 @@ def test_balloon(icosahedron, make_coordinates, implementation):
         plot.balloon(coords, data, ax=ax)
 
     plt.close('all')
+
