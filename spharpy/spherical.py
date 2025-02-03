@@ -4,6 +4,7 @@ import spharpy.special as _special
 from spharpy.samplings.helpers import calculate_sampling_weights
 import pyfar as pf
 
+
 def acn_to_nm(acn):
     r"""
     Calculate the order n and degree m from the linear coefficient index.
@@ -147,8 +148,7 @@ def n3d_to_sn3d_norm(m, n):
 
 def spherical_harmonic_basis(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=None
-    ):
+        phase_convention=None):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
     See also :func:`spherical_harmonic_basis_real`.
