@@ -105,6 +105,11 @@ def nm_to_fuma(n, m):
     -------
     fuma : integer
         FuMa channel index
+
+    References
+    ----------
+    .. [#]  D. Malham, "Higher order Ambisonic systems” Space in Music –
+             Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.
     """
 
     fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
@@ -116,7 +121,7 @@ def nm_to_fuma(n, m):
         raise ValueError("n and m need to be of the same size")
 
     # convert (n, m) to the ACN index
-    acn = nm2acn(n, m)
+    acn = nm_to_acn(n, m)
 
     if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
         raise ValueError(
@@ -183,6 +188,52 @@ def n3d_to_sn3d_norm(m, n):
         SN3D normalization factor
     """
     return 1 / np.sqrt(2 * n + 1)
+
+
+def fuma_to_nm(fuma):
+    r"""
+    Calculate the spherical harmonic order n and degree m for a linear
+    coefficient index, according to the FuMa (Furse-Malham)
+    Channel Ordering Convention [#]_.
+
+    FuMa = WXYZ | RSTUV | KLMNOPQ
+    ACN = WYZX | VTRSU | QOMKLNP
+
+    Parameters
+    ----------
+    fuma : integer, ndarray
+        FuMa channel index
+
+    Returns
+    -------
+    n : integer, ndarray
+        Spherical harmonic order
+    m : integer, ndarray
+        Spherical harmonic degree
+
+    References
+    ----------
+    .. [#]  D. Malham, "Higher order Ambisonic systems” Space in Music –
+             Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.
+    """
+
+    fuma_mapping = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14]
+
+    if not isinstance(fuma, np.ndarray):
+        fuma = np.asarray([fuma], dtype=int)
+
+    if np.any(fuma) < 0 or np.any(fuma >= len(fuma_mapping)):
+        raise ValueError(
+            "Invalid FuMa channel index, must be between 0 and 15 "
+            "(supported up to 3rd order)"
+        )
+
+    acn = np.array([], dtype=int)
+    for f in fuma:
+        acn = np.append(acn, fuma_mapping[int(f)])
+
+    n, m = acn_to_nm(acn)
+    return n, m
 
 
 def spherical_harmonic_basis(n_max, coords):
