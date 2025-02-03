@@ -772,8 +772,6 @@ def contour_map(
 
     interp = interpolate_data_on_sphere(coordinates, data)
     zi = interp(xi, yi)
-    # convert to normal array
-    # zi = np.array(zi)
 
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection=projection)
