@@ -116,7 +116,7 @@ def nm_to_fuma(n, m):
         raise ValueError("n and m need to be of the same size")
 
     # convert (n, m) to the ACN index
-    acn = nm2acn(n, m)
+    acn = nm_to_acn(n, m)
 
     if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
         raise ValueError(
