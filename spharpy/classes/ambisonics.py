@@ -1,6 +1,6 @@
 from pyfar import Signal
-from spharpy.spherical import n3d2maxn, n3d2sn3d_norm
-from spharpy.spherical import fuma2nm, acn2nm, nm2acn
+from spharpy.spherical import n3d_to_maxn, n3d_to_sn3d_norm
+from spharpy.spherical import fuma_to_nm, acn_to_nm, nm_to_acn
 import numpy as np
 
 
@@ -176,41 +176,41 @@ class SphericalHarmonicSignal(Signal):
         acn = range(0, (self.n_max + 1) ** 2)
 
         if self.channel_convention == "fuma":
-            orders, degrees = fuma2nm(acn)
+            orders, degrees = fuma_to_nm(acn)
         else:
-            orders, degrees = acn2nm(acn)
+            orders, degrees = acn_to_nm(acn)
 
         if self._normalization == 'n3d':
             if value == "sn3d":
                 self._data[:, :, ...] *= \
-                    n3d2sn3d_norm(degrees, orders)
+                    n3d_to_sn3d_norm(degrees, orders)
             elif value == "maxN":
                 self._data[:, :, ...] *= \
-                    n3d2maxn(acn)
+                    n3d_to_maxn(acn)
 
         if self._normalization == 'sn3d':
             # convert to sn3d
             self._data[:, :, :] /= \
-                    n3d2sn3d_norm(degrees, orders)
+                    n3d_to_sn3d_norm(degrees, orders)
             if value == "maxN":
-                self._data[:, acn, :] *= n3d2maxn(acn)
+                self._data[:, acn, :] *= n3d_to_maxn(acn)
 
         if self._normalization == 'maxN':
             # convert to n3d
             self._data[:, acn, :] /= \
-                    n3d2maxn(acn)
+                    n3d_to_maxn(acn)
             if value == "sn3d":
                 self._data[:, acn, :] *= \
-                    n3d2sn3d_norm(acn)
+                    n3d_to_sn3d_norm(acn)
 
     def _change_channel_convention(self):
         n_coeffs = (self.n_max + 1) ** 2
         if self._channel_convention == 'acn':
-            n, m = acn2nm(n_coeffs)
+            n, m = acn_to_nm(n_coeffs)
             #  idx = nm2fuma(n, m)
             raise NotImplementedError('not implemented')
         elif self._channel_convention == 'fuma':
-            n, m = fuma2nm(n_coeffs)
-            idx = nm2acn(n, m)
+            n, m = fuma_to_nm(n_coeffs)
+            idx = nm_to_acn(n, m)
 
         self._data = self._data[:, idx, ...]
