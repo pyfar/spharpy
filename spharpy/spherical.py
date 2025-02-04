@@ -136,60 +136,6 @@ def nm_to_fuma(n, m):
     return fuma
 
 
-def n3d2_to_maxn(acn):
-    """
-    Converts N3D normalization to max N normalization
-    Parameters
-    ----------
-    acn : int
-
-    Returns
-    -------
-    maxN : float
-        Maximum norm for spherical harmonics of order N
-    """
-    if acn > 15:
-        raise ValueError("acn must be less than or "
-                         "equal to 15")
-    maxN = [
-        np.sqrt(1 / 2),
-        np.sqrt(1 / 3),
-        np.sqrt(1 / 3),
-        np.sqrt(1 / 3),
-        2 / np.sqrt(15),
-        2 / np.sqrt(15),
-        np.sqrt(1 / 5),
-        2 / np.sqrt(15),
-        2 / np.sqrt(15),
-        np.sqrt(8 / 35),
-        3 / np.sqrt(35),
-        np.sqrt(45 / 224),
-        np.sqrt(1 / 7),
-        np.sqrt(45 / 224),
-        3 / np.sqrt(35),
-        np.sqrt(8 / 35),
-    ]
-    return maxN[acn]
-
-
-def n3d_to_sn3d_norm(m, n):
-    """
-    Converts N3D normalization to SN3D normalization
-    Parameters
-    ----------
-    m : int
-        Spherical harmonic degree
-    n : int
-        Spherical harmonic order (n >= |m|)
-
-    Returns
-    -------
-    sn3d : float
-        SN3D normalization factor
-    """
-    return 1 / np.sqrt(2 * n + 1)
-
-
 def fuma_to_nm(fuma):
     r"""
     Calculate the spherical harmonic order n and degree m for a linear
@@ -234,6 +180,63 @@ def fuma_to_nm(fuma):
 
     n, m = acn_to_nm(acn)
     return n, m
+
+
+def n3d_to_maxn(acn):
+    """
+    Calculate the scaling factor which converts from N3D (normalized 3D)
+    normalization to max N normalization.
+
+    Parameters
+    ----------
+    acn : int
+          linear index
+
+    Returns
+    -------
+    maxN : float
+        Maximum norm for spherical harmonics of order N
+    """
+    if acn > 15:
+        raise ValueError("acn must be less than or "
+                         "equal to 15")
+    maxN = [
+        np.sqrt(1 / 2),
+        np.sqrt(1 / 3),
+        np.sqrt(1 / 3),
+        np.sqrt(1 / 3),
+        2 / np.sqrt(15),
+        2 / np.sqrt(15),
+        np.sqrt(1 / 5),
+        2 / np.sqrt(15),
+        2 / np.sqrt(15),
+        np.sqrt(8 / 35),
+        3 / np.sqrt(35),
+        np.sqrt(45 / 224),
+        np.sqrt(1 / 7),
+        np.sqrt(45 / 224),
+        3 / np.sqrt(35),
+        np.sqrt(8 / 35),
+    ]
+    return maxN[acn]
+
+
+def n3d_to_sn3d_norm(n):
+    """
+    Calculate the scaling factor which converts from N3D (normalized 3D)
+    normalization to SN3D (Schmidt semi-normalized 3D) normalization.
+
+    Parameters
+    ----------
+    n : int
+        Spherical harmonic order
+
+    Returns
+    -------
+    sn3d : float
+        SN3D normalization factor
+    """
+    return 1 / np.sqrt(2 * n + 1)
 
 
 def spherical_harmonic_basis(n_max, coords):
