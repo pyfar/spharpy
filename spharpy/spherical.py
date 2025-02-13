@@ -197,10 +197,14 @@ def n3d_to_maxn(acn):
     maxN : float
         Maximum norm for spherical harmonics of order N
     """
-    if acn > 15:
+
+    if not isinstance(acn, np.ndarray):
+        acn = np.asarray([acn], dtype=int)
+
+    if np.any(acn) > 15:
         raise ValueError("acn must be less than or "
                          "equal to 15")
-    maxN = [
+    valid_maxN = [
         np.sqrt(1 / 2),
         np.sqrt(1 / 3),
         np.sqrt(1 / 3),
@@ -218,7 +222,12 @@ def n3d_to_maxn(acn):
         3 / np.sqrt(35),
         np.sqrt(8 / 35),
     ]
-    return maxN[acn]
+
+    maxN = np.array([], dtype=int)
+    for a in acn:
+        maxN = np.append(maxN, valid_maxN[int(a)])
+
+    return maxN
 
 
 def n3d_to_sn3d_norm(n):
@@ -228,12 +237,12 @@ def n3d_to_sn3d_norm(n):
 
     Parameters
     ----------
-    n : int
+    n : integer, ndarray
         Spherical harmonic order
 
     Returns
     -------
-    sn3d : float
+    sn3d : float, ndarray
         SN3D normalization factor
     """
     return 1 / np.sqrt(2 * n + 1)
