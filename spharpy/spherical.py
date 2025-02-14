@@ -96,9 +96,9 @@ def nm_to_fuma(n, m):
 
     Parameters
     ----------
-    n : integer
+    n : integer, ndarray
         Spherical harmonic order
-    m : integer
+    m : integer, ndarray
         Spherical harmonic degree
 
     Returns
@@ -180,6 +180,72 @@ def fuma_to_nm(fuma):
 
     n, m = acn_to_nm(acn)
     return n, m
+
+
+def n3d_to_maxn(acn):
+    """
+    Calculate the scaling factor which converts from N3D (normalized 3D)
+    normalization to max N normalization. ACN must be less or equal to 15.
+
+    Parameters
+    ----------
+    acn : integer, ndarray
+          linear index
+
+    Returns
+    -------
+    maxN : float
+        Scaling factor which converts from N3D to max N
+    """
+
+    if not isinstance(acn, np.ndarray):
+        acn = np.asarray([acn], dtype=int)
+
+    if np.any(acn) > 15:
+        raise ValueError("acn must be less than or "
+                         "equal to 15")
+    valid_maxN = [
+        np.sqrt(1 / 2),
+        np.sqrt(1 / 3),
+        np.sqrt(1 / 3),
+        np.sqrt(1 / 3),
+        2 / np.sqrt(15),
+        2 / np.sqrt(15),
+        np.sqrt(1 / 5),
+        2 / np.sqrt(15),
+        2 / np.sqrt(15),
+        np.sqrt(8 / 35),
+        3 / np.sqrt(35),
+        np.sqrt(45 / 224),
+        np.sqrt(1 / 7),
+        np.sqrt(45 / 224),
+        3 / np.sqrt(35),
+        np.sqrt(8 / 35),
+    ]
+
+    maxN = np.array([], dtype=int)
+    for a in acn:
+        maxN = np.append(maxN, valid_maxN[int(a)])
+
+    return maxN
+
+
+def n3d_to_sn3d_norm(n):
+    """
+    Calculate the scaling factor which converts from N3D (normalized 3D)
+    normalization to SN3D (Schmidt semi-normalized 3D) normalization.
+
+    Parameters
+    ----------
+    n : integer, ndarray
+        Spherical harmonic order
+
+    Returns
+    -------
+    sn3d : float, ndarray
+        normalization factor which converts from N3D to SN3D
+    """
+    return 1 / np.sqrt(2 * n + 1)
 
 
 def spherical_harmonic_basis(n_max, coords):
