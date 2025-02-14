@@ -96,9 +96,9 @@ def nm_to_fuma(n, m):
 
     Parameters
     ----------
-    n : integer
+    n : integer, ndarray
         Spherical harmonic order
-    m : integer
+    m : integer, ndarray
         Spherical harmonic degree
 
     Returns
@@ -189,7 +189,7 @@ def n3d_to_maxn(acn):
 
     Parameters
     ----------
-    acn : int
+    acn : integer, ndarray
           linear index
 
     Returns
