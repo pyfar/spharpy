@@ -185,7 +185,7 @@ def fuma_to_nm(fuma):
 def n3d_to_maxn(acn):
     """
     Calculate the scaling factor which converts from N3D (normalized 3D)
-    normalization to max N normalization.
+    normalization to max N normalization. ACN must be less or equal to 15.
 
     Parameters
     ----------
@@ -195,7 +195,7 @@ def n3d_to_maxn(acn):
     Returns
     -------
     maxN : float
-        Maximum norm for spherical harmonics of order N
+        Scaling factor which converts from N3D to max N
     """
 
     if not isinstance(acn, np.ndarray):
@@ -243,7 +243,7 @@ def n3d_to_sn3d_norm(n):
     Returns
     -------
     sn3d : float, ndarray
-        SN3D normalization factor
+        normalization factor which converts from N3D to SN3D
     """
     return 1 / np.sqrt(2 * n + 1)
 
