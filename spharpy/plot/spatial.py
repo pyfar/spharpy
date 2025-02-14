@@ -7,7 +7,7 @@ import matplotlib.tri as mtri
 import numpy as np
 import scipy.spatial as sspat
 import pyfar as pf
-from matplotlib import cm, colors
+from matplotlib import colors
 from mpl_toolkits.mplot3d import Axes3D
 __all__ = [Axes3D]
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -435,8 +435,6 @@ def balloon(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    show : boolean, optional
-        Wheter to show the figure or not
 
     Examples
     --------
@@ -449,7 +447,7 @@ def balloon(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.balloon(coords, data)
 
-    """ # noqa: 501
+    """
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
