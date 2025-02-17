@@ -136,7 +136,7 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def n_max(self):
-        return self.n_max
+        return self._n_max
 
     @property
     def basis_type(self):
