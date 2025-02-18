@@ -173,7 +173,7 @@ class SphericalHarmonicSignal(Signal):
         if value not in ["n3d", "maxN", "sn3d"]:
             raise ValueError("Invalid normalization, has to be 'sn3d', "
                              f"'n3d', or 'maxN, but is {value}")
-        acn = range(0, (self.n_max + 1) ** 2)
+        acn = np.arange((self.n_max + 1) ** 2)
 
         if self.channel_convention == "fuma":
             orders, degrees = fuma_to_nm(acn)
