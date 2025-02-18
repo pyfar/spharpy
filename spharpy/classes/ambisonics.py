@@ -1,6 +1,6 @@
 from pyfar import Signal
 from spharpy.spherical import n3d_to_maxn, n3d_to_sn3d_norm
-from spharpy.spherical import fuma_to_nm, acn_to_nm, nm_to_acn
+from spharpy.spherical import fuma_to_nm, nm_to_fuma, acn_to_nm, nm_to_acn
 import numpy as np
 
 
@@ -149,7 +149,7 @@ class SphericalHarmonicSignal(Signal):
     @normalization.setter
     def normalization(self, value):
         if self.normalization is not value:
-            self._renormalize(self, value)
+            self._renormalize(value)
         self._normalization = value
 
     @property
@@ -176,41 +176,42 @@ class SphericalHarmonicSignal(Signal):
         acn = np.arange((self.n_max + 1) ** 2)
 
         if self.channel_convention == "fuma":
-            orders, degrees = fuma_to_nm(acn)
+            orders, _ = fuma_to_nm(acn)
         else:
-            orders, degrees = acn_to_nm(acn)
+            orders, _ = acn_to_nm(acn)
 
         if self._normalization == 'n3d':
             if value == "sn3d":
                 self._data[:, :, ...] *= \
-                    n3d_to_sn3d_norm(degrees, orders)
+                    n3d_to_sn3d_norm(orders)[np.newaxis].T
             elif value == "maxN":
                 self._data[:, :, ...] *= \
-                    n3d_to_maxn(acn)
+                    n3d_to_maxn(acn)[np.newaxis].T
 
         if self._normalization == 'sn3d':
             # convert to sn3d
-            self._data[:, :, :] /= \
-                    n3d_to_sn3d_norm(degrees, orders)
+            self._data[:, :, ...] /= \
+                    n3d_to_sn3d_norm(orders)[np.newaxis].T
             if value == "maxN":
-                self._data[:, acn, :] *= n3d_to_maxn(acn)
+                self._data[:, :, ...] *= n3d_to_maxn(acn)[np.newaxis].T
 
         if self._normalization == 'maxN':
             # convert to n3d
-            self._data[:, acn, :] /= \
-                    n3d_to_maxn(acn)
+            self._data[:, :, ...] /= \
+                    n3d_to_maxn(acn)[np.newaxis].T
             if value == "sn3d":
-                self._data[:, acn, :] *= \
-                    n3d_to_sn3d_norm(acn)
+                self._data[:, :, ...] *= \
+                    n3d_to_sn3d_norm(orders)[np.newaxis].T
 
     def _change_channel_convention(self):
-        n_coeffs = (self.n_max + 1) ** 2
+        acn = np.arange((self.n_max + 1) ** 2)
         if self._channel_convention == 'acn':
-            n, m = acn_to_nm(n_coeffs)
-            #  idx = nm2fuma(n, m)
-            raise NotImplementedError('not implemented')
+            self._channel_convention = 'fuma'
+            n, m = acn_to_nm(acn)
+            idx = nm_to_fuma(n, m)
         elif self._channel_convention == 'fuma':
-            n, m = fuma_to_nm(n_coeffs)
+            self._channel_convention = 'acn'
+            n, m = fuma_to_nm(acn)
             idx = nm_to_acn(n, m)
 
-        self._data = self._data[:, idx, ...]
+        self._data = self._data[idx, ...]
