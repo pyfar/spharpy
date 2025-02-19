@@ -150,7 +150,6 @@ class SphericalHarmonicSignal(Signal):
     def normalization(self, value):
         if self.normalization is not value:
             self._renormalize(value)
-        self._normalization = value
 
     @property
     def channel_convention(self):
@@ -189,7 +188,7 @@ class SphericalHarmonicSignal(Signal):
                     n3d_to_maxn(acn)[np.newaxis].T
 
         if self._normalization == 'sn3d':
-            # convert to sn3d
+            # convert to n3d
             self._data[:, :, ...] /= \
                     n3d_to_sn3d_norm(orders)[np.newaxis].T
             if value == "maxN":
@@ -202,6 +201,7 @@ class SphericalHarmonicSignal(Signal):
             if value == "sn3d":
                 self._data[:, :, ...] *= \
                     n3d_to_sn3d_norm(orders)[np.newaxis].T
+        self._normalization = value
 
     def _change_channel_convention(self):
         acn = np.arange((self.n_max + 1) ** 2)
