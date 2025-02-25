@@ -322,7 +322,7 @@ def spherical_harmonic_basis(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
         if normalization == "sn3d":
-            basis[:, acn] *= n3d_to_sn3d_norm(degree, order)
+            basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
         if phase_convention is None:
@@ -469,7 +469,7 @@ def spherical_harmonic_basis_real(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
         if normalization == "sn3d":
-            basis[:, acn] *= n3d_to_sn3d_norm(degree, order)
+            basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
         if phase_convention is None:

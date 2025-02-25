@@ -9,7 +9,10 @@ import pytest
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 @pytest.mark.parametrize("phase_convention", [None, 'Condon-Shortley'])
+@pytest.mark.parametrize("normalization", ['n3d', 'maxN', 'sn3d'])
+@pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
 def test_spherical_harmonic(make_coordinates, implementation,
+                            normalization, channel_convention,
                             phase_convention):
     Nmax = 1
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
@@ -20,14 +23,34 @@ def test_spherical_harmonic(make_coordinates, implementation,
         implementation, rad, theta, phi)
 
     if phase_convention == 'Condon-Shortley':
-        Y = np.array([[2.820947917738781e-01 + 0.000000000000000e+00j, 3.454941494713355e-01 + 0.000000000000000e+00j, 2.991827511286337e-17 + 0.000000000000000e+00j, -3.454941494713355e-01 + 0.000000000000000e+00j],
-                      [2.820947917738781e-01 + 0.000000000000000e+00j, 2.115541521371041e-17 - 3.454941494713355e-01j, 2.991827511286337e-17 + 0.000000000000000e+00j, -2.115541521371041e-17 - 3.454941494713355e-01j],
-                      [2.820947917738781e-01 + 0.000000000000000e+00j, 0.000000000000000e+00 + 0.000000000000000e+00j, 4.886025119029199e-01 + 0.000000000000000e+00j, 0.000000000000000e+00 + 0.000000000000000e+00j]], dtype=complex)
+        Y = np.array([[2.820947917738781e-01 + 0.000000000000000e+00j,
+                       3.454941494713355e-01 + 0.000000000000000e+00j,
+                       2.991827511286337e-17 + 0.000000000000000e+00j,
+                       -3.454941494713355e-01 + 0.000000000000000e+00j],
+                      [2.820947917738781e-01 + 0.000000000000000e+00j,
+                       2.115541521371041e-17 - 3.454941494713355e-01j,
+                       2.991827511286337e-17 + 0.000000000000000e+00j,
+                       -2.115541521371041e-17 - 3.454941494713355e-01j],
+                      [2.820947917738781e-01 + 0.000000000000000e+00j,
+                       0.000000000000000e+00 + 0.000000000000000e+00j,
+                       4.886025119029199e-01 + 0.000000000000000e+00j,
+                       0.000000000000000e+00 + 0.000000000000000e+00j]],
+                     dtype=complex)
 
     elif phase_convention is None:
-        Y = np.array([[2.8209479177388e-01 + 0.0j, -0.0000000000000e+00 - 0.0j, 4.8860251190292e-01 + 0.0j, 0.0000000000000e+00 - 0.0j],
-                      [2.8209479177388e-01 + 0.0j, -2.1155415213710e-17 + 0.3454941494713j, 0.0000000000000e+00 + 0.0j, 2.1155415213710e-17 + 0.3454941494713j],
-                      [2.8209479177388e-01 + 0.0j, -0.0000000000000e+00 - 0.0j, 4.8860251190292e-01 + 0.0j, 0.0000000000000e+00 - 0.0j]], dtype=complex)
+        Y = np.array([[2.8209479177388e-01 + 0.000000000000000e+00j,
+                       -0.0000000000000e+00 - 0.000000000000000e+00j,
+                       4.8860251190292e-01 + 0.000000000000000e+00j,
+                       0.0000000000000e+00 - 0.000000000000000e+00j],
+                      [2.8209479177388e-01 + 0.000000000000000e+00j,
+                       -2.1155415213710e-17 + 0.34549414947134j,
+                       0.0000000000000e+00 + 0.000000000000000e+00j,
+                       2.1155415213710e-17 + 0.34549414947134j],
+                      [2.8209479177388e-01 + 0.000000000000000e+00j,
+                       -0.0000000000000e+00 - 0.000000000000000e+00j,
+                       4.8860251190292e-01 + 0.000000000000000e+00j,
+                       0.0000000000000e+00 - 0.000000000000000e+00j]],
+                     dtype=complex)
 
     basis = sh.spherical_harmonic_basis(Nmax, coords,
                                         phase_convention=phase_convention)
@@ -37,7 +60,10 @@ def test_spherical_harmonic(make_coordinates, implementation,
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 @pytest.mark.parametrize("phase_convention", [None, 'Condon-Shortley'])
+@pytest.mark.parametrize("normalization", ['n3d', 'maxN', 'sn3d'])
+@pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
 def test_spherical_harmonic_n10(make_coordinates, implementation,
+                                normalization, channel_convention,
                                 phase_convention):
     Nmax = 10
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
@@ -52,6 +78,7 @@ def test_spherical_harmonic_n10(make_coordinates, implementation,
         dtype=complex)
 
     basis = sh.spherical_harmonic_basis(Nmax, coords,
+                                        normalization, channel_convention,
                                         phase_convention=phase_convention)
 
     np.testing.assert_allclose(Y, basis, atol=1e-13)
@@ -59,7 +86,10 @@ def test_spherical_harmonic_n10(make_coordinates, implementation,
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 @pytest.mark.parametrize("phase_convention", [None, 'Condon-Shortley'])
+@pytest.mark.parametrize("normalization", ['n3d', 'maxN', 'sn3d'])
+@pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
 def test_spherical_harmonics_real(make_coordinates, implementation,
+                                  normalization, channel_convention,
                                   phase_convention):
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
@@ -71,6 +101,7 @@ def test_spherical_harmonics_real(make_coordinates, implementation,
 
     reference = np.genfromtxt('./tests/data/sh_basis_real.csv', delimiter=',')
     basis = sh.spherical_harmonic_basis_real(n_max, coords,
+                                             normalization, channel_convention,
                                              phase_convention=phase_convention)
     np.testing.assert_allclose(basis, reference, atol=1e-13)
 
