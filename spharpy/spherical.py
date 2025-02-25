@@ -329,7 +329,7 @@ def spherical_harmonic_basis(
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
-            basis[:, acn] /= (-1) ** degree
+            basis[:, acn] /= (-1) ** float(degree)
     return basis
 
 
@@ -390,7 +390,9 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
         axis = np.where(coordinates.shape == 3)[0][0]
         if axis == 0:
             coordinates = coordinates.T
-        coordinates = pf.Coordinates(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2])
+        coordinates = pf.Coordinates(coordinates[:, 0],
+                                     coordinates[:, 1],
+                                     coordinates[:, 2])
 
     n_points = coordinates.csize
     n_coeff = (n_max+1)**2
@@ -413,8 +415,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
 
 def spherical_harmonic_basis_real(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=None
-    ):
+        phase_convention=None):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
     See also :func:`spherical_harmonic_basis`.
@@ -474,7 +475,7 @@ def spherical_harmonic_basis_real(
         # Condon-Shortley phase term is already included in
         # the special.spherical_harmonic function
         # so need to divide by (-1)^m
-        basis[:, acn] /= (-1) ** degree
+        basis[:, acn] /= (-1) ** float(degree)
 
     return basis
 
