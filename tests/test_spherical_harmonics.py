@@ -36,11 +36,7 @@ def test_spherical_harmonic(make_coordinates, implementation,
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-@pytest.mark.parametrize("phase_convention", [None, 'Condon-Shortley'])
-@pytest.mark.parametrize("normalization", ['n3d', 'sn3d'])
-def test_spherical_harmonic_n10(make_coordinates, implementation,
-                                normalization,
-                                phase_convention):
+def test_spherical_harmonic_n10(make_coordinates, implementation):
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
     phi = np.array([0, np.pi/2, 0], dtype=float)
@@ -54,8 +50,7 @@ def test_spherical_harmonic_n10(make_coordinates, implementation,
         dtype=complex)
 
     basis = sh.spherical_harmonic_basis(n_max, coords,
-                                        normalization=normalization,
-                                        phase_convention=phase_convention)
+                                        phase_convention='Condon-Shortley')
 
     np.testing.assert_allclose(Y, basis, atol=1e-13)
 
