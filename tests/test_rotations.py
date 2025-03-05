@@ -87,10 +87,10 @@ def test_wigner_d_rot_real():
         n_max, euler_angles[0], euler_angles[1], euler_angles[2])
 
     reference = np.squeeze(spharpy.spherical.spherical_harmonic_basis_real(
-            n_max, Coordinates(0, 1, 1)))
+            n_max, Coordinates(0, 1, 1), phase_convention='Condon-Shortley'))
 
     sh_vec = np.squeeze(spharpy.spherical.spherical_harmonic_basis_real(
-        n_max, Coordinates(0, 1, 0)))
+        n_max, Coordinates(0, 1, 0), phase_convention='Condon-Shortley'))
     sh_vec_rotated = D @ sh_vec
 
     np.testing.assert_allclose(sh_vec_rotated, reference, atol=1e-10)
@@ -114,10 +114,10 @@ def test_wigner_d_rot():
         n_max, euler_angles[0], euler_angles[1], euler_angles[2])
 
     reference = np.squeeze(spharpy.spherical.spherical_harmonic_basis(
-            n_max, Coordinates(0, 1, 1)))
+            n_max, Coordinates(0, 1, 1), phase_convention='Condon-Shortley'))
 
     sh_vec = np.squeeze(spharpy.spherical.spherical_harmonic_basis(
-        n_max, Coordinates(0, 1, 0)))
+        n_max, Coordinates(0, 1, 0), phase_convention='Condon-Shortley'))
     sh_vec_rotated = D @ sh_vec
 
     np.testing.assert_allclose(sh_vec_rotated, reference)
