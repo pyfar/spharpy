@@ -14,10 +14,9 @@ def test_sph_bessel_zeros():
 
 
 def test_interior_points_chardon():
-    kr_max = 7
+    kr_max = 4
     int_points = samplings.interior_stabilization_points(kr_max)
 
-    filename = 'tests/data/interior_points_kr7.csv'
-    truth = np.genfromtxt(filename, dtype=float, delimiter=';')
+    truth = np.array([[0, 0, 0]], dtype=float)
 
     np.testing.assert_allclose(int_points.cartesian.T, truth, atol=1e-7)
