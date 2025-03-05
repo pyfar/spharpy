@@ -9,7 +9,9 @@ from .samplings import (
     gaussian,
     eigenmike_em32,
     equalarea,
-    spiral_points)
+    spiral_points,
+    eigenmike_em64,
+)
 
 from .helpers import (
     sph2cart,
@@ -46,4 +48,5 @@ __all__ = [
     'Coordinates',
     'SamplingSphere',
     'interior_stabilization_points',
+    'eigenmike_em64',
 ]
