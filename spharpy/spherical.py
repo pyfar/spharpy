@@ -531,7 +531,7 @@ def spherical_harmonic_basis_real(
 def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                                            normalization="n3d",
                                            channel_convention="acn",
-                                           phase_convention=None):
+                                           phase_convention='Condon-Shortley'):
     r"""
     Calulcates the unit sphere gradients of the real valued spherical hamonics.
 
@@ -611,8 +611,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
-            # factor /= (-1) ** float(m)
-            pass
+            factor /= (-1) ** float(m)
 
         grad_theta[:, acn] *= factor
         grad_phi[:, acn] *= factor
