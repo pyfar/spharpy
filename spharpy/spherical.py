@@ -388,7 +388,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         (FuMa is only supported up to 3rd order)
     phase_convention : string or None, optional
         Whether to include the Condon-Shortley phase term.
-        The default is None.
+        The default is 'Condon-Shortley'.
 
     Returns
     -------
@@ -606,7 +606,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
-        if phase_convention is 'Condon-Shortley':
+        if phase_convention == 'Condon-Shortley':
             # Condon-Shortley phase term is not included in
             # the special.spherical_harmonic function
             factor *= (-1) ** float(m)
