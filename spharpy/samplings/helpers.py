@@ -206,7 +206,7 @@ def spherical_voronoi(sampling, round_decimals=13, center=0.0):
     if len(radius) > 1:
         raise ValueError("All sampling points need to be on the \
                 same radius.")
-    voronoi = SphericalVoronoi(points, radius, center)
+    voronoi = SphericalVoronoi(points, radius[0], center)
 
     return voronoi
 
