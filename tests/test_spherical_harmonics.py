@@ -119,8 +119,7 @@ def test_spherical_harmonic_default_n10(make_coordinates, implementation):
         delimiter=',',
         dtype=complex)
 
-    basis = sh.spherical_harmonic_basis(n_max, coords,
-                                        phase_convention='Condon-Shortley')
+    basis = sh.spherical_harmonic_basis(n_max, coords)
 
     np.testing.assert_allclose(Y, basis, atol=1e-13)
 
@@ -128,6 +127,9 @@ def test_spherical_harmonic_default_n10(make_coordinates, implementation):
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_spherical_harmonics_real_n10_default(make_coordinates,
                                               implementation):
+    """test the default parameters of SH basis function generator. This
+       simultaneously tests if the methods still match the implementation
+       up to spharpy 0.3.1."""
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
     phi = np.array([0, np.pi/2, 0, np.pi/4], dtype=float)
@@ -139,8 +141,7 @@ def test_spherical_harmonics_real_n10_default(make_coordinates,
     Y = np.genfromtxt('./tests/data/sh_basis_real.csv',
                       dtype=float,
                       delimiter=',')
-    basis = sh.spherical_harmonic_basis_real(n_max, coords,
-                                             phase_convention='Condon-Shortley')
+    basis = sh.spherical_harmonic_basis_real(n_max, coords)
     np.testing.assert_allclose(basis, Y, atol=1e-13)
 
 

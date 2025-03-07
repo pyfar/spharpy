@@ -251,7 +251,7 @@ def n3d_to_sn3d_norm(n):
 
 def spherical_harmonic_basis(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=None):
+        phase_convention='Condon-Shortley'):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
     See also :func:`spherical_harmonic_basis_real`.
@@ -293,7 +293,7 @@ def spherical_harmonic_basis(
         (FuMa is only supported up to 3rd order)
     phase_convention : string or None, optional
         Whether to include the Condon-Shortley phase term.
-        The default is None.
+        The default is 'Condon-Shortley'.
 
     Returns
     -------
@@ -519,11 +519,10 @@ def spherical_harmonic_basis_real(
             basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
-        if phase_convention is None:
-            # Condon-Shortley phase term is already included in
-            # the special.spherical_harmonic function
-            # so need to divide by (-1)^m
-            basis[:, acn] /= (-1) ** float(degree)
+        if phase_convention == 'Condon-Shortley':
+            # Condon-Shortley phase term is not included in
+            # the special.spherical_harmonic_real function
+            basis[:, acn] *= (-1) ** float(degree)
 
     return basis
 
@@ -531,7 +530,7 @@ def spherical_harmonic_basis_real(
 def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                                            normalization="n3d",
                                            channel_convention="acn",
-                                           phase_convention='Condon-Shortley'):
+                                           phase_convention=None):
     r"""
     Calulcates the unit sphere gradients of the real valued spherical hamonics.
 
@@ -607,11 +606,10 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
-        if phase_convention is None:
-            # Condon-Shortley phase term is already included in
+        if phase_convention is 'Condon-Shortley':
+            # Condon-Shortley phase term is not included in
             # the special.spherical_harmonic function
-            # so need to divide by (-1)^m
-            factor /= (-1) ** float(m)
+            factor *= (-1) ** float(m)
 
         grad_theta[:, acn] *= factor
         grad_phi[:, acn] *= factor
