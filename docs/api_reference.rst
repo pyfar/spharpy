@@ -16,14 +16,14 @@ Modules
 .. toctree::
    :maxdepth: 1
 
-   spharpy.beamforming
-   spharpy.indexing
-   spharpy.interpolate
-   spharpy.plot
-   spharpy.samplings
-   spharpy.spatial
-   spharpy.spherical
-   spharpy.transforms
+   modules/spharpy.beamforming
+   modules/spharpy.indexing
+   modules/spharpy.interpolate
+   modules/spharpy.plot
+   modules/spharpy.samplings
+   modules/spharpy.spatial
+   modules/spharpy.spherical
+   modules/spharpy.transforms
 
 
 .. _examples gallery: https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html
