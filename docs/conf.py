@@ -8,7 +8,10 @@
 
 import os
 import sys
+import urllib3
+import shutil
 sys.path.insert(0, os.path.abspath('..'))
+
 import spharpy  # noqa
 
 # -- General configuration ---------------------------------------------------
@@ -16,8 +19,6 @@ import spharpy  # noqa
 
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosummary',
@@ -27,6 +28,8 @@ extensions = [
     'autodocsumm',
     'sphinx_design',
     'sphinx_favicon',
+    'sphinx_reredirects',
+    'sphinx_mdinclude',
 ]
 
 # show tocs for classes and functions of modules using the autodocsumm
@@ -42,15 +45,18 @@ templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = 'spharpy'
-copyright = ', 2020 - 2023, Marco Berzborn; 2023, The pyfar developers'
-author = 'The pyfar developers'
+copyright = "2025, The pyfar developers"
+author = "The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -88,7 +94,7 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
-    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None)
+    'pyfar': ('https://pyfar.readthedocs.io/en/stable/', None),
     }
 
 # -- Options for HTML output -------------------------------------------------
@@ -98,16 +104,20 @@ html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
 html_logo = 'resources/logos/pyfar_logos_fixed_size_spharpy.png'
-html_title = "pyfar"
+html_title = "spharpy"
 html_favicon = '_static/favicon.ico'
 
 # -- HTML theme options
 # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/layout.html
+html_sidebars = {
+  "spharpy": []
+}
 
 html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "navbar_end": ["navbar-icon-links", "theme-switcher"],
     "navbar_align": "content",
+    "header_links_before_dropdown": 8,
     "icon_links": [
         {
           "name": "GitHub",
@@ -120,8 +130,56 @@ html_theme_options = {
     "show_toc_level": 3,  # Show all subsections of notebooks
     "secondary_sidebar_items": ["page-toc"],  # Omit 'show source' link that that shows notebook in json format
     "navigation_with_keys": True,
+    # Configure navigation depth for section navigation
+    "navigation_depth": 1,
 }
 
 html_context = {
    "default_mode": "light"
 }
+
+# redirect index to pyfar.html
+redirects = {
+     "index": "spharpy.html"
+}
+
+# -- download navbar and style files from gallery -----------------------------
+branch = 'main'
+link = f'https://github.com/pyfar/gallery/raw/{branch}/docs/'
+folders_in = [
+    '_static/css/custom.css',
+    '_static/favicon.ico',
+    '_static/header.rst',
+    'resources/logos/pyfar_logos_fixed_size_spharpy.png',
+    ]
+
+def download_files_from_gallery(link, folders_in):
+    c = urllib3.PoolManager()
+    for file in folders_in:
+        url = link + file
+        filename = file
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with c.request('GET', url, preload_content=False) as res:
+            if res.status == 200:
+                with open(filename, 'wb') as out_file:
+                    shutil.copyfileobj(res, out_file)
+
+download_files_from_gallery(link, folders_in)
+# if logo does not exist, use pyfar logo
+if not os.path.exists(html_logo):
+    download_files_from_gallery(
+        link, ['resources/logos/pyfar_logos_fixed_size_pyfar.png'])
+    shutil.copyfile(
+        'resources/logos/pyfar_logos_fixed_size_pyfar.png', html_logo)
+
+# replace spharpy hard link to internal link
+with open("_static/header.rst", "rt") as fin:
+    with open("header.rst", "wt") as fout:
+        lines = [line.replace(f'https://{project}.readthedocs.io', project) for line in fin]
+        contains_project = any(project in line for line in lines)
+
+        fout.writelines(lines)
+
+        # add project to the list of projects if not in header
+        if not contains_project:
+            fout.write(f'   {project} <{project}>\n')
