@@ -62,6 +62,50 @@ def test_spherical_harmonics_real(make_coordinates, implementation,
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_spherical_harmonics_invalid_nmax(make_coordinates, implementation):
+    n_max = 4
+    theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
+    phi = np.array([0, np.pi/2, 0], dtype=float)
+    rad = np.ones(3, dtype=float)
+
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    with pytest.raises(ValueError,
+                       match='MaxN normalization is only'
+                             ' supported up to 3rd order.'):
+        sh.spherical_harmonic_basis(n_max, coords,
+                                    normalization='maxN')
+    with pytest.raises(ValueError,
+                       match='MaxN normalization is only'
+                             ' supported up to 3rd order.'):
+        sh.spherical_harmonic_basis_real(n_max, coords,
+                                         normalization='maxN')
+
+
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_spherical_harmonics_invalid_fuma(make_coordinates, implementation):
+    n_max = 4
+    theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
+    phi = np.array([0, np.pi/2, 0], dtype=float)
+    rad = np.ones(3, dtype=float)
+
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    with pytest.raises(ValueError,
+                       match='FuMa channel convention is only'
+                             ' supported up to 3rd order.'):
+        sh.spherical_harmonic_basis(n_max, coords,
+                                    channel_convention='fuma')
+    with pytest.raises(ValueError,
+                       match='FuMa channel convention is only'
+                             ' supported up to 3rd order.'):
+        sh.spherical_harmonic_basis_real(n_max, coords,
+                                         channel_convention='fuma')
+
+
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_spherical_harmonic_default_n10(make_coordinates, implementation):
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)

@@ -310,11 +310,11 @@ def spherical_harmonic_basis(
     """
     if channel_convention == "fuma" and n_max > 3:
         raise ValueError(
-            "FuMa channel convention is only supported up to 3rd order")
+            "FuMa channel convention is only supported up to 3rd order.")
 
     if normalization == "maxN" and n_max > 3:
         raise ValueError(
-            "FuMa channel convention is only supported up to 3rd order")
+            "MaxN normalization is only supported up to 3rd order.")
 
     n_coeff = (n_max + 1) ** 2
 
@@ -457,11 +457,11 @@ def spherical_harmonic_basis_real(
     """
     if channel_convention == "fuma" and n_max > 3:
         raise ValueError(
-            "FuMa channel convention is only supported up to 3rd order")
+            "FuMa channel convention is only supported up to 3rd order.")
 
     if normalization == "maxN" and n_max > 3:
         raise ValueError(
-            "FuMa channel convention is only supported up to 3rd order")
+            "MaxN normalization is only supported up to 3rd order.")
 
     n_coeff = (n_max + 1) ** 2
 
