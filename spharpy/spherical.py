@@ -308,6 +308,13 @@ def spherical_harmonic_basis(
     >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)
 
     """
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order")
+
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order")
 
     n_coeff = (n_max + 1) ** 2
 
@@ -385,15 +392,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates):
     >>> grad_theta, grad_phi = spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)
 
 
-    """  # noqa: 501
-    if not isinstance(coordinates, pf.Coordinates):
-        axis = np.where(coordinates.shape == 3)[0][0]
-        if axis == 0:
-            coordinates = coordinates.T
-        coordinates = pf.Coordinates(coordinates[:, 0],
-                                     coordinates[:, 1],
-                                     coordinates[:, 2])
-
+    """
     n_points = coordinates.csize
     n_coeff = (n_max+1)**2
     theta = coordinates.colatitude
@@ -456,6 +455,14 @@ def spherical_harmonic_basis_real(
 
 
     """
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order")
+
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order")
+
     n_coeff = (n_max + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=float)
@@ -530,14 +537,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates):
     grad_phi : ndarray, float
         Gradient with respect to the azimuth angle.
 
-    """  # noqa: 501
-    if not isinstance(coordinates, pf.Coordinates):
-        axis = np.where(coordinates.shape == 3)[0][0]
-        if axis == 0:
-            coordinates = coordinates.T
-        coordinates = pf.Coordinates(coordinates[:, 0],
-                                     coordinates[:, 1],
-                                     coordinates[:, 2])
+    """
     n_points = coordinates.csize
     n_coeff = (n_max + 1) ** 2
     theta = coordinates.colatitude
