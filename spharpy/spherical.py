@@ -571,6 +571,17 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
         objects with sampling points for which the basis matrix is
         calculated
+    normalization : str, optional
+        Normalization convention, either 'n3d', 'maxN' or 'sn3d'.
+        The default is 'n3d'.
+        (maxN is only supported up to 3rd order)
+    channel_convention : str, optional
+        Channel ordering convention, either 'acn' or 'fuma'.
+        The default is 'acn'.
+        (FuMa is only supported up to 3rd order)
+    phase_convention : string or None, optional
+        Whether to include the Condon-Shortley phase term.
+        The default is None.
 
     Returns
     -------
@@ -580,6 +591,14 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         Gradient with respect to the azimuth angle.
 
     """
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order.")
+
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "MaxN normalization is only supported up to 3rd order.")
+
     n_points = coordinates.csize
     n_coeff = (n_max + 1) ** 2
     theta = coordinates.colatitude
