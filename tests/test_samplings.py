@@ -84,3 +84,25 @@ def test_equalarea():
 def test_spiral_points():
     sampling = samplings.spiral_points(2)
     assert isinstance(sampling, SamplingSphere)
+
+
+def test_em64():
+    sampling = samplings.eigenmike_em64()
+    assert isinstance(sampling, SamplingSphere)
+
+    weights = np.array([
+        0.954, 0.9738, 1.0029, 1.0426, 1.0426, 1.0024, 0.9738, 0.954, 1.009,
+        0.9932, 1.0024, 1.0324, 0.954, 1.0024, 1.0079, 1.0268, 1.0151, 0.9463,
+        1.012, 1.0253, 1.009, 0.9932, 1.0324, 1.0151, 0.954, 1.0079, 1.0029,
+        1.0024, 1.0268, 0.9463, 1.012, 1.0253, 0.954, 0.9738, 1.0029, 1.0426,
+        1.0426, 1.0024, 0.954, 0.9738, 1.0268, 1.0151, 1.012, 0.9463, 1.0253,
+        1.009, 0.9932, 1.0024, 1.0324, 1.0029, 0.954, 1.0024, 1.0324, 1.0151,
+        0.954, 1.0079, 1.0024, 1.0079, 1.0268, 1.012, 0.9463, 1.009, 1.0253,
+        0.9932,
+    ]) / 64 * 4 * np.pi
+
+    # check the individual weights
+    np.testing.assert_allclose(sampling.weights, weights)
+
+    # check if the weigths sum up to 4*pi to ensure valid integration on the unit sphere
+    np.testing.assert_allclose(np.sum(sampling.weights), 4*np.pi, atol=1e-4, rtol=1e-4)
