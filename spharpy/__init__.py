@@ -4,7 +4,7 @@
 
 __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
-__version__ = '0.6.1'
+__version__ = '0.6.2'
 
 from . import spherical
 from . import samplings
