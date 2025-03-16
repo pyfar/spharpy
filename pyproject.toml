@@ -32,6 +32,7 @@ dependencies = [
     'urllib3',
     'matplotlib>=3.3.0',
     'pyfar<0.8.0',
+    'pytz',
 ]
 
 [project.optional-dependencies]
