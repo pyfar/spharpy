@@ -89,10 +89,8 @@ class SphericalHarmonicSignal(Signal):
         Create SphericalHarmonicSignal with data, and sampling rate.
         """
         # set n_max
-        if n_max < 0:
+        if (n_max < 0) or (n_max % 1 != 0):
             raise ValueError("n_max must be a positive integer")
-        if n_max % 1 != 0:
-            raise ValueError("n_max must be an integer value")
         if not data.shape[-2] >= (n_max + 1) ** 2:
             raise ValueError('Data has to few sh coefficients for '
                              f'{n_max=}. Highest possible n_max is '
@@ -112,7 +110,7 @@ class SphericalHarmonicSignal(Signal):
         # set normalization
         if normalization not in ["n3d", "maxN", "sn3d"]:
             raise ValueError("Invalid normalization, has to be 'sn3d', "
-                             f"'n3d', or 'maxN, but is {normalization}")
+                             f"'n3d', or 'maxN', but is {normalization}")
         self._normalization = normalization
 
         # set channel_convention
@@ -171,7 +169,7 @@ class SphericalHarmonicSignal(Signal):
     def _renormalize(self, value):
         if value not in ["n3d", "maxN", "sn3d"]:
             raise ValueError("Invalid normalization, has to be 'sn3d', "
-                             f"'n3d', or 'maxN, but is {value}")
+                             f"'n3d', or 'maxN', but is {value}")
         acn = np.arange((self.n_max + 1) ** 2)
 
         if self.channel_convention == "fuma":

@@ -18,9 +18,9 @@ def test_spherical_harmonic_signal_init():
 
 
 def test_spherical_harmonic_signal_init_wrong_nmax():
-    """Test init SphercalHarmonicsSignal."""
+    """Test init SphericalHarmonicsSignal."""
 
-    with raises(ValueError, match="n_max must be an integer value"):
+    with raises(ValueError, match="n_max must be a positive integer"):
         SphericalHarmonicSignal(np.array([[1., 2., 3.],
                                           [1., 2., 3.],
                                           [1., 2., 3.]]),
@@ -48,7 +48,7 @@ def test_spherical_harmonic_signal_init_multichannel():
 
 
 def test_spherical_harmonic_signal_init_wrong_shape():
-    """Test to init AmbisonicsSignal."""
+    """Test to init SphericalHarmonicsSignal."""
 
     with raises(ValueError, match='Data has to few sh coefficients '
                 'for n_max=1. Highest possible n_max is 0'):
@@ -73,7 +73,7 @@ def test_nmax_getter():
 
 
 def test_basis_type_getter():
-    """Test nmax getter."""
+    """Test basis_type getter."""
     signal = SphericalHarmonicSignal(np.array([[1., 2., 3.],
                                                [1., 2., 3.],
                                                [1., 2., 3.],
@@ -124,7 +124,7 @@ def test_spherical_harmonic__renormalize():
                                         normalization='n3d')
     # test invalid type
     with raises(ValueError, match="Invalid normalization, has to be 'sn3d', "
-                                  "'n3d', or 'maxN, but is wrong_norm"):
+                                  "'n3d', or 'maxN', but is wrong_norm"):
         sh_signal._renormalize('wrong_norm')
 
     # test maxN
