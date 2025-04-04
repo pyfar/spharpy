@@ -251,7 +251,7 @@ def n3d_to_sn3d_norm(n):
 
 def spherical_harmonic_basis(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention='Condon-Shortley'):
+        condon_shortley='auto'):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
 
@@ -318,6 +318,13 @@ def spherical_harmonic_basis(
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
+    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+        raise ValueError(
+            "condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley is 'auto':
+        condon_shortley = True
+        
     n_coeff = (n_max + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=complex)
@@ -334,17 +341,17 @@ def spherical_harmonic_basis(
             basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
-        if phase_convention is None:
+        if not condon_shortley:
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
-            basis[:, acn] /= (-1) ** float(degree)
+            factor /= (-1) ** float(m)
     return basis
 
 
 def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
                                       channel_convention="acn",
-                                      phase_convention='Condon-Shortley'):
+                                      condon_shortley='auto'):
     r"""
     Calculates the unit sphere gradients of the complex spherical harmonics.
 
@@ -416,6 +423,13 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
+    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+        raise ValueError(
+            "condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley is 'auto':
+        condon_shortley = True
+
     n_points = coordinates.csize
     n_coeff = (n_max+1)**2
     theta = coordinates.colatitude
@@ -441,7 +455,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
-        if phase_convention is None:
+        if not condon_shortley:
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
@@ -455,7 +469,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
 
 def spherical_harmonic_basis_real(
         n_max, coordinates, normalization="n3d", channel_convention="acn",
-        phase_convention=None):
+        condon_shortley='auto'):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
     See also :py:func:`spherical_harmonic_basis`.
@@ -504,6 +518,13 @@ def spherical_harmonic_basis_real(
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
+    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+        raise ValueError(
+            "condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley is 'auto':
+        condon_shortley = False
+
     n_coeff = (n_max + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=float)
@@ -520,10 +541,10 @@ def spherical_harmonic_basis_real(
             basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
-        if phase_convention == 'Condon-Shortley':
+        if condon_shortley:
             # Condon-Shortley phase term is not included in
-            # the special.spherical_harmonic_real function
-            basis[:, acn] *= (-1) ** float(degree)
+            # the special.spherical_harmonic function
+            factor *= (-1) ** float(m)
 
     return basis
 
@@ -531,7 +552,7 @@ def spherical_harmonic_basis_real(
 def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                                            normalization="n3d",
                                            channel_convention="acn",
-                                           phase_convention=None):
+                                           condon_shortley='auto'):
     r"""
     Calculates the unit sphere gradients of the real valued spherical harmonics.
 
@@ -579,7 +600,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         Channel ordering convention, either 'acn' or 'fuma'.
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
-    phase_convention : string or None, optional
+    condon_shortley : string or None, optional
         Whether to include the Condon-Shortley phase term.
         The default is None.
 
@@ -598,6 +619,13 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     if normalization == "maxN" and n_max > 3:
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
+
+    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+        raise ValueError(
+            "condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley is 'auto':
+        condon_shortley = False
 
     n_points = coordinates.csize
     n_coeff = (n_max + 1) ** 2
@@ -625,7 +653,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
-        if phase_convention == 'Condon-Shortley':
+        if condon_shortley:
             # Condon-Shortley phase term is not included in
             # the special.spherical_harmonic function
             factor *= (-1) ** float(m)
