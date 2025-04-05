@@ -318,13 +318,13 @@ def spherical_harmonic_basis(
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+    if not type(condon_shortley) == bool and not condon_shortley is 'auto':
         raise ValueError(
             "condon_shortley has to be a bool, or 'auto'.")
 
     if condon_shortley is 'auto':
         condon_shortley = True
-        
+
     n_coeff = (n_max + 1) ** 2
 
     basis = np.zeros((coordinates.csize, n_coeff), dtype=complex)
@@ -345,7 +345,7 @@ def spherical_harmonic_basis(
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
-            factor /= (-1) ** float(m)
+            basis[:, acn] /= (-1) ** float(degree)
     return basis
 
 
@@ -423,7 +423,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+    if not type(condon_shortley) == bool and not condon_shortley is 'auto':
         raise ValueError(
             "condon_shortley has to be a bool, or 'auto'.")
 
@@ -518,7 +518,7 @@ def spherical_harmonic_basis_real(
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+    if not type(condon_shortley) == bool and not condon_shortley is 'auto':
         raise ValueError(
             "condon_shortley has to be a bool, or 'auto'.")
 
@@ -544,7 +544,7 @@ def spherical_harmonic_basis_real(
         if condon_shortley:
             # Condon-Shortley phase term is not included in
             # the special.spherical_harmonic function
-            factor *= (-1) ** float(m)
+            basis[:, acn] *= (-1) ** float(degree)
 
     return basis
 
@@ -620,7 +620,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if not type(condon_shortley) == bool or condon_shortley is 'auto':
+    if not type(condon_shortley) == bool and not condon_shortley is 'auto':
         raise ValueError(
             "condon_shortley has to be a bool, or 'auto'.")
 
