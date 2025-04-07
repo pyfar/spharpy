@@ -294,8 +294,8 @@ def spherical_harmonic_basis(
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
-        Whether to include the Condon-Shortley phase term. If True or 'auto', Condon-Shortley 
-        is included, if False it is not included.
+        Whether to include the Condon-Shortley phase term. If True or 'auto',
+        Condon-Shortley is included, if False it is not included.
         The default is 'auto'.
 
     Returns
@@ -319,7 +319,7 @@ def spherical_harmonic_basis(
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if type(condon_shortley) != bool and condon_shortley != 'auto':
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
         raise ValueError(
             "Condon_shortley has to be a bool, or 'auto'.")
 
@@ -396,8 +396,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
-        Whether to include the Condon-Shortley phase term. If True or 'auto', Condon-Shortley 
-        is included, if False it is not included.
+        Whether to include the Condon-Shortley phase term. If True or 'auto',
+        Condon-Shortley is included, if False it is not included.
         The default is 'auto'.
 
     Returns
@@ -425,7 +425,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if type(condon_shortley) != bool and condon_shortley != 'auto':
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
         raise ValueError(
             "Condon_shortley has to be a bool, or 'auto'.")
 
@@ -502,8 +502,8 @@ def spherical_harmonic_basis_real(
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
-        Whether to include the Condon-Shortley phase term. If True, Condon-Shortley is included,
-        if False or 'auto', it is not included.
+        Whether to include the Condon-Shortley phase term. If True,
+        Condon-Shortley is included, if False or 'auto', it is not included.
         The default is 'auto'.
 
     Returns
@@ -521,7 +521,7 @@ def spherical_harmonic_basis_real(
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if type(condon_shortley) != bool and condon_shortley != 'auto':
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
         raise ValueError(
             "Condon_shortley has to be a bool, or 'auto'.")
 
@@ -604,8 +604,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         The default is 'acn'.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
-        Whether to include the Condon-Shortley phase term. If True, Condon-Shortley is included,
-        if False or 'auto', it is not included.
+        Whether to include the Condon-Shortley phase term. If True,
+        Condon-Shortley is included, if False or 'auto', it is not included.
         The default is 'auto'.
 
     Returns
@@ -624,7 +624,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         raise ValueError(
             "MaxN normalization is only supported up to 3rd order.")
 
-    if type(condon_shortley) != bool and condon_shortley != 'auto':
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
         raise ValueError(
             "Condon_shortley has to be a bool, or 'auto'.")
 
