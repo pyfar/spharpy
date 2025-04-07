@@ -202,7 +202,7 @@ def spherical_harmonic_real(n, m, theta, phi):
     r"""Real valued spherical harmonic function of order n and degree m
     evaluated at the angles theta and phi.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention which does not include the Condon-Shortley
+    the AmbiX phase convention, which does not include the Condon-Shortley
     phase [#]_.
 
     .. math::
