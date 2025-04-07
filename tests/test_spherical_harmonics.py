@@ -51,7 +51,7 @@ def test_spherical_harmonics_real(make_coordinates, implementation,
     coords = make_coordinates.create_coordinates(
         implementation, rad, theta, phi)
     
-    phase_convention_id = 'Condon-Shortley' if condon_shortley else 'None'
+    phase_convention_id = 'Condon-Shortley' if condon_shortley == True else 'None'
     Y = np.genfromtxt(f'./tests/data/Y_real_{phase_convention_id}_'
                       f'{normalization}_{channel_convention}.csv',
                       dtype=float,
@@ -105,6 +105,26 @@ def test_spherical_harmonics_invalid_fuma(make_coordinates, implementation):
                              ' supported up to 3rd order.'):
         sh.spherical_harmonic_basis_real(n_max, coords,
                                          channel_convention='fuma')
+
+
+@pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
+def test_spherical_harmonics_invalid_condon_shortley(make_coordinates, implementation):
+    n_max = 4
+    theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
+    phi = np.array([0, np.pi/2, 0], dtype=float)
+    rad = np.ones(3, dtype=float)
+
+    coords = make_coordinates.create_coordinates(
+        implementation, rad, theta, phi)
+
+    with pytest.raises(ValueError,
+                       match="Condon_shortley has to be a bool, or 'auto'."):
+        sh.spherical_harmonic_basis(n_max, coords,
+                                    condon_shortley='xx')
+    with pytest.raises(ValueError,
+                       match="Condon_shortley has to be a bool, or 'auto'."):
+        sh.spherical_harmonic_basis_real(n_max, coords,
+                                         condon_shortley='xx')
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
