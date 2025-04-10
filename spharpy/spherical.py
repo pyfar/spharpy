@@ -263,13 +263,14 @@ def spherical_harmonic_basis(
 
     - :math:`n` is the degree
     where:
-    - $n$ is the degree
-    - $m$ is the order
-    - $P_{nm}$ is the associated Legendre function
-    - $N_{nm}$ is the normalization term
-    - $CS_m$ is the Condon-Shortley phase term
-    - $\theta$ is the colatitude (angle from the positive z-axis)
-    - $\phi$ is the azimuth (angle from the positive x-axis in the xy-plane)
+
+    - :math:`n` is the degree
+    - :math:`m` is the order
+    - :math:`P_{nm}` is the associated Legendre function
+    - :math:`N_{nm}` is the normalization term
+    - :math:`CS_m` is the Condon-Shortley phase term
+    - :math:`\theta` is the colatitude (angle from the positive z-axis)
+    - :math:`\phi` is the azimuth (angle from the positive x-axis in the xy-plane)
 
     References
     ----------
@@ -282,7 +283,8 @@ def spherical_harmonic_basis(
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or \
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -384,7 +386,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or \
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -557,7 +560,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                                            channel_convention="acn",
                                            condon_shortley='auto'):
     r"""
-    Calculates the unit sphere gradients of the real valued spherical harmonics.
+    Calculates the unit sphere gradients of the real valued spherical
+    harmonics.
 
     The spherical harmonic functions are fully normalized (N3D) and follow
     the AmbiX phase convention [#]_.
@@ -592,7 +596,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or \
+        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
