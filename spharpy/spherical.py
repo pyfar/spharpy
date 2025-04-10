@@ -270,7 +270,8 @@ def spherical_harmonic_basis(
     - :math:`N_{nm}` is the normalization term
     - :math:`CS_m` is the Condon-Shortley phase term
     - :math:`\theta` is the colatitude (angle from the positive z-axis)
-    - :math:`\phi` is the azimuth (angle from the positive x-axis in the xy-plane)
+    - :math:`\phi` is the azimuth (angle from the positive x-axis in the
+      xy-plane)
 
     References
     ----------
