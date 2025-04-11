@@ -271,7 +271,7 @@ def spherical_harmonic_basis(
     - :math:`CS_m` is the Condon-Shortley phase term
     - :math:`\theta` is the colatitude (angle from the positive z-axis)
     - :math:`\phi` is the azimuth (angle from the positive x-axis in the
-      xy-plane)
+      xy-plane), see :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
 
     References
     ----------
