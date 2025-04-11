@@ -279,15 +279,14 @@ def spherical_harmonic_basis(
     .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
             Springer, 2015.
 
-
     Parameters
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or \
-        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
-        objects with sampling points for which the basis matrix is
-        calculated
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
+        objects with sampling points for which the basis matrix is calculated
     normalization : str, optional
         Normalization convention, either 'n3d', 'maxN' or 'sn3d'.
         The default is 'n3d'.
@@ -387,8 +386,9 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or \
-        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -493,8 +493,9 @@ def spherical_harmonic_basis_real(
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
-        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -597,8 +598,9 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or \
-        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
