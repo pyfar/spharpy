@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-import pyfar as pf
 
 
 def acn_to_nm(acn):
@@ -297,8 +296,8 @@ def spherical_harmonic_basis(
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True`` or
-        ``'auto'``, Condon-Shortley is included, if ``False`` it is not included.
-        The default is ``'auto'``.
+        ``'auto'``, Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``.
 
     Returns
     -------
@@ -401,8 +400,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True`` or
-        ``'auto'``, Condon-Shortley is included, if ``False`` it is not included.
-        The default is ``'auto'``.
+        ``'auto'``, Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``.
 
     Returns
     -------
