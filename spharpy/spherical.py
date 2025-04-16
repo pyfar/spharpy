@@ -248,17 +248,29 @@ def n3d_to_sn3d_norm(n):
     return 1 / np.sqrt(2 * n + 1)
 
 
-def spherical_harmonic_basis(n_max, coords):
+def spherical_harmonic_basis(
+        n_max, coordinates, normalization="n3d", channel_convention="acn",
+        condon_shortley='auto'):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
 
-    The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [#]_, [#]_.
+    See [#]_ and [#]_ for details.
+    See also :py:func:`spherical_harmonic_basis_real`.
 
     .. math::
+        Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
 
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
-        \frac{(n-m)!}{(n+m)!}} P_n^m(\cos \theta) e^{i m \phi}
+    - :math:`n` is the degree
+    where:
+
+    - :math:`n` is the degree
+    - :math:`m` is the order
+    - :math:`P_{nm}` is the associated Legendre function
+    - :math:`N_{nm}` is the normalization term
+    - :math:`CS_m` is the Condon-Shortley phase term
+    - :math:`\theta` is the colatitude (angle from the positive z-axis)
+    - :math:`\phi` is the azimuth (angle from the positive x-axis in the
+      xy-plane), see :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
 
     References
     ----------
@@ -266,14 +278,26 @@ def spherical_harmonic_basis(n_max, coords):
     .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
             Springer, 2015.
 
-
     Parameters
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
-        calculated
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
+        objects with sampling points for which the basis matrix is calculated
+    normalization : str, optional
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
+        The default is ``'n3d'``.
+        (maxN is only supported up to 3rd order)
+    channel_convention : str, optional
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        The default is ``'acn'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool or str, optional
+        Whether to include the Condon-Shortley phase term. If ``True`` or
+        ``'auto'``, Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``.
 
     Returns
     -------
@@ -282,35 +306,57 @@ def spherical_harmonic_basis(n_max, coords):
 
     Examples
     --------
-
     >>> import spharpy
     >>> n_max = 2
-    >>> coords = spharpy.samplings.icosahedron()
-    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coords)
+    >>> coordinates = spharpy.samplings.icosahedron()
+    >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)
 
     """
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order.")
 
-    n_coeff = (n_max+1)**2
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "MaxN normalization is only supported up to 3rd order.")
 
-    basis = np.zeros((coords.csize, n_coeff), dtype=complex)
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
+        raise ValueError(
+            "Condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley == 'auto':
+        condon_shortley = True
+
+    n_coeff = (n_max + 1) ** 2
+
+    basis = np.zeros((coordinates.csize, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        order, degree = acn_to_nm(acn)
+        if channel_convention == "fuma":
+            order, degree = fuma_to_nm(acn)
+        else:
+            order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
-            order,
-            degree,
-            coords.colatitude,
-            coords.azimuth)
-
+            order, degree, coordinates.colatitude, coordinates.azimuth
+        )
+        if normalization == "sn3d":
+            basis[:, acn] *= n3d_to_sn3d_norm(order)
+        elif normalization == "maxN":
+            basis[:, acn] *= n3d_to_maxn(acn)
+        if not condon_shortley:
+            # Condon-Shortley phase term is already included in
+            # the special.spherical_harmonic function
+            # so need to divide by (-1)^m
+            basis[:, acn] /= (-1) ** float(degree)
     return basis
 
 
-def spherical_harmonic_basis_gradient(n_max, coords):
+def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
+                                      channel_convention="acn",
+                                      condon_shortley='auto'):
     r"""
-    Calulcates the unit sphere gradients of the complex spherical harmonics.
+    Calculates the unit sphere gradients of the complex spherical harmonics.
 
-    The spherical harmonic functions are fully normalized (N3D) and include the
-    Condon-Shotley phase term :math:`(-1)^m` [#]_.
 
     The angular parts of the gradient are defined as
 
@@ -339,9 +385,23 @@ def spherical_harmonic_basis_gradient(n_max, coords):
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
+        objects with sampling points for which the basis matrix is
         calculated
+    normalization : str, optional
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
+        The default is ``'n3d'``.
+        (maxN is only supported up to 3rd order)
+    channel_convention : str, optional
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        The default is ``'acn'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool or str, optional
+        Whether to include the Condon-Shortley phase term. If ``True`` or
+        ``'auto'``, Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``.
 
     Returns
     -------
@@ -352,40 +412,72 @@ def spherical_harmonic_basis_gradient(n_max, coords):
 
     Examples
     --------
-
     >>> import spharpy
     >>> n_max = 2
-    >>> coords = spharpy.samplings.icosahedron()
-    >>> Y_theta, Y_phi = spharpy.spherical.spherical_harmonic_basis_gradient(
-            n_max, coords)
+    >>> coordinates = spharpy.samplings.icosahedron()
+    >>> grad_theta, grad_phi = /
+        spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)
+
 
     """
-    n_points = coords.csize
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order.")
+
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "MaxN normalization is only supported up to 3rd order.")
+
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
+        raise ValueError(
+            "Condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley == 'auto':
+        condon_shortley = True
+
+    n_points = coordinates.csize
     n_coeff = (n_max+1)**2
-    theta = coords.colatitude
-    phi = coords.azimuth
+    theta = coordinates.colatitude
+    phi = coordinates.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=complex)
     grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        n, m = acn_to_nm(acn)
+        if channel_convention == "fuma":
+            n, m = fuma_to_nm(acn)
+        else:
+            n, m = acn_to_nm(acn)
 
-        grad_theta[:, acn] = \
-            _special.spherical_harmonic_derivative_theta(
-                n, m, theta, phi)
-        grad_phi[:, acn] = \
-            _special.spherical_harmonic_gradient_phi(
-                n, m, theta, phi)
+        grad_theta[:, acn] = _special.spherical_harmonic_derivative_theta(
+            n, m, theta, phi
+        )
+        grad_phi[:, acn] = _special.spherical_harmonic_gradient_phi(
+            n, m, theta, phi)
+
+        factor = 1.0
+        if normalization == "sn3d":
+            factor = n3d_to_sn3d_norm(n)
+        elif normalization == "maxN":
+            factor *= n3d_to_maxn(acn)
+
+        if not condon_shortley:
+            # Condon-Shortley phase term is already included in
+            # the special.spherical_harmonic function
+            # so need to divide by (-1)^m
+            factor /= (-1) ** float(m)
+
+        grad_theta[:, acn] *= factor
+        grad_phi[:, acn] *= factor
 
     return grad_theta, grad_phi
 
 
-def spherical_harmonic_basis_real(n_max, coords):
+def spherical_harmonic_basis_real(
+        n_max, coordinates, normalization="n3d", channel_convention="acn",
+        condon_shortley='auto'):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
-
-    The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [#]_.
+    See also :py:func:`spherical_harmonic_basis`.
 
     .. math::
 
@@ -396,21 +488,27 @@ def spherical_harmonic_basis_real(n_max, coords):
             \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
         \end{cases}
 
-    References
-    ----------
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1-11, 2011.
-
-
     Parameters
     ----------
-    n : int
+    n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
+        objects with sampling points for which the basis matrix is
         calculated
+    normalization : str, optional
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
+        The default is ``'n3d'``.
+        (maxN is only supported up to 3rd order)
+    channel_convention : str, optional
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        The default is ``'acn'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool or str, optional
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` or ``'auto'``, it is not
+        included. The default is ``'auto'``.
 
     Returns
     -------
@@ -419,24 +517,52 @@ def spherical_harmonic_basis_real(n_max, coords):
 
 
     """
-    n_coeff = (n_max+1)**2
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order.")
 
-    basis = np.zeros((coords.csize, n_coeff), dtype=float)
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "MaxN normalization is only supported up to 3rd order.")
+
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
+        raise ValueError(
+            "Condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley == 'auto':
+        condon_shortley = False
+
+    n_coeff = (n_max + 1) ** 2
+
+    basis = np.zeros((coordinates.csize, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        order, degree = acn_to_nm(acn)
+        if channel_convention == "fuma":
+            order, degree = fuma_to_nm(acn)
+        else:
+            order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
-            order,
-            degree,
-            coords.colatitude,
-            coords.azimuth)
+            order, degree, coordinates.colatitude, coordinates.azimuth
+        )
+        if normalization == "sn3d":
+            basis[:, acn] *= n3d_to_sn3d_norm(order)
+        elif normalization == "maxN":
+            basis[:, acn] *= n3d_to_maxn(acn)
+        if condon_shortley:
+            # Condon-Shortley phase term is not included in
+            # the special.spherical_harmonic function
+            basis[:, acn] *= (-1) ** float(degree)
 
     return basis
 
 
-def spherical_harmonic_basis_gradient_real(n_max, coords):
+def spherical_harmonic_basis_gradient_real(n_max, coordinates,
+                                           normalization="n3d",
+                                           channel_convention="acn",
+                                           condon_shortley='auto'):
     r"""
-    Calulcates the unit sphere gradients of the real valued spherical hamonics.
+    Calculates the unit sphere gradients of the real valued spherical
+    harmonics.
 
     The spherical harmonic functions are fully normalized (N3D) and follow
     the AmbiX phase convention [#]_.
@@ -471,9 +597,23 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
-        Coordinate object with sampling points for which the basis matrix is
+    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
+        or :py:class:`sp.SamplingSphere \
+        <spharpy.samplings.coordinates.SamplingSphere>`
+        objects with sampling points for which the basis matrix is
         calculated
+    normalization : str, optional
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
+        The default is ``'n3d'``.
+        (maxN is only supported up to 3rd order)
+    channel_convention : str, optional
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        The default is ``'acn'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool or str, optional
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` or ``'auto'``, it is not
+        included. The default is ``'auto'``.
 
     Returns
     -------
@@ -483,15 +623,33 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
         Gradient with respect to the azimuth angle.
 
     """
-    n_points = coords.csize
-    n_coeff = (n_max+1)**2
-    theta = coords.colatitude
-    phi = coords.azimuth
+    if channel_convention == "fuma" and n_max > 3:
+        raise ValueError(
+            "FuMa channel convention is only supported up to 3rd order.")
+
+    if normalization == "maxN" and n_max > 3:
+        raise ValueError(
+            "MaxN normalization is only supported up to 3rd order.")
+
+    if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
+        raise ValueError(
+            "Condon_shortley has to be a bool, or 'auto'.")
+
+    if condon_shortley == 'auto':
+        condon_shortley = False
+
+    n_points = coordinates.csize
+    n_coeff = (n_max + 1) ** 2
+    theta = coordinates.colatitude
+    phi = coordinates.azimuth
     grad_theta = np.zeros((n_points, n_coeff), dtype=float)
     grad_phi = np.zeros((n_points, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        n, m = acn_to_nm(acn)
+        if channel_convention == "fuma":
+            n, m = fuma_to_nm(acn)
+        else:
+            n, m = acn_to_nm(acn)
 
         grad_theta[:, acn] = \
             _special.spherical_harmonic_derivative_theta_real(
@@ -499,6 +657,20 @@ def spherical_harmonic_basis_gradient_real(n_max, coords):
         grad_phi[:, acn] = \
             _special.spherical_harmonic_gradient_phi_real(
                 n, m, theta, phi)
+
+        factor = 1.0
+        if normalization == "sn3d":
+            factor = n3d_to_sn3d_norm(n)
+        elif normalization == "maxN":
+            factor *= n3d_to_maxn(acn)
+
+        if condon_shortley:
+            # Condon-Shortley phase term is not included in
+            # the special.spherical_harmonic function
+            factor *= (-1) ** float(m)
+
+        grad_theta[:, acn] *= factor
+        grad_phi[:, acn] *= factor
 
     return grad_theta, grad_phi
 
