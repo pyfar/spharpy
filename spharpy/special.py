@@ -159,6 +159,8 @@ def _spherical_hankel_derivative(n, z, kind):
 
 def spherical_harmonic(n, m, theta, phi):
     """The spherical harmonics of order n and degree m.
+    The spherical harmonic functions are fully normalized (N3D) and
+    include the Condon-Shortley phase according to [#]_
 
     n : unsigned int
         The spherical harmonic order
@@ -180,6 +182,11 @@ def spherical_harmonic(n, m, theta, phi):
     The only difference is that we return zeros instead of nan values
     if n < abs(m).
 
+    References
+    ----------
+    .. [#] B. Rafaely, "Fundamentals of Spherical Array Processing", (2015),
+           Springer-Verlag
+
     """
     theta = np.asarray(theta, dtype=float)
     phi = np.asarray(phi, dtype=float)
@@ -195,7 +202,8 @@ def spherical_harmonic_real(n, m, theta, phi):
     r"""Real valued spherical harmonic function of order n and degree m
     evaluated at the angles theta and phi.
     The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [#]_.
+    the AmbiX phase convention, which does not include the Condon-Shortley
+    phase [#]_.
 
     .. math::
 
@@ -212,8 +220,6 @@ def spherical_harmonic_real(n, m, theta, phi):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1–11, 2011.
-
-
 
     Parameters
     ----------
