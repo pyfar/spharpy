@@ -17,6 +17,30 @@ def test_spherical_harmonic_signal_init():
     assert isinstance(signal, SphericalHarmonicSignal)
 
 
+def test_spherical_harmonic_signal_init_condon_shortley():
+    """Test if condon shortley is set properly in init
+       SphercalHarmonicsSignal."""
+
+    signal = SphericalHarmonicSignal(np.array([[1., 2., 3.],
+                                               [1., 2., 3.],
+                                               [1., 2., 3.],
+                                               [1., 2., 3.]]),
+                                     44100, n_max=1, basis_type='real',
+                                     channel_convention='acn',
+                                     normalization='n3d')
+    assert not signal.condon_shortley
+
+    signal = SphericalHarmonicSignal(np.array([[1., 2., 3.],
+                                               [1., 2., 3.],
+                                               [1., 2., 3.],
+                                               [1., 2., 3.]], dtype=complex),
+                                     44100, n_max=1, basis_type='complex',
+                                     channel_convention='acn',
+                                     normalization='n3d',
+                                     is_complex=True)
+    assert signal.condon_shortley
+
+
 def test_spherical_harmonic_signal_init_wrong_nmax():
     """Test init SphericalHarmonicsSignal."""
 

@@ -79,7 +79,7 @@ class SphericalHarmonicSignal(Signal):
             basis_type,
             normalization,
             channel_convention,
-            phase_convention=None,
+            condon_shortley='auto',
             n_samples=None,
             domain='time',
             fft_norm='none',
@@ -119,14 +119,15 @@ class SphericalHarmonicSignal(Signal):
                              f"or 'fuma', but is {channel_convention}")
         self._channel_convention = channel_convention
 
-        # set phase convention
-        if not isinstance(phase_convention, type(None)):
-            if not isinstance(phase_convention, type(str)):
-                raise TypeError("phase_convention must be a string or None")
-            elif (not phase_convention == "Condon-Shortley"):
-                raise TypeError("Only Condon-Shortley phase convention is "
-                                "implemented yet.")
-        self._phase_convention = phase_convention
+        # set condon shortley
+        if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
+            raise ValueError(
+                "Condon_shortley has to be a bool, or 'auto'.")
+
+        if condon_shortley == 'auto' and basis_type == 'complex':
+            self._condon_shortley = True
+        elif condon_shortley == 'auto' and basis_type == 'real':
+            self._condon_shortley = False
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -154,8 +155,8 @@ class SphericalHarmonicSignal(Signal):
         return self._channel_convention
 
     @property
-    def phase_convention(self):
-        return self._phase_convention
+    def condon_shortley(self):
+        return self._condon_shortley
 
     @channel_convention.setter
     def channel_convention(self, value):
