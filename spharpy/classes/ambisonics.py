@@ -46,6 +46,10 @@ class SphericalHarmonicSignal(Signal):
             Channel ordering convention, either ``'acn'`` or ``'fuma'``.
             The default is ``'acn'``.
             (FuMa is only supported up to 3rd order)
+        condon_shortley : bool or str, optional
+            Whether to include the Condon-Shortley phase term. If ``True`` or
+            ``'auto'``, Condon-Shortley is included, if ``False`` it is not
+            included. The default is ``'auto'``.
         n_samples : int, optional
             Number of samples of the time signal. Required if domain is
             ``'freq'``. The default is ``None``, which assumes an even number
