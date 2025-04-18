@@ -4,7 +4,7 @@ import spharpy.interpolate as interpolate
 import numpy as np
 
 
-def test_smooth_sphere_bivariate_spline_interpolation():
+def test_smooth_sphere_bivariate_spline_interpolation(download_sampling):
     n_max = 10
     sampling = spharpy.samplings.equal_area(
         n_max, n_points=500, condition_num=np.inf)
@@ -15,6 +15,7 @@ def test_smooth_sphere_bivariate_spline_interpolation():
 
     data = np.sin(sampling.colatitude)*np.sin(2*sampling.azimuth)
 
+    download_sampling('extremal', 35)
     interp_grid = spharpy.samplings.hyperinterpolation(n_max=35)
 
     data_grid = np.sin(interp_grid.colatitude)*np.sin(2*interp_grid.azimuth)

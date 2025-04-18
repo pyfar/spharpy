@@ -6,16 +6,6 @@ spharpy
 
    intro
 
-Examples
-========
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Notebook sections:
-
-    spherical_harmonics
-    plane_wave_decomposition
-    general_beamforming_weights
 
 Documentation
 =============

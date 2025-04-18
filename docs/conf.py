@@ -25,8 +25,6 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
     'autodocsumm',
-    'nbsphinx',
-    'nbsphinx_link',
 ]
 
 # show tocs for classes and functions of modules using the autodocsumm

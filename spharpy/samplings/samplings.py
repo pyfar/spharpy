@@ -93,7 +93,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     Notes
     -----
     This implementation uses precalculated sets of points from [#]_. The data
-    up to ``n_max = 99`` are loaded the first time this function is called.
+    up to ``n_max = 20`` are loaded the first time this function is called.
     The remaining data is loaded upon request.
 
     References
@@ -136,8 +136,8 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)
     filename = os.path.join(os.path.dirname(__file__), "_eqsp",  filename)
     if not os.path.exists(filename):
-        if n_max < 100:
-            _sph_extremal_load_data('all')
+        if n_max < 21:
+            _sph_extremal_load_data(np.arange(1, 21))
         else:
             _sph_extremal_load_data(n_max)
 
@@ -212,7 +212,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     Notes
     -----
     This function downloads a pre-calculated set of points from [#]_ . The data
-    up to ``degree = 99`` are loaded the first time this function is called.
+    up to ``degree = 20`` are loaded the first time this function is called.
     The remaining data is loaded upon request.
 
     References
@@ -279,8 +279,8 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     filename = "samplings_t_design_sf%03d.%05d" % (degree, n_points)
     filename = os.path.join(os.path.dirname(__file__), "_eqsp",  filename)
     if not os.path.exists(filename):
-        if degree < 100:
-            _sph_t_design_load_data('all')
+        if degree < 21:
+            _sph_t_design_load_data(np.arange(1, 21))
         else:
             _sph_t_design_load_data(degree)
 
@@ -1289,7 +1289,7 @@ def _sph_t_design_load_data(degrees='all'):
 
         entries.append((path_save, fileurl))
 
-    pool = ThreadPool(os.cpu_count())
+    pool = ThreadPool(50)
     pool.imap_unordered(_fetch_url, entries)
     pool.close()
     pool.join()
@@ -1331,7 +1331,7 @@ def _sph_extremal_load_data(orders='all'):
         entries.append((path_save, fileurl))
 
     # download on parallel
-    pool = ThreadPool(os.cpu_count())
+    pool = ThreadPool(50)
     pool.imap_unordered(_fetch_url, entries)
     pool.close()
     pool.join()
