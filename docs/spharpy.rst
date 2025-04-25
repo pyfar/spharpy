@@ -11,7 +11,7 @@ spharpy
    history
 
 
-Python Boilerplate contains all the boilerplate you need to create a Python package.
+Python package for spherical array processing.
 
 .. grid:: 1 2 2 2
     :gutter: 4
