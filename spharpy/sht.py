@@ -1,6 +1,7 @@
 import numpy as np
 from pyfar import Signal
 import warnings
+from classes import SphericalHarmonicSignal
 
 
 def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
@@ -69,13 +70,14 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
     Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
     data_nm = np.tensordot(Y_inv, data, [1, axis])
 
-    return AmbisonicsSignal(data=data_nm, domain=domain, n_max=n_max,
-                            basis_type=basis_type, normalization=normalization,
-                            channel_convention=channel_convention,
-                            condon_shortley=condon_shortley,
-                            sampling_rate=signal.sampling_rate,
-                            fft_norm=signal.fft_norm,
-                            comment=signal.comment)
+    return SphericalHarmonicSignal(data=data_nm, domain=domain, n_max=n_max,
+                                   basis_type=basis_type,
+                                   normalization=normalization,
+                                   channel_convention=channel_convention,
+                                   condon_shortley=condon_shortley,
+                                   sampling_rate=signal.sampling_rate,
+                                   fft_norm=signal.fft_norm,
+                                   comment=signal.comment)
 
 
 def isht(ambisonics_signal, coordinates):

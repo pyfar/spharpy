@@ -1,6 +1,8 @@
 import numpy as np
 import numpy.testing as npt
 import pyfar as pf
+from pytest import raises, warns, mark
+from spharpy.sht import sht, isht
 
 
 def test_sht_assert_num_channels():
