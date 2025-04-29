@@ -64,6 +64,10 @@ class SphericalHarmonicSignal(Signal):
             used for energy signals, such as impulse responses.
         comment : str
             A comment related to `data`. The default is ``None``.
+        is_complex : bool, optional
+            Specifies if the underlying time domain data are complex
+            or real-valued. If ``True`` and `domain` is ``'time'``, the
+            input data will be cast to complex. The default is ``False``.
 
         References
         ----------
@@ -139,31 +143,39 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def n_max(self):
+        """the maximum Spherical Harmonics order."""
         return self._n_max
 
     @property
     def basis_type(self):
+        """the type of the Spherical Harmonics bases (complex or real)."""
         return self._basis_type
 
     @property
     def normalization(self):
+        """the normalization of the Spherical Harmonics coefficients."""
         return self._normalization
 
     @normalization.setter
     def normalization(self, value):
+        """set the normalization of the Spherical Harmonics coefficients."""
         if self.normalization is not value:
             self._renormalize(value)
-
-    @property
-    def channel_convention(self):
-        return self._channel_convention
 
     @property
     def condon_shortley(self):
         return self._condon_shortley
 
+    @property
+    def channel_convention(self):
+        """the channel convention of the Spherical Harmonics coefficients."""
+        return self._channel_convention
+
     @channel_convention.setter
     def channel_convention(self, value):
+        """
+        set the channel convention of the Spherical Harmonics coefficients.
+        """
         if value not in ["acn", "fuma"]:
             raise ValueError("Invalid channel convention, has to be 'acn' "
                              f"or 'fuma', but is {value}")

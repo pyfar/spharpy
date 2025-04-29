@@ -3,6 +3,7 @@ __email__ = 'info@pyfar.org'
 __version__ = '0.6.1'
 
 from .samplings.coordinates import SamplingSphere
+from .classes.ambisonics import SphericalHarmonicSignal
 from . import spherical
 from . import samplings
 from . import plot
@@ -14,6 +15,7 @@ from . import special
 
 
 __all__ = [
+    'SphericalHarmonicSignal',
     'spherical',
     'samplings',
     'plot',
