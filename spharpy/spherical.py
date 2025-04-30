@@ -249,6 +249,28 @@ def n3d_to_sn3d_norm(n):
 
 
 def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
+    """
+    Renormalize either an array of SH coefficients or SH basis functions.
+
+    Parameters
+    ----------
+    data : ndarray
+        Data which should be renormalized, either SH
+        coefficients or SH bases
+    channel_convention : str
+        Channel convention of the data which should be renormalized
+    current : str
+        Current channel convention
+    target : str
+        Desired channel convention
+    axis : integer
+        Axis along which the channel convention should be changed
+
+    Returns
+    -------
+    data : ndarray, complex
+        Data with changed channel convention
+    """
     if target_norm not in ["n3d", "maxN", "sn3d"]:
         raise ValueError("Invalid normalization, has to be 'sn3d', "
                          f"'n3d', or 'maxN', but is {target_norm}")
@@ -259,7 +281,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
     else:
         orders, _ = acn_to_nm(acn)
 
-    # prepare helper to reshape norm
+    # prepare helper for reshaping
     shape = [1] * data.ndim
     shape[axis] = -1
 
@@ -285,22 +307,25 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
 
 def change_channel_convention(data, current, target, axis=-2):
     """
-        Parameters
-        ----------
-        data : ndarray
-            Data of which channel convention should be changed, either SH
-            coefficients or SH bases
-        current : str
-            Current channel convention
-        target : str
-            Desired channel convention
-        axis : integer
-            Axis along which the channel convention should be changed
+    Change the channel convention of either an array of SH coefficients, or
+    SH basis functions.
 
-        Returns
-        -------
-        data : ndarray, complex
-            Data with changed channel convention
+    Parameters
+    ----------
+    data : ndarray
+        Data of which channel convention should be changed, either SH
+        coefficients or SH bases
+    current : str
+        Current channel convention
+    target : str
+        Desired channel convention
+    axis : integer
+        Axis along which the channel convention should be changed
+
+    Returns
+    -------
+    data : ndarray, complex
+        Data with changed channel convention
     """
     if current not in ["acn", "fuma"]:
         raise ValueError("Invalid channel convention, has to be 'acn', "
