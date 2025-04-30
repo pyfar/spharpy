@@ -1,4 +1,3 @@
-import numpy.testing as npt
 from pytest import raises
 from spharpy.classes import SphericalHarmonicSignal
 import numpy as np
