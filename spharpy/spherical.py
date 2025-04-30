@@ -310,7 +310,6 @@ def change_channel_convention(data, current, target, axis=-2):
         raise ValueError("Invalid target channel convention, has to be 'acn', "
                          f"or 'fuma', but is {target}")
 
-
     acn = np.arange(data.shape[axis])
     if current == 'acn':
         n, m = acn_to_nm(acn)
