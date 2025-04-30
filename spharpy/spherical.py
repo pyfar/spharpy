@@ -268,8 +268,8 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
 
     Returns
     -------
-    data : ndarray, complex
-        Data with changed channel convention
+    data : float or complex, ndarray
+        Renormalized data
     """
     if target_norm not in ["n3d", "maxN", "sn3d"]:
         raise ValueError("Invalid normalization, has to be 'sn3d', "
@@ -324,7 +324,7 @@ def change_channel_convention(data, current, target, axis=-2):
 
     Returns
     -------
-    data : ndarray, complex
+    data : float or complex, ndarray
         Data with changed channel convention
     """
     if current not in ["acn", "fuma"]:
