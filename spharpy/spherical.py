@@ -248,11 +248,11 @@ def n3d_to_sn3d_norm(n):
     return 1 / np.sqrt(2 * n + 1)
 
 
-def renormalize(data, channel_convention, current_norm, target_norm):
-    if target not in ["n3d", "maxN", "sn3d"]:
+def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
+    if target_norm not in ["n3d", "maxN", "sn3d"]:
         raise ValueError("Invalid normalization, has to be 'sn3d', "
                          f"'n3d', or 'maxN', but is {target_norm}")
-    acn = np.arange((self.n_max + 1) ** 2)
+    acn = np.arange(data.shape[axis])
 
     if channel_convention == "fuma":
         orders, _ = fuma_to_nm(acn)
@@ -261,30 +261,56 @@ def renormalize(data, channel_convention, current_norm, target_norm):
 
     if current_norm == 'n3d':
         if target_norm == "sn3d":
-            self._data[:, :, ...] *= \
+            data[:, :, ...] *= \
                 n3d_to_sn3d_norm(orders)[np.newaxis].T
         elif target_norm == "maxN":
-            self._data[:, :, ...] *= \
+            data[:, :, ...] *= \
                 n3d_to_maxn(acn)[np.newaxis].T
 
     if current_norm == 'sn3d':
         # convert to n3d
-        self._data[:, :, ...] /= \
+        data[:, :, ...] /= \
                 n3d_to_sn3d_norm(orders)[np.newaxis].T
         if target_norm == "maxN":
-            self._data[:, :, ...] *= n3d_to_maxn(acn)[np.newaxis].T
+            data[:, :, ...] *= n3d_to_maxn(acn)[np.newaxis].T
 
     if current_norm == 'maxN':
         # convert to n3d
-        self._data[:, :, ...] /= \
+        data[:, :, ...] /= \
                 n3d_to_maxn(acn)[np.newaxis].T
         if target_norm == "sn3d":
-            self._data[:, :, ...] *= \
+            data[:, :, ...] *= \
                 n3d_to_sn3d_norm(orders)[np.newaxis].T
 
 
-def change_channel_convention(data, current, target):
-    acn = np.arange((self.n_max + 1) ** 2)
+def change_channel_convention(data, current, target, axis=-2):
+    """
+        Parameters
+        ----------
+        data : ndarray
+            Data of which channel convention should be changed, either SH
+            coefficients or SH bases
+        current : str
+            Current channel convention
+        target : str
+            Desired channel convention
+        axis : integer
+            Axis along which the channel convention should be changed
+
+        Returns
+        -------
+        data : ndarray, complex
+            Data with changed channel convention
+    """
+    if current not in ["acn", "fuma"]:
+        raise ValueError("Invalid channel convention, has to be 'acn', "
+                         f"or 'fuma', but is {current}")
+
+    if target not in ["acn", "fuma"]:
+        raise ValueError("Invalid target channel convention, has to be 'acn', "
+                         f"or 'fuma', but is {target}")
+
+    acn = np.arange(data.shape[axis])
     if current == 'acn':
         n, m = acn_to_nm(acn)
         idx = nm_to_fuma(n, m)
@@ -292,7 +318,7 @@ def change_channel_convention(data, current, target):
         n, m = fuma_to_nm(acn)
         idx = nm_to_acn(n, m)
 
-    self._data = self._data[idx, ...]
+    return np.take(data, idx, axis=axis)
 
 
 def spherical_harmonic_basis(

@@ -7,48 +7,47 @@ import spharpy.spherical as sh
 
 
 def test_spherical_harmonic__renormalize():
-    sh_signal = SphericalHarmonicSignal(np.ones((4, 8)),
-                                        44100, n_max=1, basis_type='real',
-                                        channel_convention='acn',
-                                        normalization='n3d')
+    sh_data = np.ones((4, 8))
+    current_norm = 'n3d'
+    
     # test invalid type
     with raises(ValueError, match="Invalid normalization, has to be 'sn3d', "
                                   "'n3d', or 'maxN', but is wrong_norm"):
-        sh_signal._renormalize('wrong_norm')
+        sh.renormalize(sh_data, 'acn', current_norm, 'wrong_norm')
 
     # test maxN
-    sh_signal_ = sh_signal.copy()
-    sh.renormalize('maxN')
-    np.testing.assert_equal(sh_signal_.time[:, 0],
+    sh_data_renorm = sh.renormalize(sh_data, 'acn', current_norm, 'maxN',
+                                    axis=-2)
+    np.testing.assert_equal(sh_data_renorm,
                             np.array([np.sqrt(1 / 2),
                                       np.sqrt(1 / 3),
                                       np.sqrt(1 / 3),
                                       np.sqrt(1 / 3)]))
 
     # test sn3d
-    sh_signal_ = sh_signal.copy()
-    sh_signal_._renormalize('sn3d')
-    np.testing.assert_equal(sh_signal_.time[:, 0],
+    sh_data_renorm = sh.renormalize(sh_data, 'acn', current_norm, 'sn3d',
+                                    axis=-2)
+    np.testing.assert_equal(sh_data_renorm,
                             np.array([1 / np.sqrt(2 * 0 + 1),
                                       1 / np.sqrt(2 * 1 + 1),
                                       1 / np.sqrt(2 * 1 + 1),
                                       1 / np.sqrt(2 * 1 + 1)]))
     # test back to n3d
-    sh.renormalize('n3d')
-    np.testing.assert_equal(sh_signal_.time,
+    sh_data_renorm = sh.renormalize(sh_data, 'acn', current_norm, 'n3d',
+                                    axis=-2)
+    np.testing.assert_equal(sh_data_renorm,
                             np.ones((4, 8)))
 
 
 def test_spherical_harmonic__change_channel_convention():
-    signal = SphericalHarmonicSignal(np.array([[1., 2., 3.],
-                                               [1., 2., 3.],
-                                               [1., 2., 3.],
-                                               [1., 2., 3.]]),
-                                     44100, n_max=1, basis_type='real',
-                                     channel_convention='acn',
-                                     normalization='n3d')
-    sh.change_channel_convention()
-    assert signal.channel_convention == 'fuma'
+    sh_data = np.array([[1., 2., 3.],
+                        [1., 2., 3.],
+                        [1., 2., 3.],
+                        [1., 2., 3.]])
+    current_channel_convention = 'acn'
 
-    signal._change_channel_convention()
-    assert signal.channel_convention == 'acn'
+    sh_data_new_convention = sh.change_channel_convention(
+        sh_data, current_channel_convention, 'fuma', axis=-2)
+
+    sh_data_new_convention = sh.change_channel_convention(
+        sh_data, current_channel_convention, 'acn', axis=-2)
