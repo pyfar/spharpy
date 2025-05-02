@@ -11,7 +11,7 @@ def test_renormalize():
     current_norm = 'n3d'
 
     # test invalid type
-    with raises(ValueError, match="Invalid normalization, has to be 'sn3d', "
+    with raises(ValueError, match="Invalid normalization. Has to be 'sn3d', "
                                   "'n3d', or 'maxN', but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', current_norm, 'wrong_norm', axis=0)
 
@@ -48,7 +48,8 @@ def test_change_channel_convention():
                         [2., 2., 2.],
                         [3., 3., 3.],
                         [4., 4., 4.]])
-    # test conversion to fuma                    
+
+    # test conversion to fuma
     current_channel_convention = 'acn'
     sh_data_new_convention = sh.change_channel_convention(
         sh_data, current_channel_convention, 'fuma', axis=0)

@@ -248,31 +248,35 @@ def n3d_to_sn3d_norm(n):
     return 1 / np.sqrt(2 * n + 1)
 
 
-def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
+def renormalize(data, channel_convention, current_norm, target_norm, axis):
     """
-    Renormalize either an array of SH coefficients or SH basis functions.
+    Renormalize either an array of spherical harmonics coefficients or basis
+    functions.
 
     Parameters
     ----------
     data : ndarray
-        Data which should be renormalized, either SH
-        coefficients or SH bases
+        Data which should be renormalized, either spherical harmonics
+        coefficients or basis functions.
     channel_convention : str
-        Channel convention of the data which should be renormalized
-    current : str
-        Current channel convention
-    target : str
-        Desired channel convention
+        Channel convention of the data which should be renormalized. Valid
+        conventions are `"acn"` or `"fuma"`.
+    current_norm : str
+        Current normalization. Valid normalizations are `"n3d"`, `"maxN"`, or
+        `"sn3d"`.
+    target_norm : str
+        Desired normalization. Valid normalizations are `"n3d"`,
+        `"maxN"`, or `"sn3d"`.
     axis : integer
-        Axis along which the channel convention should be changed
+        Axis along which the renormalization should be applied
 
     Returns
     -------
-    data : float or complex, ndarray
+    data : ndarray
         Renormalized data
     """
     if target_norm not in ["n3d", "maxN", "sn3d"]:
-        raise ValueError("Invalid normalization, has to be 'sn3d', "
+        raise ValueError("Invalid normalization. Has to be 'sn3d', "
                          f"'n3d', or 'maxN', but is {target_norm}")
     acn = np.arange(data.shape[axis])
 
@@ -305,34 +309,34 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis=-2):
     return data
 
 
-def change_channel_convention(data, current, target, axis=-2):
+def change_channel_convention(data, current, target, axis):
     """
-    Change the channel convention of either an array of SH coefficients, or
-    SH basis functions.
+    Change the channel convention of spherical harmonics coefficients
+    or basis functions.
 
     Parameters
     ----------
     data : ndarray
-        Data of which channel convention should be changed, either SH
-        coefficients or SH bases
+        Data of which channel convention should be changed. Either spherical
+        harmonics coefficients or bases functions.
     current : str
-        Current channel convention
+        Current channel convention. Valid conventions are `"acn"` or `"fuma"`.
     target : str
-        Desired channel convention
+        Desired channel convention. Valid conventions are `"acn"` or `"fuma"`.
     axis : integer
         Axis along which the channel convention should be changed
 
     Returns
     -------
-    data : float or complex, ndarray
+    data : ndarray
         Data with changed channel convention
     """
     if current not in ["acn", "fuma"]:
-        raise ValueError("Invalid channel convention, has to be 'acn', "
+        raise ValueError("Invalid channel convention. Has to be 'acn', "
                          f"or 'fuma', but is {current}")
 
     if target not in ["acn", "fuma"]:
-        raise ValueError("Invalid target channel convention, has to be 'acn', "
+        raise ValueError("Invalid target channel convention. Has to be 'acn', "
                          f"or 'fuma', but is {target}")
 
     acn = np.arange(data.shape[axis])
