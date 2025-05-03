@@ -250,8 +250,7 @@ def n3d_to_sn3d_norm(n):
 
 def renormalize(data, channel_convention, current_norm, target_norm, axis):
     """
-    Renormalize either an array of spherical harmonics coefficients or basis
-    functions.
+    Renormalize spherical harmonics coefficients or basis functions.
 
     Parameters
     ----------
@@ -275,6 +274,14 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     data : ndarray
         Renormalized data
     """
+    if channel_convention not in ["acn", "fuma"]:
+        raise ValueError("Invalid channel convention. Has to be 'acn' "
+                         f"or 'fuma', but is {channel_convention}")
+
+    if current_norm not in ["n3d", "maxN", "sn3d"]:
+        raise ValueError("Invalid normalization. Has to be 'sn3d', "
+                         f"'n3d', or 'maxN', but is {current_norm}")
+
     if target_norm not in ["n3d", "maxN", "sn3d"]:
         raise ValueError("Invalid normalization. Has to be 'sn3d', "
                          f"'n3d', or 'maxN', but is {target_norm}")
@@ -289,24 +296,25 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     shape = [1] * data.ndim
     shape[axis] = -1
 
+    data_renorm = data.copy()
     if current_norm == 'n3d':
         if target_norm == "sn3d":
-            data *= n3d_to_sn3d_norm(orders).reshape(shape)
+            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
         elif target_norm == "maxN":
-            data *= n3d_to_maxn(acn).reshape(shape)
+            data_renorm *= n3d_to_maxn(acn).reshape(shape)
 
     if current_norm == 'sn3d':
         # convert to n3d
-        data /= n3d_to_sn3d_norm(orders).reshape(shape)
+        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
         if target_norm == "maxN":
-            data *= n3d_to_maxn(acn).reshape(shape)
+            data_renorm *= n3d_to_maxn(acn).reshape(shape)
 
     if current_norm == 'maxN':
         # convert to n3d
-        data /= n3d_to_maxn(acn).reshape(shape)
+        data_renorm /= n3d_to_maxn(acn).reshape(shape)
         if target_norm == "sn3d":
-            data *= n3d_to_sn3d_norm(orders).reshape(shape)
-    return data
+            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+    return data_renorm
 
 
 def change_channel_convention(data, current, target, axis):
@@ -332,11 +340,11 @@ def change_channel_convention(data, current, target, axis):
         Data with changed channel convention
     """
     if current not in ["acn", "fuma"]:
-        raise ValueError("Invalid channel convention. Has to be 'acn', "
-                         f"or 'fuma', but is {current}")
+        raise ValueError("Invalid current channel convention. Has to be "
+                         f"'acn' or 'fuma', but is {current}")
 
     if target not in ["acn", "fuma"]:
-        raise ValueError("Invalid target channel convention. Has to be 'acn', "
+        raise ValueError("Invalid target channel convention. Has to be 'acn' "
                          f"or 'fuma', but is {target}")
 
     acn = np.arange(data.shape[axis])
