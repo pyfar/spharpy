@@ -1,7 +1,8 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-from spharpy.samplings import calculate_sampling_weights
+import pyfar as pf  
+from spharpy.samplings import calculate_sampling_weights  
 
 
 def acn_to_nm(acn):
@@ -777,16 +778,17 @@ def aperture_vibrating_spherical_cap(
 
     Parameters
     ----------
-    n_max : integer, ndarray
-        Maximal spherical harmonic order
+    where:
+ 
+    - :math:`n` is the degree
     r_sphere : double, ndarray
         Radius of the sphere
     r_cap : double
-        Radius of the vibrating cap
+      harmonics are real or complex
 
     Returns
     -------
-    A : ndarray, float
+    The normalization term :math:`N_{nm}` is given by:
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
 
@@ -855,8 +857,7 @@ def radiation_from_sphere(
         Radius of the sphere
     k : ndarray, float
         Wave number
-    distance : float
-        Radial distance from the center of the sphere
+    coordinates : :py:class:`~pyfar.classes.coordinates.Coordinates ` or :py:class:`~spharpy.samplings.coordinates.SamplingSphere`
     density_medium : float
         Density of the medium surrounding the sphere. Default is 1.2 for air.
     speed_of_sound : float
@@ -1017,16 +1018,16 @@ class SphericalHarmonics:
         Y_{nm} = N_{nm} P_{nm}(cos(\theta)) T_{nm}(\phi)
 
     where:
-    - $n$ is the degree
-    - $m$ is the order
-    - $P_{nm}$ is the associated Legendre function
-    - $N_{nm}$ is the normalization term
-    - $T_{nm}$ is a term that depends on whether the
+    - :math:`n` is the degree
+    - :math:`m` is the order
+    - :math:`P_{nm}` is the associated Legendre function
+    - :math:`N_{nm}` is the normalization term
+    - :math:`T_{nm}` is a term that depends on whether the
      harmonics are real or complex
-    - $\theta$ is the colatitude (angle from the positive z-axis)
-    - $\phi$ is the azimuth (angle from the positive x-axis in the xy-plane)
+    - :math:`\theta` is the colatitude (angle from the positive z-axis)
+    - :math:`\phi` is the azimuth (angle in the x-y plane from the x-axis)
 
-    The normalization term Nnm is given by:
+    The normalization term :math:`N_{nm}` is given by:
 
     .. math::
         N_{nm}^{\text{SN3D}} =
@@ -1036,12 +1037,12 @@ class SphericalHarmonics:
 
         N_{nm}^{\text{MaxN}} = ... (max of N3D)
 
-    The associated Legendre function Pnm is given by:
+    The associated Legendre function :math:`P_{nm}` is defined as:
 
     .. math::
         P_{nm}(x) = (1-x^2)^{|m|/2} (d/dx)^n (x^2-1)^n
 
-    The term Tnm is given by:
+    The term :math:`T_{nm}` is defined as:
         - For complex-valued harmonics:
             .. math::
                 T_{nm} = e^{im\phi}
@@ -1058,17 +1059,12 @@ class SphericalHarmonics:
         \int_{sphere} Y_{nm} Y_{n'm'}* d\omega = \delta_{nn'} \delta_{mm'}
 
     where:
-    - $*$ denotes the complex conjugate
-    - $\delta$ is the Kronecker delta
-    - $d\omega$ is the differential solid angle
+    - :math:`*` denotes complex conjugation
+    - :math:`\delta_{nn'}` is the Kronecker delta function
+    - :math:`d\omega` is the solid angle element
     - The integral is over the entire sphere
 
     The class supports the following conventions:
-
-    - basis_type: Defines the type of spherical harmonic basis.
-    It can be either 'complex' or 'real'.
-        - ``'complex'``: Uses complex-valued spherical harmonics.
-        - ``'real'``: Uses real-valued spherical harmonics.
 
     - normalization: Defines the normalization convention.
      It can be 'n3d', 'maxN', or 'sn3d'.
@@ -1083,6 +1079,7 @@ class SphericalHarmonics:
     It can be either 'acn' or 'fuma'.
         - ``'acn'``: Follows the Ambisonic Channel Number (ACN) convention.
         - ``'fuma'``: Follows the Furse-Malham (FuMa) convention.
+        (FuMa is only supported up to 3rd order)
 
     - inverse_transform: Defines the type of inverse transform.
      It can be 'pseudo_inverse', 'quadrature', or None.
@@ -1101,7 +1098,7 @@ class SphericalHarmonics:
         calculated
     basis_type : str, optional
         Type of spherical harmonic basis, either ``'complex'`` or
-        ``'real'``. The default is ``'complex'``.
+        ``'real'``. The default is ``'real'``.
     normalization : str, optional
         Normalization convention, either ``'n3d'``, ``'maxN'`` or
          ``'sn3d'``. The default is ``'n3d'``.
@@ -1182,9 +1179,14 @@ class SphericalHarmonics:
         """array-like: Sampling weights for the quadrature transform.
         Obtained from the coordinates object and are
         normalized to a sum of 4*pi."""
-        # check if coordinates object has weights attribute
-        return self.coordinates.weights
-
+        if self._weights is not None:
+            return self._weights
+        elif hasattr(self.coordinates, 'weights') and self.coordinates.weights is not None:
+            return self.coordinates.weights
+        else:
+            # Calculate weights if not already set
+            self._weights = calculate_sampling_weights(self.coordinates)
+            return self._weights
 
     @weights.setter
     def weights(self, value):
@@ -1202,6 +1204,8 @@ class SphericalHarmonics:
             raise ValueError("n_max must be a positive integer")
         if value % 1 != 0:
             raise ValueError("n_max must be an integer value")
+        if hasattr(self, 'channel_convention') and self.channel_convention == "fuma" and value > 3:
+            raise ValueError("n_max cannot be greater than 3 with 'fuma' channel convention")
         if value != self._n_max:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
@@ -1257,9 +1261,8 @@ class SphericalHarmonics:
     def inverse_transform(self, value):
         """Set the inverse transform type."""
         if value not in ["pseudo_inverse", "quadrature", None]:
-            raise ValueError("Invalid inverse transform type, "
-                             "currently only 'pseudo_inverse' "
-                             "and 'quadrature' are supported")
+            raise ValueError("Invalid inverse transform type. " \
+            "Allowed values are 'pseudo_inverse', 'quadrature', or None.")        
         if value != self._inverse_transform:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
@@ -1280,6 +1283,8 @@ class SphericalHarmonics:
                              "currently only 'acn' "
                              "and 'fuma' are supported"
                              )
+        if value == "fuma" and self.n_max > 3:
+            raise ValueError("n_max > 3 is not allowed with 'fuma' channel convention")
         if value != self._channel_convention:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
@@ -1301,6 +1306,8 @@ class SphericalHarmonics:
                 "currently only 'n3d', 'maxN', 'sn3d' are "
                 "supported"
             )
+        if value == "maxN" and self.n_max > 3:
+            raise ValueError("n_max > 3 is not allowed with 'maxN' normalization")
         if value != self._normalization:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
@@ -1346,7 +1353,7 @@ class SphericalHarmonics:
             function = spherical_harmonic_basis_real
         else:
             raise ValueError(
-                "Invalid signal type, should be either 'complex' or 'real'"
+                "Invalid basis type, should be either 'complex' or 'real'"
             )
         self._basis = function(
             self.n_max, self.coordinates,
@@ -1400,7 +1407,7 @@ class SphericalHarmonics:
                     "and 'quadrature' are supported"
                 )
         elif self.inverse_transform is None:
-            ValueError("Inverse transform type not specified")
+            raise ValueError("Inverse transform type not specified")
         if self.inverse_transform == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
         elif self.inverse_transform == "quadrature":
