@@ -1241,7 +1241,10 @@ class SphericalHarmonics:
 
     @basis_type.setter
     def basis_type(self, value):
-        """Set the basis type."""
+        """
+        Set the type of spherical harmonic basis.
+        The basis type can be either 'complex' or 'real'.
+        """
         if value not in ["complex", "real"]:
             raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
