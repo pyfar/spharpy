@@ -1139,8 +1139,8 @@ class SphericalHarmonics:
         self.coordinates = coordinates
         self.basis_type = basis_type
         self.inverse_transform = inverse_transform
-        self.channel_convention = channel_convention  # ch. ord. conv.
-        self.normalization = normalization  # gain norm. conv.
+        self.channel_convention = channel_convention
+        self.normalization = normalization
         self.phase_convention = phase_convention
 
         self._recompute_basis = True
