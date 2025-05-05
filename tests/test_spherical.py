@@ -1,7 +1,7 @@
 """
 Tests renormalization and change channel convention methods
 """
-from pytest import raises
+from pytest import raises, mark
 import numpy as np
 import spharpy.spherical as sh
 
@@ -27,13 +27,14 @@ def test_renormalize_errors():
         sh.renormalize(sh_data, 'acn', 'n3d', 'wrong_norm', axis=0)
 
 
-def test_renormalize():
+@mark.parametrize("channel_convention", ['acn', 'fuma'])
+def test_renormalize(channel_convention):
     sh_data = np.ones((4, 2))
 
     # test from n3d to maxN
     current_norm = 'n3d'
     target_norm = 'maxN'
-    sh_data_n3d_to_maxN = sh.renormalize(sh_data, 'acn',
+    sh_data_n3d_to_maxN = sh.renormalize(sh_data, channel_convention,
                                          current_norm,
                                          target_norm, axis=0)
     sh_data_ref = np.array([[np.sqrt(1 / 2), np.sqrt(1 / 2)],
@@ -47,7 +48,8 @@ def test_renormalize():
     # test from maxN to n3d
     current_norm = 'maxN'
     target_norm = 'n3d'
-    sh_data_maxN_to_n3d = sh.renormalize(sh_data_n3d_to_maxN, 'acn',
+    sh_data_maxN_to_n3d = sh.renormalize(sh_data_n3d_to_maxN,
+                                         channel_convention,
                                          current_norm,
                                          target_norm, axis=0)
 
@@ -57,11 +59,13 @@ def test_renormalize():
     # test from maxN to sn3d
     current_norm = 'maxN'
     target_norm = 'sn3d'
-    sh_data_maxN_to_sn3d = sh.renormalize(sh_data_n3d_to_maxN, 'acn',
+    sh_data_maxN_to_sn3d = sh.renormalize(sh_data_n3d_to_maxN,
+                                          channel_convention,
                                           current_norm,
                                           target_norm, axis=0)
     # back to n3d to check against 0
-    sh_data_sn3d_to_n3d = sh.renormalize(sh_data_maxN_to_sn3d, 'acn',
+    sh_data_sn3d_to_n3d = sh.renormalize(sh_data_maxN_to_sn3d,
+                                         channel_convention,
                                          'sn3d',
                                          'n3d', axis=0)
     np.testing.assert_equal(sh_data_sn3d_to_n3d,
@@ -70,7 +74,7 @@ def test_renormalize():
     # test from n3d to sn3d
     current_norm = 'n3d'
     target_norm = 'sn3d'
-    sh_data_n3d_to_sn3d = sh.renormalize(sh_data, 'acn',
+    sh_data_n3d_to_sn3d = sh.renormalize(sh_data, channel_convention,
                                          current_norm,
                                          target_norm, axis=0)
     sh_data_ref = np.array([[1 / np.sqrt(2 * 0 + 1), 1 / np.sqrt(2 * 0 + 1)],
@@ -84,7 +88,8 @@ def test_renormalize():
     # test from sn3d to n3d
     current_norm = 'sn3d'
     target_norm = 'n3d'
-    sh_data_sn3d_to_n3d = sh.renormalize(sh_data_n3d_to_sn3d, 'acn',
+    sh_data_sn3d_to_n3d = sh.renormalize(sh_data_n3d_to_sn3d,
+                                         channel_convention,
                                          current_norm,
                                          target_norm,
                                          axis=-2)
@@ -94,11 +99,13 @@ def test_renormalize():
     # test from sn3d to maxN
     current_norm = 'sn3d'
     target_norm = 'maxN'
-    sh_data_sn3d_to_maxN = sh.renormalize(sh_data_n3d_to_sn3d, 'acn',
+    sh_data_sn3d_to_maxN = sh.renormalize(sh_data_n3d_to_sn3d,
+                                          channel_convention,
                                           current_norm,
                                           target_norm, axis=0)
     # back to n3d to check against 0
-    sh_data_maxN_to_n3d = sh.renormalize(sh_data_sn3d_to_maxN, 'acn',
+    sh_data_maxN_to_n3d = sh.renormalize(sh_data_sn3d_to_maxN,
+                                         channel_convention,
                                          'maxN',
                                          'n3d', axis=0)
     np.testing.assert_equal(sh_data_maxN_to_n3d,
