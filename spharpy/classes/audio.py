@@ -1,6 +1,4 @@
 from pyfar import Signal
-from spharpy.spherical import n3d_to_maxn, n3d_to_sn3d_norm
-from spharpy.spherical import fuma_to_nm, nm_to_fuma, acn_to_nm, nm_to_acn
 from spharpy.spherical import renormalize, change_channel_convention
 import numpy as np
 
@@ -14,9 +12,9 @@ class SphericalHarmonicSignal(Signal):
     samples and frequency bins), the channel conventions `acn` and `fuma`, as
     well as the normalizations `n3d`, `sn3d`, or `maxn`. The default
     parameters for `basis_type`, `normalization`, and `channel_convention`
-    corresponds to the AmbiX standard. The definition of the spherical
-    harmonics basis functions is based on the scipy convention which includes
-    the Condon-Shortley phase.
+    corresponds to the AmbiX standard, see [#]_. The definition of the
+    spherical harmonics basis functions is based on the scipy convention which
+    includes the Condon-Shortley phase, [#]_, [#]_.
 
 
     Parameters
@@ -35,7 +33,7 @@ class SphericalHarmonicSignal(Signal):
     n_max : int
         Maximum spherical harmonic order. Has to match the number of
         coefficients, such that the number of coefficients
-        .. math:: >= (n_max + 1) ** 2.
+        :math:`>= (n_{max} + 1) ^ 2`.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``. The default is ``'real'``.
@@ -72,12 +70,12 @@ class SphericalHarmonicSignal(Signal):
 
     References
     ----------
-    .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
-    .. [#] B. Rafely, "Fundamentals of Spherical Array Processing", (2015),
-            Springer-Verlag
     .. [#] F. Zotter, M. Frank, "Ambisonics A Practical 3D Audio Theory
             for Recording, Studio Production, Sound Reinforcement, and
             Virtual Reality", (2019), Springer-Verlag
+    .. [#] B. Rafely, "Fundamentals of Spherical Array Processing", (2015),
+            Springer-Verlag
+    .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
 
     """
     def __init__(
@@ -149,7 +147,7 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def basis_type(self):
-        """the type of the spherical harmonic basis (``complex`` or ``real``).
+        """the type of the spherical harmonic basis (``'complex'`` or ``'real'``).
         """
         return self._basis_type
 
@@ -168,6 +166,7 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def condon_shortley(self):
+        """whether to include the Condon-Shortley phase term."""
         return self._condon_shortley
 
     @property

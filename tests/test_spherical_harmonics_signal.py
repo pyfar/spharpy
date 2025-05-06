@@ -17,7 +17,7 @@ def test_spherical_harmonic_signal_init():
 
 
 def test_spherical_harmonic_signal_init_condon_shortley():
-    """Test if condon shortley is set properly in init
+    """Test if Condon-Shortley is set properly in init
        SphercalHarmonicsSignal."""
 
     signal = SphericalHarmonicSignal(np.array([[1., 2., 3.],
