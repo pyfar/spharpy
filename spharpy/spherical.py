@@ -370,7 +370,6 @@ def spherical_harmonic_basis(
     .. math::
         Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
 
-    - :math:`n` is the degree
     where:
 
     - :math:`n` is the degree
