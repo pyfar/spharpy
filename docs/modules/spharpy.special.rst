@@ -1,5 +1,5 @@
 spharpy.special
------------------
+---------------
 
 .. automodule:: spharpy.special
    :members:
