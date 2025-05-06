@@ -19,11 +19,11 @@ def greens_function_plane_wave(
 
     Parameters
     ----------
-    source_points : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    source_points : :py:class:`pyfar.Coordinates`
         The source points defining the direction of incidence for the plane
         wave. Note that the radius on which the source is positioned has no
         relevance.
-    receiver_points : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    receiver_points : :py:class:`pyfar.Coordinates`
         The receiver points.
     wave_number : float, complex
         The wave number. A complex wave number can be used for evanescent
@@ -132,9 +132,9 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
     Parameters
     ----------
 
-    source : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    source : :py:class:`pyfar.Coordinates`
         source points as Coordinates object
-    receivers : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    receivers : :py:class:`pyfar.Coordinates`
         receiver points as Coordinates object
     k : ndarray, float
         The wave number
