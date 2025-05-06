@@ -86,7 +86,7 @@ def _triangulation_sphere(sampling, data):
 
     Parameters
     ----------
-    sampling : :py:class:`pyfar.Coordinates` :py:class:`spharpy.SamplingSphere`
+    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinate object for which the triangulation is calculated
     xyz : list of arrays
         x, y, and z values of the data points in the triangulation
