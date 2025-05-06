@@ -31,7 +31,7 @@ def cube_equidistant(n_points):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`pyfar.Coordinates`
         Sampling positions as Coordinate object.
         Does not contain sampling weights.
 
@@ -87,7 +87,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions including sampling weights.
 
     Notes
@@ -205,7 +205,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
         :py:func:`calculate_sph_voronoi_weights`.
 
@@ -317,7 +317,7 @@ def dodecahedron(radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
         :py:func:`calculate_sph_voronoi_weights`.
 
@@ -377,7 +377,7 @@ def icosahedron(radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
         :py:func:`calculate_sph_voronoi_weights`.
 
@@ -429,7 +429,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions including sampling weights.
 
     References
@@ -521,7 +521,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions including sampling weights.
 
     References
@@ -594,7 +594,7 @@ def eigenmike_em32():
 
     Returns
     -------
-    sampling : SamplingSphere
+    sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
 
     Examples
@@ -629,7 +629,7 @@ def icosahedron_ke4():
 
     Returns
     -------
-    sampling : SamplingSphere
+    sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
 
     Examples
@@ -680,7 +680,7 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
 
     Returns
     -------
-    sampling : SamplingSphere
+    sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
 
     References
@@ -736,7 +736,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     Returns
     -------
-    sampling : SamplingSphere
+    sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
 
     References
@@ -824,7 +824,7 @@ def equal_angle(delta_angles, radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`pyfar.Coordinates`
         Sampling positions. Sampling weights can be obtained from
         :py:func:`calculate_sph_voronoi_weights`.
 
@@ -907,7 +907,7 @@ def great_circle(
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`pyfar.Coordinates`
         Sampling positions. Sampling weights can be obtained from
         :py:func:`calculate_sph_voronoi_weights`.
 
@@ -996,7 +996,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions including sampling weights.
 
     Notes
@@ -1102,7 +1102,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     Returns
     -------
-    sampling : Coordinates
+    sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions including sampling weights.
 
     Notes

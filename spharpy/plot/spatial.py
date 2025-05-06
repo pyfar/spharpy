@@ -48,7 +48,7 @@ def scatter(coordinates, ax=None):
 
     Parameters
     ----------
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         The coordinates to be plotted
 
 
@@ -62,7 +62,7 @@ def scatter(coordinates, ax=None):
         >>> spharpy.plot.scatter(coords)
 
 
-    """
+    """  # noqa: E501
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -86,7 +86,7 @@ def _triangulation_sphere(sampling, data):
 
     Parameters
     ----------
-    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :py:class:`pyfar.Coordinates` :py:class:`spharpy.SamplingSphere`
         Coordinate object for which the triangulation is calculated
     xyz : list of arrays
         x, y, and z values of the data points in the triangulation
@@ -124,7 +124,7 @@ def interpolate_data_on_sphere(
 
     Parameters
     ----------
-    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         The coordinates at which the data is sampled.
     data : ndarray, double
         The sampled data points.
@@ -242,7 +242,7 @@ def pcolor_sphere(
 
     Parameters
     ----------
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -322,7 +322,7 @@ def balloon_wireframe(
 
     Parameters
     ----------
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -346,7 +346,7 @@ def balloon_wireframe(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.balloon_wireframe(coords, data, phase=True)
 
-    """
+    """  # noqa: E501
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -425,7 +425,7 @@ def balloon(
 
     Parameters
     ----------
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -447,7 +447,7 @@ def balloon(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.balloon(coords, data)
 
-    """
+    """  # noqa: E501
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -501,7 +501,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
 
     Parameters
     ----------
-    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Sampling as SamplingSphere object
     round_decimals : int
         Decimals to be rounded to for eliminating duplicate points in
@@ -630,7 +630,7 @@ def pcolor_map(
 
     Parameters
     ----------
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinates defining a sphere
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -647,7 +647,7 @@ def pcolor_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.pcolor_map(coords, data)
 
-    """
+    """  # noqa: E501
     height, latitude, longitude = coordinates2latlon(coordinates)
     tri = mtri.Triangulation(longitude, latitude)
     if refine is not None:
@@ -800,7 +800,7 @@ def contour(
 
     Parameters
     ----------
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinates defining a sphere
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -817,7 +817,7 @@ def contour(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour(coords, data)
 
-    """
+    """  # noqa: E501
     height, latitude, longitude = coordinates2latlon(coordinates)
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
