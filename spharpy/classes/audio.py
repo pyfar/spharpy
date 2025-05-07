@@ -105,10 +105,6 @@ class SphericalHarmonicSignal(Signal):
         self._n_max = int(n_max)
 
         # set basis_type
-        if basis_type == 'complex' and not is_complex:
-            raise ValueError('Data are real-valued while '
-                             'spherical harmonics bases are complex-valued.')
-
         if basis_type not in ["complex", "real"]:
             raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
@@ -142,23 +138,26 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def n_max(self):
-        """the maximum spherical harmonic order."""
+        """Get the maximum spherical harmonic order."""
         return self._n_max
 
     @property
     def basis_type(self):
-        """the type of the spherical harmonic basis (``'complex'`` or ``'real'``).
-        """
+        """Get the type of the spherical harmonic basis."""
         return self._basis_type
 
     @property
     def normalization(self):
-        """the normalization of the spherical harmonic coefficients."""
+        """
+        Get or set the normalization of the spherical harmonic coefficients.
+        """
         return self._normalization
 
     @normalization.setter
     def normalization(self, value):
-        """set the normalization of the spherical harmonic coefficients."""
+        """
+        Get or set the normalization of the spherical harmonic coefficients.
+        """
         if self.normalization is not value:
             self._data = renormalize(self._data, self.channel_convention,
                                      self.normalization, value, axis=-2)
@@ -166,18 +165,22 @@ class SphericalHarmonicSignal(Signal):
 
     @property
     def condon_shortley(self):
-        """whether to include the Condon-Shortley phase term."""
+        """Get info whether to include the Condon-Shortley phase term."""
         return self._condon_shortley
 
     @property
     def channel_convention(self):
-        """the channel convention of the spherical harmonic coefficients."""
+        """
+        Get or set the channel convention of the spherical harmonic
+        coefficients.
+        """
         return self._channel_convention
 
     @channel_convention.setter
     def channel_convention(self, value):
         """
-        set the channel convention of the spherical harmonic coefficients.
+        Get or set  set the channel convention of the spherical harmonic
+        coefficients.
         """
         if value not in ["acn", "fuma"]:
             raise ValueError("Invalid channel convention, has to be 'acn' "
