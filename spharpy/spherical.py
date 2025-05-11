@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-import pyfar as pf  
+import pyfar as pf
 from spharpy.samplings import calculate_sampling_weights  
 
 
@@ -778,20 +778,17 @@ def aperture_vibrating_spherical_cap(
 
     Parameters
     ----------
-    where:
- 
-    - :math:`n` is the degree
+    n_max : integer, ndarray
+        Maximal spherical harmonic order
     r_sphere : double, ndarray
         Radius of the sphere
     r_cap : double
-      harmonics are real or complex
-
+        Radius of the vibrating cap
     Returns
     -------
-    The normalization term :math:`N_{nm}` is given by:
+    aperture : ndarray, float
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
-
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
@@ -826,7 +823,7 @@ def aperture_vibrating_spherical_cap(
 
 def radiation_from_sphere(
         n_max,
-        rad_sphere,
+        r_sphere,
         k,
         distance,
         density_medium=1.2,
@@ -857,10 +854,10 @@ def radiation_from_sphere(
         Radius of the sphere
     k : ndarray, float
         Wave number
-    coordinates : :py:class:`~pyfar.classes.coordinates.Coordinates ` or :py:class:`~spharpy.samplings.coordinates.SamplingSphere`
     density_medium : float
         Density of the medium surrounding the sphere. Default is 1.2 for air.
-    speed_of_sound : float
+    distance : float
+        Radial distance from the center of the sphere
         Speed of sound in m/s
 
     Returns
@@ -879,7 +876,7 @@ def radiation_from_sphere(
     for n in range(n_max+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
         hankel_prime = _special.spherical_hankel(
-            n, k*rad_sphere, kind=2, derivative=True)
+            n, k*r_sphere, kind=2, derivative=True)
         radiation_order = -1j * hankel/hankel_prime * \
             density_medium * speed_of_sound
         for m in range(-n, n+1):
@@ -1018,12 +1015,13 @@ class SphericalHarmonics:
         Y_{nm} = N_{nm} P_{nm}(cos(\theta)) T_{nm}(\phi)
 
     where:
+    
+    .. math::
     - :math:`n` is the degree
     - :math:`m` is the order
     - :math:`P_{nm}` is the associated Legendre function
     - :math:`N_{nm}` is the normalization term
-    - :math:`T_{nm}` is a term that depends on whether the
-     harmonics are real or complex
+    - :math:`T_{nm}` is a term that depends on whether the harmonics are real or complex  
     - :math:`\theta` is the colatitude (angle from the positive z-axis)
     - :math:`\phi` is the azimuth (angle in the x-y plane from the x-axis)
 
@@ -1043,15 +1041,16 @@ class SphericalHarmonics:
         P_{nm}(x) = (1-x^2)^{|m|/2} (d/dx)^n (x^2-1)^n
 
     The term :math:`T_{nm}` is defined as:
-        - For complex-valued harmonics:
-            .. math::
-                T_{nm} = e^{im\phi}
-        - For real-valued harmonics:
-            .. math::
-                T_{nm} = \begin{cases}
-                            \cos(m\phi) & \text{if } m \ge 0 \\
-                            \sin(m\phi) & \text{if } m < 0
-                        \end{cases}
+    
+    - For complex-valued harmonics:  
+        .. math::  
+            T_{nm} = e^{im\phi}  
+    - For real-valued harmonics:  
+        .. math::  
+            T_{nm} = \begin{cases}  
+                        \cos(m\phi) & \text{if } m \ge 0 \\  
+                        \sin(m\phi) & \text{if } m < 0  
+                    \end{cases}  
 
     The spherical harmonics are orthogonal on the unit sphere, i.e.,
 
@@ -1059,6 +1058,7 @@ class SphericalHarmonics:
         \int_{sphere} Y_{nm} Y_{n'm'}* d\omega = \delta_{nn'} \delta_{mm'}
 
     where:
+
     - :math:`*` denotes complex conjugation
     - :math:`\delta_{nn'}` is the Kronecker delta function
     - :math:`d\omega` is the solid angle element
@@ -1076,14 +1076,14 @@ class SphericalHarmonics:
         (also known as Schmidt normalized).
 
     - channel_convention: Defines the channel ordering convention.
-    It can be either 'acn' or 'fuma'.
+
         - ``'acn'``: Follows the Ambisonic Channel Number (ACN) convention.
         - ``'fuma'``: Follows the Furse-Malham (FuMa) convention.
         (FuMa is only supported up to 3rd order)
 
     - inverse_transform: Defines the type of inverse transform.
-     It can be 'pseudo_inverse', 'quadrature', or None.
-        - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
+
+            - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
          for the inverse transform.
         - ``'quadrature'``: Uses quadrature for the inverse transform.
         - ``None``: No inverse transform is applied.
@@ -1092,8 +1092,7 @@ class SphericalHarmonics:
     ----------
     n_max : int
         Maximum spherical harmonic order
-    coordinates : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>` or
-        `sp.SamplingSphere <spharpy:classes/spharpy.samplings.coordinates>`
+    coordinates : :py:class:`pyfar.Coordinates`, spharpy.SamplingSphere  
         objects with sampling points for which the basis matrix is
         calculated
     basis_type : str, optional
@@ -1101,7 +1100,7 @@ class SphericalHarmonics:
         ``'real'``. The default is ``'real'``.
     normalization : str, optional
         Normalization convention, either ``'n3d'``, ``'maxN'`` or
-         ``'sn3d'``. The default is ``'n3d'``.
+        ``'sn3d'``. The default is ``'n3d'``.  
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -1125,16 +1124,6 @@ class SphericalHarmonics:
         inverse_transform=None,
         phase_convention=None
     ):
-        # hidden attributes
-        self._n_max = None
-        self._coordinates = pf.Coordinates()
-        self._basis_type = None
-        self._weights = None
-        self._inverse_transform = None
-        self._channel_convention = None  # ch. ord. conv.
-        self._normalization = None  # gain norm. conv.
-        self._phase_convention = None
-
         self.n_max = n_max
         self.coordinates = coordinates
         self.basis_type = basis_type
@@ -1226,7 +1215,6 @@ class SphericalHarmonics:
                             "object or spharpy.SamplingSphere object")
         if value.cdim != 1:
             raise ValueError("Coordinates must be 1D")
-            # TODO: Allow for 2D coordinates
         if value != self._coordinates:
             self._recompute_basis = True
             self._recompute_basis_gradient = True
