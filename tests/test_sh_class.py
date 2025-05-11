@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 import pyfar as pf
 from spharpy.spherical import SphericalHarmonics
-from spharpy.samplings import gaussian
+from spharpy.samplings import gaussian, calculate_sampling_weights
 
 def test_sphharm_init():
     coordinates = pf.Coordinates(1, 0, 0)
@@ -35,7 +35,8 @@ def test_sphharm_compute_basis_gradient():
     
 def test_sphharm_compute_inverse_quad():
     coordinates = gaussian(n_points=4)
-    coordinates = pf.Coordinates.from_cartesian(coordinates.x, coordinates.y, coordinates.z)
+    weights = calculate_sampling_weights(coordinates)
+    coordinates.weights = weights
     sh = SphericalHarmonics(2, coordinates, inverse_transform = 'quadrature')
     assert sh.basis_inv is not None
 
@@ -83,18 +84,21 @@ def test_setter_n_max():
 def test_setter_phase_convention():
     coordinates = pf.Coordinates(1, 0, 0)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    sph_harm.phase_convention = "auto"
-    assert sph_harm.phase_convention == "auto"
+    sph_harm.condon_shortley = "auto"
+    assert sph_harm.condon_shortley == "auto"
 
     with pytest.raises(TypeError):
-        sph_harm.phase_convention = 123  # Invalid type
+        sph_harm.condon_shortley = 123  # Invalid type
 
 def test_setter_weights():
-    coordinates = gaussian(n_points=4)
-    coordinates = pf.Coordinates.from_cartesian(coordinates.x, coordinates.y, coordinates.z)
+    n_points = (4,4)
+    coordinates = gaussian(n_points=n_points)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     test_weights = np.array([1, 2, 3, 4])
-    sph_harm.weights = test_weights
+    with pytest.raises(ValueError):
+        sph_harm.weights = test_weights
+    test_weights = np.arange(4**2)
+    sph_harm.weights = np.arange(4**2)
     assert np.array_equal(sph_harm.weights, test_weights)
 
 def test_setter_channel_convention():

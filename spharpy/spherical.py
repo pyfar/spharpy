@@ -1086,7 +1086,7 @@ class SphericalHarmonics:
             - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
          for the inverse transform.
         - ``'quadrature'``: Uses quadrature for the inverse transform.
-        - ``None``: No inverse transform is applied.
+        - ``None``: No inverse transform is applied and basis is returned.
 
     Parameters
     ----------
@@ -1108,10 +1108,13 @@ class SphericalHarmonics:
         (FuMa is only supported up to 3rd order)
     inverse_transform : str, optional
         Inverse transform type, either ``'pseudo_inverse'`` or
-        ``'quadrature'``. The default is None.
-    phase_convention : string or None, optional
-        Whether to include the Condon-Shortley phase term.
-        The default is None.
+        ``'quadrature'``. The default is "pseudo_inverse".
+    condon_shortley : bool or str, optional
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``, which corresponds to
+        ``True`` for complex basis and ``False`` for real basis.
+        
     """
 
     def __init__(
@@ -1121,47 +1124,42 @@ class SphericalHarmonics:
         basis_type="real",
         normalization="n3d",
         channel_convention="acn",
-        inverse_transform=None,
-        phase_convention=None
+        inverse_transform="pseudo_inverse",
+        condon_shortley='auto',
     ):
+        # initialize private attributes
+        self._n_max = None
+        self._coordinates = pf.Coordinates()
+        self._basis_type = None
+        self._inverse_transform = None
+        self._weights = None
+        self._channel_convention = None
+        self._condon_shortley = None
+        self._normalization = None
+        self._reset_compute_attributes()
+
         self.n_max = n_max
         self.coordinates = coordinates
         self.basis_type = basis_type
         self.inverse_transform = inverse_transform
         self.channel_convention = channel_convention
         self.normalization = normalization
-        self.phase_convention = phase_convention
-
-        self._recompute_basis = True
-        self._recompute_basis_gradient = True
-        self._recompute_inverse = True
-        self._recompute_inverse_gradient = True
-
-        self._basis = None
-        (self._basis_gradient_theta,
-         self._basis_gradient_phi) = (None, None)
-        self._basis_inv = None
-        (self._basis_inv_gradient_theta,
-         self._basis_inv_gradient_phi) = (None, None)
+        self.condon_shortley = condon_shortley
 
     # Properties
-    # property for phase_convention
     @property
-    def phase_convention(self):
-        """bool: Get phase convention."""
-        return self._phase_convention
+    def condon_shortley(self):
+        """Set the Condon-Shortley phase term."""
+        return self._condon_shortley
 
-    @phase_convention.setter
-    def phase_convention(self, value):
-        """Set the phase convention."""
-        if not isinstance(value, (str, type(None))):
-            raise TypeError("phase_convention must be a string or None")
-        if value != self._phase_convention:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._phase_convention = value
+    @condon_shortley.setter
+    def condon_shortley(self, value):
+        """Set the Condon-Shortley phase term."""
+        if not isinstance(value, (bool, str)):
+            raise TypeError("condon_shortley must be a bool or 'auto'")
+        if value != self._condon_shortley:
+            self._reset_compute_attributes()
+        self._condon_shortley = value
 
     @property
     def weights(self):
@@ -1173,17 +1171,26 @@ class SphericalHarmonics:
         elif hasattr(self.coordinates, 'weights') and self.coordinates.weights is not None:
             return self.coordinates.weights
         else:
-            # Calculate weights if not already set
-            self._weights = calculate_sampling_weights(self.coordinates)
-            return self._weights
+            raise ValueError("weights not set, please set them manually or use a "
+                             "pyfar.coordinates object with weights")
 
     @weights.setter
     def weights(self, value):
-        self._weights = value
+        """Set the sampling weights for the quadrature transform."""
+        if not isinstance(value, np.ndarray):
+            raise TypeError("weights must be a numpy array")
+        if value.shape != (self.coordinates.csize,):
+            raise ValueError(
+                f"weights shape {value.shape} does not match the shape of coordinates "
+                f"({self.coordinates.csize},)"
+            )
+        if (value != self._weights).any():
+            self._reset_compute_attributes()
+            self._weights = value
 
     @property
     def n_max(self):
-        """int: Get the spherical harmonic order."""
+        """Get the spherical harmonic order."""
         return self._n_max
 
     @n_max.setter
@@ -1193,59 +1200,54 @@ class SphericalHarmonics:
             raise ValueError("n_max must be a positive integer")
         if value % 1 != 0:
             raise ValueError("n_max must be an integer value")
-        if hasattr(self, 'channel_convention') and self.channel_convention == "fuma" and value > 3:
-            raise ValueError("n_max cannot be greater than 3 with 'fuma' channel convention")
-        if value != self._n_max:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._n_max = int(value)  # Cast to int for safety
+        if self.channel_convention == "fuma" and value > 3:
+            raise ValueError("n_max > 3 is not allowed with 'fuma' "
+                             "channel convention")
+        if int(value) != self._n_max:
+            self._reset_compute_attributes()
+            self._n_max = int(value)  # Cast to int for safety
 
     @property
     def coordinates(self):
-        """Coordinates: Get the pyfar Coordinates object."""
+        """Get the coordinates object."""
         return self._coordinates
 
     @coordinates.setter
     def coordinates(self, value):
-        """Set the coordinates."""
+        """Set the coordinates object."""
         if not isinstance(value, pf.Coordinates):
             raise TypeError("coordinates must be a pyfar.Coordinates "
                             "object or spharpy.SamplingSphere object")
         if value.cdim != 1:
-            raise ValueError("Coordinates must be 1D")
+            raise ValueError("Coordinates must be a 1D array")
+        if value.csize == 0:
+            raise ValueError("Coordinates cannot be empty")
         if value != self._coordinates:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._coordinates = value
+            self._reset_compute_attributes()
+            self._coordinates = value
+            # Reset weights if coordinates change
+            self._weights = value.weights
 
     @property
     def basis_type(self):
-        """str: Get the type of spherical harmonic basis."""
+        """Get the type of spherical harmonic basis."""
         return self._basis_type
 
     @basis_type.setter
     def basis_type(self, value):
         """
-        Set the type of spherical harmonic basis.
-        The basis type can be either 'complex' or 'real'.
+        Set the type (real or complex) of spherical harmonic basis.
         """
         if value not in ["complex", "real"]:
             raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
         if value != self._basis_type:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._basis_type = value
+            self._reset_compute_attributes()
+            self._basis_type = value
 
     @property
     def inverse_transform(self):
-        """str: Get the type of inverse transform."""
+        """Get the type of inverse transform."""
         return self._inverse_transform
 
     @inverse_transform.setter
@@ -1253,17 +1255,16 @@ class SphericalHarmonics:
         """Set the inverse transform type."""
         if value not in ["pseudo_inverse", "quadrature", None]:
             raise ValueError("Invalid inverse transform type. " \
-            "Allowed values are 'pseudo_inverse', 'quadrature', or None.")        
+            "Allowed values are 'pseudo_inverse', 'quadrature', or None.")
+        if value == "quadrature" and self._weights is None:
+            raise ValueError("Weights must be set for quadrature inverse transform")        
         if value != self._inverse_transform:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._inverse_transform = value
+            self._reset_compute_attributes()
+            self._inverse_transform = value
 
     @property
     def channel_convention(self):
-        """str: Get the channel ordering convention."""
+        """Get the channel ordering convention."""
         return self._channel_convention
 
     @channel_convention.setter
@@ -1275,17 +1276,15 @@ class SphericalHarmonics:
                              "and 'fuma' are supported"
                              )
         if value == "fuma" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with 'fuma' channel convention")
+            raise ValueError("n_max > 3 is not allowed with 'fuma' " \
+                            "channel convention")
         if value != self._channel_convention:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._channel_convention = value
+            self._reset_compute_attributes()
+            self._channel_convention = value
 
     @property
     def normalization(self):
-        """str: Get the normalization convention."""
+        """Get the normalization convention."""
         return self._normalization
 
     @normalization.setter
@@ -1298,40 +1297,33 @@ class SphericalHarmonics:
                 "supported"
             )
         if value == "maxN" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with 'maxN' normalization")
+            raise ValueError("n_max > 3 is not allowed with " \
+                            "'maxN' normalization")
         if value != self._normalization:
-            self._recompute_basis = True
-            self._recompute_basis_gradient = True
-            self._recompute_inverse = True
-            self._recompute_inverse_gradient = True
-        self._normalization = value
+            self._reset_compute_attributes()
+            self._normalization = value
 
     @property
     def basis(self):
-        """ndarray: Get the spherical harmonic basis matrix."""
-        if self._basis is None or self._recompute_basis:
+        """Get the spherical harmonic basis matrix."""
+        if self._basis is None:
             self._compute_basis()
-            self._recompute_basis = False
         return self._basis
 
     @property
     def basis_gradient_theta(self):
-        """ndarray: Get the gradient of the basis matrix with
+        """Get the gradient of the basis matrix with
         respect to theta."""
-        if (self._basis_gradient_theta is None or
-                self._recompute_basis_gradient):
+        if self._basis_gradient_theta is None:
             self._compute_basis_gradient()
-            self._recompute_basis_gradient = False
         return self._basis_gradient_theta
 
     @property
     def basis_gradient_phi(self):
-        """ndarray: Get the gradient of the basis
+        """Get the gradient of the basis
         matrix with respect to phi."""
-        if (self._basis_gradient_phi is None or
-                self._recompute_basis_gradient):
+        if self._basis_gradient_phi is None:
             self._compute_basis_gradient()
-            self._recompute_basis_gradient = False
         return self._basis_gradient_phi
 
     def _compute_basis(self):
@@ -1359,8 +1351,9 @@ class SphericalHarmonics:
              self.channel_convention == "fuma")
         ):
             raise ValueError(
-                "Gradient computation not supported for MaxN, "
-                "SN3D normalization or FuMa channel ordering"
+            f"Gradient computation not supported for normalization "
+            f"'{self.normalization}' and "
+            f"channel convention '{self.channel_convention}'."
             )
         else:
             if self.basis_type == "complex":
@@ -1376,11 +1369,11 @@ class SphericalHarmonics:
 
     @property
     def basis_inv(self):
-        """ndarray: Get the inverse basis matrix."""
-        if (self._basis_inv is None or
-                self._recompute_inverse):
+        """Get the inverse basis matrix."""
+        if self._basis is None:
+            self._compute_basis()
+        if self._basis_inv is None:
             self._compute_inverse()
-            self._recompute_inverse = False
         return self._basis_inv
 
     def _compute_inverse(self):
@@ -1389,19 +1382,24 @@ class SphericalHarmonics:
         """
         if self._basis is None:
             self._compute_basis()
-        if self.inverse_transform is not None:
-            if self.inverse_transform not in ["pseudo_inverse",
-                                              "quadrature"]:
-                raise ValueError(
-                    "Invalid inverse transform type, "
-                    "currently only 'pseudo_inverse' "
-                    "and 'quadrature' are supported"
-                )
-        elif self.inverse_transform is None:
-            raise ValueError("Inverse transform type not specified")
         if self.inverse_transform == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
         elif self.inverse_transform == "quadrature":
             if self.weights is None:
-                self.coordinates.weights = calculate_sampling_weights(self.coordinates)
-            self._basis_inv = np.conj(self.basis).T * self.weights
+                raise ValueError("Weights must be set for quadrature inverse transform")
+            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis), self.weights)
+        elif self.inverse_transform is None:
+            self._basis_inv = np.eye(self._basis.shape[1])
+        else:
+            raise ValueError(
+                "Invalid inverse transform type. "
+                "Allowed values are 'pseudo_inverse', 'quadrature', or None."
+            )
+
+    def _reset_compute_attributes(self):
+        self._basis = None
+        self._basis_gradient_theta = None
+        self._basis_gradient_phi = None
+        self._basis_inv = None
+        self._basis_inv_gradient_theta = None
+        self._basis_inv_gradient_phi = None
