@@ -23,13 +23,13 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    
+
 ]
 dependencies = [
     'numpy>=1.22',
     'scipy',
     'urllib3',
-    'matplotlib>=3.3.0',
+    'matplotlib>=3.10.3',
     'pyfar<0.8.0',
     'pytz',
 ]
@@ -48,7 +48,7 @@ tests = [
     "watchdog",
     "ruff==0.8.3",
     "coverage",
-    
+
 ]
 docs = [
     "sphinx",
