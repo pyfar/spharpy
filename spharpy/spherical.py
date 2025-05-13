@@ -1149,12 +1149,12 @@ class SphericalHarmonics:
     # Properties
     @property
     def condon_shortley(self):
-        """Set the Condon-Shortley phase term."""
+        """Get or set the Condon-Shortley phase term."""
         return self._condon_shortley
 
     @condon_shortley.setter
     def condon_shortley(self, value):
-        """Set the Condon-Shortley phase term."""
+        """Get or set the Condon-Shortley phase term."""
         if not isinstance(value, (bool, str)):
             raise TypeError("condon_shortley must be a bool or 'auto'")
         if value != self._condon_shortley:
@@ -1163,16 +1163,14 @@ class SphericalHarmonics:
 
     @property
     def weights(self):
-        """array-like: Sampling weights for the quadrature transform.
-        Obtained from the coordinates object and are
-        normalized to a sum of 4*pi."""
+        """Get or set sampling weights for the quadrature transform"""
         if self._weights is not None:
             return self._weights
         elif hasattr(self.coordinates, 'weights') and self.coordinates.weights is not None:
             return self.coordinates.weights
         else:
             raise ValueError("weights not set, please set them manually or use a "
-                             "pyfar.coordinates object with weights")
+                             "pyfar.Coordinates object with weights")
 
     @weights.setter
     def weights(self, value):
@@ -1190,7 +1188,7 @@ class SphericalHarmonics:
 
     @property
     def n_max(self):
-        """Get the spherical harmonic order."""
+        """Get or set the spherical harmonic order."""
         return self._n_max
 
     @n_max.setter
@@ -1203,6 +1201,9 @@ class SphericalHarmonics:
         if self.channel_convention == "fuma" and value > 3:
             raise ValueError("n_max > 3 is not allowed with 'fuma' "
                              "channel convention")
+        if self.normalization == "maxN" and value > 3:
+            raise ValueError("n_max > 3 is not allowed with 'maxN' "
+                             "normalization")
         if int(value) != self._n_max:
             self._reset_compute_attributes()
             self._n_max = int(value)  # Cast to int for safety
@@ -1230,7 +1231,7 @@ class SphericalHarmonics:
 
     @property
     def basis_type(self):
-        """Get the type of spherical harmonic basis."""
+        """Get or set the type of spherical harmonic basis."""
         return self._basis_type
 
     @basis_type.setter
@@ -1247,7 +1248,7 @@ class SphericalHarmonics:
 
     @property
     def inverse_transform(self):
-        """Get the type of inverse transform."""
+        """Get or set the type of inverse transform."""
         return self._inverse_transform
 
     @inverse_transform.setter
@@ -1264,7 +1265,7 @@ class SphericalHarmonics:
 
     @property
     def channel_convention(self):
-        """Get the channel ordering convention."""
+        """Get or set the channel ordering convention."""
         return self._channel_convention
 
     @channel_convention.setter
@@ -1284,7 +1285,7 @@ class SphericalHarmonics:
 
     @property
     def normalization(self):
-        """Get the normalization convention."""
+        """Get or set the normalization convention."""
         return self._normalization
 
     @normalization.setter
@@ -1305,7 +1306,7 @@ class SphericalHarmonics:
 
     @property
     def basis(self):
-        """Get the spherical harmonic basis matrix."""
+        """Get or set the spherical harmonic basis matrix."""
         if self._basis is None:
             self._compute_basis()
         return self._basis
@@ -1320,7 +1321,7 @@ class SphericalHarmonics:
 
     @property
     def basis_gradient_phi(self):
-        """Get the gradient of the basis
+        """Get or set the gradient of the basis
         matrix with respect to phi."""
         if self._basis_gradient_phi is None:
             self._compute_basis_gradient()
@@ -1369,7 +1370,7 @@ class SphericalHarmonics:
 
     @property
     def basis_inv(self):
-        """Get the inverse basis matrix."""
+        """Get or set the inverse basis matrix."""
         if self._basis is None:
             self._compute_basis()
         if self._basis_inv is None:
@@ -1397,9 +1398,10 @@ class SphericalHarmonics:
             )
 
     def _reset_compute_attributes(self):
+        """Reset the computed attributes for the SphericalHarmonics class in
+        case of changes in the parameters."""
         self._basis = None
         self._basis_gradient_theta = None
         self._basis_gradient_phi = None
         self._basis_inv = None
-        self._basis_inv_gradient_theta = None
-        self._basis_inv_gradient_phi = None
+        
