@@ -310,3 +310,23 @@ class SamplingSphere(pf.Coordinates):
             self._n_max = None
         else:
             self._n_max = int(value)
+
+    def _set_points(self, x, y, z):
+
+        # cast to numpy array
+        x = np.atleast_1d(np.asarray(x, dtype=np.float64))
+        y = np.atleast_1d(np.asarray(y, dtype=np.float64))
+        z = np.atleast_1d(np.asarray(z, dtype=np.float64))
+
+        # check if all points have the same radius
+        radius = np.sqrt(x.flatten()**2 + y.flatten()**2 + z.flatten()**2)
+        radius_delta = np.max(np.abs(np.mean(radius) - radius))
+        radius_tolerance = np.finfo(x.dtype).resolution * 5
+        if radius_delta > radius_tolerance:
+            raise ValueError(
+                'All points must have the same radius but the deviation from '
+                f'the mean radius is {radius_delta:.3g} m, which exceeds the'
+                f' tolerance of {radius_tolerance:.3g} m.')
+
+        # set points
+        super()._set_points(x, y, z)
