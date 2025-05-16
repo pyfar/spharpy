@@ -8,7 +8,7 @@ class SamplingSphere(pf.Coordinates):
 
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            quadrature: bool = False, comment: str = ""):
         r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
@@ -30,6 +30,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -41,10 +45,13 @@ class SamplingSphere(pf.Coordinates):
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
 
+        self._quadrature = None
+        self.quadrature = quadrature
+
     @classmethod
     def from_cartesian(
             cls, x, y, z, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            quadrature: bool = False, comment: str = ""):
         r"""
         Create a Coordinates class object from a set of points on a sphere.
 
@@ -69,6 +76,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -82,13 +93,14 @@ class SamplingSphere(pf.Coordinates):
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere(0, 0, 1)
         """
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
+                   quadrature=quadrature)
 
     @classmethod
     def from_spherical_elevation(
             cls, azimuth, elevation, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
+            weights: np.array = None, quadrature: bool = False,
+            comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
@@ -113,6 +125,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -125,13 +141,14 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, y, z = sph2cart(azimuth, np.pi / 2 - elevation, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
+                   quadrature=quadrature)
 
     @classmethod
     def from_spherical_colatitude(
             cls, azimuth, colatitude, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
+            weights: np.array = None, quadrature: bool = False,
+            comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
@@ -156,6 +173,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+            quadrature : bool, optional
+        Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -168,13 +189,14 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, y, z = sph2cart(azimuth, colatitude, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
+                   quadrature=quadrature)
 
     @classmethod
     def from_spherical_side(
             cls, lateral, polar, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
+            weights: np.array = None, quadrature: bool = False,
+            comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
@@ -198,6 +220,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -210,13 +236,13 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, z, y = sph2cart(polar, np.pi / 2 - lateral, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
+                   quadrature=quadrature)
 
     @classmethod
     def from_spherical_front(
             cls, frontal, upper, radius, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            quadrature: bool = False, comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
@@ -240,6 +266,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -252,13 +282,13 @@ class SamplingSphere(pf.Coordinates):
         """
 
         y, z, x = sph2cart(frontal, upper, radius)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
+                   quadrature=quadrature)
 
     @classmethod
     def from_cylindrical(
             cls, azimuth, z, rho, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            quadrature: bool = False, comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
@@ -282,6 +312,10 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. The `shape` of the array
             must match the `shape` of the individual coordinate arrays.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -294,8 +328,8 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, y, z = cyl2cart(azimuth, z, rho)
-        return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
+                   quadrature=quadrature)
 
     @property
     def n_max(self):
@@ -310,3 +344,33 @@ class SamplingSphere(pf.Coordinates):
             self._n_max = None
         else:
             self._n_max = int(value)
+
+    @property
+    def quadrature(self):
+        """Get or set the quadrature flag."""
+        return self._quadrature
+
+    @quadrature.setter
+    def quadrature(self, value):
+        """Get or set the quadrature flag."""
+
+        # check input
+        if not isinstance(value, bool):
+            raise TypeError(
+                f'quadrature must be True or False but is {value}')
+
+        # flag indicating if weights sum to 4 pi
+        if self.weights is None:
+            weights_sum = False
+        else:
+            weights_sum = np.abs(np.sum(self.weights) - 4 * np.pi) < \
+                np.finfo(self.weights.dtype).resolution * 5
+
+        # check requirements
+        if value and (np.any(self.weights <= 0) or not weights_sum):
+            raise ValueError(
+                'quadrature can not be True because at least one weight is '
+                'not greater than zero and/or weights do not sum to 4 pi')
+
+        self._quadrature = value
+
