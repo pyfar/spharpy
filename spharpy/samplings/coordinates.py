@@ -310,3 +310,17 @@ class SamplingSphere(pf.Coordinates):
             self._n_max = None
         else:
             self._n_max = int(value)
+
+    @property
+    def quadrature(self):
+
+        weights_sum = np.abs(np.sum(self.weights) - 4 * np.pi) < \
+            np.finfo(self.weights.dtype).resolution * 5
+
+        if np.all(self.weights > 0) and weights_sum:
+            quadrature = True
+        else:
+            quadrature = False
+
+        return quadrature
+
