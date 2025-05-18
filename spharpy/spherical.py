@@ -2,7 +2,8 @@ import numpy as np
 import scipy.special as special
 import spharpy.special as _special
 import pyfar as pf
-from spharpy.samplings import calculate_sampling_weights  
+import warnings
+from spharpy import SamplingSphere
 
 
 def acn_to_nm(acn):
@@ -894,11 +895,13 @@ def aperture_vibrating_spherical_cap(
         Radius of the sphere
     r_cap : double
         Radius of the vibrating cap
+
     Returns
     -------
-    aperture : ndarray, float
+    A : ndarray, float
         Aperture function in diagonal matrix form with shape
         :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`
+
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
@@ -933,7 +936,7 @@ def aperture_vibrating_spherical_cap(
 
 def radiation_from_sphere(
         n_max,
-        r_sphere,
+        rad_sphere,
         k,
         distance,
         density_medium=1.2,
@@ -960,14 +963,15 @@ def radiation_from_sphere(
     ----------
     n_max : integer
         Maximal spherical harmonic order
-    r_sphere : float
+    rad_sphere : float
         Radius of the sphere
     k : ndarray, float
         Wave number
-    density_medium : float
-        Density of the medium surrounding the sphere. Default is 1.2 for air.
     distance : float
         Radial distance from the center of the sphere
+    density_medium : float
+        Density of the medium surrounding the sphere. Default is 1.2 for air.
+    speed_of_sound : float
         Speed of sound in m/s
 
     Returns
@@ -986,7 +990,7 @@ def radiation_from_sphere(
     for n in range(n_max+1):
         hankel = _special.spherical_hankel(n, k*distance, kind=2)
         hankel_prime = _special.spherical_hankel(
-            n, k*r_sphere, kind=2, derivative=True)
+            n, k*rad_sphere, kind=2, derivative=True)
         radiation_order = -1j * hankel/hankel_prime * \
             density_medium * speed_of_sound
         for m in range(-n, n+1):
@@ -1191,7 +1195,7 @@ class SphericalHarmonics:
         - ``'fuma'``: Follows the Furse-Malham (FuMa) convention.
         (FuMa is only supported up to 3rd order)
 
-    - inverse_transform: Defines the type of inverse transform.
+    - inverse_method: Defines the type of inverse transform.
 
             - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
          for the inverse transform.
@@ -1216,7 +1220,7 @@ class SphericalHarmonics:
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         The default is ``'acn'``.
         (FuMa is only supported up to 3rd order)
-    inverse_transform : str, optional
+    inverse_method : str, optional
         Inverse transform type, either ``'pseudo_inverse'`` or
         ``'quadrature'``. The default is "pseudo_inverse".
     condon_shortley : bool or str, optional
@@ -1234,15 +1238,14 @@ class SphericalHarmonics:
         basis_type="real",
         normalization="n3d",
         channel_convention="acn",
-        inverse_transform="pseudo_inverse",
+        inverse_method="auto",
         condon_shortley='auto',
     ):
         # initialize private attributes
         self._n_max = None
         self._coordinates = pf.Coordinates()
         self._basis_type = None
-        self._inverse_transform = None
-        self._weights = None
+        self._inverse_method = None
         self._channel_convention = None
         self._condon_shortley = None
         self._normalization = None
@@ -1251,7 +1254,7 @@ class SphericalHarmonics:
         self.n_max = n_max
         self.coordinates = coordinates
         self.basis_type = basis_type
-        self.inverse_transform = inverse_transform
+        self.inverse_method = inverse_method
         self.channel_convention = channel_convention
         self.normalization = normalization
         self.condon_shortley = condon_shortley
@@ -1265,36 +1268,14 @@ class SphericalHarmonics:
     @condon_shortley.setter
     def condon_shortley(self, value):
         """Get or set the Condon-Shortley phase term."""
-        if not isinstance(value, (bool, str)):
-            raise TypeError("condon_shortley must be a bool or 'auto'")
+        if isinstance(value, str):
+            if value != 'auto':
+                raise ValueError("condon_shortley must be a bool or the string 'auto'")
+        elif not isinstance(value, bool):
+            raise TypeError("condon_shortley must be a bool or the string 'auto'")
         if value != self._condon_shortley:
             self._reset_compute_attributes()
         self._condon_shortley = value
-
-    @property
-    def weights(self):
-        """Get or set sampling weights for the quadrature transform"""
-        if self._weights is not None:
-            return self._weights
-        elif hasattr(self.coordinates, 'weights') and self.coordinates.weights is not None:
-            return self.coordinates.weights
-        else:
-            raise ValueError("weights not set, please set them manually or use a "
-                             "pyfar.Coordinates object with weights")
-
-    @weights.setter
-    def weights(self, value):
-        """Set the sampling weights for the quadrature transform."""
-        if not isinstance(value, np.ndarray):
-            raise TypeError("weights must be a numpy array")
-        if value.shape != (self.coordinates.csize,):
-            raise ValueError(
-                f"weights shape {value.shape} does not match the shape of coordinates "
-                f"({self.coordinates.csize},)"
-            )
-        if (value != self._weights).any():
-            self._reset_compute_attributes()
-            self._weights = value
 
     @property
     def n_max(self):
@@ -1336,8 +1317,6 @@ class SphericalHarmonics:
         if value != self._coordinates:
             self._reset_compute_attributes()
             self._coordinates = value
-            # Reset weights if coordinates change
-            self._weights = value.weights
 
     @property
     def basis_type(self):
@@ -1357,21 +1336,26 @@ class SphericalHarmonics:
             self._basis_type = value
 
     @property
-    def inverse_transform(self):
+    def inverse_method(self):
         """Get or set the type of inverse transform."""
-        return self._inverse_transform
+        return self._inverse_method
 
-    @inverse_transform.setter
-    def inverse_transform(self, value):
+    @inverse_method.setter
+    def inverse_method(self, value):
         """Set the inverse transform type."""
-        if value not in ["pseudo_inverse", "quadrature", None]:
-            raise ValueError("Invalid inverse transform type. " \
-            "Allowed values are 'pseudo_inverse', 'quadrature', or None.")
-        if value == "quadrature" and self._weights is None:
-            raise ValueError("Weights must be set for quadrature inverse transform")        
-        if value != self._inverse_transform:
+        allowed = ["pseudo_inverse", "quadrature", "auto"]
+        if value not in allowed:
+            raise ValueError(f"Invalid inverse method. Allowed values are {allowed}.")
+        # If using simple pf.Coordinates and not SamplingSphere, 'auto' is not allowed
+        if not isinstance(self.coordinates, SamplingSphere) and value == "auto":
+            raise ValueError("inverse_method='auto' is not allowed without SamplingSphere coordinates. " \
+            "Please specify 'pseudo_inverse' or 'quadrature'.")
+        # If using quadrature, weights must be set
+        if value == "quadrature" and self.coordinates.weights is None:
+            raise ValueError("Weights must be set for quadrature inverse method")
+        if value != self._inverse_method:
             self._reset_compute_attributes()
-            self._inverse_transform = value
+            self._inverse_method = value
 
     @property
     def channel_convention(self):
@@ -1493,18 +1477,18 @@ class SphericalHarmonics:
         """
         if self._basis is None:
             self._compute_basis()
-        if self.inverse_transform == "pseudo_inverse":
+        if not isinstance(self.coordinates, SamplingSphere):
+            warnings.warn("Using a simple pf.Coordinates object for inverse_basis." \
+            " Make sure this is intended.")
+        if self.inverse_method == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
-        elif self.inverse_transform == "quadrature":
-            if self.weights is None:
-                raise ValueError("Weights must be set for quadrature inverse transform")
-            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis), self.weights)
-        elif self.inverse_transform is None:
-            self._basis_inv = np.eye(self._basis.shape[1])
+        elif self.inverse_method == "quadrature":
+            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis), 
+                                        self.coordinates.weights)
         else:
             raise ValueError(
-                "Invalid inverse transform type. "
-                "Allowed values are 'pseudo_inverse', 'quadrature', or None."
+                "Invalid inverse transform method. "
+                "Allowed values are 'pseudo_inverse', 'quadrature', or 'auto'."
             )
 
     def _reset_compute_attributes(self):
