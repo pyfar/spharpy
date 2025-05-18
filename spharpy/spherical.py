@@ -1345,7 +1345,8 @@ class SphericalHarmonics:
         """Set the inverse transform type."""
         allowed = ["pseudo_inverse", "quadrature", "auto"]
         if value not in allowed:
-            raise ValueError(f"Invalid inverse method. Allowed values are {allowed}.")
+            raise ValueError("Invalid inverse method. Allowed values are 'inverse', "
+                             "'quadrature', or 'auto'.")
         # If using simple pf.Coordinates and not SamplingSphere, 'auto' is not allowed
         if not isinstance(self.coordinates, SamplingSphere) and value == "auto":
             raise ValueError("inverse_method='auto' is not allowed without SamplingSphere coordinates. " \

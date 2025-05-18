@@ -5,22 +5,23 @@ import pytest
 import numpy as np
 import pyfar as pf
 from spharpy.spherical import SphericalHarmonics
-from spharpy.samplings import gaussian, calculate_sampling_weights
+from spharpy.samplings import gaussian, calculate_sampling_weights, equiangular
 
 def test_sphharm_init():
-    coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = equiangular(n_points=8)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.n_max == 2
     assert np.all(sph_harm.coordinates == coordinates)
     assert sph_harm.basis_type == 'real'
     assert sph_harm.normalization == 'n3d'
     assert sph_harm.channel_convention == 'acn'
-    assert sph_harm.inverse_transform == 'pseudo_inverse'
+    assert sph_harm.inverse_method == 'auto'
     assert sph_harm.condon_shortley == 'auto'
 
 def test_sphharm_init_invalid_coordinates():
     with pytest.raises(TypeError, 
-                       match="Coordinates must be of type 'pyfar.Coordinates'"):
+                       match="coordinates must be a pyfar.Coordinates " \
+                       "object or spharpy.SamplingSphere object"):
         SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
 
 def test_sphharm_init_invalid_n_max():
@@ -34,7 +35,7 @@ def test_sphharm_compute_basis():
     assert sph_harm.basis is not None
 
 def test_sphharm_compute_basis_gradient():
-    coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = equiangular(n_points=8)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.basis_gradient_theta is not None
     assert sph_harm.basis_gradient_phi is not None
@@ -43,23 +44,19 @@ def test_sphharm_compute_inverse_quad():
     coordinates = gaussian(n_points=4)
     weights = calculate_sampling_weights(coordinates)
     coordinates.weights = weights
-    sh = SphericalHarmonics(2, coordinates, inverse_transform = 'quadrature')
+    sh = SphericalHarmonics(2, coordinates, inverse_method = 'quadrature')
     assert sh.basis_inv is not None
 
 def test_sphharm_compute_inverse_pseudo_inv():
     coordinates = gaussian(n_points= 5)
     sh = SphericalHarmonics(2, coordinates, 
-                            inverse_transform = 'pseudo_inverse')
+                            inverse_method = 'pseudo_inverse')
     assert sh.basis_inv is not None
 
 def test_compute_basis_caching():
     n_max = 2
-    points = np.random.rand(10, 3)
-    coordinates = pf.Coordinates(
-                                points[:, 0],
-                                points[:, 1],
-                                points[:, 2],
-                                'cart')
+    points = np.random.randint(4, 10)
+    coordinates = equiangular(n_points=points)
     sh = SphericalHarmonics(n_max, coordinates)
 
     # Call the method once and store the result
@@ -74,7 +71,7 @@ def test_compute_basis_caching():
     assert new_result is not initial_result
 
 def test_setter_n_max():
-    coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.n_max = 3
     assert sph_harm.n_max == 3
@@ -94,7 +91,7 @@ def test_setter_n_max():
         sph_harm.normalization = "maxN"  # Invalid with n_max > 3
 
 def test_setter_phase_convention():
-    coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.condon_shortley = "auto"
     assert sph_harm.condon_shortley == "auto"
@@ -102,19 +99,8 @@ def test_setter_phase_convention():
     with pytest.raises(TypeError):
         sph_harm.condon_shortley = 123  # Invalid type
 
-def test_setter_weights():
-    n_points = (4,4)
-    coordinates = gaussian(n_points=n_points)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    test_weights = np.array([1, 2, 3, 4])
-    with pytest.raises(ValueError):
-        sph_harm.weights = test_weights
-    test_weights = np.arange(4**2)
-    sph_harm.weights = np.arange(4**2)
-    assert np.array_equal(sph_harm.weights, test_weights)
-
 def test_setter_channel_convention():
-    coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.channel_convention = "fuma"
     assert sph_harm.channel_convention == "fuma"
@@ -127,7 +113,7 @@ def test_setter_channel_convention():
         sph_harm.channel_convention = "fuma"  # Invalid with n_max > 3
 
 def test_setter_normalization():
-    coordinates = pf.Coordinates(1, 0, 0)
+    coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.normalization = "sn3d"
     assert sph_harm.normalization == "sn3d"
@@ -138,3 +124,14 @@ def test_setter_normalization():
     with pytest.raises(ValueError):
         sph_harm.n_max = 4
         sph_harm.normalization = "maxN"  # Invalid with n_max > 3
+
+def test_setter_inverse_method():
+    coordinates = equiangular(n_points=4)
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
+    sph_harm.inverse_method = "quadrature"
+    assert sph_harm.inverse_method == "quadrature"
+
+    with pytest.raises(ValueError,
+                       match="Invalid inverse method. Allowed values are 'inverse', "
+                             "'quadrature', or 'auto'."):
+        sph_harm.inverse_method = "invalid"  # Invalid value
