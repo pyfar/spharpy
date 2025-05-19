@@ -44,7 +44,7 @@ def test_error_multiple_radius_initialization():
     an error.
     """
 
-    match = '0.5 m, which exceeds the tolerance of 5e-15 m'
+    match = '0.5 m, which exceeds the tolerance of 1 mm'
     with pytest.raises(ValueError, match=match):
         SamplingSphere([1, 0], 0, 0)
 
@@ -57,6 +57,6 @@ def test_error_multiple_radius_setter():
 
     sampling_sphere = SamplingSphere([1, 1], 0, 0)
 
-    match = '0.5 m, which exceeds the tolerance of 5e-15 m'
+    match = '0.5 m, which exceeds the tolerance of 1 mm'
     with pytest.raises(ValueError, match=match):
         sampling_sphere.x = [1, 0]
