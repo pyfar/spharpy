@@ -316,10 +316,7 @@ class SamplingSphere(pf.Coordinates):
         super()._set_points(x, y, z)
 
         # check if all points have the same radius
-        radius = np.sqrt(
-            self.x.flatten()**2 +
-            self.y.flatten()**2 +
-            self.z.flatten()**2)
+        radius = self.radius
         radius_delta = np.max(np.abs(np.mean(radius) - radius))
         # add a tolerance of 5 times the decimal resolution
         radius_tolerance = np.finfo(self.x.dtype).resolution * 5
