@@ -8,7 +8,7 @@ class SamplingSphere(pf.Coordinates):
 
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            comment: str = "", quadrature=False):
         r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
@@ -36,10 +36,17 @@ class SamplingSphere(pf.Coordinates):
         sh_order : int, optional
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         """
         pf.Coordinates.__init__(
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
+
+        self._quadrature = None
+        self.quadrature = quadrature
 
     @classmethod
     def from_cartesian(
@@ -313,14 +320,30 @@ class SamplingSphere(pf.Coordinates):
 
     @property
     def quadrature(self):
+        """Get or set the quadrature flag."""
+        return self._quadrature
 
-        weights_sum = np.abs(np.sum(self.weights) - 4 * np.pi) < \
-            np.finfo(self.weights.dtype).resolution * 5
+    @quadrature.setter
+    def quadrature(self, value):
+        """Get or set the quadrature flag."""
 
-        if np.all(self.weights > 0) and weights_sum:
-            quadrature = True
+        # check input
+        if not isinstance(value, bool):
+            raise TypeError(
+                f'quadrature must be True or False but is {value}')
+
+        # flag indicating if weights sum to 4 pi
+        if self.weights is None:
+            weights_sum = False
         else:
-            quadrature = False
+            weights_sum = np.abs(np.sum(self.weights) - 4 * np.pi) < \
+                np.finfo(self.weights.dtype).resolution * 5
 
-        return quadrature
+        # check requirements
+        if value and (np.any(self.weights <= 0) or not weights_sum):
+            raise ValueError(
+                'quadrature can not be True because at least one weight is '
+                'not greater than zero and/or weights do not sum to 4 pi')
+
+        self._quadrature = value
 
