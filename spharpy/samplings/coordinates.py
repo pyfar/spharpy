@@ -8,7 +8,7 @@ class SamplingSphere(pf.Coordinates):
 
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            comment: str = "", radius_tolerance=1e-6):
         r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
@@ -36,7 +36,17 @@ class SamplingSphere(pf.Coordinates):
         sh_order : int, optional
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
+        radius_tolerance : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
         """
+        # must be initialized first, because it is already required for
+        # checking if input points have the same radius
+        self._radius_tolerance = None
+        self.radius_tolerance = radius_tolerance
+
         pf.Coordinates.__init__(
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
@@ -311,6 +321,20 @@ class SamplingSphere(pf.Coordinates):
         else:
             self._n_max = int(value)
 
+    @property
+    def radius_tolerance(self):
+        """Get or set the radius tolerance in meter."""
+        return self._radius_tolerance
+
+    @radius_tolerance.setter
+    def radius_tolerance(self, value):
+        """Get or set the radius tolerance in meter."""
+        if isinstance(value, (int, float)) and value > 0:
+            self._radius_tolerance = float(value)
+        else:
+            raise ValueError(
+                'The radius tolerance must be a number greater than zero')
+
     def _set_points(self, x, y, z):
         # set points first to make sure data is valid
         super()._set_points(x, y, z)
@@ -318,11 +342,9 @@ class SamplingSphere(pf.Coordinates):
         # check if all points have the same radius
         radius = self.radius
         radius_delta = np.max(np.abs(np.mean(radius) - radius))
-        # add a tolerance of 1 mm
-        radius_tolerance = .001
-        if radius_delta > radius_tolerance:
+        if radius_delta > self.radius_tolerance:
             raise ValueError(
                 'All points must have the same radius but the deviation from '
                 f'the mean radius is {radius_delta:.3g} m, which exceeds the'
-                ' tolerance of 1 mm.')
+                f' tolerance of {self.radius_tolerance:.3g} m.')
 
