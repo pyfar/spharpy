@@ -62,18 +62,26 @@ def test_error_multiple_radius_setter():
         sampling_sphere.x = [1, 0]
 
 
-def test_radius_tolerance():
+@pytest.mark.parametrize(['sampling'], [
+    (SamplingSphere([1, 1], 0, 0), ),
+    (SamplingSphere.from_cartesian([1, 1], 0, 0), ),
+    (SamplingSphere.from_spherical_elevation([0, 0], 0, 1), ),
+    (SamplingSphere.from_spherical_colatitude([0, 0], 0, 1), ),
+    (SamplingSphere.from_spherical_side([0, 0], 0, 1), ),
+    (SamplingSphere.from_spherical_front([0, 0], 0, 1), ),
+    (SamplingSphere.from_cylindrical([0, 0], 0, 1), ),
+])
+def test_radius_tolerance(sampling):
     """
     Test getter and setter for radius tolerance and the related error message.
     """
     tolerance = 1e-3
-    sampling = SamplingSphere([1, 1], 0, 0)
 
     # test default value
-    assert sampling.radius_tolerance == 1e-6
+    assert sampling.radius_atol == 1e-6
     # change tolerance
-    sampling.radius_tolerance = tolerance
-    assert sampling.radius_tolerance == tolerance
+    sampling.radius_atol = tolerance
+    assert sampling.radius_atol == tolerance
 
     with pytest.raises(ValueError, match=f'{tolerance:.3g}'):
         sampling.x = [0, 1]
@@ -87,4 +95,4 @@ def test_radius_tolerance_input(tolerance):
 
     match = 'The radius tolerance must be a number greater than zero'
     with pytest.raises(ValueError, match=match):
-        SamplingSphere([1, 1], 0, 0, radius_tolerance=tolerance)
+        SamplingSphere([1, 1], 0, 0, radius_atol=tolerance)
