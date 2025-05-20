@@ -46,14 +46,12 @@ def test_sph_extremal(download_sampling):
 
     # test with n_points
     c = samplings.hyperinterpolation(4)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 4
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
     c = samplings.hyperinterpolation(n_max=1)
     assert c.csize == 4
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -64,6 +62,10 @@ def test_sph_extremal(download_sampling):
 
     # test loading SH order > 9
     c = samplings.hyperinterpolation(n_max=10)
+
+    # test quadrature
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+    assert c.quadrature
 
     # test exceptions
     with raises(ValueError):
@@ -106,7 +108,7 @@ def test_sph_t_design(download_sampling):
 
     # test with degree
     c = samplings.spherical_t_design(2)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 6
 
     # test with spherical harmonic order
@@ -125,6 +127,9 @@ def test_sph_t_design(download_sampling):
 
     # test loading degree order > 9
     c = samplings.spherical_t_design(10)
+
+    # test quadrature
+    assert not c.quadrature
 
     # test exceptions
     with raises(ValueError):
@@ -145,23 +150,29 @@ def test_dodecahedron():
 def test_sph_dodecahedron():
     # test with default radius
     c = samplings.dodecahedron()
-    assert isinstance(c, Coordinates)
+    assert isinstance(c, SamplingSphere)
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test with user radius
     c = samplings.dodecahedron(1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
+    # test quadrature
+    assert not c.quadrature
+
 
 def test_icosahedron():
     sampling = samplings.icosahedron()
     assert isinstance(sampling, SamplingSphere)
 
+    # test quadrature
+    assert not sampling.quadrature
+
 
 def test_sph_icosahedron():
     # test with default radius
     c = samplings.icosahedron()
-    assert isinstance(c, Coordinates)
+    assert isinstance(c, SamplingSphere)
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test with user radius
@@ -182,19 +193,16 @@ def test_equiangular_pyfar():
 
     # test with single number of points
     c = samplings.equiangular(5)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 5**2
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with tuple
     c = samplings.equiangular((3, 5))
     assert c.csize == 3*5
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
     c = samplings.equiangular(n_max=5)
     assert c.csize == 4 * (5 + 1)**2
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -202,6 +210,10 @@ def test_equiangular_pyfar():
     # test user radius
     c = samplings.equiangular(5, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
+
+    # test quadrature
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+    assert c.quadrature
 
 
 def test_gaussian():
@@ -217,19 +229,16 @@ def test_gaussian_pyfar():
 
     # test with single number of points
     c = samplings.gaussian(5)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 5**2
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with tuple
     c = samplings.gaussian((3, 5))
     assert c.csize == 3*5
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
     c = samplings.gaussian(n_max=5)
     assert c.csize == 2 * (5 + 1)**2
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -237,6 +246,10 @@ def test_gaussian_pyfar():
     # test user radius
     c = samplings.gaussian(5, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
+
+    # test quadrature
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+    assert c.quadrature
 
 
 def test_em32():
@@ -248,21 +261,30 @@ def test_icosahedron_ke4():
     sampling = samplings.icosahedron_ke4()
     assert isinstance(sampling, SamplingSphere)
 
+    # test quadrature
+    assert not sampling.quadrature
+
 
 def test_equalarea():
     sampling = samplings.equal_area(2)
     assert isinstance(sampling, SamplingSphere)
+
+    # test quadrature
+    assert not sampling.quadrature
 
 
 def test_spiral_points():
     sampling = samplings.spiral_points(2)
     assert isinstance(sampling, SamplingSphere)
 
+    # test quadrature
+    assert not sampling.quadrature
+
 
 def test_equal_angle():
     # test with tuple
     c = samplings.equal_angle((10, 20))
-    assert isinstance(c, Coordinates)
+    assert isinstance(c, SamplingSphere)
     # test with number
     c = samplings.equal_angle(10)
     # test default radius
@@ -277,11 +299,14 @@ def test_equal_angle():
     with raises(ValueError):
         c = samplings.equal_angle((20, 11))
 
+    # test quadrature
+    assert not c.quadrature
+
 
 def test_great_circle():
     # test with default values
     c = samplings.great_circle()
-    assert isinstance(c, Coordinates)
+    assert isinstance(c, SamplingSphere)
     # check default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
@@ -298,6 +323,9 @@ def test_great_circle():
     # test fractional azimuth resolution
     c = samplings.great_circle(60, 4,  azimuth_res=.1, match=90)
     npt.assert_allclose(c.azimuth[1] * 180 / np.pi, 7.5, atol=1e-15)
+
+    # test quadrature
+    assert not c.quadrature
 
     # test assertion: 1 / azimuth_res is not an integer
     with raises(AssertionError):
@@ -316,14 +344,12 @@ def test_lebedev():
 
     # test with degree
     c = samplings.lebedev(14)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 14
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
     c = samplings.lebedev(n_max=3)
     assert c.csize == 26
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -332,6 +358,10 @@ def test_lebedev():
     c = samplings.lebedev(6, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
+    # test quadrature
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+    assert c.quadrature
+
 
 def test_fliege():
     # test without parameters
@@ -339,14 +369,12 @@ def test_fliege():
 
     # test with degree
     c = samplings.fliege(16)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 16
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test with spherical harmonic order
     c = samplings.fliege(n_max=3)
     assert c.csize == 16
-    npt.assert_allclose(np.sum(c.weights), 1)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -354,6 +382,10 @@ def test_fliege():
     # test user radius
     c = samplings.fliege(4, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
+
+    # test quadrature
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+    assert c.quadrature
 
     # test exceptions
     with raises(ValueError):
