@@ -40,6 +40,10 @@ class SamplingSphere(pf.Coordinates):
         sh_order : int, optional
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
+        quadrature : bool, optional
+            Flag that indicates if points belong to a quadrature, which
+            requires that all `weights` are greater than zero and sum to
+            :math:`4\pi`. The default is ``False``.
         """
         pf.Coordinates.__init__(
             self, x, y, z, weights=weights, comment=comment)
