@@ -370,7 +370,6 @@ def spherical_harmonic_basis(
     .. math::
         Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
 
-    - :math:`n` is the degree
     where:
 
     - :math:`n` is the degree
@@ -380,7 +379,7 @@ def spherical_harmonic_basis(
     - :math:`CS_m` is the Condon-Shortley phase term
     - :math:`\theta` is the colatitude (angle from the positive z-axis)
     - :math:`\phi` is the azimuth (angle from the positive x-axis in the
-      xy-plane), see :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+      xy-plane), see :py:mod:`~pyfar.classes.coordinates`
 
     References
     ----------
@@ -392,9 +391,7 @@ def spherical_harmonic_basis(
     ----------
     n_max : integer
         Spherical harmonic order
-    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
-        or :py:class:`sp.SamplingSphere \
-        <spharpy.samplings.coordinates.SamplingSphere>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is calculated
     normalization : str, optional
         Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
@@ -421,7 +418,7 @@ def spherical_harmonic_basis(
     >>> coordinates = spharpy.samplings.icosahedron()
     >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)
 
-    """
+    """  # noqa: E501
     if channel_convention == "fuma" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
@@ -495,9 +492,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
-        or :py:class:`sp.SamplingSphere \
-        <spharpy.samplings.coordinates.SamplingSphere>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -528,8 +523,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     >>> grad_theta, grad_phi = /
         spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)
 
-
-    """
+    """  # noqa: E501
     if channel_convention == "fuma" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
@@ -602,9 +596,7 @@ def spherical_harmonic_basis_real(
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
-        or :py:class:`sp.SamplingSphere \
-        <spharpy.samplings.coordinates.SamplingSphere>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -625,8 +617,7 @@ def spherical_harmonic_basis_real(
     Y : ndarray, float
         Real valued spherical harmonic basis matrix.
 
-
-    """
+    """  # noqa: E501
     if channel_convention == "fuma" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
@@ -707,9 +698,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     ----------
     n_max : int
         Spherical harmonic order
-    coordinates : :py:class:`pf.Coordinates <pyfar.coordinates.Coordinates>` \
-        or :py:class:`sp.SamplingSphere \
-        <spharpy.samplings.coordinates.SamplingSphere>`
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
@@ -732,7 +721,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     grad_phi : ndarray, float
         Gradient with respect to the azimuth angle.
 
-    """
+    """  # noqa: E501
     if channel_convention == "fuma" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
