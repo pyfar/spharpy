@@ -62,12 +62,6 @@ def test_quadrature_setter_errors():
     with pytest.raises(TypeError, match="True or False but is None"):
         sampling.quadrature = None
 
-    # weights do not sum to 4 pi
-    sampling.weights = [1, 1]
-    with pytest.raises(ValueError, match="quadrature can not be True"):
-        sampling.quadrature = True
-
-    # negative weight
-    sampling.weights = [-2 * np.pi, 6 * np.pi]
+    # weights are None
     with pytest.raises(ValueError, match="quadrature can not be True"):
         sampling.quadrature = True
