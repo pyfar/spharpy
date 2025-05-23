@@ -369,13 +369,13 @@ class SamplingSphere(pf.Coordinates):
             raise ValueError(
                 'The radius tolerance must be a number greater than zero')
 
-    def _set_points(self, x, y, z):
+    def _check_points(self, x, y, z):
+        """Check input data before setting coordinates"""
 
-        # check for unique radius
-        x = np.atleast_1d(np.asarray(x, dtype=np.float64))
-        y = np.atleast_1d(np.asarray(y, dtype=np.float64))
-        z = np.atleast_1d(np.asarray(z, dtype=np.float64))
+        # convert to numpy arrays of the same shape
+        x, y, z = super()._check_points(x, y, z)
 
+        # check for equal radius
         radius = np.sqrt(x.flatten()**2 + y.flatten()**2 + z.flatten()**2)
         radius_delta = np.max(np.abs(np.mean(radius) - radius))
         if radius_delta > self.radius_atol:
@@ -384,5 +384,6 @@ class SamplingSphere(pf.Coordinates):
                 f'the mean radius is {radius_delta:.3g} m, which exceeds the'
                 f' tolerance of {self.radius_atol:.3g} m.')
 
-        # set points
-        super()._set_points(x, y, z)
+        return x, y, z
+
+
