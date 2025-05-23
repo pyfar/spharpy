@@ -39,6 +39,15 @@ def test_setter_n_max():
     assert sampling._n_max == n_max
 
 
+def test_weights_getter():
+    x, y, z = sampling_cube()
+    n_max = 1
+    weights = np.ones(6)*4*np.pi/6
+    sampling = SamplingSphere(x, y, z, n_max, weights=weights)
+
+    np.testing.assert_allclose(sampling.weights, weights)
+
+
 def test_setting_weights():
     x, y, z = sampling_cube()
     n_max = 1
