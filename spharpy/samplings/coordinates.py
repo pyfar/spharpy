@@ -8,7 +8,7 @@ class SamplingSphere(pf.Coordinates):
 
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            comment: str = "", radius_atol=1e-6):
         r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
@@ -35,7 +35,17 @@ class SamplingSphere(pf.Coordinates):
         sh_order : int, optional
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
         """
+        # must be initialized first, because it is already required for
+        # checking if input points have the same radius
+        self._radius_atol = None
+        self.radius_atol = radius_atol
+
         pf.Coordinates.__init__(
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
@@ -43,7 +53,7 @@ class SamplingSphere(pf.Coordinates):
     @classmethod
     def from_cartesian(
             cls, x, y, z, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            comment: str = "", radius_atol: float = 1e-6):
         r"""
         Create a Coordinates class object from a set of points on a sphere.
 
@@ -70,6 +80,11 @@ class SamplingSphere(pf.Coordinates):
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
 
         Examples
         --------
@@ -81,12 +96,14 @@ class SamplingSphere(pf.Coordinates):
         >>> sampling = pf.SamplingSphere(0, 0, 1)
         """
         return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            radius_atol=radius_atol)
 
     @classmethod
     def from_spherical_elevation(
             cls, azimuth, elevation, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
+            weights: np.array = None, comment: str = "",
+            radius_atol: float = 1e-6):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -113,6 +130,11 @@ class SamplingSphere(pf.Coordinates):
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
 
         Examples
         --------
@@ -121,14 +143,17 @@ class SamplingSphere(pf.Coordinates):
         >>> sampling = pf.SamplingSphere.from_spherical_elevation(0, 0, 1)
         """
 
-        x, y, z = sph2cart(azimuth, np.pi / 2 - elevation, radius)
+        x, y, z = sph2cart(
+            azimuth, np.pi / 2 - np.atleast_1d(elevation), radius)
         return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            radius_atol=radius_atol)
 
     @classmethod
     def from_spherical_colatitude(
             cls, azimuth, colatitude, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
+            weights: np.array = None, comment: str = "",
+            radius_atol: float = 1e-6):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -155,6 +180,11 @@ class SamplingSphere(pf.Coordinates):
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
 
         Examples
         --------
@@ -165,12 +195,14 @@ class SamplingSphere(pf.Coordinates):
 
         x, y, z = sph2cart(azimuth, colatitude, radius)
         return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            radius_atol=radius_atol)
 
     @classmethod
     def from_spherical_side(
             cls, lateral, polar, radius, n_max=None,
-            weights: np.array = None, comment: str = ""):
+            weights: np.array = None, comment: str = "",
+            radius_atol: float = 1e-6):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -196,6 +228,11 @@ class SamplingSphere(pf.Coordinates):
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
 
         Examples
         --------
@@ -204,14 +241,16 @@ class SamplingSphere(pf.Coordinates):
         >>> sampling = pf.SamplingSphere.from_spherical_side(0, 0, 1)
         """
 
-        x, z, y = sph2cart(polar, np.pi / 2 - lateral, radius)
+        x, z, y = sph2cart(
+            polar, np.pi / 2 - np.atleast_1d(lateral), radius)
         return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            radius_atol=radius_atol)
 
     @classmethod
     def from_spherical_front(
             cls, frontal, upper, radius, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            comment: str = "", radius_atol: float = 1e-6):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -237,6 +276,11 @@ class SamplingSphere(pf.Coordinates):
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
 
         Examples
         --------
@@ -247,12 +291,13 @@ class SamplingSphere(pf.Coordinates):
 
         y, z, x = sph2cart(frontal, upper, radius)
         return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            radius_atol=radius_atol)
 
     @classmethod
     def from_cylindrical(
             cls, azimuth, z, rho, n_max=None, weights: np.array = None,
-            comment: str = ""):
+            comment: str = "", radius_atol: float = 1e-6):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -278,6 +323,11 @@ class SamplingSphere(pf.Coordinates):
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
+        radius_atol : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
 
         Examples
         --------
@@ -288,7 +338,8 @@ class SamplingSphere(pf.Coordinates):
 
         x, y, z = cyl2cart(azimuth, z, rho)
         return cls(
-            x, y, z, weights=weights, comment=comment, n_max=n_max)
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            radius_atol=radius_atol)
 
     @property
     def n_max(self):
@@ -303,3 +354,36 @@ class SamplingSphere(pf.Coordinates):
             self._n_max = None
         else:
             self._n_max = int(value)
+
+    @property
+    def radius_atol(self):
+        """Get or set the radius tolerance in meter."""
+        return self._radius_atol
+
+    @radius_atol.setter
+    def radius_atol(self, value):
+        """Get or set the radius tolerance in meter."""
+        if isinstance(value, (int, float)) and value > 0:
+            self._radius_atol = float(value)
+        else:
+            raise ValueError(
+                'The radius tolerance must be a number greater than zero')
+
+    def _check_points(self, x, y, z):
+        """Check input data before setting coordinates"""
+
+        # convert to numpy arrays of the same shape
+        x, y, z = super()._check_points(x, y, z)
+
+        # check for equal radius
+        radius = np.sqrt(x.flatten()**2 + y.flatten()**2 + z.flatten()**2)
+        radius_delta = np.max(np.abs(np.mean(radius) - radius))
+        if radius_delta > self.radius_atol:
+            raise ValueError(
+                'All points must have the same radius but the deviation from '
+                f'the mean radius is {radius_delta:.3g} m, which exceeds the'
+                f' tolerance of {self.radius_atol:.3g} m.')
+
+        return x, y, z
+
+
