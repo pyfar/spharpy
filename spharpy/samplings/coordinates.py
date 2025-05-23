@@ -319,7 +319,7 @@ class SamplingSphere(pf.Coordinates):
         if np.any(weights < 0) or np.any(np.isnan(weights)):
             raise ValueError("All weights must be positive numeric values.")
 
-        elif not np.isclose(np.sum(weights), 4*np.pi, atol=1e-6, rtol=1e-6):
+        if not np.isclose(np.sum(weights), 4*np.pi, atol=1e-6, rtol=1e-6):
             raise ValueError(
                 "The sum of the weights must be equal to 4*pi. "
                 f"Current sum: {np.sum(weights)}")
