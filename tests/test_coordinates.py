@@ -59,6 +59,16 @@ def test_setting_weights_invalid():
     with pytest.raises(ValueError, match=message):
         sampling.weights = np.ones(6)/6
 
-    message = r"The sum of the weights must be equal to 4\*pi."
     with pytest.raises(ValueError, match=message):
         sampling._set_weights(np.ones(6)/6)
+
+    message = "All weights must be positive."
+    with pytest.raises(ValueError, match=message):
+        weights_invalid = np.ones(6)*4*np.pi/6
+        weights_invalid[0] = np.nan
+        sampling.weights = weights_invalid
+
+    with pytest.raises(ValueError, match=message):
+        weights_invalid = np.ones(6)*4*np.pi/6 * -1
+        weights_invalid[0] = -1
+        sampling.weights = weights_invalid
