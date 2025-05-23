@@ -12,8 +12,7 @@ class SamplingSphere(pf.Coordinates):
         r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for more information.
 
         Parameters
         ----------
@@ -48,8 +47,7 @@ class SamplingSphere(pf.Coordinates):
         r"""
         Create a Coordinates class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for  more information.
 
         Parameters
         ----------
@@ -91,8 +89,7 @@ class SamplingSphere(pf.Coordinates):
             weights: np.array = None, comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for  more information.
 
         Parameters
         ----------
@@ -134,8 +131,7 @@ class SamplingSphere(pf.Coordinates):
             weights: np.array = None, comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for  more information.
 
         Parameters
         ----------
@@ -177,8 +173,7 @@ class SamplingSphere(pf.Coordinates):
             weights: np.array = None, comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for  more information.
 
         Parameters
         ----------
@@ -219,8 +214,7 @@ class SamplingSphere(pf.Coordinates):
             comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for  more information.
 
         Parameters
         ----------
@@ -261,8 +255,7 @@ class SamplingSphere(pf.Coordinates):
             comment: str = ""):
         """Create a Coordinates class object from a set of points on a sphere.
 
-        See :py:mod:`coordinates concepts <pyfar._concepts.coordinates>` for
-        more information.
+        See :py:mod:`pyfar.classes.coordinates` for  more information.
 
         Parameters
         ----------
