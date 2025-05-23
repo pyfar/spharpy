@@ -41,10 +41,6 @@ class SamplingSphere(pf.Coordinates):
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
 
-        # self.weights.__doc__ = (
-        #     "The area or quadrature weights of the sampling. "
-        #     "Their sum must be equal to 4*pi.")
-
     @classmethod
     def from_cartesian(
             cls, x, y, z, n_max=None, weights: np.array = None,
@@ -326,3 +322,17 @@ class SamplingSphere(pf.Coordinates):
                 f"Current sum: {np.sum(weights)}")
 
         return weights
+
+    @property
+    def weights(self):
+        """The area/quadrature weights of the sampling.
+        Their sum must equal to :math:`4\pi`.
+        """
+        return super().weights
+
+    @weights.setter
+    def weights(self, weights):
+        """The area/quadrature weights of the sampling.
+        Their sum must equal to :math:`4\pi`.
+        """
+        super(__class__, type(self)).weights.fset(self, weights)
