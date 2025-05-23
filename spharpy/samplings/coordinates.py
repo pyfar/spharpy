@@ -328,14 +328,14 @@ class SamplingSphere(pf.Coordinates):
 
     @property
     def weights(self):
-        """The area/quadrature weights of the sampling.
+        r"""The area/quadrature weights of the sampling.
         Their sum must equal to :math:`4\pi`.
         """
         return super().weights
 
     @weights.setter
     def weights(self, weights):
-        """The area/quadrature weights of the sampling.
+        r"""The area/quadrature weights of the sampling.
         Their sum must equal to :math:`4\pi`.
         """
         super(__class__, type(self)).weights.fset(self, weights)
