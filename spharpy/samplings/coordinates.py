@@ -27,9 +27,11 @@ class SamplingSphere(pf.Coordinates):
             Z coordinate of a right handed Cartesian coordinate system in
             meters (-\infty < z < \infty).
         weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -66,9 +68,11 @@ class SamplingSphere(pf.Coordinates):
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
         weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -110,9 +114,11 @@ class SamplingSphere(pf.Coordinates):
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
         weights: array like, float, None, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -153,9 +159,11 @@ class SamplingSphere(pf.Coordinates):
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
         weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -195,9 +203,11 @@ class SamplingSphere(pf.Coordinates):
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
         weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -237,9 +247,11 @@ class SamplingSphere(pf.Coordinates):
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
         weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -279,9 +291,11 @@ class SamplingSphere(pf.Coordinates):
             Maximum spherical harmonic order of the sampling grid.
             The default is ``None``.
         weights: array like, number, optional
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
+            Weighting factors for coordinate points. Their sum must equal to
+            the integral over the unit sphere, which is :math:`4\pi`.
+            The `shape` of the array must match the `shape` of the individual
+            coordinate arrays. The default is ``None``, which means that not
+            weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
