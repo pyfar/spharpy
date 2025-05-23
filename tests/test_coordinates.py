@@ -1,4 +1,6 @@
 from spharpy import SamplingSphere
+import numpy as np
+import pytest
 
 
 def test_sampling_sphere_init():
@@ -53,21 +55,9 @@ def test_setting_weights_invalid():
     n_max = 1
     sampling = SamplingSphere(x, y, z, n_max)
 
-    weights = np.ones(5)*4*np.pi/6
-
-    # Check that setting weights with a different length raises an error
-    message = "Weights must have same size as csize."
-    with pytest.raises(ValueError, match=message):
-        sampling.weights = weights
-
     message = r"The sum of the weights must be equal to 4\*pi."
     with pytest.raises(ValueError, match=message):
         sampling.weights = np.ones(6)/6
-
-    # Check that setting weights with a different length raises an error
-    message = "Weights must have same size as csize."
-    with pytest.raises(ValueError, match=message):
-        sampling._set_weights(weights)
 
     message = r"The sum of the weights must be equal to 4\*pi."
     with pytest.raises(ValueError, match=message):

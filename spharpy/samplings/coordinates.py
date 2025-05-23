@@ -41,9 +41,9 @@ class SamplingSphere(pf.Coordinates):
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
 
-        self.weights.__doc__ = (
-            "The area or quadrature weights of the sampling. "
-            "Their sum must be equal to 4*pi.")
+        # self.weights.__doc__ = (
+        #     "The area or quadrature weights of the sampling. "
+        #     "Their sum must be equal to 4*pi.")
 
     @classmethod
     def from_cartesian(
@@ -315,28 +315,14 @@ class SamplingSphere(pf.Coordinates):
         else:
             self._n_max = int(value)
 
-    def _set_weights(self, weights):
-        """Check and set sampling weights.
+    def _check_weights(self, weights):
+        weights = super()._check_weights(weights)
 
-        Set self._weights, which is an atleast_1d numpy array of shape
-        [L,M,...,N].
-
-        """
-        # check if weights is None
         if weights is None:
-            self._weights = weights
-            return
-
-        weights = np.asarray(weights, dtype=np.float64)
-
-        # reshape according to self._points
-        if weights.size != self.csize:
-            raise ValueError("Weights must have same size as csize.")
-        weights = weights.reshape(self.cshape)
-
-        if not np.isclose(np.sum(weights), 4*np.pi, atol=1e-6, rtol=1e-6):
+            return weights
+        elif not np.isclose(np.sum(weights), 4*np.pi, atol=1e-6, rtol=1e-6):
             raise ValueError(
                 "The sum of the weights must be equal to 4*pi. "
                 f"Current sum: {np.sum(weights)}")
 
-        self._weights = weights
+        return weights
