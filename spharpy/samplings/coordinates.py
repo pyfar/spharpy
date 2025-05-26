@@ -41,8 +41,6 @@ class SamplingSphere(pf.Coordinates):
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
         """
-        # must be initialized first, because it is already required for
-        # checking if input points have the same radius
         self._radius_tolerance = None
         self.radius_tolerance = radius_tolerance
 
@@ -363,11 +361,23 @@ class SamplingSphere(pf.Coordinates):
     @radius_tolerance.setter
     def radius_tolerance(self, value):
         """Get or set the radius tolerance in meter."""
-        if isinstance(value, (int, float)) and value > 0:
-            self._radius_tolerance = float(value)
-        else:
+
+        # check input
+        if not isinstance(value, (int, float)) or value <= 0:
             raise ValueError(
                 'The radius tolerance must be a number greater than zero')
+
+        current_tolerance = self.radius_tolerance
+        self._radius_tolerance = float(value)
+
+        # Check if points meet new tolerance if points exist
+        if hasattr(self, 'x'):
+            try:
+                self._check_points(self._x, self._y, self._z)
+            except ValueError as e:
+                # revert setting the tolerance and raise the error
+                self._radius_tolerance = current_tolerance
+                raise e
 
     def _check_points(self, x, y, z):
         """Check input data before setting coordinates"""
@@ -377,12 +387,14 @@ class SamplingSphere(pf.Coordinates):
 
         # check for equal radius
         radius = np.sqrt(x.flatten()**2 + y.flatten()**2 + z.flatten()**2)
-        radius_delta = np.max(np.abs(np.mean(radius) - radius))
+        radius_delta = np.max(radius) - np.min(radius)
         if radius_delta > self.radius_tolerance:
             raise ValueError(
-                'All points must have the same radius but the deviation from '
-                f'the mean radius is {radius_delta:.3g} m, which exceeds the'
-                f' tolerance of {self.radius_tolerance:.3g} m.')
+                'All points must have the same radius but the difference '
+                f'between the minimum and maximum radius is {radius_delta:.3g}'
+                ' m, which exceeds the tolerance of '
+                f'{self.radius_tolerance:.3g} m. The tolerance can be changed '
+                'using SamplingSphere.radius_tolerance.')
 
         return x, y, z
 

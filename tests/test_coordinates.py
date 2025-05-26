@@ -44,7 +44,7 @@ def test_error_multiple_radius_initialization():
     an error.
     """
 
-    match = '0.5 m, which exceeds the tolerance of 1e-06 m'
+    match = '1 m, which exceeds the tolerance of 1e-06 m'
     with pytest.raises(ValueError, match=match):
         SamplingSphere([1, 0], 0, 0)
 
@@ -57,7 +57,7 @@ def test_error_multiple_radius_setter():
 
     sampling_sphere = SamplingSphere([1, 1], 0, 0)
 
-    match = '0.5 m, which exceeds the tolerance of 1e-06 m'
+    match = '1 m, which exceeds the tolerance of 1e-06 m'
     with pytest.raises(ValueError, match=match):
         sampling_sphere.x = [1, 0]
 
@@ -85,6 +85,17 @@ def test_radius_tolerance(sampling):
 
     with pytest.raises(ValueError, match=f'{tolerance:.3g}'):
         sampling.x = [0, 1]
+
+
+def test_radius_tolerance_error():
+    """
+    Test if setting the radius tolerance too strict raises an error for
+    existing data.
+    """
+    sampling = SamplingSphere([1, 1.1], 0, 0, radius_tolerance=.2)
+
+    with pytest.raises(ValueError, match='the tolerance of 0.01'):
+        sampling.radius_tolerance = .01
 
 
 @pytest.mark.parametrize(['tolerance'], [
