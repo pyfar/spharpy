@@ -78,10 +78,10 @@ def test_radius_tolerance(sampling):
     tolerance = 1e-3
 
     # test default value
-    assert sampling.radius_atol == 1e-6
+    assert sampling.radius_tolerance == 1e-6
     # change tolerance
-    sampling.radius_atol = tolerance
-    assert sampling.radius_atol == tolerance
+    sampling.radius_tolerance = tolerance
+    assert sampling.radius_tolerance == tolerance
 
     with pytest.raises(ValueError, match=f'{tolerance:.3g}'):
         sampling.x = [0, 1]
@@ -95,4 +95,4 @@ def test_radius_tolerance_input(tolerance):
 
     match = 'The radius tolerance must be a number greater than zero'
     with pytest.raises(ValueError, match=match):
-        SamplingSphere([1, 1], 0, 0, radius_atol=tolerance)
+        SamplingSphere([1, 1], 0, 0, radius_tolerance=tolerance)
