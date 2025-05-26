@@ -30,7 +30,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
@@ -71,7 +71,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
@@ -117,7 +117,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
@@ -162,7 +162,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
@@ -206,7 +206,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
@@ -250,7 +250,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
@@ -294,7 +294,7 @@ class SamplingSphere(pf.Coordinates):
             Weighting factors for coordinate points. Their sum must equal to
             the integral over the unit sphere, which is :math:`4\pi`.
             The `shape` of the array must match the `shape` of the individual
-            coordinate arrays. The default is ``None``, which means that not
+            coordinate arrays. The default is ``None``, which means that no
             weights are used.
         comment : str, optional
             Comment about the stored coordinate points. The default is
