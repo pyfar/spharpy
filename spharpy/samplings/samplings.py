@@ -66,11 +66,13 @@ def cube_equidistant(n_points):
 
 
 def hyperinterpolation(n_points=None, n_max=None, radius=1.):
-    """
+    r"""
     Return a Hyperinterpolation sampling grid.
 
     After Sloan and Womersley [#]_. The samplings are available for
-    1 <= `n_max` <= 200 (``n_points = (n_max + 1)^2``).
+    1 <= `n_max` <= 200 (``n_points = (n_max + 1)^2``). This is a quadrature
+    sampling with the sum of the sampling weights in `sampling.weights`
+    being :math:`4\pi`.
 
     Parameters
     ----------
@@ -154,7 +156,6 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
 
     # normalize weights
     weights = file_data[:, 3]
-    weights = weights / np.sum(weights) * 4 * np.pi
 
     # generate Coordinates object
     sampling = spharpy.SamplingSphere(
@@ -409,10 +410,12 @@ def icosahedron(radius=1.):
 
 
 def equiangular(n_points=None, n_max=None, radius=1.):
-    """
+    r"""
     Generate an equiangular sampling of the sphere.
 
-    For detailed information, see [#]_, Chapter 3.2.
+    For detailed information, see [#]_, Chapter 3.2. This is a quadrature
+    sampling with the sum of the sampling weights in `sampling.weights`
+    being :math:`4\pi`.
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
     :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
@@ -501,10 +504,12 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
 
 def gaussian(n_points=None, n_max=None, radius=1.):
-    """
+    r"""
     Generate sampling of the sphere based on the Gaussian quadrature.
 
-    For detailed information, see [#]_ (Section 3.3).
+    For detailed information, see [#]_ (Section 3.3). This is a quadrature
+    sampling with the sum of the sampling weights in `sampling.weights`
+    being :math:`4\pi`.
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
     :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
@@ -979,11 +984,13 @@ def great_circle(
 
 
 def lebedev(n_points=None, n_max=None, radius=1.):
-    """
+    r"""
     Return Lebedev spherical sampling grid.
 
     For detailed information, see [#]_. For a list of available values
-    for `n_points` and `n_max` call :py:func:`sph_lebedev`.
+    for `n_points` and `n_max` call :py:func:`sph_lebedev`. This is a
+    quadrature  sampling with the sum of the sampling weights in
+    `sampling.weights` being :math:`4\pi`.
 
     Parameters
     ----------
@@ -1071,7 +1078,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     leb = lebedev_sphere(n_points)
 
     # normalize the weights
-    weights = leb["w"] / np.sum(leb["w"]) * 4 * np.pi
+    weights = leb["w"]
 
     # generate Coordinates object
     sampling = spharpy.SamplingSphere(
@@ -1085,11 +1092,13 @@ def lebedev(n_points=None, n_max=None, radius=1.):
 
 
 def fliege(n_points=None, n_max=None, radius=1.):
-    """
+    r"""
     Return Fliege-Maier spherical sampling grid.
 
     For detailed information, see [#]_. Call :py:func:`sph_fliege`
-    for a list of possible values for `n_points` and `n_max`.
+    for a list of possible values for `n_points` and `n_max`. This is a
+    quadrature sampling with the sum of the sampling weights in
+    `sampling.weights` being :math:`4\pi`.
 
     Parameters
     ----------
@@ -1240,7 +1249,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
     fliege = fliege[f"Fliege_{int(n_points)}"]
 
     # normlize weights
-    weights = fliege[:, 2] / np.sum(fliege[:, 2]) * 4 * np.pi
+    weights = fliege[:, 2] * 4 * np.pi
 
     # generate Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(

@@ -31,13 +31,9 @@ class SamplingSphere(pf.Coordinates):
             The `shape` of the array must match the `shape` of the individual
             coordinate arrays. The default is ``None``, which means that no
             weights are used.
-            Weighting factors for coordinate points. The `shape` of the array
-            must match the `shape` of the individual coordinate arrays.
-            The default is ``None``.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -84,8 +80,7 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -135,8 +130,7 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -184,8 +178,7 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -232,8 +225,7 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -279,8 +271,7 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -326,8 +317,7 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that all `weights` are greater than zero and sum to
-            :math:`4\pi`. The default is ``False``.
+            requires that `weights` is not ``None``. The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -415,7 +405,8 @@ class SamplingSphere(pf.Coordinates):
             raise TypeError(
                 f'quadrature must be True or False but is {value}')
 
-        # flag indicating if weights sum to 4 pi
+        # check if weights are set
+        # (if they are the weights setter enforces that they sum to 4 pi)
         if self.weights is None and value:
             raise ValueError(
                 'quadrature can not be True because the weights are None')
