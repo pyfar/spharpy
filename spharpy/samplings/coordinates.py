@@ -326,6 +326,21 @@ class SamplingSphere(pf.Coordinates):
             self._n_max = int(value)
 
     def _check_weights(self, weights):
+        r"""Check if the weights are valid.
+        The weights must be positive and their sum must equal integration of
+        the unit sphere, i.e. :math:`4\pi`.
+
+        Parameters
+        ----------
+        weights : array like, number
+            the weights for each point, should be of size of self.csize.
+
+        Returns
+        -------
+        weights : np.ndarray[float64], None
+            The weights reshaped to the cshape of the coordinates if not None.
+            Otherwise None.
+        """
         weights = super()._check_weights(weights)
 
         if weights is None:
