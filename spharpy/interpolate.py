@@ -8,7 +8,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
 
     Parameters
     ----------
-    sampling : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+    sampling : :py:class:`pyfar.Coordinates`
         Coordinates object containing the positions for which the data
         is sampled
     data : array, float
@@ -69,7 +69,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
 
         Parameters
         ----------
-        interp_grid : :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
+        interp_grid : :py:class:`pyfar.Coordinates`
             Coordinates object containing a new set of points for which data
             is to be interpolated.
         dtheta : int, optional
