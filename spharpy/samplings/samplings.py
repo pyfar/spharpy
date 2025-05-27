@@ -70,9 +70,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     Return a Hyperinterpolation sampling grid.
 
     After Sloan and Womersley [#]_. The samplings are available for
-    1 <= `n_max` <= 200 (``n_points = (n_max + 1)^2``). This is a quadrature
-    sampling with the sum of the sampling weights in `sampling.weights`
-    being :math:`4\pi`.
+    1 <= `n_max` <= 200 (``n_points = (n_max + 1)^2``).
 
     Parameters
     ----------
@@ -162,7 +160,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
         file_data[:, 0] * radius,
         file_data[:, 1] * radius,
         file_data[:, 2] * radius,
-        n_max=n_max, weights=weights, quadrature=True,
+        n_max=n_max, weights=weights, quadrature=False,
         comment='extremal spherical sampling grid')
 
     return sampling
