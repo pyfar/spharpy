@@ -143,8 +143,9 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, y, z = sph2cart(azimuth, np.pi / 2 - elevation, radius)
-        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
-                   quadrature=quadrature)
+        return cls(
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            quadrature=quadrature)
 
     @classmethod
     def from_spherical_colatitude(
@@ -191,8 +192,9 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, y, z = sph2cart(azimuth, colatitude, radius)
-        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
-                   quadrature=quadrature)
+        return cls(
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            quadrature=quadrature)
 
     @classmethod
     def from_spherical_side(
@@ -238,8 +240,9 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, z, y = sph2cart(polar, np.pi / 2 - lateral, radius)
-        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
-                   quadrature=quadrature)
+        return cls(
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            quadrature=quadrature)
 
     @classmethod
     def from_spherical_front(
@@ -284,8 +287,9 @@ class SamplingSphere(pf.Coordinates):
         """
 
         y, z, x = sph2cart(frontal, upper, radius)
-        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
-                   quadrature=quadrature)
+        return cls(
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            quadrature=quadrature)
 
     @classmethod
     def from_cylindrical(
@@ -330,8 +334,9 @@ class SamplingSphere(pf.Coordinates):
         """
 
         x, y, z = cyl2cart(azimuth, z, rho)
-        return cls(x, y, z, weights=weights, comment=comment, n_max=n_max,
-                   quadrature=quadrature)
+        return cls(
+            x, y, z, weights=weights, comment=comment, n_max=n_max,
+            quadrature=quadrature)
 
     @property
     def n_max(self):
@@ -412,4 +417,3 @@ class SamplingSphere(pf.Coordinates):
                 'quadrature can not be True because the weights are None')
 
         self._quadrature = value
-
