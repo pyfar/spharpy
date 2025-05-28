@@ -560,7 +560,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
             "The number of points needs to be a positive natural number.")
 
     # get number of points from required spherical harmonic order
-    # ([1], chapter equation 3.3)
+    # ([1], chapter 3.3)
     if n_max is not None:
         n_phi = int(n_max+1)*2
         n_theta = int(n_max) + 1
