@@ -479,20 +479,16 @@ def equiangular(n_points=None, n_max=None, radius=1.):
         n_max = int(n_max)
 
     # compute sampling weights ([1], equation 3.11)
-    q = 2 * np.arange(0, n_max + 1) + 1
-    w = np.zeros_like(theta_angles)
-    for nn, tt in enumerate(theta_angles):
-        w[nn] = 2 * np.pi / (n_max + 1)**2 * np.sin(tt) \
-            * np.sum(1 / q * np.sin(q * tt))
+    q = 2*np.arange(0, n_max + 1) + 1
+    weights_theta = np.sin(theta_angles) * (
+        1/q @ np.sin(q[np.newaxis].T @ theta_angles[np.newaxis]))
 
-    # repeat and normalize sampling weights
-    w = np.tile(w, n_phi)
-    w = w / np.sum(w)
+    weights = np.tile(weights_theta*2*np.pi / (n_max+1)**2, n_phi)
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), rad,
-        weights=w, n_max=n_max)
+        weights=weights, n_max=n_max)
 
     return sampling
 
