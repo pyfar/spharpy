@@ -207,7 +207,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Notes
     -----
@@ -319,7 +319,7 @@ def dodecahedron(radius=1.):
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Examples
     --------
@@ -379,7 +379,7 @@ def icosahedron(radius=1.):
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Examples
     --------
@@ -412,7 +412,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     For detailed information, see [#]_, Chapter 3.2.
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
-    :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
+    :py:func:`equal_angle` and :py:func:`great_circle` for samplings
     containing points at the poles.
 
     Parameters
@@ -504,7 +504,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     For detailed information, see [#]_ (Section 3.3).
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
-    :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
+    :py:func:`equal_angle` and :py:func:`great_circle` for samplings
     containing points at the poles.
 
     Parameters
@@ -808,8 +808,8 @@ def equal_angle(delta_angles, radius=1.):
     Generate sampling of the sphere with equally spaced angles.
 
     This sampling contain points at the North and South Pole. See
-    :py:func:`sph_equiangular`, :py:func:`sph_gaussian`, and
-    :py:func:`sph_great_circle` for samplings that do not contain points at the
+    :py:func:`equiangular`, :py:func:`gaussian`, and
+    :py:func:`great_circle` for samplings that do not contain points at the
     poles.
 
 
@@ -826,7 +826,7 @@ def equal_angle(delta_angles, radius=1.):
     -------
     sampling : :py:class:`pyfar.Coordinates`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Examples
     --------
@@ -909,7 +909,7 @@ def great_circle(
     -------
     sampling : :py:class:`pyfar.Coordinates`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     References
     ----------
@@ -979,7 +979,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     Return Lebedev spherical sampling grid.
 
     For detailed information, see [#]_. For a list of available values
-    for `n_points` and `n_max` call :py:func:`sph_lebedev`.
+    for `n_points` and `n_max` call :py:func:`lebedev`.
 
     Parameters
     ----------
@@ -1084,7 +1084,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
     """
     Return Fliege-Maier spherical sampling grid.
 
-    For detailed information, see [#]_. Call :py:func:`sph_fliege`
+    For detailed information, see [#]_. Call :py:func:`fliege`
     for a list of possible values for `n_points` and `n_max`.
 
     Parameters
