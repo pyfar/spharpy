@@ -203,6 +203,7 @@ def test_equiangular_pyfar():
     # test with spherical harmonic order
     c = samplings.equiangular(n_max=5)
     assert c.csize == 4 * (5 + 1)**2
+    npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -211,14 +212,64 @@ def test_equiangular_pyfar():
     c = samplings.equiangular(5, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert c.quadrature
+
+@pytest.mark.parametrize("n_points", np.arange(2, 40, 2))
+def test_equiangular_weights_n_points_even(n_points):
+    sampling = samplings.equiangular(n_points=n_points)
+    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
+    assert sampling.cshape == sampling.weights.shape
+    assert sampling.cshape == n_points*n_points
+    assert sampling.quadrature is True
 
 
-def test_gaussian():
-    n_max = 1
+@pytest.mark.parametrize("n_points", np.arange(1, 40, 2))
+def test_equiangular_weights_n_points_odd(n_points):
+    sampling = samplings.equiangular(n_points=n_points)
+    assert sampling.weights is None
+    assert sampling.cshape == n_points*n_points
+    assert sampling.quadrature is False
+
+
+@pytest.mark.parametrize(
+    "n_points",
+    [(5, 5), (4, 5), (4, 6)],
+)
+def test_equiangular_weights_n_points_tuple_invalid(n_points):
+    sampling = samplings.equiangular(n_points=n_points)
+    assert sampling.weights is None
+    assert sampling.quadrature is False
+
+
+def test_equiangular_weights_n_points_tuple_valid():
+    n_points = (4, 4)
+    sampling = samplings.equiangular(n_points=n_points)
+    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
+
+
+@pytest.mark.parametrize("n_max", np.arange(1, 15))
+def test_equiangular_weights_n_max(n_max):
+    sampling = samplings.equiangular(n_max=n_max)
+    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
+    assert sampling.cshape == sampling.weights.shape
+    assert sampling.cshape == 4*(n_max+1)**2
+    assert isinstance(sampling, SamplingSphere)
+
+
+@pytest.mark.parametrize("n_points", np.arange(1, 40))
+def test_gaussian_weights_n_points(n_points):
+    sampling = samplings.gaussian(n_points=n_points)
+    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
+    assert sampling.cshape == sampling.weights.shape
+    assert sampling.cshape == 2*n_points*n_points
+    assert isinstance(sampling, SamplingSphere)
+
+
+@pytest.mark.parametrize("n_max", np.arange(1, 15))
+def test_gaussian_weights_n_max(n_max):
     sampling = samplings.gaussian(n_max=n_max)
+    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
+    assert sampling.cshape == sampling.weights.shape
+    assert sampling.cshape == 2*(n_max+1)*(n_max+1)
     assert isinstance(sampling, SamplingSphere)
 
 
@@ -227,18 +278,19 @@ def test_gaussian_pyfar():
     with raises(ValueError):
         samplings.gaussian()
 
+    with raises(ValueError, match='positive natural number'):
+        samplings.gaussian(n_points=(2,2))
+
     # test with single number of points
     c = samplings.gaussian(5)
-    isinstance(c, SamplingSphere)
-    assert c.csize == 5**2
-
-    # test with tuple
-    c = samplings.gaussian((3, 5))
-    assert c.csize == 3*5
+    isinstance(c, Coordinates)
+    assert c.csize == 5*(5*2)
+    npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
     # test with spherical harmonic order
     c = samplings.gaussian(n_max=5)
     assert c.csize == 2 * (5 + 1)**2
+    npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)

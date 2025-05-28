@@ -413,7 +413,9 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
     For detailed information, see [#]_, Chapter 3.2. This is a quadrature
     sampling with the sum of the sampling weights in `sampling.weights`
-    being :math:`4\pi`.
+    being :math:`4\pi` if the number of rings is even and there number of
+    points in azimuth and elevation are equal. This condition is always
+    fulfilled if the number of points is chosen through ``n_max``.
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
     :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
@@ -483,16 +485,23 @@ def equiangular(n_points=None, n_max=None, radius=1.):
         n_max = int(n_max)
 
     # compute sampling weights ([1], equation 3.11)
-    q = 2*np.arange(0, n_max + 1) + 1
-    weights_theta = np.sin(theta_angles) * (
-        1/q @ np.sin(q[np.newaxis].T @ theta_angles[np.newaxis]))
+    # Note that this is only valid if the number of points in ring is even
+    # and the number of points in azimuth and elevation are equal
+    if (n_theta != n_phi) or np.any(np.mod(n_points, 2) > 0):
+        weights = None
+        quadrature = False
+    else:
+        q = 2*np.arange(0, n_max + 1) + 1
+        weights_theta = np.sin(theta_angles) * (
+            1/q @ np.sin(q[np.newaxis].T @ theta_angles[np.newaxis]))
 
-    weights = np.tile(weights_theta*2*np.pi / (n_max+1)**2, n_phi)
+        weights = np.tile(weights_theta*2*np.pi / (n_max+1)**2, n_phi)
+        quadrature = True
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), rad,
-        weights=weights, n_max=n_max, quadrature=True)
+        weights=weights, n_max=n_max, quadrature=quadrature)
 
     return sampling
 
@@ -511,8 +520,9 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 
     Parameters
     ----------
-    n_points : int, tuple of two ints
-        Number of sampling points in azimuth and elevation. Either `n_points`
+    n_points : int
+        Number of sampling points in elevation. The number of points in
+        azimuth is always ``2*n_points``. Either `n_points`
         or `n_max` must be provided. The default is ``None``.
     n_max : int
         Maximum applicable spherical harmonic order. If this is provided,
@@ -545,19 +555,18 @@ def gaussian(n_points=None, n_max=None, radius=1.):
         raise ValueError(
             "Either the n_points or n_max needs to be specified.")
 
-    # get number of points from required spherical harmonic order
-    # ([1], equation 3.4)
-    if n_max is not None:
-        n_points = [2 * (int(n_max) + 1), int(n_max) + 1]
+    if n_points is not None and (np.asarray(n_points).size > 1):
+        raise ValueError(
+            "The number of points needs to be a positive natural number.")
 
-    # get the number of points in both dimensions
-    n_points = np.asarray(n_points)
-    if n_points.size == 2:
-        n_phi = n_points[0]
-        n_theta = n_points[1]
+    # get number of points from required spherical harmonic order
+    # ([1], chapter equation 3.3)
+    if n_max is not None:
+        n_phi = int(n_max+1)*2
+        n_theta = int(n_max) + 1
     else:
-        n_phi = n_points
         n_theta = n_points
+        n_phi = 2*n_points
 
     # compute the maximum applicable spherical harmonic order
     if n_max is None:
