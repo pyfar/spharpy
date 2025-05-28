@@ -9,7 +9,6 @@ class SphericalHarmonicSignal(Signal):
 
     Objects of this class contain spherical harmonics coefficients which are
     directly convertible between time and frequency domain (equally spaced
-    samples and frequency bins), the channel conventions `acn` and `fuma`, as
     samples and frequency bins), the channel conventions ACN and FUMA, as
     well as the normalizations N3D, SN3D, or MaxN, see [#]_. The definition of
     the spherical harmonics basis functions is based on the scipy convention
@@ -32,7 +31,7 @@ class SphericalHarmonicSignal(Signal):
         Sampling rate in Hz
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
-        ``'real'``. The default is ``'real'``.
+        ``'real'``.
     normalization : str
         Normalization convention, either ``'n3d'``, ``'maxN'`` or
         ``'sn3d'``. (maxN is only supported up to 3rd order)
