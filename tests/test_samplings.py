@@ -6,6 +6,8 @@ from spharpy import SamplingSphere
 from pyfar import Coordinates
 import numpy.testing as npt
 from pytest import raises
+from spharpy.spherical import (
+    spherical_harmonic_basis_real, spherical_harmonic_basis)
 
 
 def test_cube_equidistant():
