@@ -171,10 +171,6 @@ class SphericalHarmonicSignal(Signal):
         Get or set  set the channel convention of the spherical harmonic
         coefficients.
         """
-        if value not in ["acn", "fuma"]:
-            raise ValueError("Invalid channel convention, has to be 'acn' "
-                             f"or 'fuma', but is {value}")
-
         if self.channel_convention is not value:
             self._data = change_channel_convention(self._data,
                                                    self.channel_convention,

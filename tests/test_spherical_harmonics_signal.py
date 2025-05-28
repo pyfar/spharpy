@@ -103,6 +103,21 @@ def test_nmax_getter():
     assert signal.n_max == 1
 
 
+def test_init_wrong_basis_type():
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+    with raises(ValueError,
+                match="Invalid basis type, only "
+                      "'complex' and 'real' are supported"):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='invalid_basis_type',
+                                channel_convention='acn',
+                                normalization='n3d',
+                                condon_shortley=False)
+
+
 def test_basis_type_getter():
     """Test basis_type getter."""
     data = np.array([[1., 2., 3.],
@@ -115,6 +130,22 @@ def test_basis_type_getter():
                                      normalization='n3d',
                                      condon_shortley=False)
     assert signal.basis_type == 'real'
+
+
+def test_init_wrong_normalization():
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+
+    with raises(ValueError,
+                match="Invalid normalization, has to be 'sn3d', "
+                      "'n3d', or 'maxN', but is invalid_normalization"):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='real',
+                                channel_convention='acn',
+                                normalization='invalid_normalization',
+                                condon_shortley=False)
 
 
 def test_spherical_harmonic_signal_normalization_setter():
@@ -135,6 +166,22 @@ def test_spherical_harmonic_signal_normalization_setter():
 
     signal.normalization = 'n3d'
     assert signal.normalization == 'n3d'
+
+
+def test_init_wrong_channel_convention():
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+
+    with raises(ValueError,
+                match="Invalid channel convention, has to be 'acn' "
+                      "or 'fuma', but is invalid_convention"):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='real',
+                                channel_convention='invalid_convention',
+                                normalization='n3d',
+                                condon_shortley=False)
 
 
 def test_spherical_harmonic_signal_channel_convention_setter():
