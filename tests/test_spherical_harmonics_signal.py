@@ -1,6 +1,7 @@
 from pytest import raises
 from spharpy.classes import SphericalHarmonicSignal
 import numpy as np
+import re
 
 
 def test_spherical_harmonic_signal_init():
@@ -42,9 +43,44 @@ def test_spherical_harmonic_signal_init_condon_shortley():
     assert signal.condon_shortley
 
 
+def test_spherical_harmonic_signal_wrong_dimensions():
+    """Test dimensions of SH coefficient data."""
+
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]])
+
+    # test if dimension of data is < 3
+    with raises(ValueError,
+                match="Invalid number of dimensions. Data should have "
+                      "at least 3 dimensions."):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='real',
+                                channel_convention='acn',
+                                condon_shortley=False,
+                                normalization='n3d')
+    # test if sh channels are valid
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 5, 3)
+
+    with raises(ValueError,
+                match=re.escape("Invalid number of SH channels: "
+                                f"{data.shape[-2]}. It must match "
+                                "(n_max + 1)^2.")):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='real',
+                                channel_convention='acn',
+                                condon_shortley=False,
+                                normalization='n3d')
+
+
 def test_spherical_harmonic_signal_init_multichannel():
     """Test init SphercalHarmonicsSignal."""
-    sh_coeffs = np.zeros((2, 6, 16))
+    sh_coeffs = np.zeros((2, 4, 16))
     signal = SphericalHarmonicSignal(sh_coeffs,
                                      44100, basis_type='real',
                                      channel_convention='acn',

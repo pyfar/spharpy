@@ -39,8 +39,8 @@ class SphericalHarmonicSignal(Signal):
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
-        Whether to include the Condon-Shortley phase term. If ``True``
-        Condon-Shortley is included, if ``False`` it is not included.
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
     n_samples : int, optional
         Number of time domain samples. Required if domain is ``'freq'``.
         The default is ``None``, which assumes an even number of samples
@@ -92,7 +92,11 @@ class SphericalHarmonicSignal(Signal):
                              "at least 3 dimensions.")
 
         # set n_max
-        self._n_max = int(np.sqrt(data.shape[-2]))-1
+        n_max = np.sqrt(data.shape[-2])-1
+        if n_max - int(n_max) != 0:
+            raise ValueError("Invalid number of SH channels: "
+                             f"{data.shape[-2]}. It must match (n_max + 1)^2.")
+        self._n_max = n_max
 
         # set basis_type
         if basis_type not in ["complex", "real"]:
