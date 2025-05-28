@@ -10,48 +10,41 @@ class SphericalHarmonicSignal(Signal):
     Objects of this class contain spherical harmonics coefficients which are
     directly convertible between time and frequency domain (equally spaced
     samples and frequency bins), the channel conventions `acn` and `fuma`, as
-    well as the normalizations `n3d`, `sn3d`, or `maxn`. The default
-    parameters for `basis_type`, `normalization`, and `channel_convention`
-    corresponds to the AmbiX standard, see [#]_. The definition of the
-    spherical harmonics basis functions is based on the scipy convention which
-    includes the Condon-Shortley phase, [#]_, [#]_.
+    samples and frequency bins), the channel conventions ACN and FUMA, as
+    well as the normalizations N3D, SN3D, or MaxN, see [#]_. The definition of
+    the spherical harmonics basis functions is based on the scipy convention
+    which includes the Condon-Shortley phase, [#]_, [#]_.
 
 
     Parameters
     ----------
     data : ndarray, double
         Raw data of the spherical harmonics signal in the time or
-        frequency domain. The memory layout of data is 'C'. E.g.
-        data of ``shape = (3, 4, 1024)`` has 3 channels with 4
-        spherical harmonic coefficients with 1024 samples or frequency
+        frequency domain. The data should have at least 3 dimensions,
+        according to the 'C' memory layout, e.g. data of
+        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+        coefficients with 1024 samples or frequency
         bins each. Time data is converted to ``float``. Frequency is
         converted to ``complex`` and must be provided as single
         sided spectra, i.e., for all frequencies between 0 Hz and
         half the sampling rate.
     sampling_rate : double
         Sampling rate in Hz
-    n_max : int
-        Maximum spherical harmonic order. Has to match the number of
-        coefficients, such that the number of coefficients
-        :math:`>= (n_{max} + 1) ^ 2`.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``. The default is ``'real'``.
     normalization : str
         Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. The default is ``'n3d'``.
-        (maxN is only supported up to 3rd order)
+        ``'sn3d'``. (maxN is only supported up to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
-        Whether to include the Condon-Shortley phase term. If ``True`` or
-        ``'auto'``, Condon-Shortley is included, if ``False`` it is not
-        included. The default is ``'auto'``.
+        Whether to include the Condon-Shortley phase term. If ``True``
+        Condon-Shortley is included, if ``False`` it is not included.
     n_samples : int, optional
         Number of time domain samples. Required if domain is ``'freq'``.
-        The default is ``None``, which assumes an even number of samples 
+        The default is ``None``, which assumes an even number of samples
         if the data is provided in the frequency domain.
     domain : ``'time'``, ``'freq'``, optional
         Domain of data. The default is ``'time'``
@@ -82,11 +75,10 @@ class SphericalHarmonicSignal(Signal):
             self,
             data,
             sampling_rate,
-            n_max,
             basis_type,
             normalization,
             channel_convention,
-            condon_shortley='auto',
+            condon_shortley,
             n_samples=None,
             domain='time',
             fft_norm='none',
@@ -95,14 +87,13 @@ class SphericalHarmonicSignal(Signal):
         """
         Create SphericalHarmonicSignal with data, and sampling rate.
         """
+        # check dimensions
+        if len(data.shape) < 3:
+            raise ValueError("Invalid number of dimensions. Data should have "
+                             "at least 3 dimensions.")
+
         # set n_max
-        if (n_max < 0) or (n_max % 1 != 0):
-            raise ValueError("n_max must be a positive integer")
-        if not data.shape[-2] >= (n_max + 1) ** 2:
-            raise ValueError('Data has to few sh coefficients for '
-                             f'{n_max=}. Highest possible n_max is '
-                             f'{int(np.sqrt(data.shape[-2]))-1}')
-        self._n_max = int(n_max)
+        self._n_max = int(np.sqrt(data.shape[-2]))-1
 
         # set basis_type
         if basis_type not in ["complex", "real"]:
@@ -123,14 +114,9 @@ class SphericalHarmonicSignal(Signal):
         self._channel_convention = channel_convention
 
         # set Condon Shortley
-        if not isinstance(condon_shortley, bool) and condon_shortley != 'auto':
-            raise ValueError(
-                "Condon_shortley has to be a bool, or 'auto'.")
-
-        if condon_shortley == 'auto' and basis_type == 'complex':
-            self._condon_shortley = True
-        elif condon_shortley == 'auto' and basis_type == 'real':
-            self._condon_shortley = False
+        if not isinstance(condon_shortley, bool):
+            raise ValueError("Condon_shortley has to be a bool.")
+        self._condon_shortley = condon_shortley
 
         Signal.__init__(self, data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
