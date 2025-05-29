@@ -312,8 +312,13 @@ def test_gaussian_pyfar():
     with raises(ValueError):
         samplings.gaussian()
 
+    # n_points must be a positive natural number
     with raises(ValueError, match='positive natural number'):
         samplings.gaussian(n_points=(2,2))
+
+    # n_points must be a positive natural number
+    with raises(ValueError, match='positive natural number'):
+        samplings.gaussian(n_points=3.2)
 
     # test with single number of points
     c = samplings.gaussian(5)
