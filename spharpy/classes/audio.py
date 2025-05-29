@@ -38,7 +38,7 @@ class SphericalHarmonicSignal(Signal):
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
-    condon_shortley : bool or str, optional
+    condon_shortley : bool
         Flag to indicate if the Condon-Shortley phase term is included
         (``True``) or not (``False``).
     n_samples : int, optional
