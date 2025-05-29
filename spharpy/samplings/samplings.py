@@ -491,7 +491,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
         weights = None
         quadrature = False
     else:
-        q = 2*np.arange(0, n_max + 1) + 1
+        q = 2 * np.arange(0, n_max + 1) + 1
         weights_theta = np.sin(theta_angles) * (
             1/q @ np.sin(q[np.newaxis].T @ theta_angles[np.newaxis]))
 
