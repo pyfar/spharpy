@@ -2,7 +2,14 @@
 History
 =======
 
-0.6.0 (2024-03-20)
+0.6.2 (2025-03-16)
+------------------
+- Added sampling for the eigenmike em64 (PR #84)
+- Updated requirements to pyfar <v0.8.0
+- Minor numpy deprecation updates (PR #88,107)
+- Updated to toml based definition, as well as updates to docs (PR #105)
+
+0.6.1 (2024-03-20)
 ------------------
 - Update of the documentation theme and adaption of the new example gallery, no changes to the code base.
 
@@ -80,18 +87,4 @@ The next release will be version 1.0.0 which will depend on pyfar >= 0.6.0 and r
 0.1.2 (2018-09-19)
 ------------------
 
-* Added Geocentric to Cartesian coordinate transform
-
-
-0.1.1 (2018-06-20)
-------------------
-
-* Added Coordinate class object
-* New plot functions
-* Bugfixes
-
-
-0.1.0 (2018-02-18)
-------------------
-
-* First release
+* First release on PyPI.
