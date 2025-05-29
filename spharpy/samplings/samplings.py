@@ -682,7 +682,10 @@ def eigenmike_em64():
         1.009, 0.9932, 1.0024, 1.0324, 1.0029, 0.954, 1.0024, 1.0324, 1.0151,
         0.954, 1.0079, 1.0024, 1.0079, 1.0268, 1.012, 0.9463, 1.009, 1.0253,
         0.9932,
-    ]) / 64*4*np.pi
+    ])
+    # weights from the Eigenmike em64 user manual are not sufficiently
+    # precise, so we need to re-normalize here
+    weights = weights / np.sum(weights) * 4 * np.pi
 
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi, theta, rad, n_max=6)
