@@ -413,7 +413,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
     For detailed information, see [#]_, Chapter 3.2. This is a quadrature
     sampling with the sum of the sampling weights in `sampling.weights`
-    being :math:`4\pi` if the number of rings is even and there number of
+    being :math:`4\pi` if the number of rings is even and the number of
     points in azimuth and elevation are equal. This condition is always
     fulfilled if the number of points is chosen through ``n_max``.
     This sampling does not contain points at the North and South Pole and is
