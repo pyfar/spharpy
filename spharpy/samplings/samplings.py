@@ -684,8 +684,8 @@ def eigenmike_em64():
         0.9932,
     ]) / 64*4*np.pi
 
-    sampling = SamplingSphere.from_spherical(
-        rad, theta, phi, n_max=6)
+    sampling = spharpy.SamplingSphere.from_spherical_colatitude(
+        phi, theta, rad, n_max=6)
     sampling.weights = weights
 
     return sampling
