@@ -555,14 +555,15 @@ def gaussian(n_points=None, n_max=None, radius=1.):
         raise ValueError(
             "Either the n_points or n_max needs to be specified.")
 
-    if (
-        n_points is not None and
-        (type(n_points) is not int or (np.asarray(n_points).size > 1))
-    ):
-        raise ValueError(
-            "The number of points needs to be a positive natural number. ",
-            f"Instead it is{n_points}",
-        )
+    elif (n_points is not None) and (n_max is None):
+        if (
+            not isinstance(n_points, (int, np.integer)) or
+            (np.asarray(n_points).size > 1)
+        ):
+            raise ValueError(
+                "The number of points needs to be a positive natural number. ",
+                f"Instead it is {n_points}",
+            )
 
     # get number of points from required spherical harmonic order
     # ([1], chapter 3.3)
