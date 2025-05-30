@@ -629,6 +629,71 @@ def eigenmike_em32():
     return spharpy.SamplingSphere.from_spherical_colatitude(phi, theta, rad)
 
 
+def eigenmike_em64():
+    """Microphone positions of the Eigenmike em64 by mhacoustics.
+
+    according to
+    the Eigenmuke user manual on the homepage [#]_.
+
+    References
+    ----------
+    .. [#]  Eigenmike em64 User Manual, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
+
+    Returns
+    -------
+    sampling : SamplingSphere
+        SamplingSphere object containing all sampling points
+
+    """  # noqa: E501
+
+    rad = np.ones(64)*0.042
+
+    theta = np.deg2rad(np.array([
+        16.7656, 21.9677, 42.3941, 13.2817, 22.6728, 52.6925, 37.806, 43.3944,
+        43.9386, 70.3132, 33.2231, 60.0257, 56.4763, 67.4936, 93.2735, 48.423,
+        78.0793, 62.0685, 38.7171, 63.8004, 70.1946, 96.246, 81.0992, 106.094,
+        67.7533, 91.7061, 39.9985, 68.7726, 60.8869, 82.2833, 63.0247, 89.794,
+        137.5166, 139.7604, 135.2133, 160.3628, 162.577, 142.0685, 161.1987,
+        162.577, 115.536, 86.2594, 116.0164, 95.3313, 90.0637, 111.4549,
+        85.8671, 130.8398, 102.5775, 142.6375, 117.032, 117.5631, 115.8884,
+        89.69, 118.4478, 93.9338, 106.3875, 81.0511, 135.9764, 142.6771,
+        120.6556, 133.8834, 116.3591, 107.464,
+    ]))
+
+    phi = np.deg2rad(np.array([
+        197.4561, 115.734, 81.911, 313.3592, 43.1785, 46.7324, 335.9958,
+        14.5398, 204.4547, 206.542, 247.3219, 233.817, 264.5437, 99.6669,
+        104.6842, 120.9227, 126.513, 148.2368, 162.6381, 178.5498, 21.2715,
+        25.7834, 47.8607, 55.9075, 71.4285, 78.4921, 293.221, 290.5683,
+        318.1354, 334.0042, 352.0227, 0, 174.0335, 212.7205, 251.9179,
+        150.6471, 240.8266, 293.0625, 331.0098, 60.8266, 226.9135, 233.9255,
+        193.6382, 209.6696, 183.169, 163.7105, 156.9524, 139.4318, 135.9729,
+        102.3273, 112.5511, 83.1464, 307.7078, 309.1392, 278.2519, 282.9735,
+        253.147, 260.0688, 59.7394, 14.2241, 32.4901, 334.0753, 2.0842,
+        335.0677,
+    ]))
+
+    weights = np.array([
+        0.954, 0.9738, 1.0029, 1.0426, 1.0426, 1.0024, 0.9738, 0.954, 1.009,
+        0.9932, 1.0024, 1.0324, 0.954, 1.0024, 1.0079, 1.0268, 1.0151, 0.9463,
+        1.012, 1.0253, 1.009, 0.9932, 1.0324, 1.0151, 0.954, 1.0079, 1.0029,
+        1.0024, 1.0268, 0.9463, 1.012, 1.0253, 0.954, 0.9738, 1.0029, 1.0426,
+        1.0426, 1.0024, 0.954, 0.9738, 1.0268, 1.0151, 1.012, 0.9463, 1.0253,
+        1.009, 0.9932, 1.0024, 1.0324, 1.0029, 0.954, 1.0024, 1.0324, 1.0151,
+        0.954, 1.0079, 1.0024, 1.0079, 1.0268, 1.012, 0.9463, 1.009, 1.0253,
+        0.9932,
+    ])
+    # weights from the Eigenmike em64 user manual are not sufficiently
+    # precise, so we need to re-normalize here
+    weights = weights / np.sum(weights) * 4 * np.pi
+
+    sampling = spharpy.SamplingSphere.from_spherical_colatitude(
+        phi, theta, rad, n_max=6)
+    sampling.weights = weights
+
+    return sampling
+
+
 def icosahedron_ke4():
     """Microphone positions of IHTA's KE4 spherical microphone array.
     The microphone marked as "1" defines the positive x-axis.

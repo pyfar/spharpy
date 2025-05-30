@@ -393,3 +393,10 @@ def test_fliege():
     with raises(ValueError):
         c = samplings.fliege(30)
 
+
+def test_em64():
+    sampling = samplings.eigenmike_em64()
+    assert isinstance(sampling, SamplingSphere)
+
+    npt.assert_allclose(
+        np.sum(sampling.weights), 4*np.pi, atol=1e-6, rtol=1e-6)
