@@ -138,14 +138,16 @@ class SphericalHarmonicSignal(Signal):
     @property
     def normalization(self):
         """
-        Get or set the normalization of the spherical harmonic coefficients.
+        Get or set and apply the normalization of the spherical harmonic
+        coefficients.
         """
         return self._normalization
 
     @normalization.setter
     def normalization(self, value):
         """
-        Get or set the normalization of the spherical harmonic coefficients.
+        Get or set and apply the normalization of the spherical harmonic
+        coefficients.
         """
         if self.normalization is not value:
             self._data = renormalize(self._data, self.channel_convention,
@@ -160,7 +162,7 @@ class SphericalHarmonicSignal(Signal):
     @property
     def channel_convention(self):
         """
-        Get or set the channel convention of the spherical harmonic
+        Get or set and apply the channel convention of the spherical harmonic
         coefficients.
         """
         return self._channel_convention
@@ -168,7 +170,7 @@ class SphericalHarmonicSignal(Signal):
     @channel_convention.setter
     def channel_convention(self, value):
         """
-        Get or set  set the channel convention of the spherical harmonic
+        Get or set and apply the channel convention of the spherical harmonic
         coefficients.
         """
         if self.channel_convention is not value:
