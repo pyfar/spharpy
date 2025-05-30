@@ -10,7 +10,7 @@ from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
 
 
-def test_cube_equidistant():
+def test_cube_equidistant_int():
     n_points = 3
     coords = samplings.cube_equidistant(n_points)
     x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3)
@@ -19,14 +19,11 @@ def test_cube_equidistant():
     np.testing.assert_allclose(x, coords.x)
     np.testing.assert_allclose(y, coords.y)
     np.testing.assert_allclose(z, coords.z)
+    assert isinstance(coords, Coordinates)
+    assert coords.csize == 3**3
 
 
-def test_cube_equidistant_pyfar():
-    # test with int
-    c = samplings.cube_equidistant(3)
-    assert isinstance(c, Coordinates)
-    assert c.csize == 3**3
-
+def test_cube_equidistant_tuple():
     # test with tuple
     c = samplings.cube_equidistant((3, 2, 4))
     assert c.csize == 3*2*4
@@ -183,12 +180,6 @@ def test_sph_icosahedron():
 
 
 def test_equiangular():
-    n_max = 1
-    sampling = samplings.equiangular(n_max=n_max)
-    assert isinstance(sampling, SamplingSphere)
-
-
-def test_equiangular_pyfar():
     # test without parameters
     with raises(ValueError):
         samplings.equiangular()
@@ -307,7 +298,7 @@ def test_gaussian_orthogonality(basis_func):
     )
 
 
-def test_gaussian_pyfar():
+def test_gaussian():
     # test without parameters
     with raises(ValueError):
         samplings.gaussian()
@@ -322,7 +313,7 @@ def test_gaussian_pyfar():
 
     # test with single number of points
     c = samplings.gaussian(5)
-    isinstance(c, Coordinates)
+    isinstance(c, SamplingSphere)
     assert c.csize == 5*(5*2)
     npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
