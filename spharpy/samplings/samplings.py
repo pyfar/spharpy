@@ -166,8 +166,8 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     return sampling
 
 
-def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
-                       radius=1.):
+def t_design(degree=None, n_max=None, criterion='const_energy',
+             radius=1.):
     """
     Return spherical t-design sampling grid.
 
@@ -233,7 +233,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.spherical_t_design(n_max=3)
+        >>> coords = sp.samplings.t_design(n_max=3)
         >>> sp.plot.scatter(coords)
 
     """
