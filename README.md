@@ -24,7 +24,7 @@ Use pip to install spharpy
 
     pip install spharpy
 
-(Requires Python 3.9 or higher)
+(Requires Python 3.10 or higher)
 
 Audio file reading/writing is supported through [SoundFile](https://python-soundfile.readthedocs.io), which is based on
 [libsndfile](http://www.mega-nerd.com/libsndfile/). On Windows and OS X, it will be installed automatically.

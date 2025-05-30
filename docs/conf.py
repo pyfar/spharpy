@@ -51,7 +51,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'spharpy'
-copyright = "2025, The pyfar developers"
+copyright = "2020 - 2023, Marco Berzborn; 2023, The pyfar developers"
 author = "The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
