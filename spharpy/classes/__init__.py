@@ -1,4 +1,4 @@
-from .ambisonics import (
+from .audio import (
     SphericalHarmonicSignal,
 )
 

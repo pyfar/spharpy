@@ -14,7 +14,8 @@ from .samplings import (
     great_circle,
     lebedev,
     fliege,
-    )
+    eigenmike_em64,
+)
 
 from .helpers import (
     spherical_voronoi,
@@ -43,4 +44,5 @@ __all__ = [
     'great_circle',
     'lebedev',
     'fliege',
+    'eigenmike_em64',
 ]

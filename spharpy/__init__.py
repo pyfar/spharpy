@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
+
+"""Top-level package for spharpy."""
+
 __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
-__version__ = '0.6.1'
+__version__ = '0.6.2'
 
 from .samplings.coordinates import SamplingSphere
+from .classes.audio import SphericalHarmonicSignal
 from . import spherical
 from . import samplings
 from . import plot
@@ -15,6 +20,7 @@ from . import sht
 
 
 __all__ = [
+    'SphericalHarmonicSignal',
     'spherical',
     'samplings',
     'plot',
