@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'spharpy'
-copyright = "2025, The pyfar developers"
+copyright = "2020 - 2023, Marco Berzborn; 2023, The pyfar developers"
 author = "The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
@@ -185,7 +185,7 @@ with open("_static/header.rst", "rt") as fin:
         # add project to the list of projects if not in header
         if not contains_project:
             fout.write(f'   {project} <{project}>\n')
-        
+
         # count the number of gallery headings
         count_gallery_headings = np.sum(
             ['https://pyfar-gallery.readthedocs.io' in line for line in lines])
