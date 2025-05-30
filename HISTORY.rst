@@ -2,7 +2,14 @@
 History
 =======
 
-0.6.0 (2024-03-20)
+0.6.2 (2025-03-16)
+------------------
+- Added sampling for the eigenmike em64 (PR #84)
+- Updated requirements to pyfar <v0.8.0
+- Minor numpy deprecation updates (PR #88,107)
+- Updated to toml based definition, as well as updates to docs (PR #105)
+
+0.6.1 (2024-03-20)
 ------------------
 - Update of the documentation theme and adaption of the new example gallery, no changes to the code base.
 
