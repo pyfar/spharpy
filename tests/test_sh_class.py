@@ -15,7 +15,7 @@ def test_sphharm_init():
     assert sph_harm.basis_type == 'real'
     assert sph_harm.normalization == 'n3d'
     assert sph_harm.channel_convention == 'acn'
-    assert sph_harm.inverse_method == 'auto'
+    assert sph_harm.inverse_method == 'pseudo_inverse'
     assert sph_harm.condon_shortley == 'auto'
 
 def test_sphharm_init_invalid_coordinates():
@@ -132,6 +132,6 @@ def test_setter_inverse_method():
     assert sph_harm.inverse_method == "quadrature"
 
     with pytest.raises(ValueError,
-                       match="Invalid inverse method. Allowed values are 'inverse', "
-                             "'quadrature', or 'auto'."):
+                       match="Invalid inverse method. Allowed values are 'inverse' or "
+                             "'quadrature'"):
         sph_harm.inverse_method = "invalid"  # Invalid value
