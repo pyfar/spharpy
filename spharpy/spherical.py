@@ -1125,12 +1125,13 @@ class SphericalHarmonics:
     r"""
     Compute spherical harmonic basis matrices, their inverses, and gradients.
     The spherical harmonic Ynm is given by:
+
     .. math::
         Y_{nm} = N_{nm} P_{nm}(cos(\theta)) T_{nm}(\phi)
 
     where:
     
-    .. math::
+
     - :math:`n` is the degree
     - :math:`m` is the order
     - :math:`P_{nm}` is the associated Legendre function
@@ -1180,13 +1181,13 @@ class SphericalHarmonics:
 
     The class supports the following conventions:
 
-    - normalization: Defines the normalization convention.
-     It can be 'n3d', 'maxN', or 'sn3d'.
-        - ``'n3d'``: Uses the 3D normalization
+    - normalization: Defines the normalization convention:
+
+      - ``'n3d'``: Uses the 3D normalization
         (also known as Schmidt semi-normalized).
-        - ``'maxN'``: Uses the maximum norm
+      - ``'maxN'``: Uses the maximum norm
         (also known as fully normalized).
-        - ``'sn3d'``: Uses the SN3D normalization
+      - ``'sn3d'``: Uses the SN3D normalization
         (also known as Schmidt normalized).
 
     - channel_convention: Defines the channel ordering convention.
@@ -1197,7 +1198,7 @@ class SphericalHarmonics:
 
     - inverse_method: Defines the type of inverse transform.
 
-            - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
+        - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
          for the inverse transform.
         - ``'quadrature'``: Uses quadrature for the inverse transform.
         - ``None``: No inverse transform is applied and basis is returned.
@@ -1238,7 +1239,7 @@ class SphericalHarmonics:
         basis_type="real",
         normalization="n3d",
         channel_convention="acn",
-        inverse_method="auto",
+        inverse_method="pseudo_inverse",
         condon_shortley='auto',
     ):
         # initialize private attributes
@@ -1284,7 +1285,7 @@ class SphericalHarmonics:
 
     @n_max.setter
     def n_max(self, value):
-        """Set the spherical harmonic order."""
+        """Get or set the spherical harmonic order."""
         if value < 0:
             raise ValueError("n_max must be a positive integer")
         if value % 1 != 0:
@@ -1301,12 +1302,12 @@ class SphericalHarmonics:
 
     @property
     def coordinates(self):
-        """Get the coordinates object."""
+        """Get or set the coordinates object."""
         return self._coordinates
 
     @coordinates.setter
     def coordinates(self, value):
-        """Set the coordinates object."""
+        """Get or set the coordinates object."""
         if not isinstance(value, pf.Coordinates):
             raise TypeError("coordinates must be a pyfar.Coordinates "
                             "object or spharpy.SamplingSphere object")
@@ -1325,9 +1326,7 @@ class SphericalHarmonics:
 
     @basis_type.setter
     def basis_type(self, value):
-        """
-        Set the type (real or complex) of spherical harmonic basis.
-        """
+        """Get or set the type of spherical harmonic basis."""
         if value not in ["complex", "real"]:
             raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
@@ -1342,18 +1341,14 @@ class SphericalHarmonics:
 
     @inverse_method.setter
     def inverse_method(self, value):
-        """Set the inverse transform type."""
-        allowed = ["pseudo_inverse", "quadrature", "auto"]
+        """Get or set the inverse transform type."""
+        allowed = ["pseudo_inverse", "quadrature"]
         if value not in allowed:
-            raise ValueError("Invalid inverse method. Allowed values are 'inverse', "
-                             "'quadrature', or 'auto'.")
+            raise ValueError("Invalid inverse method. Allowed values are 'inverse' or "
+                             "'quadrature'")
         # If using simple pf.Coordinates and not SamplingSphere, 'auto' is not allowed
-        if not isinstance(self.coordinates, SamplingSphere) and value == "auto":
-            raise ValueError("inverse_method='auto' is not allowed without SamplingSphere coordinates. " \
-            "Please specify 'pseudo_inverse' or 'quadrature'.")
-        # If using quadrature, weights must be set
-        if value == "quadrature" and self.coordinates.weights is None:
-            raise ValueError("Weights must be set for quadrature inverse method")
+        if not isinstance(self.coordinates, SamplingSphere) and value == "quadrature":
+            raise ValueError("'quadrature' requires coordinates in a SamplingSphere object")
         if value != self._inverse_method:
             self._reset_compute_attributes()
             self._inverse_method = value
@@ -1365,7 +1360,7 @@ class SphericalHarmonics:
 
     @channel_convention.setter
     def channel_convention(self, value):
-        """Set the channel order convention."""
+        """Get or set the channel order convention."""
         if value not in ["acn", "fuma"]:
             raise ValueError("Invalid channel convention, "
                              "currently only 'acn' "
@@ -1385,7 +1380,7 @@ class SphericalHarmonics:
 
     @normalization.setter
     def normalization(self, value):
-        """Set the normalization convention."""
+        """Get or set the normalization convention."""
         if value not in ["n3d", "maxN", "sn3d"]:
             raise ValueError(
                 "Invalid normalization, "
@@ -1401,23 +1396,21 @@ class SphericalHarmonics:
 
     @property
     def basis(self):
-        """Get or set the spherical harmonic basis matrix."""
+        """Get the spherical harmonic basis matrix."""
         if self._basis is None:
             self._compute_basis()
         return self._basis
 
     @property
     def basis_gradient_theta(self):
-        """Get the gradient of the basis matrix with
-        respect to theta."""
+        """Get the gradient of the basis matrix with respect to theta."""
         if self._basis_gradient_theta is None:
             self._compute_basis_gradient()
         return self._basis_gradient_theta
 
     @property
     def basis_gradient_phi(self):
-        """Get or set the gradient of the basis
-        matrix with respect to phi."""
+        """Get the gradient of the basis matrix with respect to phi."""  
         if self._basis_gradient_phi is None:
             self._compute_basis_gradient()
         return self._basis_gradient_phi
@@ -1484,14 +1477,9 @@ class SphericalHarmonics:
         if self.inverse_method == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
         elif self.inverse_method == "quadrature":
+            self.coordinates.quadrature = True
             self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis), 
                                         self.coordinates.weights)
-        else:
-            raise ValueError(
-                "Invalid inverse transform method. "
-                "Allowed values are 'pseudo_inverse', 'quadrature', or 'auto'."
-            )
-
     def _reset_compute_attributes(self):
         """Reset the computed attributes for the SphericalHarmonics class in
         case of changes in the parameters."""
