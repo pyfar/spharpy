@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.testing as npt
 import pytest
+import pyfar as pf
 
 import spharpy
 
@@ -36,7 +37,7 @@ def test_re_max():
     g_nm_norm = spharpy.beamforming.rE_max_weights(N, normalize=True)
 
     Y = spharpy.spherical.spherical_harmonic_basis_real(
-        N, spharpy.samplings.Coordinates(1, 0, 0))
+        N, pf.Coordinates(1, 0, 0))
 
     npt.assert_allclose(Y @ np.diag(g_nm_norm) @ Y.T, 1)
 
@@ -47,7 +48,7 @@ def test_max_front_back():
         N, normalize=True)
 
     Y = spharpy.spherical.spherical_harmonic_basis_real(
-        N, spharpy.samplings.Coordinates(1, 0, 0))
+        N, pf.Coordinates(1, 0, 0))
 
     npt.assert_allclose(Y @ np.diag(f_nm_norm) @ Y.T, 1)
 

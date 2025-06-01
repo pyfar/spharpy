@@ -20,7 +20,7 @@ sphinx:
 formats:
   - pdf
 
-# Optionally set the version of Python and requirements required to build your docs
+# use pip to install dependencies
 python:
   install:
     - method: pip

@@ -19,4 +19,4 @@ def test_interior_points_chardon():
 
     truth = np.array([[0, 0, 0]], dtype=float)
 
-    np.testing.assert_allclose(int_points.cartesian.T, truth, atol=1e-7)
+    np.testing.assert_allclose(int_points.cartesian, truth, atol=1e-7)

@@ -8,21 +8,19 @@ from .samplings import (
     equiangular,
     gaussian,
     eigenmike_em32,
-    equalarea,
+    equal_area,
     spiral_points,
+    equal_angle,
+    great_circle,
+    lebedev,
+    fliege,
     eigenmike_em64,
 )
 
 from .helpers import (
-    sph2cart,
-    cart2sph,
-    cart2latlon,
-    latlon2cart,
     spherical_voronoi,
     calculate_sampling_weights
 )
-
-from .coordinates import Coordinates, SamplingSphere
 
 from .interior import interior_stabilization_points
 
@@ -37,16 +35,14 @@ __all__ = [
     'equiangular',
     'gaussian',
     'eigenmike_em32',
-    'equalarea',
+    'equal_area',
     'spiral_points',
-    'sph2cart',
-    'cart2sph',
-    'cart2latlon',
-    'latlon2cart',
     'spherical_voronoi',
     'calculate_sampling_weights',
-    'Coordinates',
-    'SamplingSphere',
     'interior_stabilization_points',
+    'equal_angle',
+    'great_circle',
+    'lebedev',
+    'fliege',
     'eigenmike_em64',
 ]

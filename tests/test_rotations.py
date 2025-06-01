@@ -3,10 +3,10 @@
 import numpy as np
 import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
-from spharpy.samplings import Coordinates
 import spharpy
 from spharpy.transforms import RotationSH
 import pytest
+from pyfar import Coordinates
 
 
 def test_rotation_matrix_z_axis_complex():

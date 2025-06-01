@@ -1,7 +1,7 @@
 import pytest
-from spharpy.samplings import Coordinates
 import pyfar as pf
 import numpy as np
+from spharpy import SamplingSphere
 
 
 @pytest.fixture
@@ -17,8 +17,8 @@ def make_coordinates():
                     phi, theta, rad, domain='sph', convention='top_colat'
                 )
             elif implementation == 'spharpy':
-                return Coordinates.from_spherical(rad, theta, phi)
-
+                return SamplingSphere.from_spherical_colatitude(
+                    phi, theta, rad)
     yield Factory
 
 
@@ -49,3 +49,16 @@ def icosahedron():
     rad = np.ones(20)
 
     return rad, theta, phi
+
+
+@pytest.fixture
+def download_sampling():
+    def download_sampling(kind, degree):
+        if kind in ['extremal', 'hyperinterpolation']:
+            from spharpy.samplings.samplings import _sph_extremal_load_data
+            return _sph_extremal_load_data(degree)
+        elif kind == 't-design':
+            from spharpy.samplings.samplings import _sph_t_design_load_data
+            return _sph_t_design_load_data(degree)
+
+    return download_sampling

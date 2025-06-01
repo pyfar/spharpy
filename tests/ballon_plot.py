@@ -10,7 +10,7 @@ sampling = spharpy.samplings.equalarea(20, condition_num=np.inf)
 Y = spharpy.spherical.spherical_harmonic_basis_real(15, sampling)
 
 # plt.figure()
-# spharpy.plot.contour_map(sampling, (Y[:, spharpy.spherical.nm2acn(4, 2)]), cmap=cmap.Spectral_r)
+# spharpy.plot.contour_map(sampling, (Y[:, spharpy.spherical.nm_to_acn(4, 2)]), cmap=cmap.Spectral_r)
 #
 # plt.figure()
 # spharpy.plot.contour_map(sampling, (Y[:, 4]), cmap=cmap.RdBu_r, projection=ccrs.Mollweide())

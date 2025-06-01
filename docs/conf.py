@@ -12,8 +12,7 @@ import urllib3
 import shutil
 import numpy as np
 sys.path.insert(0, os.path.abspath('..'))
-
-import spharpy  # noqa
+import spharpy  # noqa: E402
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -36,10 +35,6 @@ extensions = [
 # show tocs for classes and functions of modules using the autodocsumm
 # package
 autodoc_default_options = {'autosummary': True}
-
-# show the code of plots that follows the command .. plot:: based on the
-# package matplotlib.sphinxext.plot_directive
-plot_include_source = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -84,11 +79,18 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = False
 
+# If true, '()' will be appended to :func: etc. cross-reference text.
+add_function_parentheses = False
+
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 # default language for highlighting in source code
 highlight_language = "python3"
+
+# show the code of plots that follows the command .. plot:: based on the
+# package matplotlib.sphinxext.plot_directive
+plot_include_source = True
 
 # intersphinx mapping
 intersphinx_mapping = {
