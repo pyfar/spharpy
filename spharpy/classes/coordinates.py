@@ -1,12 +1,11 @@
 """
 The SamplingSphere class inherits from the :py:class:`pyfar.Coordinates` class
-and designed to represent a set of points on a sphere.
+and is designed to represent a set of points on a sphere.
 
-Therefore, all points must have the same radius within a absolute tolerance,
-defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance` and if the
-:py:attr:`~spharpy.SamplingSphere.weights` are not None, the sum must
-equal to the integral over the unit sphere,
-which is :math:`4\pi`.
+Therefore, all points must have the same radius within an absolute tolerance,
+defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance`. If the
+:py:attr:`~spharpy.SamplingSphere.weights` are not None, their sum must
+equal the integral over the unit sphere, which is :math:`4\pi`.
 
 It also adds two additional properties:
 
