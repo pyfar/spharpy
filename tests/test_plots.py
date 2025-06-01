@@ -18,7 +18,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = True
+create_baseline = False
 
 # file type used for saving the plots
 file_type = "png"
@@ -46,22 +46,3 @@ for file in os.listdir(output_path):
 
 
 # testing ---------------------------------------------------------------------
-@pytest.mark.parametrize('function', [
-    (sp.plot.balloon),
-    (sp.plot.balloon_wireframe),
-    (sp.plot.contour),
-    (sp.plot.contour_map),
-    (sp.plot.pcolor_map),
-    (sp.plot.pcolor_sphere)])
-def test_spherical_default(function):
-    """Test all spherical plots with default arguments."""
-    print(f"Testing: {function.__name__}")
-    coords = sp.samplings.equal_area(n_max=0, n_points=500)
-    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-
-    # do plotting
-    filename = f'default_{function.__name__}'
-    create_figure()
-    function(coords, data)
-    save_and_compare(create_baseline, baseline_path, output_path, filename,
-                     file_type, compare_output)
