@@ -375,7 +375,7 @@ def legendre_function(n, m, z, cs_phase=True):
     z : ndarray, double
         The argument as an array
     cs_phase : bool, optional
-        Whether to use include the Condon-Shotley phase term (-1)^m or not
+        Whether to include the Condon-Shotley phase term (-1)^m or not
 
     Returns
     -------
@@ -392,16 +392,15 @@ def legendre_function(n, m, z, cs_phase=True):
     """
     z = np.atleast_1d(z)
 
-    if np.abs(m) > n:
-        legendre = np.zeros(z.shape)
-    else:
-        legendre = np.zeros(z.shape)
-        for idx, arg in zip(count(), z):
-            leg, _ = _spspecial.lpmn(m, n, arg)
-            if np.mod(m, 2) != 0 and not cs_phase:
-                legendre[idx] = -leg[-1, -1]
-            else:
-                legendre[idx] = leg[-1, -1]
+    # squeeze required because the legendre function introduced in scipy 1.15
+    # returns a 2D array, whereas the previous function `lpmn` returned a 1D
+    # array
+    legendre = np.squeeze(_spspecial.assoc_legendre_p(n, m, z))
+
+    # remove Condon-Shortley phase
+    if not cs_phase and m % 2:
+        legendre *= -1
+
     return legendre
 
 
