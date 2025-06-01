@@ -376,6 +376,8 @@ def balloon_wireframe(
                            vmax=vmax)
 
     cnorm = plt.Normalize(vmin, vmax)
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
     cmap_colors = cmap(cnorm(cdata))
 
     cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
