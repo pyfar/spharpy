@@ -46,3 +46,31 @@ for file in os.listdir(output_path):
 
 
 # testing ---------------------------------------------------------------------
+
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.contour),
+    (sp.plot.contour_map),
+    (sp.plot.pcolor_map),
+    (sp.plot.pcolor_sphere)])
+@pytest.mark.parametrize('cmap', [plt.get_cmap('plasma'), 'plasma', None])
+def test_spherical_cmap(function, cmap):
+    """Test all spherical plots with custom arguments."""
+    print(f"Testing: {function.__name__}")
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
+    # do plotting
+    if isinstance(cmap, mpl.colors.Colormap):
+        # if a colormap object is passed, use its name for the filename
+        cmap_str = 'ColormapObject'
+    else:
+        # otherwise use the string representation of the colormap
+        cmap_str = str(cmap)
+    filename = f'cmap_{function.__name__}_{cmap_str}'
+    create_figure()
+    function(coords, data, cmap=cmap)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+    
