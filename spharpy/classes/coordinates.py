@@ -1,3 +1,27 @@
+"""
+The SamplingSphere class inherits from the :py:class:`pyfar.Coordinates` class
+and designed to represent a set of points on a sphere.
+
+Therefore, all points must have the same radius within a absolute tolerance,
+defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance` and if the
+:py:attr:`~spharpy.SamplingSphere.weights` are not None, the sum must
+equal to the integral over the unit sphere,
+which is :math:`4\pi`.
+
+It also adds two additional properties:
+
+- :py:attr:`~spharpy.SamplingSphere.n_max`: the maximum spherical harmonic
+  order of the sampling grid.
+- :py:attr:`~spharpy.SamplingSphere.quadrature`: a flag that indicates if 
+  the points belong to a quadrature, which requires that the
+  :py:attr:`~spharpy.SamplingSphere.weights` are not None.
+
+Note that the :py:mod:`spharpy.samplings` module provides a set of
+predefined spherical sampling grids, which can be used to create a
+:py:class:`spharpy.SamplingSphere` object.
+
+"""
+
 import numpy as np
 from pyfar.classes.coordinates import sph2cart, cyl2cart
 import pyfar as pf
