@@ -1,6 +1,9 @@
-"""
-The SamplingSphere class inherits from the :py:class:`pyfar.Coordinates` class
-and is designed to represent a set of points on a sphere.
+r"""
+The SamplingSphere class inherits from the :py:mod:`pyfar.classes.coordinates`
+class, which supports various coordinate systems and the conversion between
+them.
+:py:class:`~spharpy.SamplingSphere` is designed to represent a set of
+points on a sphere.
 
 Therefore, all points must have the same radius within an absolute tolerance,
 defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance`. If the
@@ -13,12 +16,15 @@ It also adds two additional properties:
   order of the sampling grid.
 - :py:attr:`~spharpy.SamplingSphere.quadrature`: a flag that indicates if 
   the points belong to a quadrature, which requires that the
-  :py:attr:`~spharpy.SamplingSphere.weights` are not None.
+  :py:attr:`~spharpy.SamplingSphere.weights` sum to :math:`4 \pi` and
+  the inner product of the Spherical Harmonics matrix :math:`\mathrm{Y}`
+  yields the identity matrix
+  :math:`\mathrm{Y}^\mathrm{T} \text{diag}\{w\}\mathrm{Y}=\mathrm{I}`
+  with the weights vector :math:`w`.
 
 Note that the :py:mod:`spharpy.samplings` module provides a set of
 predefined spherical sampling grids, which can be used to create a
 :py:class:`spharpy.SamplingSphere` object.
-
 """
 
 import numpy as np
