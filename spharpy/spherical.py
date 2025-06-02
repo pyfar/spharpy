@@ -478,15 +478,6 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     This implementation avoids singularities at the poles using identities
     derived in [#]_ and [#]_.
 
-
-    References
-    ----------
-    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
-            harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
-
     Parameters
     ----------
     n_max : int
@@ -513,6 +504,14 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         Gradient with regard to the co-latitude angle.
     grad_azimuth : ndarray, complex
         Gradient with regard to the azimuth angle.
+
+    References
+    ----------
+    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     Examples
     --------
