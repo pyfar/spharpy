@@ -1119,7 +1119,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     # list possible sh orders and degrees
     if n_points is None and n_max is None:
         print('Possible input values:')
-        for o, d in zip(orders, degrees):
+        for o, d in zip(orders, degrees, strict=False):
             print(f"SH order {o}, number of points {d}")
 
         return None
@@ -1286,7 +1286,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     # list possible sh orders and number of points
     if n_points is None and n_max is None:
-        for o, d in zip(orders, points):
+        for o, d in zip(orders, points, strict=False):
             print(f"SH order {o}, number of points {d}")
 
         return None

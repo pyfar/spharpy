@@ -96,7 +96,7 @@ lint.ignore = [
     "D417",
 ]
 lint.select = [
-    # "B",      # bugbear extension
+    "B",      # bugbear extension
     # "ARG",    # Remove unused function/method arguments
     "C4",     # Check for common security issues
     # "E",      # PEP8 errors
