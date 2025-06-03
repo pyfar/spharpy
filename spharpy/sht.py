@@ -59,35 +59,36 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
         condon_shortley=condon_shortley)
 
     Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
-    data_nm = np.tensordot(Y_inv, data.time, [1, axis])
+    data_nm = np.tensordot(Y_inv, signal.time, [1, axis])
 
     # ensure that number of SH channels is at -2
     data_nm = data_nm.reshape((-1, (n_max+1)**2, signal.n_samples))
 
-    return SphericalHarmonicSignal(data=data_nm,
-                                   basis_type=basis_type,
-                                   normalization=normalization,
-                                   channel_convention=channel_convention,
-                                   condon_shortley=spherical_harmonics.condon_shortley,
-                                   sampling_rate=signal.sampling_rate,
-                                   fft_norm=signal.fft_norm,
-                                   comment=signal.comment)
+    return SphericalHarmonicSignal(
+        data=data_nm,
+        basis_type=basis_type,
+        normalization=normalization,
+        channel_convention=channel_convention,
+        condon_shortley=spherical_harmonics.condon_shortley,
+        sampling_rate=signal.sampling_rate,
+        fft_norm=signal.fft_norm,
+        comment=signal.comment)
 
 
 def isht(sh_signal, coordinates):
-    """Compute the inverse spherical harmonics transform at a certain order N
+    """Compute the inverse spherical harmonics transform
 
     Parameters
     ----------
-    ambisonics_signal: Signal
-        The ambisonics signal for which the inverse spherical harmonics
-        transform is computed
+    sh_signal: Signal
+        The spherical harmonics signal for which the inverse spherical
+        harmonics transform is computed
     coordinates: :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates
                  <pyfar:classes/pyfar.coordinates>`
         Coordinates for which the inverse SH transform is computed
     """
-    # get spherical harmonics basis functions of same type as the the
-    # ambisonics signals but for the passed coordinates
+    # get spherical harmonics basis functions according to sh_signals
+    # properties
     spherical_harmonics = SphericalHarmonics(
         sh_signal.n_max,
         coordinates=coordinates,
@@ -99,6 +100,6 @@ def isht(sh_signal, coordinates):
     # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
 
-    return Signal(data, ambisonics_signal.sampling_rate,
-                  fft_norm=ambisonics_signal.fft_norm,
-                  comment=ambisonics_signal.comment)
+    return Signal(data, sh_signal.sampling_rate,
+                  fft_norm=sh_signal.fft_norm,
+                  comment=sh_signal.comment)
