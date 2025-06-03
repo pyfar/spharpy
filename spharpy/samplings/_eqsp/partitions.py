@@ -144,7 +144,7 @@ def point_set_polar(dimension, N):
 
 
 def caps(dimension, N):
-    """Partition a sphere into to nested spherical caps.
+    """Partition a sphere into two nested spherical caps.
 
     Does the following:
     1)  partitions the unit sphere S^dim into a list of spherical caps of
