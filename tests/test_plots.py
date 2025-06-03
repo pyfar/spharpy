@@ -5,11 +5,11 @@ import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
-import spharpy
-import numpy as np
-import pytest
-from spharpy import plot
-import pytest
+import spharpy  # noqa: E402
+import numpy as np  # noqa: E402
+import pytest  # noqa: E402
+from spharpy import plot  # noqa: E402
+import pytest  # noqa: E402
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])

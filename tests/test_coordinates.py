@@ -158,11 +158,11 @@ def test_quadrature_default_setter_getter():
     sampling = SamplingSphere([1, 1], 0, 0, weights=weights)
 
     # test default value and getter
-    assert sampling.quadrature == False
+    assert sampling.quadrature is False
 
     # test setter and getter
     sampling.quadrature = True
-    assert sampling.quadrature == True
+    assert sampling.quadrature is True
 
 
 def test_quadrature_setter_errors():
