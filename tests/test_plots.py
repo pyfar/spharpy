@@ -9,9 +9,6 @@ import spharpy  # noqa: E402
 import numpy as np  # noqa: E402
 import pytest  # noqa: E402
 from spharpy import plot  # noqa: E402
-import pytest  # noqa: E402
-
-
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_balloon_plot(icosahedron, make_coordinates, implementation):
     rad, theta, phi = icosahedron
