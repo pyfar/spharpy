@@ -4,10 +4,10 @@ import warnings
 from . import SphericalHarmonicSignal
 
 
-def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
-        channel_convention='acn', normalization='n3d', condon_shortley=True,
-        inverse_transform='pseudo_inverse'):
-    """Compute the spherical harmonics transform at a certain order N
+def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
+        channel_convention='acn', normalization='n3d', condon_shortley='auto',
+        inverse_method='pseudo_inverse'):
+    """Compute the spherical harmonics transform
 
     Parameters
     ----------
@@ -18,15 +18,19 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
         Coordinates on which the signal has been sampled
     n_max: integer
         Spherical harmonic order
-    sh_kind: str
+    basis_type: str
         Use real or complex valued SH bases ``'real'``, ``'complex'``
         default is ``'real'``
     axis: integer
         Axis along which the SH transform is computed
+    channel_convention: 
+    normalization:
+    condon_shortley:
+    inverse_method:
 
     Returns
     ----------
-    AmbisonicsSignal
+    SphericalHarmonicSignal
 
     References
     ----------
@@ -40,11 +44,6 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
             Canada, May 2004, p. 45-48, doi: 10.1109/ICASSP.2004.1326759.
     """
 
-    if domain is None:
-        domain = signal.domain
-
-    #  coordinates = convert_coordinates(coordinates)
-
     if not signal.cshape[axis] == coordinates.csize:
         if coordinates.csize not in signal.cshape:
             raise ValueError("Signal shape does not match "
@@ -56,31 +55,26 @@ def sht(signal, coordinates, n_max, basis_type="real", domain=None, axis=0,
     spherical_harmonics = SphericalHarmonics(
         n_max=n_max, coordinates=coordinates, basis_type=basis_type,
         channel_convention=channel_convention,
-        normalization=normalization, inverse_transform=inverse_transform,
+        normalization=normalization, inverse_method=inverse_method,
         condon_shortley=condon_shortley)
 
-    if domain == "time":
-        data = signal.time
-    elif domain == "freq":
-        data = signal.freq
-    else:
-        raise ValueError("Domain should be ``'time'`` or ``'freq'`` but "
-                         f"is {domain}.")
-
     Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
-    data_nm = np.tensordot(Y_inv, data, [1, axis])
+    data_nm = np.tensordot(Y_inv, data.time, [1, axis])
 
-    return SphericalHarmonicSignal(data=data_nm, domain=domain,
+    # ensure that number of SH channels is at -2
+    data_nm = data_nm.reshape((-1, (n_max+1)**2, signal.n_samples))
+
+    return SphericalHarmonicSignal(data=data_nm,
                                    basis_type=basis_type,
                                    normalization=normalization,
                                    channel_convention=channel_convention,
-                                   condon_shortley=condon_shortley,
+                                   condon_shortley=spherical_harmonics.condon_shortley,
                                    sampling_rate=signal.sampling_rate,
                                    fft_norm=signal.fft_norm,
                                    comment=signal.comment)
 
 
-def isht(ambisonics_signal, coordinates):
+def isht(sh_signal, coordinates):
     """Compute the inverse spherical harmonics transform at a certain order N
 
     Parameters
@@ -95,20 +89,15 @@ def isht(ambisonics_signal, coordinates):
     # get spherical harmonics basis functions of same type as the the
     # ambisonics signals but for the passed coordinates
     spherical_harmonics = SphericalHarmonics(
-        ambisonics_signal.n_max,
+        sh_signal.n_max,
         coordinates=coordinates,
-        basis_type=ambisonics_signal.basis_type,
-        channel_convention=ambisonics_signal.channel_convention,
-        normalization=ambisonics_signal.normalization,
-        condon_shortley=ambisonics_signal.condon_shortley)
-
-    if ambisonics_signal.domain == "time":
-        data_nm = ambisonics_signal.time
-    else:
-        data_nm = ambisonics_signal.freq
+        basis_type=sh_signal.basis_type,
+        channel_convention=sh_signal.channel_convention,
+        normalization=sh_signal.normalization,
+        condon_shortley=sh_signal.condon_shortley)
 
     # perform inverse transform
-    data = np.tensordot(spherical_harmonics.basis, data_nm, [1, 0])
+    data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
 
     return Signal(data, ambisonics_signal.sampling_rate,
                   fft_norm=ambisonics_signal.fft_norm,
