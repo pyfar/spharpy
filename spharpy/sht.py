@@ -23,11 +23,17 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
         default is ``'real'``
     axis: integer
         Axis along which the SH transform is computed
-    channel_convention: 
-    normalization:
-    condon_shortley:
+    channel_convention : str
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        (FuMa is only supported up to 3rd order)
+    normalization : str
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or
+        ``'sn3d'``. (maxN is only supported up to 3rd order)
+    condon_shortley : bool or str
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
     inverse_method:
-
+    
     Returns
     ----------
     SphericalHarmonicSignal
@@ -58,7 +64,7 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
         normalization=normalization, inverse_method=inverse_method,
         condon_shortley=condon_shortley)
 
-    Y_inv = spherical_harmonics.basis_inv  # [1] Eq. 3.34
+    Y_inv = spherical_harmonics.basis_inv
     data_nm = np.tensordot(Y_inv, signal.time, [1, axis])
 
     # ensure that number of SH channels is at -2
@@ -86,6 +92,10 @@ def isht(sh_signal, coordinates):
     coordinates: :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates
                  <pyfar:classes/pyfar.coordinates>`
         Coordinates for which the inverse SH transform is computed
+
+    Returns
+    ----------
+    Signal
     """
     # get spherical harmonics basis functions according to sh_signals
     # properties
