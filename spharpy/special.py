@@ -260,7 +260,6 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
 
     Parameters
     ----------
-
     n : int
         Spherical harmonic order
     m : int
@@ -272,7 +271,6 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
 
     Returns
     -------
-
     sh_diff : complex double
         Spherical harmonic derivative
 
@@ -291,7 +289,6 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     Parameters
     ----------
-
     n : int
         Spherical harmonic order
     m : int
@@ -303,7 +300,6 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     Returns
     -------
-
     sh_diff : complex double
         Spherical harmonic derivative
 
@@ -328,7 +324,6 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     Parameters
     ----------
-
     n : int
         Spherical harmonic order
     m : int
@@ -340,7 +335,6 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     Returns
     -------
-
     sh_diff : complex double
         Spherical harmonic derivative
 

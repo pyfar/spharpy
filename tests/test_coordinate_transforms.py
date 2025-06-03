@@ -1,4 +1,4 @@
-""" Tests for coordinate transforms """
+"""Tests for coordinate transforms"""
 
 import pytest
 import numpy as np

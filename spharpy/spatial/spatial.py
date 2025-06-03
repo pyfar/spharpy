@@ -39,7 +39,6 @@ def greens_function_plane_wave(
 
     Examples
     --------
-
     Plot Green's function in the x-y plane for a plane wave with a direction
     of incidence defined by the vector :math:`[x, y, z] = [2, 1, 0]`.
 
@@ -131,7 +130,6 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
 
     Parameters
     ----------
-
     source : :py:class:`pyfar.Coordinates`
         source points as Coordinates object
     receivers : :py:class:`pyfar.Coordinates`
@@ -147,7 +145,6 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
 
     Examples
     --------
-
     Plot Green's function in the x-y plane for a point source at
     :math:`[x, y, z] = [10, 15, 0]`.
 

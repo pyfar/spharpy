@@ -271,7 +271,6 @@ def normalize_beamforming_weights(weights, n_max):
 
     Examples
     --------
-
     Calculate hann window function based tapering weights for a plane wave
     decomposition beamformer and normalize.
 

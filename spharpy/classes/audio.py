@@ -70,6 +70,7 @@ class SphericalHarmonicSignal(Signal):
     .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
 
     """
+
     def __init__(
             self,
             data,

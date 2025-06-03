@@ -830,7 +830,8 @@ def modal_strength(n_max,
 
 def _modal_strength(n, kr, config):
     """Helper function for the calculation of the modal strength for
-    plane waves"""
+    plane waves
+    """
     if config == 'open':
         ms = 4*np.pi*pow(1.0j, n) * _special.spherical_bessel(n, kr)
     elif config == 'rigid':
@@ -1063,7 +1064,6 @@ def sph_identity_matrix(n_max, type='n-nm'):
 
     Examples
     --------
-
     The identity matrix can for example be used to decompress from order only
     vectors to a full order and degree representation.
 

@@ -11,7 +11,7 @@ import numpy.testing as npt
 
 
 def genfromtxt_complex(filename, delimiter=','):
-    """generate complex numpy array from csv file."""
+    """Generate complex numpy array from csv file."""
     data_str = np.genfromtxt(filename, delimiter=delimiter, dtype=str)
     mapping = np.vectorize(lambda t: complex(t.replace('i', 'j')))
     return mapping(data_str)

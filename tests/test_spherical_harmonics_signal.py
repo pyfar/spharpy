@@ -5,7 +5,7 @@ import re
 
 
 def test_spherical_harmonic_signal_init():
-    """Test init SphercalHarmonicsSignal."""
+    """Test init SphericalHarmonicsSignal."""
 
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],
@@ -20,8 +20,10 @@ def test_spherical_harmonic_signal_init():
 
 
 def test_spherical_harmonic_signal_init_condon_shortley():
-    """Test if Condon-Shortley is set properly in init
-       SphercalHarmonicsSignal."""
+    """
+    Test if Condon-Shortley is set properly in init
+    SphericalHarmonicsSignal.
+    """
 
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],

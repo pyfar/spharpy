@@ -922,6 +922,7 @@ class MidpointNormalize(colors.Normalize):
     Taken from the official matplotlib documentation at
     https://matplotlib.org/users/colormapnorms.html
     """
+
     def __init__(self, vmin=None, vmax=None, midpoint=0., clip=False):
         self.midpoint = midpoint
         colors.Normalize.__init__(self, vmin, vmax, clip)
