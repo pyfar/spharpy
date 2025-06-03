@@ -1288,6 +1288,8 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     # list possible sh orders and number of points
     if n_points is None and n_max is None:
+        if len(orders) != len(points):
+            raise ValueError("Mismatch between lengths of 'orders' and 'points'.")
         for o, d in zip(orders, points, strict=False):
             print(f"SH order {o}, number of points {d}")
 
