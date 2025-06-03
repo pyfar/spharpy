@@ -13,7 +13,7 @@ def test_sampling_sphere_init_value():
     assert isinstance(sampling, SamplingSphere)
 
 def sampling_cube():
-    """Helper function returning a cube sampling"""
+    """Helper function returning a cube sampling."""
     x = [1, -1, 0, 0, 0, 0]
     y = [0, 0, 1, -1, 0, 0]
     z = [0, 0, 0, 0, 1, -1]
@@ -102,7 +102,7 @@ def test_radius_tolerance_error():
     (None, ), ([0, 1], ), (np.array([0, 1]), ), (-.1, )
 ])
 def test_radius_tolerance_input(tolerance):
-    """Test if passing wrong values raises the expected error"""
+    """Test if passing wrong values raises the expected error."""
 
     match = 'The radius tolerance must be a number greater than zero'
     with pytest.raises(ValueError, match=match):

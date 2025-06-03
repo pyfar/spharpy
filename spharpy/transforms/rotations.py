@@ -1,5 +1,5 @@
 """
-Rotation/Translation operations for data in the spherical harmonic domains
+Rotation/Translation operations for data in the spherical harmonic domains.
 """
 
 import numpy as np
@@ -14,7 +14,7 @@ class RotationSH(Rotation):
     """
 
     def __init__(self, quat, n_max=0, *args, **kwargs):
-        """Initialize
+        """Initialize.
 
         Parameters
         ----------
@@ -233,7 +233,7 @@ class RotationSH(Rotation):
 
     @n_max.setter
     def n_max(self, value):
-        """Set the spherical harmonic order
+        """Set the spherical harmonic order.
 
         Parameters
         ----------
@@ -282,7 +282,7 @@ class RotationSH(Rotation):
         return np.squeeze(D)
 
     def apply(self, coefficients, type='real'):
-        """Apply the rotation to L sets of spherical harmonic coefficients
+        """Apply the rotation to L sets of spherical harmonic coefficients.
 
         Parameters
         ----------
@@ -307,7 +307,7 @@ class RotationSH(Rotation):
 
 
 def rotation_z_axis(n_max, angle):
-    """Rotation matrix for complex spherical harmonics around the z-axis
+    r"""Rotation matrix for complex spherical harmonics around the z-axis
     by a given angle. The rotation is performed such that positive angles
     result in a counter clockwise rotation of the data [#]_.
 
@@ -352,7 +352,7 @@ def rotation_z_axis(n_max, angle):
 
 
 def rotation_z_axis_real(n_max, angle):
-    """Rotation matrix for real-valued spherical harmonics around the z-axis
+    r"""Rotation matrix for real-valued spherical harmonics around the z-axis
     by a given angle. The rotation is performed such that positive angles
     result in a counter clockwise rotation of the data [#]_.
 
@@ -361,7 +361,7 @@ def rotation_z_axis_real(n_max, angle):
     n_max : integer
         Spherical harmonic order
     angle : number
-        Rotation angle in radians `[0, 2 \\pi]`
+        Rotation angle in radians `[0, 2 \pi]`
 
     Returns
     -------
@@ -533,7 +533,7 @@ def wigner_d_rotation_real(n_max, alpha, beta, gamma):
 
 def _sign(x):
     """
-    Returns sign of x, differs from numpy definition for x=0
+    Returns sign of x, differs from numpy definition for x=0.
     """
     if x < 0:
         sign = -1
@@ -547,7 +547,7 @@ def _Phi(m, angle):
     """
     Rotation Matrix around z-axis for real Spherical Harmonics as defined in
     Blanco et al., Evaluation of the rotation matrices in the basis of real
-    spherical harmonics, eq.(8)
+    spherical harmonics, eq.(8).
     """
     if m > 0:
         phi = np.sqrt(2)*np.cos(m*angle)

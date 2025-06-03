@@ -1,3 +1,5 @@
+"""spharpy classes."""
+
 from .audio import (
     SphericalHarmonicSignal,
 )

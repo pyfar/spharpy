@@ -1,3 +1,5 @@
+"""Interpolation module for spherical data."""
+
 from scipy import interpolate as spinterpolate
 import numpy as np
 
@@ -57,6 +59,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
     >>> interp_data = interpolator(interp_grid)
 
     """ # noqa: 501
+
     def __init__(self, sampling, data, w=None, s=1e-4, eps=1e-16):
         theta = sampling.colatitude
         phi = sampling.azimuth
@@ -84,10 +87,35 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
             theta, phi, dtheta=dtheta, dphi=dphi, grid=False)
 
     def get_coeffs(self):
+        """Get the coefficients of the spline.
+
+        Returns
+        -------
+        coeffs : ndarray, float
+            The coefficients of the spline. The shape is
+            (n_coeffs_theta, n_coeffs_phi, n_coefficients).
+            The coefficients are ordered by increasing degree and order.
+        """
         return super().get_coeffs()
 
     def get_knots(self):
+        """Get the knots of the spline.
+
+        Returns
+        -------
+        knots : tuple of ndarray, float
+            The knots of the spline. The first element is the knots in theta
+            direction and the second element is the knots in phi direction.
+        """
         return super().get_knots()
 
     def get_residual(self):
+        """Get the residual of the spline.
+
+        Returns
+        -------
+        residual : float
+            The residual of the spline, which is the sum of squared errors
+            between the data and the spline evaluation.
+        """
         return super().get_residual()
