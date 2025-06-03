@@ -104,7 +104,7 @@ intersphinx_mapping = {
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
-html_js_files = ["custom.js"]
+html_js_files = ["js/custom.js"]
 html_logo = 'resources/logos/pyfar_logos_fixed_size_spharpy.png'
 html_title = "spharpy"
 html_favicon = '_static/favicon.ico'
@@ -151,6 +151,7 @@ branch = 'main'
 link = f'https://github.com/pyfar/gallery/raw/{branch}/docs/'
 folders_in = [
     '_static/css/custom.css',
+    '_static/js/custom.js',
     '_static/favicon.ico',
     '_static/header.rst',
     'resources/logos/pyfar_logos_fixed_size_spharpy.png',
