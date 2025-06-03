@@ -580,7 +580,7 @@ def sradius_of_cap(dimension, area):
 
 
 def polar2cart(points_polar):
-    """Comnversion from the polar angles theta and phi to Cartesian coordinates.
+    """Conversion from the polar angles theta and phi to Cartesian coordinates.
 
         x = cos(phi) * sin(theta)
         y = sin(phi) * sin(theta)
