@@ -1,5 +1,5 @@
 """
-Tests for spherical harmonic basis and related functions
+Tests for spherical harmonic basis and related functions.
 """
 import spharpy.spherical as sh
 import numpy as np
@@ -177,7 +177,7 @@ def test_spherical_harmonics_real_n10_default(make_coordinates,
 def test_orthogonality(make_coordinates, implementation):
     """
     Check if the orthonormality condition of the spherical harmonics is
-    fulfilled
+    fulfilled.
     """
     n_max = 82
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
@@ -199,7 +199,7 @@ def test_orthogonality(make_coordinates, implementation):
 def test_orthogonality_real(make_coordinates, implementation):
     """
     Check if the orthonormality condition of the reavl valued spherical
-    harmonics is fulfilled
+    harmonics is fulfilled.
     """
     n_max = 82
     theta = np.array([np.pi / 2, np.pi / 2, 0, np.pi / 2], dtype='double')

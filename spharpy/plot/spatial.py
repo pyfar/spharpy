@@ -1,5 +1,5 @@
 """
-Plot functions for spatial data
+Plot functions for spatial data.
 """
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -98,7 +98,7 @@ def _triangulation_sphere(sampling, data):
     -------
     triangulation : matplotlib Triangulation
 
-    """ # noqa: 501
+    """
     x, y, z = sph2cart(
         sampling.azimuth,
         sampling.colatitude,
@@ -149,7 +149,7 @@ def interpolate_data_on_sphere(
     Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
     are used.
 
-    """ # noqa: 501
+    """
     _, lats, lons = coordinates2latlon(sampling)
 
     mask = lons > np.pi - overlap
@@ -274,7 +274,7 @@ def pcolor_sphere(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.pcolor_sphere(coords, data)
 
-    """ # noqa: 501
+    """
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
@@ -431,7 +431,6 @@ def balloon(
         phase=False,
         colorbar=True,
         ax=None,
-        *args,
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles theta and phi.
     The magnitude information is mapped onto the radius of the sphere.
@@ -547,7 +546,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         >>> coords = spharpy.samplings.gaussian(n_max=5)
         >>> spharpy.plot.voronoi_cells_sphere(coords)
 
-    """ # noqa: 501
+    """
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
@@ -920,14 +919,14 @@ class MidpointNormalize(colors.Normalize):
     """Colormap norm with a defined midpoint. Useful for normalization of
     colormaps representing deviations from a defined midpoint.
     Taken from the official matplotlib documentation at
-    https://matplotlib.org/users/colormapnorms.html
+    https://matplotlib.org/users/colormapnorms.html.
     """
 
     def __init__(self, vmin=None, vmax=None, midpoint=0., clip=False):
         self.midpoint = midpoint
         colors.Normalize.__init__(self, vmin, vmax, clip)
 
-    def __call__(self, value, clip=None):
+    def __call__(self, value, clip=None):  # noqa: ARG002
         # I'm ignoring masked values and all kinds of edge cases to make a
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
@@ -935,7 +934,7 @@ class MidpointNormalize(colors.Normalize):
 
 
 def coordinates2latlon(coords: pf.Coordinates):
-    """Transforms from Cartesian coordinates to Geocentric coordinates
+    r"""Transforms from Cartesian coordinates to Geocentric coordinates.
 
     .. math::
 

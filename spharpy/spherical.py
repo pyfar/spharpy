@@ -1,3 +1,5 @@
+"""Spherical harmonics and Ambisonics functions."""
+
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
@@ -50,7 +52,7 @@ def acn_to_nm(acn):
 
 def nm_to_acn(n, m):
     r"""
-    Calculate the linear index coefficient for a order n and degree m,
+    Calculate the linear index coefficient for a order n and degree m.
 
     The linear index corresponds to the Ambisonics Channel Convention [#]_.
 
@@ -830,7 +832,7 @@ def modal_strength(n_max,
 
 def _modal_strength(n, kr, config):
     """Helper function for the calculation of the modal strength for
-    plane waves
+    plane waves.
     """
     if config == 'open':
         ms = 4*np.pi*pow(1.0j, n) * _special.spherical_bessel(n, kr)
@@ -931,7 +933,7 @@ def radiation_from_sphere(
     distance from the sphere.
     The sign and phase conventions result in a positive pressure response for
     a positive cap velocity with the intensity vector pointing away from the
-    source. [#]_, [#]_
+    source. [#]_, [#]_.
 
     TODO: This function does not have a test yet.
 

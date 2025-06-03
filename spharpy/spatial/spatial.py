@@ -1,3 +1,4 @@
+"""Spatial functions for spherical harmonics."""
 import numpy as np
 import scipy.spatial as sspat
 

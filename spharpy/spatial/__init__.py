@@ -1,3 +1,4 @@
+"""Spatial functions for spherical harmonics."""
 from .spatial import greens_function_plane_wave, greens_function_point_source
 
 

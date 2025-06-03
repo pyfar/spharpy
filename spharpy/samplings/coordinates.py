@@ -1,10 +1,12 @@
+"""SamplingSphere class for spherical samplings."""
+
 import numpy as np
 from pyfar.classes.coordinates import sph2cart, cyl2cart
 import pyfar as pf
 
 
 class SamplingSphere(pf.Coordinates):
-    """Class for samplings on a sphere"""
+    """Class for samplings on a sphere."""
 
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
@@ -118,7 +120,7 @@ class SamplingSphere(pf.Coordinates):
             cls, azimuth, elevation, radius, n_max=None,
             weights: np.array = None, quadrature: bool = False,
             comment: str = "", radius_tolerance: float = 1e-6):
-        """Create a Coordinates class object from a set of points on a sphere.
+        r"""Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
@@ -423,7 +425,7 @@ class SamplingSphere(pf.Coordinates):
                 raise e
 
     def _check_points(self, x, y, z):
-        """Check input data before setting coordinates"""
+        """Check input data before setting coordinates."""
 
         # convert to numpy arrays of the same shape
         x, y, z = super()._check_points(x, y, z)

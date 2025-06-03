@@ -24,7 +24,7 @@ def make_coordinates():
 
 @pytest.fixture
 def icosahedron():
-    """Return the coordinate points of an icosahedron in spherical coordinates
+    """Return the coordinate points of an icosahedron in spherical coordinates.
 
     Returns
     -------

@@ -1,5 +1,5 @@
 """
-Tests for special functions
+Tests for special functions.    
 """
 
 import pytest
@@ -19,6 +19,7 @@ def genfromtxt_complex(filename, delimiter=','):
 
 class TestBessel(object):
     def test_shape(self):
+        """Test shape of spherical Bessel function."""
         n = np.array([0, 1])
         z = np.linspace(0.1, 5, 10)
         res = special.spherical_bessel(n, z)
@@ -27,6 +28,7 @@ class TestBessel(object):
         assert shape == res.shape
 
     def test_val(self):
+        """Test spherical Bessel function."""
         z = np.linspace(0, 10, 25)
         n = [0, 1, 2]
         res = special.spherical_bessel(n, z)
@@ -36,6 +38,7 @@ class TestBessel(object):
 
 class TestBesselPrime(object):
     def test_shape(self):
+        """Test shape of spherical Bessel function derivative."""
         n = np.array([0, 1])
         z = np.linspace(0.1, 5, 10)
         res = special.spherical_bessel(n, z, derivative=True)
@@ -44,6 +47,7 @@ class TestBesselPrime(object):
         assert shape == res.shape
 
     def test_val(self):
+        """Test spherical Bessel function derivative."""
         z = np.linspace(0.1, 10, 25)
         n = [0, 1, 2]
         res = special.spherical_bessel(n, z, derivative=True)
@@ -53,6 +57,7 @@ class TestBesselPrime(object):
 
 class TestHankel(object):
     def test_shape(self):
+        """Test shape of spherical Hankel function."""
         n = np.array([0, 1])
         z = np.linspace(0.1, 5, 10)
         res = special.spherical_hankel(n, z, kind=1)
@@ -61,10 +66,12 @@ class TestHankel(object):
         assert shape == res.shape
 
     def test_kind_exception(self):
+        """Test if ValueError is raised for invalid kind."""
         with pytest.raises(ValueError):
             special.spherical_hankel([0], [1], kind=3)
 
     def test_val_second_kind(self):
+        """Test spherical Hankel function of second kind."""
         z = np.linspace(0.1, 5, 25)
         n = np.array([0, 1, 2])
         res = special.spherical_hankel(n, z, kind=2)
@@ -72,6 +79,7 @@ class TestHankel(object):
         npt.assert_allclose(res, truth)
 
     def test_val_first_kind(self):
+        """Test spherical Hankel function of first kind."""
         z = np.linspace(0.1, 5, 25)
         n = np.array([0, 1, 2])
         res = special.spherical_hankel(n, z, kind=1)
@@ -81,6 +89,7 @@ class TestHankel(object):
 
 class TestHankelPrime(object):
     def test_shape(self):
+        """Test shape of spherical Hankel function derivative."""
         n = np.array([0, 1])
         z = np.linspace(0.1, 5, 10)
         res = special.spherical_hankel(n, z, kind=1, derivative=True)
@@ -89,10 +98,12 @@ class TestHankelPrime(object):
         assert shape == res.shape
 
     def test_kind_exception(self):
+        """Test if ValueError is raised for invalid kind."""
         with pytest.raises(ValueError):
             special.spherical_hankel([0], [1], kind=3, derivative=True)
 
     def test_val_second_kind(self):
+        """Test spherical Hankel function derivative of second kind."""
         z = np.linspace(0.1, 5, 25)
         n = [0, 1, 2]
         res = special.spherical_hankel(n, z, kind=2, derivative=True)
@@ -100,6 +111,7 @@ class TestHankelPrime(object):
         npt.assert_allclose(res, truth)
 
     def test_val_first_kind(self):
+        """Test spherical Hankel function derivative of first kind."""
         z = np.linspace(0.1, 5, 25)
         n = [0, 1, 2]
         res = special.spherical_hankel(n, z, kind=1, derivative=True)

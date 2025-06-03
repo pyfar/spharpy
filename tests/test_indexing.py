@@ -1,4 +1,4 @@
-"""Tests for sh channel indexing"""
+"""Tests for sh channel indexing."""
 
 import spharpy.spherical as sh
 import numpy as np

@@ -1,3 +1,5 @@
+"""SphericalHarmonicSignal class."""
+
 from pyfar import Signal
 from spharpy.spherical import renormalize, change_channel_convention
 import numpy as np
