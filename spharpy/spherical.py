@@ -1190,7 +1190,11 @@ class SphericalHarmonics:
         - ``'pseudo_inverse'``: Uses the Moore-Penrose pseudo-inverse
          for the inverse transform.
         - ``'quadrature'``: Uses quadrature for the inverse transform.
-        - ``None``: No inverse transform is applied and basis is returned.
+        - ``'auto'``: ``'quadrature'`` if `coordinates.quadrature` 
+           is True otherwise ``'quadrature'``. If `coordinates` is not 
+           SamplingSphere an error is returned.
+
+
 
     Parameters
     ----------
@@ -1211,8 +1215,8 @@ class SphericalHarmonics:
         The default is ``'acn'``.
         (FuMa is only supported up to 3rd order)
     inverse_method : str, optional
-        Inverse transform type, either ``'pseudo_inverse'`` or
-        ``'quadrature'``. The default is "pseudo_inverse".
+        Inverse transform type, either ``'auto'``, ``'pseudo_inverse'`` or  
+        ``'quadrature'``. The default is ``'auto'``.  
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
         Condon-Shortley is included, if ``False`` it is not
@@ -1228,8 +1232,8 @@ class SphericalHarmonics:
         basis_type="real",
         normalization="n3d",
         channel_convention="acn",
-        inverse_method="pseudo_inverse",
-        condon_shortley='auto',
+        inverse_method="auto",
+        condon_shortley="auto",
     ):
         # initialize private attributes
         self._n_max = None
@@ -1261,6 +1265,13 @@ class SphericalHarmonics:
         if isinstance(value, str):
             if value != 'auto':
                 raise ValueError("condon_shortley must be a bool or the string 'auto'")
+            # If basis_type hasn't been set yet, assume "complex" by default,
+            # but in practice __init__ sets basis_type before condon_shortley.
+            if self.basis_type == "complex":
+                resolved = True
+            else:
+                resolved = False
+            value = resolved
         elif not isinstance(value, bool):
             raise TypeError("condon_shortley must be a bool or the string 'auto'")
         if value != self._condon_shortley:
@@ -1331,13 +1342,20 @@ class SphericalHarmonics:
     @inverse_method.setter
     def inverse_method(self, value):
         """Get or set the inverse transform type."""
-        allowed = ["pseudo_inverse", "quadrature"]
-        if value not in allowed:
-            raise ValueError("Invalid inverse method. Allowed values are 'inverse' or "
-                             "'quadrature'")
-        # If using simple pf.Coordinates and not SamplingSphere, 'auto' is not allowed
-        if not isinstance(self.coordinates, SamplingSphere) and value == "quadrature":
-            raise ValueError("'quadrature' requires coordinates in a SamplingSphere object")
+        # If the user passes "auto", require SamplingSphere and resolve it
+        if isinstance(value, str) and value == "auto":
+            if not isinstance(self.coordinates, SamplingSphere):
+                raise ValueError("'auto' is only valid if `coordinates` is a SamplingSphere.")
+            if self.coordinates.quadrature:
+                value = "quadrature"
+            else:
+                value = "pseudo_inverse"
+        elif value == "quadrature":
+            if not isinstance(self.coordinates, SamplingSphere):
+                raise ValueError("'quadrature' requires `coordinates` to be a SamplingSphere.")
+        elif value != "pseudo_inverse":
+            raise ValueError("Invalid inverse_method. Allowed: 'pseudo_inverse', 'quadrature', or 'auto'.")
+
         if value != self._inverse_method:
             self._reset_compute_attributes()
             self._inverse_method = value
@@ -1460,15 +1478,21 @@ class SphericalHarmonics:
         """
         if self._basis is None:
             self._compute_basis()
-        if not isinstance(self.coordinates, SamplingSphere):
-            warnings.warn("Using a simple pf.Coordinates object for inverse_basis." \
-            " Make sure this is intended.")
-        if self.inverse_method == "pseudo_inverse":
+        _inv_flag = self.inverse_method
+        # warn when falling back to pseudo-inverse on a plain pf.Coordinates
+        if _inv_flag == "pseudo_inverse" and not isinstance(self.coordinates, SamplingSphere):
+            import warnings
+            warnings.warn(
+                "Coordinates is not a SamplingSphere, " \
+                "using Moore–Penrose pseudo-inverse instead of quadrature."
+            )
+
+        if _inv_flag == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
-        elif self.inverse_method == "quadrature":
-            self.coordinates.quadrature = True
-            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis), 
-                                        self.coordinates.weights)
+        elif _inv_flag == "quadrature":
+            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis),
+                                         self.coordinates.weights)
+
     def _reset_compute_attributes(self):
         """Reset the computed attributes for the SphericalHarmonics class in
         case of changes in the parameters."""

@@ -8,6 +8,7 @@ from spharpy.spherical import SphericalHarmonics
 from spharpy.samplings import gaussian, calculate_sampling_weights, equiangular
 
 def test_sphharm_init():
+    """Test default behaviour after initialization."""
     coordinates = equiangular(n_points=8)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.n_max == 2
@@ -15,8 +16,8 @@ def test_sphharm_init():
     assert sph_harm.basis_type == 'real'
     assert sph_harm.normalization == 'n3d'
     assert sph_harm.channel_convention == 'acn'
-    assert sph_harm.inverse_method == 'pseudo_inverse'
-    assert sph_harm.condon_shortley == 'auto'
+    assert sph_harm.inverse_method == 'quadrature'
+    assert sph_harm.condon_shortley == False
 
 def test_sphharm_init_invalid_coordinates():
     with pytest.raises(TypeError, 
@@ -55,7 +56,8 @@ def test_sphharm_compute_inverse_pseudo_inv():
 
 def test_compute_basis_caching():
     n_max = 2
-    points = np.random.randint(4, 10)
+    rng = np.random.default_rng()
+    points = rng.integers(4, 10)
     coordinates = equiangular(n_points=points)
     sh = SphericalHarmonics(n_max, coordinates)
 
@@ -94,7 +96,7 @@ def test_setter_phase_convention():
     coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.condon_shortley = "auto"
-    assert sph_harm.condon_shortley == "auto"
+    assert sph_harm.condon_shortley == False
 
     with pytest.raises(TypeError):
         sph_harm.condon_shortley = 123  # Invalid type
@@ -132,6 +134,6 @@ def test_setter_inverse_method():
     assert sph_harm.inverse_method == "quadrature"
 
     with pytest.raises(ValueError,
-                       match="Invalid inverse method. Allowed values are 'inverse' or "
-                             "'quadrature'"):
+                       match="Invalid inverse_method. Allowed: 'pseudo_inverse', " \
+                       "'quadrature', or 'auto'."):
         sph_harm.inverse_method = "invalid"  # Invalid value
