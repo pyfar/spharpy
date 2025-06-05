@@ -30,6 +30,7 @@ predefined spherical sampling grids, which can be used to create a
 import numpy as np
 from pyfar.classes.coordinates import sph2cart, cyl2cart
 import pyfar as pf
+from spharpy.spherical import spherical_harmonic_basis
 
 
 class SamplingSphere(pf.Coordinates):
@@ -38,7 +39,7 @@ class SamplingSphere(pf.Coordinates):
     def __init__(
             self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
             quadrature: bool = False, comment: str = "",
-            radius_tolerance=1e-6):
+            radius_tolerance=1e-6, quadrature_tolerance=1e-10):
         r"""
         Create a SamplingSphere class object from a set of points on a sphere.
 
@@ -84,6 +85,8 @@ class SamplingSphere(pf.Coordinates):
         self._n_max = n_max
 
         # initialize and set quadrature
+        self._quadrature_tolerance = None
+        self.quadrature_tolerance = quadrature_tolerance
         self._quadrature = None
         self.quadrature = quadrature
 
@@ -91,7 +94,8 @@ class SamplingSphere(pf.Coordinates):
     def from_cartesian(
             cls, x, y, z, n_max=None, weights: np.array = None,
             quadrature: bool = False, comment: str = "",
-            radius_tolerance: float = 1e-6):
+            radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
         r"""
         Create a Coordinates class object from a set of points on a sphere.
 
@@ -140,13 +144,15 @@ class SamplingSphere(pf.Coordinates):
         """
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            quadrature=quadrature, radius_tolerance=radius_tolerance)
+            quadrature=quadrature, radius_tolerance=radius_tolerance,
+            quadrature_tolerance=quadrature_tolerance)
 
     @classmethod
     def from_spherical_elevation(
             cls, azimuth, elevation, radius, n_max=None,
             weights: np.array = None, quadrature: bool = False,
-            comment: str = "", radius_tolerance: float = 1e-6):
+            comment: str = "", radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
         """Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -195,13 +201,15 @@ class SamplingSphere(pf.Coordinates):
             azimuth, np.pi / 2 - np.atleast_1d(elevation), radius)
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            quadrature=quadrature, radius_tolerance=radius_tolerance)
+            quadrature=quadrature, radius_tolerance=radius_tolerance,
+            quadrature_tolerance=quadrature_tolerance)
 
     @classmethod
     def from_spherical_colatitude(
             cls, azimuth, colatitude, radius, n_max=None,
             weights: np.array = None, quadrature: bool = False,
-            comment: str = "", radius_tolerance: float = 1e-6):
+            comment: str = "", radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
         r"""Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -249,13 +257,15 @@ class SamplingSphere(pf.Coordinates):
         x, y, z = sph2cart(azimuth, colatitude, radius)
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            quadrature=quadrature, radius_tolerance=radius_tolerance)
+            quadrature=quadrature, radius_tolerance=radius_tolerance,
+            quadrature_tolerance=quadrature_tolerance)
 
     @classmethod
     def from_spherical_side(
             cls, lateral, polar, radius, n_max=None,
             weights: np.array = None, quadrature: bool = False,
-            comment: str = "", radius_tolerance: float = 1e-6):
+            comment: str = "", radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
         r"""Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -303,13 +313,15 @@ class SamplingSphere(pf.Coordinates):
             polar, np.pi / 2 - np.atleast_1d(lateral), radius)
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            quadrature=quadrature, radius_tolerance=radius_tolerance)
+            quadrature=quadrature, radius_tolerance=radius_tolerance,
+            quadrature_tolerance=quadrature_tolerance)
 
     @classmethod
     def from_spherical_front(
             cls, frontal, upper, radius, n_max=None, weights: np.array = None,
             quadrature: bool = False, comment: str = "",
-            radius_tolerance: float = 1e-6):
+            radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
         r"""Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -356,13 +368,15 @@ class SamplingSphere(pf.Coordinates):
         y, z, x = sph2cart(frontal, upper, radius)
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            quadrature=quadrature, radius_tolerance=radius_tolerance)
+            quadrature=quadrature, radius_tolerance=radius_tolerance, 
+            quadrature_tolerance=quadrature_tolerance)
 
     @classmethod
     def from_cylindrical(
             cls, azimuth, z, rho, n_max=None, weights: np.array = None,
             quadrature: bool = False, comment: str = "",
-            radius_tolerance: float = 1e-6):
+            radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
         r"""Create a Coordinates class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
@@ -409,7 +423,8 @@ class SamplingSphere(pf.Coordinates):
         x, y, z = cyl2cart(azimuth, z, rho)
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            quadrature=quadrature, radius_tolerance=radius_tolerance)
+            quadrature=quadrature, radius_tolerance=radius_tolerance,
+            quadrature_tolerance=quadrature_tolerance)
 
     @property
     def n_max(self):
@@ -451,6 +466,30 @@ class SamplingSphere(pf.Coordinates):
                 self._radius_tolerance = current_tolerance
                 raise e
 
+    @property
+    def quadrature_tolerance(self):
+        """Get or set the quadrature tolerance."""
+        return self._quadrature_tolerance
+
+    @quadrature_tolerance.setter
+    def quadrature_tolerance(self, value):
+        """Get or set the quadrature tolerance."""
+
+        # check input
+        if not isinstance(value, (int, float)) or value <= 0:
+            raise ValueError(
+                'The quadrature tolerance must be a number greater than zero')
+
+        # update value and check data
+        current_tolerance = self.quadrature_tolerance
+        self._quadrature_tolerance = float(value)
+        try:
+            self._check_quadrature()
+        except ValueError as e:
+            # revert setting the tolerance and raise the error
+            self._quadrature_tolerance = current_tolerance
+            raise e
+
     def _check_points(self, x, y, z):
         """Check input data before setting coordinates"""
 
@@ -469,7 +508,6 @@ class SamplingSphere(pf.Coordinates):
                 'using SamplingSphere.radius_tolerance.')
 
         return x, y, z
-
 
     def _check_weights(self, weights):
         r"""Check if the weights are valid.
@@ -500,6 +538,19 @@ class SamplingSphere(pf.Coordinates):
                 f"Current sum: {np.sum(weights)}")
 
         return weights
+
+    def _check_quadrature(self):
+        if self.n_max is not None:
+            # generate SH object
+            sh_basis = spherical_harmonic_basis(self.n_max, self)
+
+            # test if basis is quadrature
+            quad_evaluation = sh_basis.T @ np.diag(self.weights) @ sh_basis
+            diag = np.diag(np.ones((self.n_max + 1)**2))
+
+            return np.sum(np.sum(quad_evaluation-diag)) < self.quadrature_tolerance
+        else:
+            return False
 
     @property
     def weights(self):
@@ -535,4 +586,8 @@ class SamplingSphere(pf.Coordinates):
             raise ValueError(
                 'quadrature can not be True because the weights are None')
 
-        self._quadrature = value
+        # check if sampling is a quadrature grid
+        if value and self._check_quadrature():
+            self._quadrature = True
+        else:
+            self._quadrature = False

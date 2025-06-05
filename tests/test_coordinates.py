@@ -12,6 +12,7 @@ def test_sampling_sphere_init_value():
     sampling = SamplingSphere(1, 0, 0, 0)
     assert isinstance(sampling, SamplingSphere)
 
+
 def sampling_cube():
     """Helper function returning a cube sampling"""
     x = [1, -1, 0, 0, 0, 0]
@@ -107,6 +108,8 @@ def test_radius_tolerance_input(tolerance):
     match = 'The radius tolerance must be a number greater than zero'
     with pytest.raises(ValueError, match=match):
         SamplingSphere([1, 1], 0, 0, radius_tolerance=tolerance)
+
+
 def test_weights_getter():
     x, y, z = sampling_cube()
     n_max = 1
@@ -126,6 +129,7 @@ def test_setting_weights():
 
     np.testing.assert_array_equal(sampling._weights, weights)
     assert sampling._weights.shape == (6,)
+
 
 def test_setting_weights_invalid():
     x, y, z = sampling_cube()
