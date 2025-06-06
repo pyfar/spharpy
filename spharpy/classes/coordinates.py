@@ -84,12 +84,11 @@ class SamplingSphere(pf.Coordinates):
             self, x, y, z, weights=weights, comment=comment)
         self._n_max = n_max
 
-        # initialize and set quadrature
         self._quadrature_tolerance = None
         self.quadrature_tolerance = quadrature_tolerance
+
         self._quadrature = None
-        # self.quadrature = quadrature
-        self._quadrature = quadrature
+        self.quadrature = quadrature
 
     @classmethod
     def from_cartesian(
