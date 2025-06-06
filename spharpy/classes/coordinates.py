@@ -24,7 +24,7 @@ quadrature if the deviation of
 smaller than the specified
 :py:attr:`~spharpy.SamplingSphere.quadrature_tolerance`.
 
-It also the additional property:
+It also adds the additional property:
 
 - :py:attr:`~spharpy.SamplingSphere.n_max`: the maximum spherical harmonic
   order of the sampling grid.
