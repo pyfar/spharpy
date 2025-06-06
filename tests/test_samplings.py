@@ -35,7 +35,7 @@ def test_hyperinterpolation(download_sampling):
     sampling = samplings.hyperinterpolation(n_max=n_max)
     assert sampling.radius.size == (n_max+1)**2
 
-# check here n_max can be a float
+
 def test_sph_extremal(download_sampling):
     # load test data
     download_sampling('hyperinterpolation', [1, 10])
@@ -305,7 +305,7 @@ def test_gaussian():
 
     # n_points must be a positive natural number
     with raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2,2))
+        samplings.gaussian(n_points=(2, 2))
 
     # n_points must be a positive natural number
     with raises(ValueError, match='positive natural number'):
