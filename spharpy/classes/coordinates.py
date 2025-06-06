@@ -67,7 +67,9 @@ class SamplingSphere(pf.Coordinates):
             weights are used.
         quadrature : bool, optional
             Flag that indicates if points belong to a quadrature, which
-            requires that `weights` is not ``None``. The default is ``False``.
+            requires that `weights` and `n_max` is not ``None``. Quadrature
+            can only be ``True``, if the sampling is a valid quadrature. 
+            The default is ``False``.
         comment : str, optional
             Comment about the stored coordinate points. The default is
             ``""``, which initializes an empty string.
@@ -76,6 +78,25 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature. The quadrature condition is tested using the
+            equation:
+
+            .. math::
+
+                Q = Y^T W B \approx I
+
+            where
+
+            - :math:`Y` is the matrix of real-valued spherical harmonics
+                    evaluated at the sampling points,
+            - :math:`W` is a diagonal matrix containing the sampling weights,
+            - :math:`I` is the identity matrix.
+
+            The sampling is considered a valid quadrature if the deviation of
+            :math:`Q` from the identity matrix :math:`I` is smaller than the
+            specified tolerance. The default is ``1e-10``.
         """
         self._radius_tolerance = None
         self.radius_tolerance = radius_tolerance
@@ -132,6 +153,9 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature.
 
         Examples
         --------
@@ -189,6 +213,9 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature.
 
         Examples
         --------
@@ -246,6 +273,9 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature.
 
         Examples
         --------
@@ -301,6 +331,9 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature.
 
         Examples
         --------
@@ -357,6 +390,9 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature.
 
         Examples
         --------
@@ -412,6 +448,9 @@ class SamplingSphere(pf.Coordinates):
             radius and an error is raised if the maximum deviation from the
             mean radius exceeds this tolerance. The default of ``1e-6`` meter
             is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature.
 
         Examples
         --------
@@ -540,6 +579,13 @@ class SamplingSphere(pf.Coordinates):
         return weights
 
     def _check_quadrature(self):
+        r"""Check if the sampling is a are valid quadrature.
+
+        Returns
+        -------
+        check : bool
+            Flag which indicates if quadrature is a valid quadrature
+        """
         if self.n_max is None or self.weights is None:
             return False
         # generate SH object at N=1
