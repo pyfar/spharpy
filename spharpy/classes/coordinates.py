@@ -30,7 +30,7 @@ predefined spherical sampling grids, which can be used to create a
 import numpy as np
 from pyfar.classes.coordinates import sph2cart, cyl2cart
 import pyfar as pf
-from spharpy.spherical import spherical_harmonic_basis
+from spharpy.spherical import spherical_harmonic_basis_real
 
 
 class SamplingSphere(pf.Coordinates):
@@ -88,7 +88,8 @@ class SamplingSphere(pf.Coordinates):
         self._quadrature_tolerance = None
         self.quadrature_tolerance = quadrature_tolerance
         self._quadrature = None
-        self.quadrature = quadrature
+        # self.quadrature = quadrature
+        self._quadrature = quadrature
 
     @classmethod
     def from_cartesian(
@@ -540,17 +541,18 @@ class SamplingSphere(pf.Coordinates):
         return weights
 
     def _check_quadrature(self):
-        if self.n_max is not None:
-            # generate SH object
-            sh_basis = spherical_harmonic_basis(self.n_max, self)
-
-            # test if basis is quadrature
-            quad_evaluation = sh_basis.T @ np.diag(self.weights) @ sh_basis
-            diag = np.diag(np.ones((self.n_max + 1)**2))
-
-            return np.sum(np.sum(quad_evaluation-diag)) < self.quadrature_tolerance
-        else:
+        if self.n_max is None or self.weights is None:
             return False
+        # generate SH object at N=1
+        n_eval = 1
+        sh_basis = spherical_harmonic_basis_real(n_eval, self)
+
+        # test if basis is quadrature
+        quad_evaluation = sh_basis.T @ np.diag(self.weights) @ sh_basis
+        identity = np.eye((n_eval + 1)**2)
+
+        error = np.abs(np.sum(np.sum(quad_evaluation-identity)))
+        return error < self.quadrature_tolerance
 
     @property
     def weights(self):
@@ -587,7 +589,9 @@ class SamplingSphere(pf.Coordinates):
                 'quadrature can not be True because the weights are None')
 
         # check if sampling is a quadrature grid
-        if value and self._check_quadrature():
-            self._quadrature = True
-        else:
-            self._quadrature = False
+        if value and not self._check_quadrature():
+            raise ValueError(
+                'quadrature can not be True because the sampling is not a '
+                'valid quadrature')
+
+        self._quadrature = value

@@ -155,18 +155,14 @@ def test_setting_weights_invalid():
         sampling.weights = weights_invalid
 
 
-def test_quadrature_default_setter_getter():
-    """Test the default value, setter, and getter for quadrature."""
+def test_quadrature_default_getter():
+    """Test the default value and getter for quadrature."""
 
     weights = [2 * np.pi, 2 * np.pi]
     sampling = SamplingSphere([1, 1], 0, 0, weights=weights)
 
     # test default value and getter
-    assert sampling.quadrature == False
-
-    # test setter and getter
-    sampling.quadrature = True
-    assert sampling.quadrature == True
+    assert not sampling.quadrature
 
 
 def test_quadrature_setter_errors():
@@ -180,4 +176,12 @@ def test_quadrature_setter_errors():
 
     # weights are None
     with pytest.raises(ValueError, match="quadrature can not be True"):
+        sampling.quadrature = True
+
+    # test invalid quadrature
+    weights = [2 * np.pi, 2 * np.pi]
+    sampling = SamplingSphere([1, 1], 0, 0, n_max=1, weights=weights)
+    with pytest.raises(
+            ValueError, match="quadrature can not be True because the "
+                              "sampling is not a valid quadrature"):
         sampling.quadrature = True
