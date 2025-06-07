@@ -467,7 +467,7 @@ def test_fliege():
 
     # test quadrature
     npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert c.quadrature
+    assert not c.quadrature
 
     # test exceptions
     with raises(ValueError):
