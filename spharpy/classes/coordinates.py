@@ -15,8 +15,8 @@ points belong to a quadrature, which requires that the
 :py:attr:`~spharpy.SamplingSphere.weights` sum to :math:`4 \pi`, the maximum
 spherical harmonic order of the sampling
 grid :py:attr:`~spharpy.SamplingSphere.n_max` is specified and the inner
-product of the Spherical Harmonics matrix :math:`\mathrm{Y}`
-yields the identity matrix 
+product of the weighted Spherical Harmonics matrix :math:`\mathrm{Y}`
+yields the identity matrix
 :math:`\mathrm{Y}^\mathrm{T} \text{diag}\{w\}\mathrm{Y}=\mathrm{I}`,
 with the weights vector :math:`w`. The sampling is considered a valid
 quadrature if the deviation of
@@ -88,8 +88,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
         """
         self._radius_tolerance = None
@@ -150,8 +150,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -213,8 +213,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -276,8 +276,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -337,8 +337,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -399,8 +399,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -460,8 +460,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the Spherical Harmonics
-            matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted Spherical
+            Harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -598,7 +598,7 @@ class SamplingSphere(pf.Coordinates):
         check : bool
             Flag which indicates if quadrature is a valid quadrature
         """
-        if self.n_max is None or self.weights is None:
+        if self.n_max in [None, 0] or self.weights is None:
             return False
         # generate SH object at N=1
         n_eval = 1
@@ -608,7 +608,7 @@ class SamplingSphere(pf.Coordinates):
         quad_evaluation = sh_basis.T @ np.diag(self.weights) @ sh_basis
         identity = np.eye((n_eval + 1)**2)
 
-        error = np.abs(np.sum(np.sum(quad_evaluation-identity)))
+        error = np.max(np.abs(quad_evaluation-identity))
         return error < self.quadrature_tolerance
 
     @property
