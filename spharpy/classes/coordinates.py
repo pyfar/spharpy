@@ -598,7 +598,7 @@ class SamplingSphere(pf.Coordinates):
         check : bool
             Flag which indicates if quadrature is a valid quadrature
         """
-        if self.n_max in [None, 0] or self.weights is None:
+        if self.n_max is None or self.weights is None:
             return False
         # generate SH object at N=1
         n_eval = 1
