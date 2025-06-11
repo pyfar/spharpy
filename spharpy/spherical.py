@@ -1214,9 +1214,12 @@ class SphericalHarmonics:
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         The default is ``'acn'``.
         (FuMa is only supported up to 3rd order)
-    inverse_method : str, optional
-        Inverse transform type, either ``'auto'``, ``'pseudo_inverse'`` or  
-        ``'quadrature'``. The default is ``'auto'``.  
+    inverse_method : {'auto', 'quadrature', 'pseudo_inverse'}, default='auto'
+        Method for computing the inverse transform:
+
+        - ‘auto’: use ‘quadrature’ when applicable, otherwise ‘pseudo_inverse’.  
+        - ‘quadrature’: compute the inverse via numerical quadrature.  
+        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse approximation.
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
         Condon-Shortley is included, if ``False`` it is not
@@ -1346,15 +1349,18 @@ class SphericalHarmonics:
         if isinstance(value, str) and value == "auto":
             if not isinstance(self.coordinates, SamplingSphere):
                 raise ValueError("'auto' is only valid if `coordinates` is a SamplingSphere.")
-            if self.coordinates.quadrature:
+            if isinstance(self.coordinates, SamplingSphere) and self.coordinates.quadrature:
                 value = "quadrature"
             else:
                 value = "pseudo_inverse"
         elif value == "quadrature":
-            if not isinstance(self.coordinates, SamplingSphere):
-                raise ValueError("'quadrature' requires `coordinates` to be a SamplingSphere.")
+            if not isinstance(self.coordinates, SamplingSphere) or \
+            not self.coordinates.quadrature:
+                raise ValueError("'quadrature' requires `coordinates` to be " \
+                "a SamplingSphere and coordinates.quadrature to be True.")
         elif value != "pseudo_inverse":
-            raise ValueError("Invalid inverse_method. Allowed: 'pseudo_inverse', 'quadrature', or 'auto'.")
+            raise ValueError("Invalid inverse_method. Allowed: 'pseudo_inverse', " \
+            "'quadrature', or 'auto'.")
 
         if value != self._inverse_method:
             self._reset_compute_attributes()
