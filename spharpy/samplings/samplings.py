@@ -130,7 +130,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     else:
         if n_points not in [(n + 1)**2 for n in range(1, 200)]:
             raise ValueError('invalid value for n_points')
-        n_max = np.sqrt(n_points) - 1
+        n_max = int(np.sqrt(n_points) - 1)
 
     # download data if necessary
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)

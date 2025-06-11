@@ -36,6 +36,13 @@ def test_hyperinterpolation(download_sampling):
     assert sampling.radius.size == (n_max+1)**2
 
 
+def test_hyperinterpolation_default_n_max():
+    # check if n_max is set properly
+    sampling = samplings.hyperinterpolation(n_points=4)
+    assert sampling.n_max == 1
+    assert isinstance(sampling.n_max, int)
+
+
 def test_sph_extremal(download_sampling):
     # load test data
     download_sampling('hyperinterpolation', [1, 10])
