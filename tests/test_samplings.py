@@ -10,7 +10,7 @@ from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
 
 
-def test_cube_equidistant():
+def test_cube_equidistant_int():
     n_points = 3
     coords = samplings.cube_equidistant(n_points)
     x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3)
@@ -19,14 +19,11 @@ def test_cube_equidistant():
     np.testing.assert_allclose(x, coords.x)
     np.testing.assert_allclose(y, coords.y)
     np.testing.assert_allclose(z, coords.z)
+    assert type(coords) is Coordinates
+    assert coords.csize == 3**3
 
 
-def test_cube_equidistant_pyfar():
-    # test with int
-    c = samplings.cube_equidistant(3)
-    assert isinstance(c, Coordinates)
-    assert c.csize == 3**3
-
+def test_cube_equidistant_tuple():
     # test with tuple
     c = samplings.cube_equidistant((3, 2, 4))
     assert c.csize == 3*2*4
@@ -39,6 +36,13 @@ def test_hyperinterpolation(download_sampling):
     assert sampling.radius.size == (n_max+1)**2
 
 
+def test_hyperinterpolation_default_n_max():
+    # check if n_max is set properly
+    sampling = samplings.hyperinterpolation(n_points=4)
+    assert sampling.n_max == 1
+    assert isinstance(sampling.n_max, int)
+
+
 def test_sph_extremal(download_sampling):
     # load test data
     download_sampling('hyperinterpolation', [1, 10])
@@ -48,7 +52,7 @@ def test_sph_extremal(download_sampling):
 
     # test with n_points
     c = samplings.hyperinterpolation(4)
-    isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     assert c.csize == 4
 
     # test with spherical harmonic order
@@ -83,7 +87,7 @@ def test_t_design_const_e(download_sampling):
     download_sampling('t-design', np.arange(1, 11))
     coords = samplings.t_design(
         n_max=order, criterion='const_energy')
-    assert isinstance(coords, SamplingSphere)
+    assert type(coords) is SamplingSphere
 
 
 def test_t_design_const_angle(download_sampling):
@@ -91,7 +95,7 @@ def test_t_design_const_angle(download_sampling):
     download_sampling('t-design', np.arange(1, 11))
     coords = samplings.t_design(
         n_max=order, criterion='const_angular_spread')
-    assert isinstance(coords, SamplingSphere)
+    assert type(coords) is SamplingSphere
 
 
 def test_t_design_invalid(download_sampling):
@@ -111,6 +115,7 @@ def test_sph_t_design(download_sampling):
     # test with degree
     c = samplings.t_design(2)
     isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     assert c.csize == 6
 
     # test with spherical harmonic order
@@ -146,13 +151,13 @@ def test_sph_t_design(download_sampling):
 
 def test_dodecahedron():
     sampling = samplings.dodecahedron()
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
 
 def test_sph_dodecahedron():
     # test with default radius
     c = samplings.dodecahedron()
-    assert isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test with user radius
@@ -165,7 +170,7 @@ def test_sph_dodecahedron():
 
 def test_icosahedron():
     sampling = samplings.icosahedron()
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
     # test quadrature
     assert not sampling.quadrature
@@ -174,7 +179,7 @@ def test_icosahedron():
 def test_sph_icosahedron():
     # test with default radius
     c = samplings.icosahedron()
-    assert isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test with user radius
@@ -183,19 +188,13 @@ def test_sph_icosahedron():
 
 
 def test_equiangular():
-    n_max = 1
-    sampling = samplings.equiangular(n_max=n_max)
-    assert isinstance(sampling, SamplingSphere)
-
-
-def test_equiangular_pyfar():
     # test without parameters
     with raises(ValueError):
         samplings.equiangular()
 
     # test with single number of points
     c = samplings.equiangular(5)
-    isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     assert c.csize == 5**2
 
     # test with tuple
@@ -254,7 +253,7 @@ def test_equiangular_weights_n_max(n_max):
     npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
     assert sampling.cshape == sampling.weights.shape
     assert sampling.cshape == 4*(n_max+1)**2
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
 
 @pytest.mark.parametrize(
@@ -279,7 +278,7 @@ def test_gaussian_weights_n_points(n_points):
     npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
     assert sampling.cshape == sampling.weights.shape
     assert sampling.cshape == 2*n_points*n_points
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
 
 @pytest.mark.parametrize("n_max", np.arange(1, 15))
@@ -288,7 +287,7 @@ def test_gaussian_weights_n_max(n_max):
     npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
     assert sampling.cshape == sampling.weights.shape
     assert sampling.cshape == 2*(n_max+1)*(n_max+1)
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
 
 @pytest.mark.parametrize(
@@ -307,7 +306,7 @@ def test_gaussian_orthogonality(basis_func):
     )
 
 
-def test_gaussian_pyfar():
+def test_gaussian():
     # test without parameters
     with raises(ValueError):
         samplings.gaussian()
@@ -322,7 +321,7 @@ def test_gaussian_pyfar():
 
     # test with single number of points
     c = samplings.gaussian(5)
-    isinstance(c, Coordinates)
+    assert type(c) is SamplingSphere
     assert c.csize == 5*(5*2)
     npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
@@ -345,12 +344,12 @@ def test_gaussian_pyfar():
 
 def test_em32():
     sampling = samplings.eigenmike_em32()
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
 
 def test_icosahedron_ke4():
     sampling = samplings.icosahedron_ke4()
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
     # test quadrature
     assert not sampling.quadrature
@@ -358,7 +357,7 @@ def test_icosahedron_ke4():
 
 def test_equalarea():
     sampling = samplings.equal_area(2)
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
     # test quadrature
     assert not sampling.quadrature
@@ -366,7 +365,7 @@ def test_equalarea():
 
 def test_spiral_points():
     sampling = samplings.spiral_points(2)
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
     # test quadrature
     assert not sampling.quadrature
@@ -375,7 +374,7 @@ def test_spiral_points():
 def test_equal_angle():
     # test with tuple
     c = samplings.equal_angle((10, 20))
-    assert isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     # test with number
     c = samplings.equal_angle(10)
     # test default radius
@@ -397,7 +396,7 @@ def test_equal_angle():
 def test_great_circle():
     # test with default values
     c = samplings.great_circle()
-    assert isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     # check default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
@@ -435,7 +434,7 @@ def test_lebedev():
 
     # test with degree
     c = samplings.lebedev(14)
-    isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     assert c.csize == 14
 
     # test with spherical harmonic order
@@ -460,7 +459,7 @@ def test_fliege():
 
     # test with degree
     c = samplings.fliege(16)
-    isinstance(c, SamplingSphere)
+    assert type(c) is SamplingSphere
     assert c.csize == 16
 
     # test with spherical harmonic order
@@ -487,7 +486,7 @@ def test_fliege():
 
 def test_em64():
     sampling = samplings.eigenmike_em64()
-    assert isinstance(sampling, SamplingSphere)
+    assert type(sampling) is SamplingSphere
 
     npt.assert_allclose(
         np.sum(sampling.weights), 4*np.pi, atol=1e-6, rtol=1e-6)
