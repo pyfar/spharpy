@@ -82,27 +82,27 @@ def test_sph_extremal(download_sampling):
         c = samplings.hyperinterpolation(n_max=0)
 
 
-def test_spherical_t_design_const_e(download_sampling):
+def test_t_design_const_e(download_sampling):
     order = 2
     download_sampling('t-design', np.arange(1, 11))
-    coords = samplings.spherical_t_design(
+    coords = samplings.t_design(
         n_max=order, criterion='const_energy')
     assert type(coords) is SamplingSphere
 
 
-def test_spherical_t_design_const_angle(download_sampling):
+def test_t_design_const_angle(download_sampling):
     order = 2
     download_sampling('t-design', np.arange(1, 11))
-    coords = samplings.spherical_t_design(
+    coords = samplings.t_design(
         n_max=order, criterion='const_angular_spread')
     assert type(coords) is SamplingSphere
 
 
-def test_spherical_t_design_invalid(download_sampling):
+def test_t_design_invalid(download_sampling):
     order = 2
     download_sampling('t-design', np.arange(1, 11))
     with pytest.raises(ValueError, match='Invalid design'):
-        samplings.spherical_t_design(n_max=order, criterion='bla')
+        samplings.t_design(n_max=order, criterion='bla')
 
 
 def test_sph_t_design(download_sampling):
@@ -110,17 +110,18 @@ def test_sph_t_design(download_sampling):
     download_sampling('t-design', np.arange(1, 11))
 
     # test without parameters
-    assert samplings.spherical_t_design() is None
+    assert samplings.t_design() is None
 
     # test with degree
-    c = samplings.spherical_t_design(2)
+    c = samplings.t_design(2)
+    isinstance(c, SamplingSphere)
     assert type(c) is SamplingSphere
     assert c.csize == 6
 
     # test with spherical harmonic order
-    c = samplings.spherical_t_design(n_max=1)
+    c = samplings.t_design(n_max=1)
     assert c.csize == 6
-    c = samplings.spherical_t_design(
+    c = samplings.t_design(
         n_max=1, criterion='const_angular_spread')
     assert c.csize == 8
 
@@ -128,24 +129,24 @@ def test_sph_t_design(download_sampling):
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test user radius
-    c = samplings.spherical_t_design(2, radius=1.5)
+    c = samplings.t_design(2, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
     # test loading degree order > 9
-    c = samplings.spherical_t_design(10)
+    c = samplings.t_design(10)
 
     # test quadrature
     assert not c.quadrature
 
     # test exceptions
     with raises(ValueError):
-        c = samplings.spherical_t_design(4, 1)
+        c = samplings.t_design(4, 1)
     with raises(ValueError):
-        c = samplings.spherical_t_design(0)
+        c = samplings.t_design(0)
     with raises(ValueError):
-        c = samplings.spherical_t_design(n_max=0)
+        c = samplings.t_design(n_max=0)
     with raises(ValueError):
-        c = samplings.spherical_t_design(2, criterion='const_thread')
+        c = samplings.t_design(2, criterion='const_thread')
 
 
 def test_dodecahedron():
