@@ -2,8 +2,6 @@ import numpy as np
 import scipy.special as special
 import spharpy.special as _special
 import pyfar as pf
-import warnings
-from spharpy import SamplingSphere
 
 
 def acn_to_nm(acn):
@@ -467,6 +465,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     r"""
     Calculates the unit sphere gradients of the complex spherical harmonics.
 
+
     The angular parts of the gradient are defined as
 
     .. math::
@@ -479,7 +478,16 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
 
 
     This implementation avoids singularities at the poles using identities
-    derived in [#]_ and [#]_.
+    derived in [#]_.
+
+
+    References
+    ----------
+    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     Parameters
     ----------
@@ -507,14 +515,6 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         Gradient with regard to the co-latitude angle.
     grad_azimuth : ndarray, complex
         Gradient with regard to the azimuth angle.
-
-    References
-    ----------
-    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
-            harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     Examples
     --------
@@ -683,6 +683,18 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     This implementation avoids singularities at the poles using identities
     derived in [#]_.
 
+
+    References
+    ----------
+    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+            Suggested Ambisonics Format (revised by F. Zotter),” International
+            Symposium on Ambisonics and Spherical Acoustics,
+            vol. 3, pp. 1-11, 2011.
+    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+            harmonic expressions of geomagnetic vector and gradient tensor
+            fields in the local north-oriented reference frame,” Geoscientific
+            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
+
     Parameters
     ----------
     n_max : int
@@ -709,17 +721,6 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         Gradient with respect to the co-latitude angle.
     grad_phi : ndarray, float
         Gradient with respect to the azimuth angle.
-
-    References
-    ----------
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1-11, 2011.
-    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
-            harmonic expressions of geomagnetic vector and gradient tensor
-            fields in the local north-oriented reference frame,” Geoscientific
-            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.
 
     """  # noqa: E501
     if channel_convention == "fuma" and n_max > 3:
@@ -1341,6 +1342,7 @@ class SphericalHarmonics:
 
     @inverse_method.setter
     def inverse_method(self, value):
+        from spharpy import SamplingSphere
         """Get or set the inverse transform type."""
         # If the user passes "auto", require SamplingSphere and resolve it
         if isinstance(value, str) and value == "auto":
