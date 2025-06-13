@@ -1329,7 +1329,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights, quadrature=True)
+        n_max=n_max, weights=weights, quadrature=False)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]
