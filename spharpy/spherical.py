@@ -1485,14 +1485,6 @@ class SphericalHarmonics:
         if self._basis is None:
             self._compute_basis()
         _inv_flag = self.inverse_method
-        # warn when falling back to pseudo-inverse on a plain pf.Coordinates
-        if _inv_flag == "pseudo_inverse" and not isinstance(self.coordinates, SamplingSphere):
-            import warnings
-            warnings.warn(
-                "Coordinates is not a SamplingSphere, " \
-                "using Moore–Penrose pseudo-inverse instead of quadrature."
-            )
-
         if _inv_flag == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
         elif _inv_flag == "quadrature":
