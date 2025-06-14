@@ -313,7 +313,7 @@ def test_gaussian():
 
     # n_points must be a positive natural number
     with raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2,2))
+        samplings.gaussian(n_points=(2, 2))
 
     # n_points must be a positive natural number
     with raises(ValueError, match='positive natural number'):
