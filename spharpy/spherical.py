@@ -2,6 +2,7 @@ import numpy as np
 import scipy.special as special
 import spharpy.special as _special
 import pyfar as pf
+import spharpy as sy
 
 
 def acn_to_nm(acn):
@@ -1342,18 +1343,17 @@ class SphericalHarmonics:
 
     @inverse_method.setter
     def inverse_method(self, value):
-        from spharpy import SamplingSphere
         """Get or set the inverse transform type."""
         # If the user passes "auto", require SamplingSphere and resolve it
         if isinstance(value, str) and value == "auto":
-            if not isinstance(self.coordinates, SamplingSphere):
+            if not isinstance(self.coordinates,sy.SamplingSphere):
                 raise ValueError("'auto' is only valid if `coordinates` is a SamplingSphere.")
-            if isinstance(self.coordinates, SamplingSphere) and self.coordinates.quadrature:
+            if isinstance(self.coordinates, sy.SamplingSphere) and self.coordinates.quadrature:
                 value = "quadrature"
             else:
                 value = "pseudo_inverse"
         elif value == "quadrature":
-            if not isinstance(self.coordinates, SamplingSphere) or \
+            if not isinstance(self.coordinates, sy.SamplingSphere) or \
             not self.coordinates.quadrature:
                 raise ValueError("'quadrature' requires `coordinates` to be " \
                 "a SamplingSphere and coordinates.quadrature to be True.")
