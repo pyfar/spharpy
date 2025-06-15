@@ -3,7 +3,7 @@
 from .samplings import (
     cube_equidistant,
     hyperinterpolation,
-    spherical_t_design,
+    t_design,
     dodecahedron,
     icosahedron,
     icosahedron_ke4,
@@ -30,7 +30,7 @@ from .interior import interior_stabilization_points
 __all__ = [
     'cube_equidistant',
     'hyperinterpolation',
-    'spherical_t_design',
+    't_design',
     'dodecahedron',
     'icosahedron',
     'icosahedron_ke4',

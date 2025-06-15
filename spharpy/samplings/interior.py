@@ -1,7 +1,7 @@
 """Spherical harmonics samplings."""
 import numpy as np
 import scipy.special as spspecial
-from spharpy.special import spherical_bessel_zeros
+from spharpy.special import spherical_bessel_zeros, spherical_harmonic
 import pyfar as pf
 
 
@@ -124,7 +124,7 @@ def sph_modes_matrix(n_max, k, theta, phi, rad):
     B = np.reshape(B, meshgrid_shape)
     M = np.zeros((*meshgrid_shape, n_coefficients), dtype=complex)
     for m in range(-n_max, n_max+1):
-        Y_m = spspecial.sph_harm(m, n_max, theta.flatten(), phi.flatten())
+        Y_m = spherical_harmonic(n_max, m, phi.flatten(), theta.flatten())
         M[:, :, :, m+n_max] = B * np.reshape(Y_m, meshgrid_shape)
 
     return M
