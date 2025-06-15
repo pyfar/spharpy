@@ -46,3 +46,24 @@ for file in os.listdir(output_path):
 
 
 # testing ---------------------------------------------------------------------
+
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.pcolor_sphere)])
+@pytest.mark.parametrize('phase', [True, False])
+def test_spherical_phase(function, phase):
+    """Test all spherical plots with custom arguments."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+    if phase:
+        # use complex data to test phase plotting
+        data = np.exp(1j * data)
+    
+    # do plotting
+    filename = f'{function.__name__}_phase_{phase}'
+    create_figure()
+    function(coords, data, phase=phase)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+    
