@@ -29,7 +29,6 @@ Modules
    modules/spharpy.plot
    modules/spharpy.samplings
    modules/spharpy.spatial
-   modules/spharpy.special
    modules/spharpy.spherical
    modules/spharpy.transforms
 
