@@ -96,7 +96,7 @@ class SphericalHarmonicSignal(Signal):
         if n_max - int(n_max) != 0:
             raise ValueError("Invalid number of SH channels: "
                              f"{data.shape[-2]}. It must match (n_max + 1)^2.")
-        self._n_max = n_max
+        self._n_max = int(n_max)
 
         # set basis_type
         if basis_type not in ["complex", "real"]:
