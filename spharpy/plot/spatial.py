@@ -662,8 +662,9 @@ def pcolor_map(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     projection : str, optional
-        The projection of the map. Default is 'mollweide'. Other options are
-        'ortho', 'hammer', 'aitoff', 'lambert', 'stereographic', etc.
+        The projection of the map. Default is 'mollweide'. See
+        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
+        for more information on available projections in matplotlib.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
@@ -764,8 +765,9 @@ def contour_map(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     projection : str, optional
-        The projection of the map. Default is 'mollweide'. Other options are
-        'ortho', 'hammer', 'aitoff', 'lambert', 'stereographic', etc.
+        The projection of the map. Default is 'mollweide'. See
+        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
+        for more information on available projections in matplotlib.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
