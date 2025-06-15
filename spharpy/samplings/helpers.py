@@ -1,5 +1,5 @@
 """
-Helper functions for coordinate operations
+Helper functions for coordinate operations.
 """
 
 import numpy as np
@@ -7,7 +7,7 @@ from scipy.spatial import cKDTree, SphericalVoronoi
 
 
 def coordinates2latlon(coordinates):
-    """Transforms from Cartesian coordinates to Geocentric coordinates
+    r"""Transforms from Cartesian coordinates to Geocentric coordinates.
 
     .. math::
 

@@ -1,3 +1,4 @@
+"""Spherical harmonics samplings."""
 import numpy as np
 import scipy.special as spspecial
 from spharpy.special import spherical_bessel_zeros, spherical_harmonic
@@ -60,7 +61,7 @@ def find_eigenfrequencies(kr_max):
 
 def calculate_eigenspaces(kr_max, theta, phi, rad):
     """Calculate the eigenspaces for the corresponding eigenfrequencies of
-    the sphere
+    the sphere.
 
     Parameters
     ----------
@@ -130,6 +131,34 @@ def sph_modes_matrix(n_max, k, theta, phi, rad):
 
 
 def ball_dot(S1, S2, radius, phi):
+    """
+    Calculate the dot product of two spherical harmonic modes on a sphere.
+
+    The dot product is defined as the integral over the sphere of the
+    product of the two modes multiplied by a weighting function.
+    The weighting function is defined as the square of the radius times the
+    sine of the elevation angle.
+    The weighting function is used to account for the spherical geometry.
+    The integral is approximated by a sum over the spherical coordinates.
+    The function is used to calculate the orthogonality of the spherical
+    harmonic modes.
+
+    Parameters
+    ----------
+    S1 : array, complex
+        The first spherical harmonic mode.
+    S2 : array, complex
+        The second spherical harmonic mode.
+    radius : array, float
+        The radius of the sphere.
+    phi : array, float
+        The elevation angle of the sphere.
+
+    Returns
+    -------
+    float
+        The dot product of the two spherical harmonic modes.
+    """
     wphi = np.sin(phi)
     wr = radius**2
     w = wr*wphi
@@ -137,6 +166,35 @@ def ball_dot(S1, S2, radius, phi):
 
 
 def find_interior_points(k_max, resolution_factor=1):
+    """Find the interior points of an open spherical microphone array.
+
+    The interior points stabilize the array response at the eigenfrequencies of
+    the array. The algorithm is based on [#]_ and implemented following the
+    Matlab code provided by Gilles Chardon on his homepage at [#]_.
+    The stabilization points are independent of the sampling of the sphere
+    and can therefore be combined with arbitrary spherical samplings.
+
+    Parameters
+    ----------
+    k_max : float
+        The maximum kr value to be considered. This will define
+        the upper frequency limit of the array.
+    resolution_factor : int
+        Factor to increase the spatial resolution of the grid
+        used to estimate the stabilization points.
+
+    Returns
+    -------
+    x, y, z : ndarray, float
+        Coordinates of the stabilization points
+        
+    References
+    ----------
+    .. [#]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial
+            microphone arrays for sound field interpolation", IEEE Journal of
+            Selected Topics in Signal Processing
+    .. [#]  https://gilleschardon.fr/jstsp_array/
+    """
     resolution = 50 * resolution_factor
 
     vec_theta = np.linspace(0, 2 * np.pi, resolution*2)

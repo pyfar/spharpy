@@ -1,3 +1,5 @@
+"""Beamforming methods for spherical harmonic signals."""
+
 from .beamforming import (
     dolph_chebyshev_weights,
     rE_max_weights,

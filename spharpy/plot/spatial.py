@@ -1,5 +1,5 @@
 """
-Plot functions for spatial data
+Plot functions for spatial data.
 """
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -50,6 +50,9 @@ def scatter(coordinates, ax=None):
     ----------
     coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         The coordinates to be plotted
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object.
 
 
     Examples
@@ -88,14 +91,14 @@ def _triangulation_sphere(sampling, data):
     ----------
     sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Coordinate object for which the triangulation is calculated
-    xyz : list of arrays
+    data : list of arrays
         x, y, and z values of the data points in the triangulation
 
     Returns
     -------
     triangulation : matplotlib Triangulation
 
-    """ # noqa: 501
+    """
     x, y, z = sph2cart(
         sampling.azimuth,
         sampling.colatitude,
@@ -131,10 +134,10 @@ def interpolate_data_on_sphere(
     overlap : float, (pi/4)
         The overlap for the periodic extension in azimuth angle, given in
         radians
-    refine : bool (False)
-        Refine the mesh before interpolating
-    interpolator : linear, cubic
-        The interpolation method to be used
+    refine : bool
+        Refine the mesh before interpolating. The default is False.
+    interpolator : 'linear', 'cubic'
+        The interpolation method to be used. The default is 'linear'.
 
     Returns
     -------
@@ -146,7 +149,7 @@ def interpolate_data_on_sphere(
     Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
     are used.
 
-    """ # noqa: 501
+    """
     _, lats, lons = coordinates2latlon(sampling)
 
     mask = lons > np.pi - overlap
@@ -189,7 +192,8 @@ def _balloon_color_data(tri, data, itype):
     data : ndarray, double, complex double
         The data array
     itype : 'magnitude', 'phase', 'amplitude'
-        Whether to plot magnitude levels or the phase.
+        What type of data should be extracted. Either the 'magnitude', 'phase',
+        or 'amplitude' of the data array is used for the colormap.
 
     Returns
     -------
@@ -197,7 +201,6 @@ def _balloon_color_data(tri, data, itype):
         The data array for the colormap.
     vmin : double
         The minimum of the color data
-
     vmax : double
         The maximum of the color data
 
@@ -229,9 +232,7 @@ def pcolor_sphere(
         cmap=None,
         colorbar=True,
         phase=False,
-        ax=None,
-        *args,
-        **kwargs):
+        ax=None):
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi. The data array will be mapped onto the surface of a sphere.
 
@@ -249,14 +250,31 @@ def pcolor_sphere(
         points given in coordinates.
     cmap : matplotlib colomap, optional
         Colormap for the plot, see matplotlib.cm
+    colorbar : boolean, optional
+        Whether to show a colorbar or not. Default is `True`.
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
+    
+    Returns
+    -------
+    plot : matplotlib.trisurf
+        The plot object of the trisurf plot.
 
-    """ # noqa: 501
+    Examples
+    --------
+    .. plot::
+
+        >>> import spharpy
+        >>> import numpy as np
+        >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
+        >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+        >>> spharpy.plot.pcolor_sphere(coords, data)
+
+    """
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
@@ -332,8 +350,11 @@ def balloon_wireframe(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    show : boolean, optional
-        Whether to show the figure or not
+    colorbar : boolean, optional
+        Whether to show a colorbar or not. Default is `True`.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object.
 
     Examples
     --------
@@ -410,7 +431,6 @@ def balloon(
         phase=False,
         colorbar=True,
         ax=None,
-        *args,
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles theta and phi.
     The magnitude information is mapped onto the radius of the sphere.
@@ -435,6 +455,13 @@ def balloon(
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
+    colorbar : boolean, optional
+        Whether to show a colorbar or not. Default is `True`.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object.
+    **kwargs : optional
+        Additional arguments passed to the plot_trisurf function.
 
     Examples
     --------
@@ -476,7 +503,6 @@ def balloon(
                            antialiased=True,
                            vmin=vmin,
                            vmax=vmax,
-                           *args,
                            **kwargs)
 
     plot.set_array(cdata)
@@ -520,7 +546,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         >>> coords = spharpy.samplings.gaussian(n_max=5)
         >>> spharpy.plot.voronoi_cells_sphere(coords)
 
-    """ # noqa: 501
+    """
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
@@ -635,6 +661,23 @@ def pcolor_map(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
+    projection : str, optional
+        The projection of the map. Default is 'mollweide'. See
+        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
+        for more information on available projections in matplotlib.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    refine : bool, optional
+        Whether to refine the triangulation before plotting. Default is `False`.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object with the specified projection.
+    **kwargs : optional
+        Additional arguments passed to the tripcolor function.
 
     Examples
     --------
@@ -716,13 +759,37 @@ def contour_map(
 
     Parameters
     ----------
-    latitude: ndarray, double
-        Geodetic latitude angle of the map, must be in [-pi/2, pi/2]
-    longitude: ndarray, double
-        Geodetic longitude angle of the map, must be in [-pi, pi]
+    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+        Coordinates defining a sphere
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
+    projection : str, optional
+        The projection of the map. Default is 'mollweide'. See
+        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
+        for more information on available projections in matplotlib.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
+    levels : int or array-like, optional
+        Determines the number and positions of the contour lines / regions.
+        If an int n, use MaxNLocator, which tries to automatically choose
+        no more than n+1 "nice" contour levels between minimum and maximum
+        numeric values of Z. If array-like, draw contour lines at the
+        specified levels. The values must be in increasing order.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object with the specified projection.
+
+    Returns
+    -------
+    cf : matplotlib.contour.QuadContourSet
+        The contour plot object.
 
     Examples
     --------
@@ -805,6 +872,20 @@ def contour(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    ax : matplotlib.axis, None, optional
+        The matplotlib axis object used for plotting. By default `None`, which
+        will create a new axis object with the specified projection.
+
+    Returns
+    -------
+    cf : matplotlib.contour.QuadContourSet
+        The contour plot object.
 
     Examples
     --------
@@ -840,13 +921,14 @@ class MidpointNormalize(colors.Normalize):
     """Colormap norm with a defined midpoint. Useful for normalization of
     colormaps representing deviations from a defined midpoint.
     Taken from the official matplotlib documentation at
-    https://matplotlib.org/users/colormapnorms.html
+    https://matplotlib.org/users/colormapnorms.html.
     """
+
     def __init__(self, vmin=None, vmax=None, midpoint=0., clip=False):
         self.midpoint = midpoint
         colors.Normalize.__init__(self, vmin, vmax, clip)
 
-    def __call__(self, value, clip=None):
+    def __call__(self, value, clip=None):  # noqa: ARG002
         # I'm ignoring masked values and all kinds of edge cases to make a
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
@@ -854,7 +936,7 @@ class MidpointNormalize(colors.Normalize):
 
 
 def coordinates2latlon(coords: pf.Coordinates):
-    """Transforms from Cartesian coordinates to Geocentric coordinates
+    r"""Transforms from Cartesian coordinates to Geocentric coordinates.
 
     .. math::
 
@@ -873,7 +955,7 @@ def coordinates2latlon(coords: pf.Coordinates):
 
     Parameters
     ----------
-    coords : pf.Coordinates
+    coords : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         Cartesian Coordiantes are transformed to Geocentric coordinates
 
     Returns

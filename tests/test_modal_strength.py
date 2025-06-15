@@ -1,5 +1,5 @@
 """
-Tests for modal strength function
+Tests for modal strength function.
 """
 from scipy.io import loadmat
 import spharpy.spherical as sh

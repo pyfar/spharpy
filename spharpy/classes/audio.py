@@ -1,3 +1,5 @@
+"""SphericalHarmonicSignal class."""
+
 from pyfar import Signal
 from spharpy.spherical import renormalize, change_channel_convention
 import numpy as np
@@ -70,6 +72,7 @@ class SphericalHarmonicSignal(Signal):
     .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
 
     """
+
     def __init__(
             self,
             data,
