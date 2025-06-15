@@ -18,7 +18,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = False
+create_baseline = True
 
 # file type used for saving the plots
 file_type = "png"
@@ -47,7 +47,6 @@ for file in os.listdir(output_path):
 # the naming scheme if the baseline is as follows:
 # <test_name>_<function_name>_<parameters>.png
 
-
 # testing ---------------------------------------------------------------------
 @pytest.mark.parametrize('function', [
     (sp.plot.balloon),
@@ -68,3 +67,98 @@ def test_spherical_default(function):
     save_and_compare(
         create_baseline, baseline_path, output_path, filename,
         file_type, compare_output)
+
+
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.contour),
+    (sp.plot.contour_map),
+    (sp.plot.pcolor_map),
+    (sp.plot.pcolor_sphere)])
+@pytest.mark.parametrize('cmap', [plt.get_cmap('plasma'), 'plasma', None])
+def test_spherical_cmap(function, cmap):
+    """Test all spherical plots with custom arguments."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
+    # do plotting
+    if isinstance(cmap, mpl.colors.Colormap):
+        # if a colormap object is passed, use its name for the filename
+        cmap_str = 'ColormapObject'
+    else:
+        # otherwise use the string representation of the colormap
+        cmap_str = str(cmap)
+    filename = f'{function.__name__}_cmap_{cmap_str}'
+    create_figure()
+    function(coords, data, cmap=cmap)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+    
+
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.contour),
+    (sp.plot.contour_map),
+    (sp.plot.pcolor_map),
+    (sp.plot.pcolor_sphere)])
+@pytest.mark.parametrize('colorbar', [True, False])
+def test_spherical_colorbar(function, colorbar):
+    """Test all spherical plots with custom arguments."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+    
+    # do plotting
+    filename = f'{function.__name__}_colorbar_{colorbar}'
+    create_figure()
+    function(coords, data, colorbar=colorbar)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+    
+
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.contour),
+    (sp.plot.contour_map),
+    (sp.plot.pcolor_map),
+    (sp.plot.pcolor_sphere)])
+@pytest.mark.parametrize('limits', [None, (-1.5, 1.5), [-1.5, 1.5]])
+def test_spherical_limits(function, limits):
+    """Test all spherical plots with custom arguments."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+    
+    # do plotting
+    if limits is None:
+        limits_str = 'None'
+    else:
+        limits_str = f'{type(limits)}'
+    filename = f'{function.__name__}_limits_{limits_str}'
+    create_figure()
+    function(coords, data, limits=limits)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+    
+
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.pcolor_sphere)])
+@pytest.mark.parametrize('phase', [True, False])
+def test_spherical_phase(function, phase):
+    """Test all spherical plots with custom arguments."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+    if phase:
+        # use complex data to test phase plotting
+        data = np.exp(1j * data)
+    
+    # do plotting
+    filename = f'{function.__name__}_phase_{phase}'
+    create_figure()
+    function(coords, data, phase=phase)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+    
