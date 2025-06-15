@@ -57,7 +57,6 @@ for file in os.listdir(output_path):
 @pytest.mark.parametrize('cmap', [plt.get_cmap('plasma'), 'plasma', None])
 def test_spherical_cmap(function, cmap):
     """Test all spherical plots with custom arguments."""
-    print(f"Testing: {function.__name__}")
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
