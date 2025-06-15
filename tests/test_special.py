@@ -107,6 +107,42 @@ class TestHankelPrime(object):
         npt.assert_allclose(res, truth)
 
 
+@pytest.mark.parametrize(['m'], [(-1, ), (0, ), (1, )])
+def test_spherical_harmonic_complex(m):
+    """
+    Test first order complex valued spherical harmonics for selected angels.
+    """
+    # six positions: front, left, back, right, top, bottom
+    pi = np.pi
+    azimuth = np.array([0, pi / 2, pi, 3 * pi / 2, 0, 0])
+    colatitude = np.array([pi / 2, pi / 2, pi / 2, pi / 2, 0, pi])
+
+    # Manually computed desired values according to
+    # Rafaely (2019), Fundamentals of Spherical Array Processing, Table 1.1
+    if m == -1:
+        desired = np.sqrt(3 / (8 * np.pi)) * \
+            np.sin(colatitude) * np.exp(-1j * azimuth)
+    if m == 0:
+        desired = np.sqrt(3 / (4 * np.pi)) * \
+            np.cos(colatitude)
+    if m == 1:
+        desired = -np.sqrt(3 / (8 * np.pi)) * \
+            np.sin(colatitude) * np.exp(1j * azimuth)
+
+    # compute and compare actual values
+    actual = special.spherical_harmonic(1, m, colatitude, azimuth)
+    npt.assert_almost_equal(actual, desired, 10)
+
+
+def test_spherical_harmonic_complex_degree_out_of_range():
+    """Test if zero is returned if the degree m is larger than the order n"""
+    n = 1
+    m = [-2, 2]
+
+    npt.assert_equal(special.spherical_harmonic(n, m, 0, 0),
+                     np.array([0, 0], dtype=complex))
+
+
 def test_spherical_harmonic_derivative_theta():
     n_max = 5
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2, np.pi/4])
