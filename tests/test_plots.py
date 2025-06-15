@@ -55,7 +55,7 @@ for file in os.listdir(output_path):
     (sp.plot.pcolor_sphere)])
 def test_spherical_default(function):
     """Test all spherical plots with default arguments."""
-    print(f"Testing: {function.__name__}")
+    logger.info(f"Testing: {function.__name__}")
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
