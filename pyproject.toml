@@ -80,6 +80,7 @@ find = {}  # Scan the project directory with the default parameters
 exclude = [
     ".git",
     "docs",
+    "examples",
 ]
 line-length = 79
 lint.ignore = [
@@ -99,7 +100,7 @@ lint.select = [
     # "B",      # bugbear extension
     # "ARG",    # Remove unused function/method arguments
     "C4",     # Check for common security issues
-    # "E",      # PEP8 errors
+    "E",      # PEP8 errors
     # "F",      # Pyflakes
     # "W",      # PEP8 warnings
     # "D",      # Docstring guidelines
