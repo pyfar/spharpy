@@ -25,7 +25,6 @@ Modules
    :maxdepth: 1
 
    modules/spharpy.beamforming
-   modules/spharpy.indexing
    modules/spharpy.interpolate
    modules/spharpy.plot
    modules/spharpy.samplings
