@@ -130,7 +130,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     else:
         if n_points not in [(n + 1)**2 for n in range(1, 200)]:
             raise ValueError('invalid value for n_points')
-        n_max = np.sqrt(n_points) - 1
+        n_max = int(np.sqrt(n_points) - 1)
 
     # download data if necessary
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)
@@ -166,8 +166,8 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     return sampling
 
 
-def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
-                       radius=1.):
+def t_design(degree=None, n_max=None, criterion='const_energy',
+             radius=1.):
     """
     Return spherical t-design sampling grid.
 
@@ -207,7 +207,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Notes
     -----
@@ -233,7 +233,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.spherical_t_design(n_max=3)
+        >>> coords = sp.samplings.t_design(n_max=3)
         >>> sp.plot.scatter(coords)
 
     """
@@ -319,7 +319,7 @@ def dodecahedron(radius=1.):
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Examples
     --------
@@ -380,7 +380,7 @@ def icosahedron(radius=1.):
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Examples
     --------
@@ -418,7 +418,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     fulfilled if the number of points is chosen through ``n_max``.
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
-    :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
+    :py:func:`equal_angle` and :py:func:`great_circle` for samplings
     containing points at the poles.
 
     Parameters
@@ -515,7 +515,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     being :math:`4\pi`.
     This sampling does not contain points at the North and South Pole and is
     typically used for spherical harmonics processing. See
-    :py:func:`sph_equal_angle` and :py:func:`sph_great_circle` for samplings
+    :py:func:`equal_angle` and :py:func:`great_circle` for samplings
     containing points at the poles.
 
     Parameters
@@ -890,8 +890,8 @@ def equal_angle(delta_angles, radius=1.):
     Generate sampling of the sphere with equally spaced angles.
 
     This sampling contain points at the North and South Pole. See
-    :py:func:`sph_equiangular`, :py:func:`sph_gaussian`, and
-    :py:func:`sph_great_circle` for samplings that do not contain points at the
+    :py:func:`equiangular`, :py:func:`gaussian`, and
+    :py:func:`great_circle` for samplings that do not contain points at the
     poles.
 
 
@@ -908,7 +908,7 @@ def equal_angle(delta_angles, radius=1.):
     -------
     sampling : :py:class:`pyfar.Coordinates`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     Examples
     --------
@@ -991,7 +991,7 @@ def great_circle(
     -------
     sampling : :py:class:`pyfar.Coordinates`
         Sampling positions. Sampling weights can be obtained from
-        :py:func:`calculate_sph_voronoi_weights`.
+        :py:func:`calculate_sampling_weights`.
 
     References
     ----------
@@ -1329,7 +1329,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights, quadrature=True)
+        n_max=n_max, weights=weights, quadrature=False)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]

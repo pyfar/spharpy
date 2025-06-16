@@ -10,6 +10,14 @@ For examples on how to use spharpy refer to the notebooks in the
 `examples gallery`_ and the documentation on classes and modules below.
 
 
+Classes
+-------
+
+.. toctree::
+   :maxdepth: 1
+
+   classes/spharpy.coordinates
+
 Modules
 -------
 
