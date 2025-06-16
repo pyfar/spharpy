@@ -601,7 +601,7 @@ class SamplingSphere(pf.Coordinates):
         if self.n_max is None or self.weights is None:
             return False
         # generate SH object at N=1
-        n_eval = 1
+        n_eval = 1 if self.n_max > 0 else 0
         sh_basis = spherical_harmonic_basis_real(n_eval, self)
 
         # test if basis is quadrature
