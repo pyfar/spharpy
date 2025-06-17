@@ -1,3 +1,7 @@
+from .sh import (
+    SphericalHarmonics
+)
+
 from .audio import (
     SphericalHarmonicSignal,
 )
@@ -7,6 +11,7 @@ from .coordinates import (
 )
 
 __all__ = [
+    'SphericalHarmonics'
     'SphericalHarmonicSignal',
     'SamplingSphere',
 ]
