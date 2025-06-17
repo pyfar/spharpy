@@ -16,6 +16,7 @@ Classes
 .. toctree::
    :maxdepth: 1
 
+   classes/spherical_harmonic
    classes/spharpy.audio
    classes/spharpy.coordinates
 
