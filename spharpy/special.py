@@ -167,7 +167,7 @@ def spherical_harmonic(n, m, theta, phi):
     m : int
         The spherical harmonic degree
     theta : ndarray, double
-        The elevation angle
+        The colatitude angle
     phi : ndarray, double
         The azimuth angle
 
@@ -179,23 +179,14 @@ def spherical_harmonic(n, m, theta, phi):
     Note
     ----
     This function wraps the spherical harmonic implementation from scipy.
-    The only difference is that we return zeros instead of nan values
-    if n < abs(m).
 
     References
     ----------
     .. [#] B. Rafaely, "Fundamentals of Spherical Array Processing", (2015),
            Springer-Verlag
-
     """
-    theta = np.asarray(theta, dtype=float)
-    phi = np.asarray(phi, dtype=float)
 
-    if n < np.abs(m):
-        sph_harm = np.zeros(theta.shape)
-    else:
-        sph_harm = _spspecial.sph_harm(m, n, phi, theta)
-    return sph_harm
+    return _spspecial.sph_harm_y(n, m, theta, phi)
 
 
 def spherical_harmonic_real(n, m, theta, phi):
@@ -228,7 +219,7 @@ def spherical_harmonic_real(n, m, theta, phi):
     m : int
         The spherical harmonic degree
     theta : ndarray, double
-        The elevation angle
+        The colatitude angle
     phi : ndarray, double
         The azimuth angle
 
@@ -240,7 +231,7 @@ def spherical_harmonic_real(n, m, theta, phi):
     """
     # careful here, scipy uses phi as the elevation angle and
     # theta as the azimuth angle
-    Y_nm_cplx = _spspecial.sph_harm(m, n, phi, theta)
+    Y_nm_cplx = spherical_harmonic(n, m, theta, phi)
 
     if m == 0:
         Y_nm = np.real(Y_nm_cplx)
