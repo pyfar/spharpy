@@ -2,6 +2,7 @@ import numpy as np
 from pyfar import Signal
 import warnings
 from . import SphericalHarmonicSignal
+from .spherical import SphericalHarmonics
 
 
 def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
@@ -33,7 +34,7 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
         Flag to indicate if the Condon-Shortley phase term is included
         (``True``) or not (``False``).
     inverse_method:
-    
+
     Returns
     ----------
     SphericalHarmonicSignal
