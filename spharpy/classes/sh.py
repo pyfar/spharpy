@@ -1,3 +1,6 @@
+"""
+Documentation for the SphericalHarmonics class, will be added in an other PR.
+"""
 import numpy as np
 import pyfar as pf
 import spharpy as sy
@@ -6,6 +9,7 @@ import spharpy as sy
 class SphericalHarmonics:
     r"""
     Compute spherical harmonic basis matrices, their inverses, and gradients.
+
     The spherical harmonic Ynm is given by:
 
     .. math::
@@ -339,7 +343,8 @@ class SphericalHarmonics:
 
     def _compute_basis_gradient(self):
         """
-        Compute the gradient of the basis matrix for the SphericalHarmonics class
+        Compute the gradient of the basis matrix for the
+        SphericalHarmonics class.
         """
         if any(
             (self.normalization in ["maxN", "sn3d"],
@@ -373,7 +378,7 @@ class SphericalHarmonics:
 
     def _compute_inverse(self):
         """
-        Compute the inverse basis matrix for the SphericalHarmonics class
+        Compute the inverse basis matrix for the SphericalHarmonics class.
         """
         if self._basis is None:
             self._compute_basis()
@@ -386,7 +391,8 @@ class SphericalHarmonics:
 
     def _reset_compute_attributes(self):
         """Reset the computed attributes for the SphericalHarmonics class in
-        case of changes in the parameters."""
+        case of changes in the parameters.
+        """
         self._basis = None
         self._basis_gradient_theta = None
         self._basis_gradient_phi = None

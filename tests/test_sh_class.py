@@ -1,5 +1,5 @@
 """
-Tests for spherical harmonic class
+Tests for spherical harmonic class.
 """
 import pytest
 import numpy as np

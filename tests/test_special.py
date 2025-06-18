@@ -147,7 +147,7 @@ def test_spherical_harmonic_complex(m):
 
 
 def test_spherical_harmonic_complex_degree_out_of_range():
-    """Test if zero is returned if the degree m is larger than the order n"""
+    """Test if zero is returned if the degree m is larger than the order n."""
     n = 1
     m = [-2, 2]
 
