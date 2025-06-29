@@ -101,6 +101,7 @@ def test_nmax_getter():
                                      normalization='n3d',
                                      condon_shortley=False)
     assert signal.n_max == 1
+    assert isinstance(signal.n_max, int)
 
 
 def test_init_wrong_basis_type():
