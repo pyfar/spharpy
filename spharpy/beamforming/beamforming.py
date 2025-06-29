@@ -105,7 +105,7 @@ def dolph_chebyshev_weights(
 
 def rE_max_weights(n_max, normalize=True):
     """Weights that maximize the length of the energy vector.
-    This is most often used in Ambisonics decoding. [#]_.
+    This is most often used in Ambisonics decoding [#]_.
 
     Parameters
     ----------
