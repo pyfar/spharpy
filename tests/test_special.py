@@ -1,5 +1,5 @@
 """
-Tests for special functions.    
+Tests for special functions.
 """
 
 import pytest
