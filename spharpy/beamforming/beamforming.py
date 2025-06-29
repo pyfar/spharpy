@@ -17,7 +17,7 @@ def dolph_chebyshev_weights(
     """Calculate the weights for a spherical Dolph-Chebyshev beamformer.
     The design criterion can either be a desired side-lobe attenuation or a
     desired main-lobe width. Once one criterion is chosen, the other will
-    become a dependent property which will be chosen accordingly. [#]_.
+    become a dependent property which will be chosen accordingly [#]_.
 
     Parameters
     ----------
