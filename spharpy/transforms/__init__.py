@@ -1,4 +1,4 @@
-"""Spherical Harmonic Transforms."""
+"""Rotations for Spherical Harmonics."""
 
 from .rotations import (
     rotation_z_axis,

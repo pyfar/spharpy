@@ -778,7 +778,7 @@ def contour_map(
         Whether to show a colorbar or not. Default is `True`.
     levels : int or array-like, optional
         Determines the number and positions of the contour lines / regions.
-        If an int n, use MaxNLocator, which tries to automatically choose
+        If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`, which tries to automatically choose
         no more than n+1 "nice" contour levels between minimum and maximum
         numeric values of Z. If array-like, draw contour lines at the
         specified levels. The values must be in increasing order.
