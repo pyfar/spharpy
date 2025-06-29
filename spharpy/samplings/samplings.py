@@ -1121,7 +1121,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
         print('Possible input values:')
         if len(orders) != len(degrees):
             raise ValueError("Mismatch between lengths of 'orders' and 'degrees'.")
-        for o, d in zip(orders, degrees):
+        for o, d in zip(orders, degrees, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
