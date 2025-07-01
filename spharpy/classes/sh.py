@@ -104,16 +104,16 @@ The Ambix convention used for example by SOFA or MPEG, see [#]_:
                    :py:attr:`~spharpy.SphericalHarmonics.normalization` = `N3D`, 
                    :py:attr:`~spharpy.SphericalHarmonics.condon_shortley` = False
 
-A convention used by [#]_ or [#]_:
-   :py:attr:`~spharpy.SphericalHarmonics.basis_type` = `complex`, 
+A convention used by [#]_ (pp.4 eq. 1.9)  or [#]_ (pp. 186 eq 6.20) :
+   :py:attr:`~spharpy.SphericalHarmonics.basis_type` = `complex`,
    :py:attr:`~spharpy.SphericalHarmonics.channel_convention` = `ACN`,
-   :py:attr:`~spharpy.SphericalHarmonics.normalization` = `N3D`, 
-   :py:attr:`~spharpy.SphericalHarmonics.condon_shortley` = True
+   :py:attr:`~spharpy.SphericalHarmonics.normalization` = `N3D`,
+   :py:attr:`~spharpy.SphericalHarmonics.condon_shortley` = False
 
-Convention defined in [#]_: 
-   :py:attr:`~spharpy.SphericalHarmonics.basis_type` = `complex`, 
+Convention defined in [#]_ (pp. 27. Eq. 2.23):
+   :py:attr:`~spharpy.SphericalHarmonics.basis_type` = `complex`,
    :py:attr:`~spharpy.SphericalHarmonics.channel_convention` = `ACN`,
-   :py:attr:`~spharpy.SphericalHarmonics.normalization` = `N3D`, 
+   :py:attr:`~spharpy.SphericalHarmonics.normalization` = `N3D`,
    :py:attr:`~spharpy.SphericalHarmonics.condon_shortley` = True
 
 .. [#] F. Zotter, M. Frank, "Ambisonics A Practical 3D Audio Theory for Recording, Studio Production, Sound Reinforcement, and
