@@ -1,6 +1,7 @@
 from spharpy import SamplingSphere
 import numpy as np
 import pytest
+from spharpy.samplings import gaussian
 
 
 def test_sampling_sphere_init():
@@ -153,6 +154,17 @@ def test_setting_weights_invalid():
         weights_invalid = np.ones(6)*4*np.pi/6 * -1
         weights_invalid[0] = -1
         sampling.weights = weights_invalid
+
+
+def test_setting_weights_invalid_quadrature():
+    # create a quadrature grid (gaussian)
+    sampling = gaussian(n_max=3)
+    # check if quadrature is set properly
+    assert sampling.quadrature
+    # update weights such that quadrature requirement is not valid anymore
+    weights = 4 * np.pi * np.ones(sampling.cshape) / sampling.cshape
+    sampling.weights = weights
+    assert not sampling.quadrature
 
 
 def test_quadrature_default_getter():

@@ -591,7 +591,7 @@ class SamplingSphere(pf.Coordinates):
         return weights
 
     def _check_quadrature(self):
-        r"""Check if the sampling is a are valid quadrature.
+        r"""Check if the sampling is a valid quadrature.
 
         Returns
         -------
@@ -624,6 +624,8 @@ class SamplingSphere(pf.Coordinates):
         Their sum must equal to :math:`4\pi`.
         """
         super(__class__, type(self)).weights.fset(self, weights)
+        if self.quadrature:
+            self._quadrature = self._check_quadrature()
 
     @property
     def quadrature(self):
