@@ -6,6 +6,7 @@ __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
 __version__ = '0.6.2'
 
+from .classes.sh import SphericalHarmonics
 from .classes.coordinates import SamplingSphere
 from .classes.audio import SphericalHarmonicSignal
 from . import spherical
@@ -19,6 +20,7 @@ from . import special
 
 
 __all__ = [
+    'SphericalHarmonics',
     'SphericalHarmonicSignal',
     'spherical',
     'samplings',
