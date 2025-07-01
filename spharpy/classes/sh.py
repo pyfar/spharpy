@@ -47,59 +47,38 @@ The term :math:`T_{nm}` is defined as:
                \end{cases}  
    .. plot::
         :include-source:
-        :format: python
-        :align: center
-        :scale: 75
 
         import matplotlib.pyplot as plt
         import numpy as np
         import matplotlib as mpl
         from matplotlib.colorbar import Colorbar
         import spharpy
-        from mpl_toolkits.mplot3d import Axes3D
-        from mpl_toolkits.mplot3d import axes3d
 
         n_max = 3
         sampling = spharpy.samplings.equal_area(25, condition_num=np.inf)
         Y_real = spharpy.spherical.spherical_harmonic_basis_real(n_max, sampling)
 
-        #fig = plt.figure(figsize=(12, 8)) 
-        from matplotlib import cm
-
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        X, Y, Z = axes3d.get_test_data(0.005)
-        ax.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.3)
-        cset = ax.contourf(X, Y, Z, zdir='z', offset=-100, cmap=cm.coolwarm)
-        cset = ax.contourf(X, Y, Z, zdir='x', offset=-40, cmap=cm.coolwarm)
-        cset = ax.contourf(X, Y, Z, zdir='y', offset=40, cmap=cm.coolwarm)
-
-        ax.set_xlabel('X'); ax.set_xlim(-40, 40)
-        ax.set_ylabel('Y'); ax.set_ylim(-40, 40)
-        ax.set_zlabel('Z'); ax.set_zlim(-100, 100)
-
-        plt.show()
+        fig = plt.figure(figsize=(12, 8)) 
 
         gs = plt.GridSpec(4, 5, height_ratios=[1, 1, 1, 0.1], width_ratios=[1, 1, 1, 1, 1])
-        #for acn in range((n_max+1)**2):
-        #    n, m = spharpy.spherical.acn_to_nm(acn)
-        #    idx_m = int(np.floor(n_max/2+1)) + m
-        #    #ax = plt.subplot(gs[n, idx_m], projection='3d')
-        #    ax = fig.add_subplot(gs[n, idx_m])
-        #    balloon = spharpy.plot.balloon_wireframe(sampling, Y_real[:, acn], phase=True, colorbar=False, ax=ax)
-        #     ax.set_title('$Y_{' + str(n) + '}^{' + str(m) + '}(\\theta, \\phi)$')
-        #     plt.axis('off')
+        for acn in range((n_max+1)**2-1):
+           n, m = spharpy.spherical.acn_to_nm(acn)
+           idx_m = int(np.floor(n_max/2+1)) + m
+           ax = fig.add_subplot(gs[n, idx_m], projection='3d')
+           balloon = spharpy.plot.balloon_wireframe(sampling, Y_real[:, acn], phase=True, colorbar=False, ax=ax)
+           ax.set_title('$Y_{' + str(n) + '}^{' + str(m) + '}(\\theta, \\phi)$')
+           plt.axis('off')
 
-        # cax = plt.subplot(gs[n_max+1, :])
+        cax = fig.add_subplot(gs[n_max+1-1, :])
 
-        # cnorm = plt.Normalize(0, 2*np.pi)
-        # cmappable = mpl.cm.ScalarMappable(cnorm, spharpy.plot.phase_twilight())
-        # cmappable.set_array(np.linspace(0, 2*np.pi, 128))
+        cnorm = plt.Normalize(0, 2*np.pi)
+        cmappable = mpl.cm.ScalarMappable(cnorm, spharpy.plot.phase_twilight())
+        cmappable.set_array(np.linspace(0, 2*np.pi, 128))
 
-        # cb = Colorbar(ax=cax, mappable=cmappable, orientation='horizontal', ticklocation='bottom')
-        # cb.set_label('Phase in rad')
-        # cb.set_ticks(np.linspace(0, 2*np.pi, 5))
-        # cb.set_ticklabels(['$0$', '$\pi/2$', '$\pi$', '$3\pi/2$', '$2\pi$'])
+        cb = Colorbar(ax=cax, mappable=cmappable, orientation='horizontal', ticklocation='bottom')
+        cb.set_label('Phase in rad')
+        cb.set_ticks(np.linspace(0, 2*np.pi, 5))
+        cb.set_ticklabels(['$0$', '$\pi/2$', '$\pi$', '$3\pi/2$', '$2\pi$'])
 
 The spherical harmonics are orthogonal on the unit sphere, i.e.,
 
@@ -525,6 +504,10 @@ class SphericalHarmonicSignal(Signal):
     .. [#] B. Rafely, "Fundamentals of Spherical Array Processing", (2015),
             Springer-Verlag
     .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
+    .. [#] J. Ahrens, C. Andersson, P. Höstmad, and W. Kropp, “Tutorial on
+            Scaling of the Discrete Fourier Transform and the Implied
+            Physical Units of the Spectra of Time-Discrete Signals,” Vienna,
+            Austria, May 2020, p. e-Brief 600.
 
     """
     def __init__(
