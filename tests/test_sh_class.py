@@ -4,7 +4,7 @@ Tests for spherical harmonic class
 import pytest
 import numpy as np
 import pyfar as pf
-from spharpy.spherical import SphericalHarmonics
+from spharpy import SphericalHarmonics
 from spharpy.samplings import gaussian, calculate_sampling_weights, equiangular
 
 def test_sphharm_init():
@@ -20,7 +20,7 @@ def test_sphharm_init():
     assert sph_harm.condon_shortley == False
 
 def test_sphharm_init_invalid_coordinates():
-    with pytest.raises(TypeError, 
+    with pytest.raises(TypeError,
                        match="coordinates must be a pyfar.Coordinates " \
                        "object or spharpy.SamplingSphere object"):
         SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
@@ -40,7 +40,7 @@ def test_sphharm_compute_basis_gradient():
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.basis_gradient_theta is not None
     assert sph_harm.basis_gradient_phi is not None
-    
+
 def test_sphharm_compute_inverse_quad():
     coordinates = gaussian(n_points=4)
     weights = calculate_sampling_weights(coordinates)
@@ -50,7 +50,7 @@ def test_sphharm_compute_inverse_quad():
 
 def test_sphharm_compute_inverse_pseudo_inv():
     coordinates = gaussian(n_points= 5)
-    sh = SphericalHarmonics(2, coordinates, 
+    sh = SphericalHarmonics(2, coordinates,
                             inverse_method = 'pseudo_inverse')
     assert sh.basis_inv is not None
 
