@@ -28,7 +28,8 @@ def test_sht_wrong_axis():
                                                      np.zeros((8)),
                                                      np.ones((8)))
 
-    with warns(UserWarning, match="Compute SHT along axis=0."):
+    with warns(UserWarning, match="Compute spherical harmonics transform "
+                                  "along axis = 0."):
         _ = sht(signal, coords, n_max, axis=1)
 
 
@@ -39,10 +40,10 @@ def test_back_and_forth(n_max, basis_type):
     sampling = samplings.equiangular(50)
 
     if basis_type == 'real':
-        data = np.ones(((n_max+1) ** 2, 16))
+        data = np.ones((1, (n_max+1) ** 2, 16))
         is_complex = False
     else:
-        data = np.ones(((n_max+1) ** 2, 16), dtype=complex)
+        data = np.ones((1, (n_max+1) ** 2, 16), dtype=complex)
         is_complex = True
 
     # generate unit amplitude sh signal

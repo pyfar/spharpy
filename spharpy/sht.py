@@ -2,7 +2,7 @@ import numpy as np
 from pyfar import Signal
 import warnings
 from . import SphericalHarmonicSignal
-from .spherical import SphericalHarmonics
+from . import SphericalHarmonics
 
 
 def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
@@ -33,7 +33,11 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
     condon_shortley : bool or str
         Flag to indicate if the Condon-Shortley phase term is included
         (``True``) or not (``False``).
-    inverse_method:
+    inverse_method: str
+        Method for computing the inverse transform:
+        - ‘auto’: use ‘quadrature’ when applicable, otherwise ‘pseudo_inverse’.
+        - ‘quadrature’: compute the inverse via numerical quadrature.
+        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse approximation.
 
     Returns
     ----------
@@ -42,22 +46,23 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
     References
     ----------
 
-        [1] Rafaely, B. (2015). Fundamentals of Spherical Array Processing,
+        [#] Rafaely, B. (2015). Fundamentals of Spherical Array Processing,
             (J. Benesty and W. Kellermann, Eds.) Springer Berlin Heidelberg,
             2nd ed., 196 pages. doi:10.1007/978-3-319-99561-8
-        [2] Ramani Duraiswami, Dimitry N. Zotkin, and Nail A. Gumerov: "Inter-
+        [#] Ramani Duraiswami, Dimitry N. Zotkin, and Nail A. Gumerov: "Inter-
             polation and range extrapolation of HRTFs." IEEE Int. Conf.
             Acoustics, Speech, and Signal Processing (ICASSP), Montreal,
             Canada, May 2004, p. 45-48, doi: 10.1109/ICASSP.2004.1326759.
     """
 
-    if not signal.cshape[axis] == coordinates.csize:
-        if coordinates.csize not in signal.cshape:
+    if not signal.time.shape[axis] == coordinates.csize:
+        if coordinates.csize not in signal.time.shape:
             raise ValueError("Signal shape does not match "
                              "number of coordinates.")
         else:
-            axis = signal.cshape.index(coordinates.csize)
-            warnings.warn(f"Compute SHT along axis={axis}.", UserWarning)
+            axis = signal.time.shape.index(coordinates.csize)
+            warnings.warn("Compute spherical harmonics transform along "
+                          f"axis = {axis}.", UserWarning)
 
     spherical_harmonics = SphericalHarmonics(
         n_max=n_max, coordinates=coordinates, basis_type=basis_type,
@@ -79,6 +84,7 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
         condon_shortley=spherical_harmonics.condon_shortley,
         sampling_rate=signal.sampling_rate,
         fft_norm=signal.fft_norm,
+        is_complex=signal.complex,
         comment=signal.comment)
 
 
@@ -98,6 +104,7 @@ def isht(sh_signal, coordinates):
     ----------
     Signal
     """
+
     # get spherical harmonics basis functions according to sh_signals
     # properties
     spherical_harmonics = SphericalHarmonics(
@@ -110,7 +117,10 @@ def isht(sh_signal, coordinates):
 
     # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
+    if sh_signal.complex:
+        data = np.real(data)
 
     return Signal(data, sh_signal.sampling_rate,
                   fft_norm=sh_signal.fft_norm,
-                  comment=sh_signal.comment)
+                  comment=sh_signal.comment,
+                  is_complex=sh_signal.complex)
