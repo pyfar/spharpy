@@ -117,8 +117,6 @@ def isht(sh_signal, coordinates):
 
     # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
-    if sh_signal.complex:
-        data = np.real(data)
 
     return Signal(data, sh_signal.sampling_rate,
                   fft_norm=sh_signal.fft_norm,

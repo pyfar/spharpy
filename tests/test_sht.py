@@ -33,28 +33,32 @@ def test_sht_wrong_axis():
         _ = sht(signal, coords, n_max, axis=1)
 
 
-@mark.parametrize("n_max", [3, 12, 44])
+@mark.parametrize("n_max", [3, 12, 20])
 @mark.parametrize("basis_type", ["real", "complex"])
-def test_back_and_forth(n_max, basis_type):
+@mark.parametrize("normalization", ["n3d", "sn3d"])
+@mark.parametrize("condon_shortley", [True, False])
+def test_back_and_forth(n_max, basis_type, normalization, condon_shortley):
 
-    sampling = samplings.equiangular(50)
+    sampling = samplings.equiangular(n_max=n_max)
+
+    data = np.ones((1, (n_max+1) ** 2, 16), dtype=complex)
+    is_complex = True
 
     if basis_type == 'real':
-        data = np.ones((1, (n_max+1) ** 2, 16))
+        data = np.real(data)
         is_complex = False
-    else:
-        data = np.ones((1, (n_max+1) ** 2, 16), dtype=complex)
-        is_complex = True
 
     # generate unit amplitude sh signal
-    a_nm = SphericalHarmonicSignal(data, basis_type='real',
+    a_nm = SphericalHarmonicSignal(data, basis_type=basis_type,
                                    channel_convention='acn',
-                                   condon_shortley=True,
-                                   normalization='n3d',
+                                   condon_shortley=condon_shortley,
+                                   normalization=normalization,
                                    sampling_rate=48000,
                                    is_complex=is_complex)
 
     a = isht(a_nm, sampling)
-    a_eval_nm = sht(a, sampling, n_max=n_max, basis_type=basis_type)
+    a_eval_nm = sht(a, sampling, n_max=n_max, basis_type=basis_type,
+                    normalization=normalization,
+                    condon_shortley=condon_shortley)
 
     npt.assert_allclose(a_nm.time, a_eval_nm.time, rtol=1e-8)
