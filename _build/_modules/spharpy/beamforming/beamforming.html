@@ -1,0 +1,818 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spharpy.beamforming.beamforming &#8212; spharpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=9e3b4b97" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5459b468"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/spharpy/beamforming/beamforming';</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-light" alt="spharpy - Home"/>
+    <img src="../../../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-dark pst-js-only" alt="spharpy - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Packages
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">spharpy.beamforming.beamforming</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for spharpy.beamforming.beamforming</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.polynomial</span> <span class="k">as</span> <span class="nn">poly</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">eigh</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">factorial</span>
+
+<span class="kn">import</span> <span class="nn">spharpy.special</span> <span class="k">as</span> <span class="nn">special</span>
+<span class="kn">from</span> <span class="nn">spharpy.spherical</span> <span class="kn">import</span> <span class="n">sph_identity_matrix</span>
+
+
+<div class="viewcode-block" id="dolph_chebyshev_weights">
+<a class="viewcode-back" href="../../../modules/spharpy.beamforming.html#spharpy.beamforming.dolph_chebyshev_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">dolph_chebyshev_weights</span><span class="p">(</span>
+        <span class="n">n_max</span><span class="p">,</span>
+        <span class="n">design_parameter</span><span class="p">,</span>
+        <span class="n">design_criterion</span><span class="o">=</span><span class="s1">&#39;sidelobe&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the weights for a spherical Dolph-Chebyshev beamformer.</span>
+<span class="sd">    The design criterion can either be a desired side-lobe attenuation or a</span>
+<span class="sd">    desired main-lobe width. Once one criterion is chosen, the other will</span>
+<span class="sd">    become a dependent property which will be chosen accordingly. [#]_</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    design_parameter : float</span>
+<span class="sd">        This can either be the desired side-lobe attenuation or the width of</span>
+<span class="sd">        the main-lobe in radians.</span>
+<span class="sd">    design_criterion : &#39;sidelobe&#39;, &#39;mainlobe&#39;</span>
+<span class="sd">        Whether the design parameter argument is the desired side-lobe</span>
+<span class="sd">        attenuation or the desired main-lobe width.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weights : array-like, float</span>
+<span class="sd">        An array containing the weight coefficients.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  A. Koretz and B. Rafaely, “Dolph-Chebyshev beampattern design for</span>
+<span class="sd">            spherical arrays,” IEEE Transactions on Signal Processing, vol. 57,</span>
+<span class="sd">            no. 6, pp. 2417-2420, 2009.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Apply the weights for a Dolph-Chebyshev beamformer with a side-lobe</span>
+<span class="sd">    attenuation of 50 dB to a plane wave decomposition. The direction of</span>
+<span class="sd">    arrival is zero degrees azimuth.</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import pyfar as pf</span>
+<span class="sd">        &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; N = 7</span>
+<span class="sd">        &gt;&gt;&gt; steering = pf.Coordinates.from_spherical_colatitude(</span>
+<span class="sd">        ...     np.linspace(0, 2*np.pi, 500), np.ones(500)*np.pi/2,</span>
+<span class="sd">        ...     np.ones(500))</span>
+<span class="sd">        &gt;&gt;&gt; Y_steering = spharpy.spherical.spherical_harmonic_basis_real(</span>
+<span class="sd">        ...     N, steering)</span>
+<span class="sd">        &gt;&gt;&gt; a_nm = spharpy.spherical.spherical_harmonic_basis_real(</span>
+<span class="sd">        ...     N, pf.Coordinates(1, 0, 0))</span>
+<span class="sd">        &gt;&gt;&gt; R = 10**(50/20)</span>
+<span class="sd">        &gt;&gt;&gt; d_nm = spharpy.beamforming.dolph_chebyshev_weights(</span>
+<span class="sd">        ...     N, R, design_criterion=&#39;sidelobe&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)</span>
+<span class="sd">        &gt;&gt;&gt; ax = plt.axes(projection=&#39;polar&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_rticks([-50, -25, 0])</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_theta_zero_location(&#39;N&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_xlabel(&#39;Azimuth (deg)&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n_max</span>
+    <span class="k">if</span> <span class="n">design_criterion</span> <span class="o">==</span> <span class="s1">&#39;sidelobe&#39;</span><span class="p">:</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">design_parameter</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="n">M</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arccosh</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">design_criterion</span> <span class="o">==</span> <span class="s1">&#39;mainlobe&#39;</span><span class="p">:</span>
+        <span class="n">theta0</span> <span class="o">=</span> <span class="n">design_parameter</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">M</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta0</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">M</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arccosh</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This design criterion is not available.&quot;</span><span class="p">)</span>
+
+    <span class="n">t_2N</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">chebyshev_coefficients</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n_max</span><span class="p">)</span>
+
+    <span class="n">P_N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">P_N</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">legendre_coefficients</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="n">d_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="n">temp</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> \
+                        <span class="n">factorial</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="n">factorial</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">m</span><span class="p">))</span> <span class="o">*</span> \
+                        <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="n">t_2N</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">P_N</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span><span class="o">*</span><span class="n">x0</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">d_n</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="n">temp</span>
+
+    <span class="k">return</span> <span class="n">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;n-nm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">d_n</span></div>
+
+
+
+<div class="viewcode-block" id="rE_max_weights">
+<a class="viewcode-back" href="../../../modules/spharpy.beamforming.html#spharpy.beamforming.rE_max_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">rE_max_weights</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Weights that maximize the length of the energy vector.</span>
+<span class="sd">    This is most often used in Ambisonics decoding. [#]_</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    normalize : bool</span>
+<span class="sd">        If `True`, the weights will be normalized such that the complex</span>
+<span class="sd">        amplitude of a plane wave is not distorted.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weights : array-like, float</span>
+<span class="sd">        An array containing the weight coefficients.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  J. Daniel, J.-B. Rault, and J.-D. Polack, “Ambisonics Encoding of</span>
+<span class="sd">            Other Audio Formats for Multiple Listening Conditions,” in 105th</span>
+<span class="sd">            Convention of the Audio Engineering Society, 1998, vol. 3.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Apply the max-rE weights to a plane wave decomposition. The direction of</span>
+<span class="sd">    arrival is zero degrees azimuth.</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import pyfar as pf</span>
+<span class="sd">        &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; N = 7</span>
+<span class="sd">        &gt;&gt;&gt; steering = pf.Coordinates.from_spherical_colatitude(</span>
+<span class="sd">        ...     np.linspace(0, 2*np.pi, 500), np.ones(500)*np.pi/2,</span>
+<span class="sd">        ...     np.ones(500))</span>
+<span class="sd">        &gt;&gt;&gt; Y_steering = spharpy.spherical.spherical_harmonic_basis_real(</span>
+<span class="sd">        ...     N, steering)</span>
+<span class="sd">        &gt;&gt;&gt; a_nm = spharpy.spherical.spherical_harmonic_basis_real(</span>
+<span class="sd">        ...     N, pf.Coordinates(1, 0, 0))</span>
+<span class="sd">        &gt;&gt;&gt; d_nm = spharpy.beamforming.rE_max_weights(N)</span>
+<span class="sd">        &gt;&gt;&gt; beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)</span>
+<span class="sd">        &gt;&gt;&gt; ax = plt.axes(projection=&#39;polar&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_rticks([-50, -25, 0])</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_theta_zero_location(&#39;N&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_xlabel(&#39;Azimuth (deg)&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">leg</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">legendre</span><span class="o">.</span><span class="n">Legendre</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">P_n_root</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">legendre</span><span class="o">.</span><span class="n">legroots</span><span class="p">(</span><span class="n">leg</span><span class="o">.</span><span class="n">coef</span><span class="p">)</span>
+    <span class="n">max_root</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">P_n_root</span><span class="p">))</span>
+    <span class="n">g_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">leg</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">legendre</span><span class="o">.</span><span class="n">Legendre</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">g_n</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">leg</span><span class="p">(</span><span class="n">max_root</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">g_n</span> <span class="o">=</span> <span class="n">normalize_beamforming_weights</span><span class="p">(</span><span class="n">g_n</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">g_n</span></div>
+
+
+
+<div class="viewcode-block" id="maximum_front_back_ratio_weights">
+<a class="viewcode-back" href="../../../modules/spharpy.beamforming.html#spharpy.beamforming.maximum_front_back_ratio_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">maximum_front_back_ratio_weights</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Weights that maximize the front-back ratio of the beam pattern.</span>
+<span class="sd">    This is also often referred to as the super-cardioid beam pattern.</span>
+<span class="sd">    The weights are calculated from an eigenvalue problem [#]_. For high</span>
+<span class="sd">    spherical harmonic orders, the eigenvalue problem may not be feasible and</span>
+<span class="sd">    a solution will not be found.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        The spherical harmonic order</span>
+<span class="sd">    normalize : bool</span>
+<span class="sd">        If `True`, the weights will be normalized such that the complex</span>
+<span class="sd">        amplitude of a plane wave is not distorted.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weights : array-like, float</span>
+<span class="sd">        An array containing the weight coefficients</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing,</span>
+<span class="sd">            Springer, 2015.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Apply weights maximizing the front-back ratio to a plane wave</span>
+<span class="sd">    decomposition. The direction of arrival is zero degrees azimuth.</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import pyfar as pf</span>
+<span class="sd">        &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; N = 5</span>
+<span class="sd">        &gt;&gt;&gt; steering = pf.Coordinates.from_spherical_colatitude(</span>
+<span class="sd">        ...     np.linspace(0, 2*np.pi, 500), np.ones(500)*np.pi/2,</span>
+<span class="sd">        ...     np.ones(500))</span>
+<span class="sd">        &gt;&gt;&gt; Y_steering = spharpy.spherical.spherical_harmonic_basis_real(</span>
+<span class="sd">        ...     N, steering)</span>
+<span class="sd">        &gt;&gt;&gt; a_nm = spharpy.spherical.spherical_harmonic_basis_real(</span>
+<span class="sd">        ...     N, pf.Coordinates(1, 0, 0))</span>
+<span class="sd">        &gt;&gt;&gt; d_nm = spharpy.beamforming.maximum_front_back_ratio_weights(N)</span>
+<span class="sd">        &gt;&gt;&gt; beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)</span>
+<span class="sd">        &gt;&gt;&gt; ax = plt.axes(projection=&#39;polar&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_rticks([-75, -50, -25, 0])</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_theta_zero_location(&#39;N&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax.set_xlabel(&#39;Azimuth (deg)&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">P_N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">P_N</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">legendre_coefficients</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="n">Ann</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">Bnn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">n_dash</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">const</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n_dash</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span><span class="o">+</span><span class="n">ll</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">P_N</span><span class="p">[</span><span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">*</span> <span class="n">P_N</span><span class="p">[</span><span class="n">ll</span><span class="p">,</span> <span class="n">n_dash</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">ll</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_dash</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="n">Ann</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n_dash</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">*</span> <span class="n">const</span>
+
+            <span class="n">temp</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">q</span><span class="o">+</span><span class="n">ll</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span><span class="o">+</span><span class="n">ll</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">P_N</span><span class="p">[</span><span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">*</span> <span class="n">P_N</span><span class="p">[</span><span class="n">ll</span><span class="p">,</span> <span class="n">n_dash</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">ll</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_dash</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="n">Bnn</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n_dash</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">*</span> <span class="n">const</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">eigenvals</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Ann</span><span class="p">,</span> <span class="n">Bnn</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;Eigenvalue decomposition did not converge. &#39;</span>
+            <span class="s1">&#39;Try reducing the spherical harmonic order.&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+    <span class="n">f_n</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">eigenvals</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">f_n</span> <span class="o">=</span> <span class="n">normalize_beamforming_weights</span><span class="p">(</span><span class="n">f_n</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f_n</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">f_n</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">f_n</span></div>
+
+
+
+<div class="viewcode-block" id="normalize_beamforming_weights">
+<a class="viewcode-back" href="../../../modules/spharpy.beamforming.html#spharpy.beamforming.normalize_beamforming_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">normalize_beamforming_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">n_max</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize the beamforming weights such that the complex amplitude of a</span>
+<span class="sd">    plane wave is not distorted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    weights : array-like, float</span>
+<span class="sd">        An array containing the beamforming weights</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        The spherical harmonic order</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weights : array-like, float</span>
+<span class="sd">        An array containing the normalized beamforming weights</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Calculate hann window function based tapering weights for a plane wave</span>
+<span class="sd">    decomposition beamformer and normalize.</span>
+
+<span class="sd">    &gt;&gt;&gt; import spharpy</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.signal.windows import hann</span>
+<span class="sd">    &gt;&gt;&gt; tapering_window = hann(2*(N+1)+1)[N+1:-1], N)</span>
+<span class="sd">    &gt;&gt;&gt; h_n = spharpy.beamforming.normalize_beamforming_weights(</span>
+<span class="sd">    ...     tapering_window, N)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020 - 2023, Marco Berzborn; 2023, The pyfar developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

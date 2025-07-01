@@ -1,0 +1,1683 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spharpy.spherical &#8212; spharpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=9e3b4b97" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5459b468"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/spharpy/spherical';</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-light" alt="spharpy - Home"/>
+    <img src="../../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-dark pst-js-only" alt="spharpy - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Packages
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">spharpy.spherical</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for spharpy.spherical</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">special</span>
+<span class="kn">import</span> <span class="nn">spharpy.special</span> <span class="k">as</span> <span class="nn">_special</span>
+<span class="kn">import</span> <span class="nn">pyfar</span> <span class="k">as</span> <span class="nn">pf</span>
+<span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sy</span>
+
+
+<div class="viewcode-block" id="acn_to_nm">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.acn_to_nm">[docs]</a>
+<span class="k">def</span> <span class="nf">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the order n and degree m from the linear coefficient index.</span>
+
+<span class="sd">    The linear index corresponds to the Ambisonics Channel Convention [#]_.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        n = \lfloor \sqrt{\mathrm{acn} + 1} \rfloor - 1</span>
+
+<span class="sd">        m = \mathrm{acn} - n^2 -n</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A</span>
+<span class="sd">            Suggested Ambisonics Format (revised by F. Zotter),” International</span>
+<span class="sd">            Symposium on Ambisonics and Spherical Acoustics,</span>
+<span class="sd">            vol. 3, pp. 1-11, 2011.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    acn : ndarray, int</span>
+<span class="sd">        Linear index</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : ndarray, int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    m : ndarray, int</span>
+<span class="sd">        Spherical harmonic degree</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">acn</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">acn</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">acn</span> <span class="o">-</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">n</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span></div>
+
+
+
+<div class="viewcode-block" id="nm_to_acn">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.nm_to_acn">[docs]</a>
+<span class="k">def</span> <span class="nf">nm_to_acn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the linear index coefficient for a order n and degree m,</span>
+
+<span class="sd">    The linear index corresponds to the Ambisonics Channel Convention [#]_.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \mathrm{acn} = n^2 + n + m</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A</span>
+<span class="sd">            Suggested Ambisonics Format (revised by F. Zotter),” International</span>
+<span class="sd">            Symposium on Ambisonics and Spherical Acoustics,</span>
+<span class="sd">            vol. 3, pp. 1-11, 2011.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : ndarray, int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    m : ndarray, int</span>
+<span class="sd">        Spherical harmonic degree</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    acn : ndarray, int</span>
+<span class="sd">        Linear index</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n and m need to be of the same size&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">n</span> <span class="o">+</span> <span class="n">m</span></div>
+
+
+
+<div class="viewcode-block" id="nm_to_fuma">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.nm_to_fuma">[docs]</a>
+<span class="k">def</span> <span class="nf">nm_to_fuma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the FuMa channel index for a given spherical harmonic order n</span>
+<span class="sd">    and degree m, according to the FuMa (Furse-Malham)</span>
+<span class="sd">    Channel Ordering Convention.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : integer, ndarray</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    m : integer, ndarray</span>
+<span class="sd">        Spherical harmonic degree</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fuma : integer</span>
+<span class="sd">        FuMa channel index</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  D. Malham, &quot;Higher order Ambisonic systems” Space in Music –</span>
+<span class="sd">             Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fuma_mapping</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">n</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">m</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n and m need to be of the same size&quot;</span><span class="p">)</span>
+
+    <span class="c1"># convert (n, m) to the ACN index</span>
+    <span class="n">acn</span> <span class="o">=</span> <span class="n">nm_to_acn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">acn</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">acn</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuma_mapping</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;nm2fuma only supports up to 3rd order&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">fuma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">acn</span><span class="p">:</span>
+        <span class="n">fuma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fuma</span><span class="p">,</span> <span class="n">fuma_mapping</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">fuma</span></div>
+
+
+
+<div class="viewcode-block" id="fuma_to_nm">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.fuma_to_nm">[docs]</a>
+<span class="k">def</span> <span class="nf">fuma_to_nm</span><span class="p">(</span><span class="n">fuma</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the spherical harmonic order n and degree m for a linear</span>
+<span class="sd">    coefficient index, according to the FuMa (Furse-Malham)</span>
+<span class="sd">    Channel Ordering Convention [#]_.</span>
+
+<span class="sd">    FuMa = WXYZ | RSTUV | KLMNOPQ</span>
+<span class="sd">    ACN = WYZX | VTRSU | QOMKLNP</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fuma : integer, ndarray</span>
+<span class="sd">        FuMa channel index</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    n : integer, ndarray</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    m : integer, ndarray</span>
+<span class="sd">        Spherical harmonic degree</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  D. Malham, &quot;Higher order Ambisonic systems” Space in Music –</span>
+<span class="sd">             Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fuma_mapping</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fuma</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">fuma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">fuma</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fuma</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fuma</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fuma_mapping</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid FuMa channel index, must be between 0 and 15 &quot;</span>
+            <span class="s2">&quot;(supported up to 3rd order)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fuma</span><span class="p">:</span>
+        <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acn</span><span class="p">,</span> <span class="n">fuma_mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)])</span>
+
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span></div>
+
+
+
+<div class="viewcode-block" id="n3d_to_maxn">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.n3d_to_maxn">[docs]</a>
+<span class="k">def</span> <span class="nf">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the scaling factor which converts from N3D (normalized 3D)</span>
+<span class="sd">    normalization to max N normalization. ACN must be less or equal to 15.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    acn : integer, ndarray</span>
+<span class="sd">          linear index</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    maxN : float</span>
+<span class="sd">        Scaling factor which converts from N3D to max N</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acn</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">acn</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;acn must be less than or &quot;</span>
+                         <span class="s2">&quot;equal to 15&quot;</span><span class="p">)</span>
+    <span class="n">valid_maxN</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+        <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+        <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span> <span class="o">/</span> <span class="mi">35</span><span class="p">),</span>
+        <span class="mi">3</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">35</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">45</span> <span class="o">/</span> <span class="mi">224</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">7</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">45</span> <span class="o">/</span> <span class="mi">224</span><span class="p">),</span>
+        <span class="mi">3</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">35</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span> <span class="o">/</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">maxN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">acn</span><span class="p">:</span>
+        <span class="n">maxN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maxN</span><span class="p">,</span> <span class="n">valid_maxN</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">maxN</span></div>
+
+
+
+<div class="viewcode-block" id="n3d_to_sn3d_norm">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.n3d_to_sn3d_norm">[docs]</a>
+<span class="k">def</span> <span class="nf">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the scaling factor which converts from N3D (normalized 3D)</span>
+<span class="sd">    normalization to SN3D (Schmidt semi-normalized 3D) normalization.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : integer, ndarray</span>
+<span class="sd">        Spherical harmonic order</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sn3d : float, ndarray</span>
+<span class="sd">        normalization factor which converts from N3D to SN3D</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="renormalize">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.renormalize">[docs]</a>
+<span class="k">def</span> <span class="nf">renormalize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channel_convention</span><span class="p">,</span> <span class="n">current_norm</span><span class="p">,</span> <span class="n">target_norm</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Renormalize spherical harmonics coefficients or basis functions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : ndarray</span>
+<span class="sd">        Data which should be renormalized, either spherical harmonics</span>
+<span class="sd">        coefficients or basis functions.</span>
+<span class="sd">    channel_convention : str</span>
+<span class="sd">        Channel convention of the data which should be renormalized. Valid</span>
+<span class="sd">        conventions are `&quot;acn&quot;` or `&quot;fuma&quot;`.</span>
+<span class="sd">    current_norm : str</span>
+<span class="sd">        Current normalization. Valid normalizations are `&quot;n3d&quot;`, `&quot;maxN&quot;`, or</span>
+<span class="sd">        `&quot;sn3d&quot;`.</span>
+<span class="sd">    target_norm : str</span>
+<span class="sd">        Desired normalization. Valid normalizations are `&quot;n3d&quot;`,</span>
+<span class="sd">        `&quot;maxN&quot;`, or `&quot;sn3d&quot;`.</span>
+<span class="sd">    axis : integer</span>
+<span class="sd">        Axis along which the renormalization should be applied</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : ndarray</span>
+<span class="sd">        Renormalized data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">channel_convention</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span> <span class="s2">&quot;fuma&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid channel convention. Has to be &#39;acn&#39; &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;or &#39;fuma&#39;, but is </span><span class="si">{</span><span class="n">channel_convention</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">current_norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n3d&quot;</span><span class="p">,</span> <span class="s2">&quot;maxN&quot;</span><span class="p">,</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid normalization. Has to be &#39;sn3d&#39;, &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;&#39;n3d&#39;, or &#39;maxN&#39;, but is </span><span class="si">{</span><span class="n">current_norm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target_norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n3d&quot;</span><span class="p">,</span> <span class="s2">&quot;maxN&quot;</span><span class="p">,</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid normalization. Has to be &#39;sn3d&#39;, &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;&#39;n3d&#39;, or &#39;maxN&#39;, but is </span><span class="si">{</span><span class="n">target_norm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span><span class="p">:</span>
+        <span class="n">orders</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fuma_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">orders</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+
+    <span class="c1"># prepare helper for reshaping</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">data_renorm</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">current_norm</span> <span class="o">==</span> <span class="s1">&#39;n3d&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">target_norm</span> <span class="o">==</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">:</span>
+            <span class="n">data_renorm</span> <span class="o">*=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">target_norm</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span><span class="p">:</span>
+            <span class="n">data_renorm</span> <span class="o">*=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">current_norm</span> <span class="o">==</span> <span class="s1">&#39;sn3d&#39;</span><span class="p">:</span>
+        <span class="c1"># convert to n3d</span>
+        <span class="n">data_renorm</span> <span class="o">/=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_norm</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span><span class="p">:</span>
+            <span class="n">data_renorm</span> <span class="o">*=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">current_norm</span> <span class="o">==</span> <span class="s1">&#39;maxN&#39;</span><span class="p">:</span>
+        <span class="c1"># convert to n3d</span>
+        <span class="n">data_renorm</span> <span class="o">/=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_norm</span> <span class="o">==</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">:</span>
+            <span class="n">data_renorm</span> <span class="o">*=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_renorm</span></div>
+
+
+
+<div class="viewcode-block" id="change_channel_convention">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.change_channel_convention">[docs]</a>
+<span class="k">def</span> <span class="nf">change_channel_convention</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change the channel convention of spherical harmonics coefficients</span>
+<span class="sd">    or basis functions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : ndarray</span>
+<span class="sd">        Data of which channel convention should be changed. Either spherical</span>
+<span class="sd">        harmonics coefficients or bases functions.</span>
+<span class="sd">    current : str</span>
+<span class="sd">        Current channel convention. Valid conventions are `&quot;acn&quot;` or `&quot;fuma&quot;`.</span>
+<span class="sd">    target : str</span>
+<span class="sd">        Desired channel convention. Valid conventions are `&quot;acn&quot;` or `&quot;fuma&quot;`.</span>
+<span class="sd">    axis : integer</span>
+<span class="sd">        Axis along which the channel convention should be changed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : ndarray</span>
+<span class="sd">        Data with changed channel convention</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">current</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span> <span class="s2">&quot;fuma&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid current channel convention. Has to be &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;&#39;acn&#39; or &#39;fuma&#39;, but is </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span> <span class="s2">&quot;fuma&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid target channel convention. Has to be &#39;acn&#39; &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;or &#39;fuma&#39;, but is </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">acn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">current</span> <span class="o">==</span> <span class="s1">&#39;acn&#39;</span><span class="p">:</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">nm_to_fuma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">current</span> <span class="o">==</span> <span class="s1">&#39;fuma&#39;</span><span class="p">:</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">fuma_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">nm_to_acn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="spherical_harmonic_basis">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.spherical_harmonic_basis">[docs]</a>
+<span class="k">def</span> <span class="nf">spherical_harmonic_basis</span><span class="p">(</span>
+        <span class="n">n_max</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;n3d&quot;</span><span class="p">,</span> <span class="n">channel_convention</span><span class="o">=</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span>
+        <span class="n">condon_shortley</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the complex valued spherical harmonic basis matrix.</span>
+
+<span class="sd">    See [#]_ and [#]_ for details.</span>
+<span class="sd">    See also :py:func:`spherical_harmonic_basis_real`.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}</span>
+
+<span class="sd">    where:</span>
+
+<span class="sd">    - :math:`n` is the degree</span>
+<span class="sd">    - :math:`m` is the order</span>
+<span class="sd">    - :math:`P_{nm}` is the associated Legendre function</span>
+<span class="sd">    - :math:`N_{nm}` is the normalization term</span>
+<span class="sd">    - :math:`CS_m` is the Condon-Shortley phase term</span>
+<span class="sd">    - :math:`\theta` is the colatitude (angle from the positive z-axis)</span>
+<span class="sd">    - :math:`\phi` is the azimuth (angle from the positive x-axis in the</span>
+<span class="sd">      xy-plane), see :py:mod:`~pyfar.classes.coordinates`</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.</span>
+<span class="sd">    .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.</span>
+<span class="sd">            Springer, 2015.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : integer</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        objects with sampling points for which the basis matrix is calculated</span>
+<span class="sd">    normalization : str, optional</span>
+<span class="sd">        Normalization convention, either ``&#39;n3d&#39;``, ``&#39;maxN&#39;`` or ``&#39;sn3d&#39;``.</span>
+<span class="sd">        The default is ``&#39;n3d&#39;``.</span>
+<span class="sd">        (maxN is only supported up to 3rd order)</span>
+<span class="sd">    channel_convention : str, optional</span>
+<span class="sd">        Channel ordering convention, either ``&#39;acn&#39;`` or ``&#39;fuma&#39;``.</span>
+<span class="sd">        The default is ``&#39;acn&#39;``.</span>
+<span class="sd">        (FuMa is only supported up to 3rd order)</span>
+<span class="sd">    condon_shortley : bool or str, optional</span>
+<span class="sd">        Whether to include the Condon-Shortley phase term. If ``True`` or</span>
+<span class="sd">        ``&#39;auto&#39;``, Condon-Shortley is included, if ``False`` it is not</span>
+<span class="sd">        included. The default is ``&#39;auto&#39;``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Y : ndarray, complex</span>
+<span class="sd">        Complex spherical harmonic basis matrix</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import spharpy</span>
+<span class="sd">    &gt;&gt;&gt; n_max = 2</span>
+<span class="sd">    &gt;&gt;&gt; coordinates = spharpy.samplings.icosahedron()</span>
+<span class="sd">    &gt;&gt;&gt; Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;FuMa channel convention is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;MaxN normalization is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condon_shortley</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">condon_shortley</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Condon_shortley has to be a bool, or &#39;auto&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">condon_shortley</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">condon_shortley</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">n_coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">coordinates</span><span class="o">.</span><span class="n">csize</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">acn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span><span class="p">:</span>
+            <span class="n">order</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">fuma_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">order</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_harmonic</span><span class="p">(</span>
+            <span class="n">order</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">colatitude</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">azimuth</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">:</span>
+            <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span><span class="p">:</span>
+            <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">condon_shortley</span><span class="p">:</span>
+            <span class="c1"># Condon-Shortley phase term is already included in</span>
+            <span class="c1"># the special.spherical_harmonic function</span>
+            <span class="c1"># so need to divide by (-1)^m</span>
+            <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">/=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">basis</span></div>
+
+
+
+<div class="viewcode-block" id="spherical_harmonic_basis_gradient">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.spherical_harmonic_basis_gradient">[docs]</a>
+<span class="k">def</span> <span class="nf">spherical_harmonic_basis_gradient</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;n3d&quot;</span><span class="p">,</span>
+                                      <span class="n">channel_convention</span><span class="o">=</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span>
+                                      <span class="n">condon_shortley</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the unit sphere gradients of the complex spherical harmonics.</span>
+
+
+<span class="sd">    The angular parts of the gradient are defined as</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \nabla_{(\theta, \phi)} Y_n^m(\theta, \phi) =</span>
+<span class="sd">        \frac{1}{\sin \theta} \frac{\partial Y_n^m(\theta, \phi)}</span>
+<span class="sd">        {\partial \phi} \vec{e}_\phi +</span>
+<span class="sd">        \frac{\partial Y_n^m(\theta, \theta)}</span>
+<span class="sd">        {\partial \theta} \vec{e}_\theta .</span>
+
+
+<span class="sd">    This implementation avoids singularities at the poles using identities</span>
+<span class="sd">    derived in [#]_.</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.</span>
+<span class="sd">    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical</span>
+<span class="sd">            harmonic expressions of geomagnetic vector and gradient tensor</span>
+<span class="sd">            fields in the local north-oriented reference frame,” Geoscientific</span>
+<span class="sd">            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        objects with sampling points for which the basis matrix is</span>
+<span class="sd">        calculated</span>
+<span class="sd">    normalization : str, optional</span>
+<span class="sd">        Normalization convention, either ``&#39;n3d&#39;``, ``&#39;maxN&#39;`` or ``&#39;sn3d&#39;``.</span>
+<span class="sd">        The default is ``&#39;n3d&#39;``.</span>
+<span class="sd">        (maxN is only supported up to 3rd order)</span>
+<span class="sd">    channel_convention : str, optional</span>
+<span class="sd">        Channel ordering convention, either ``&#39;acn&#39;`` or ``&#39;fuma&#39;``.</span>
+<span class="sd">        The default is ``&#39;acn&#39;``.</span>
+<span class="sd">        (FuMa is only supported up to 3rd order)</span>
+<span class="sd">    condon_shortley : bool or str, optional</span>
+<span class="sd">        Whether to include the Condon-Shortley phase term. If ``True`` or</span>
+<span class="sd">        ``&#39;auto&#39;``, Condon-Shortley is included, if ``False`` it is not</span>
+<span class="sd">        included. The default is ``&#39;auto&#39;``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grad_theta : ndarray, complex</span>
+<span class="sd">        Gradient with regard to the co-latitude angle.</span>
+<span class="sd">    grad_azimuth : ndarray, complex</span>
+<span class="sd">        Gradient with regard to the azimuth angle.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import spharpy</span>
+<span class="sd">    &gt;&gt;&gt; n_max = 2</span>
+<span class="sd">    &gt;&gt;&gt; coordinates = spharpy.samplings.icosahedron()</span>
+<span class="sd">    &gt;&gt;&gt; grad_theta, grad_phi = /</span>
+<span class="sd">        spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;FuMa channel convention is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;MaxN normalization is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condon_shortley</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">condon_shortley</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Condon_shortley has to be a bool, or &#39;auto&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">condon_shortley</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">condon_shortley</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">n_points</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">csize</span>
+    <span class="n">n_coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">colatitude</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">azimuth</span>
+    <span class="n">grad_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_points</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">grad_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_points</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">acn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span><span class="p">:</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">fuma_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+
+        <span class="n">grad_theta</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_harmonic_derivative_theta</span><span class="p">(</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span>
+        <span class="p">)</span>
+        <span class="n">grad_phi</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_harmonic_gradient_phi</span><span class="p">(</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">*=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">condon_shortley</span><span class="p">:</span>
+            <span class="c1"># Condon-Shortley phase term is already included in</span>
+            <span class="c1"># the special.spherical_harmonic function</span>
+            <span class="c1"># so need to divide by (-1)^m</span>
+            <span class="n">factor</span> <span class="o">/=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="n">grad_theta</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">factor</span>
+        <span class="n">grad_phi</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">factor</span>
+
+    <span class="k">return</span> <span class="n">grad_theta</span><span class="p">,</span> <span class="n">grad_phi</span></div>
+
+
+
+<div class="viewcode-block" id="spherical_harmonic_basis_real">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.spherical_harmonic_basis_real">[docs]</a>
+<span class="k">def</span> <span class="nf">spherical_harmonic_basis_real</span><span class="p">(</span>
+        <span class="n">n_max</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;n3d&quot;</span><span class="p">,</span> <span class="n">channel_convention</span><span class="o">=</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span>
+        <span class="n">condon_shortley</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the real valued spherical harmonic basis matrix.</span>
+<span class="sd">    See also :py:func:`spherical_harmonic_basis`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}</span>
+<span class="sd">        \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)</span>
+<span class="sd">        \begin{cases}</span>
+<span class="sd">            \displaystyle \cos(|m|\phi),  &amp; \text{if $m \ge 0$} \newline</span>
+<span class="sd">            \displaystyle \sin(|m|\phi) ,  &amp; \text{if $m &lt; 0$}</span>
+<span class="sd">        \end{cases}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        objects with sampling points for which the basis matrix is</span>
+<span class="sd">        calculated</span>
+<span class="sd">    normalization : str, optional</span>
+<span class="sd">        Normalization convention, either ``&#39;n3d&#39;``, ``&#39;maxN&#39;`` or ``&#39;sn3d&#39;``.</span>
+<span class="sd">        The default is ``&#39;n3d&#39;``.</span>
+<span class="sd">        (maxN is only supported up to 3rd order)</span>
+<span class="sd">    channel_convention : str, optional</span>
+<span class="sd">        Channel ordering convention, either ``&#39;acn&#39;`` or ``&#39;fuma&#39;``.</span>
+<span class="sd">        The default is ``&#39;acn&#39;``.</span>
+<span class="sd">        (FuMa is only supported up to 3rd order)</span>
+<span class="sd">    condon_shortley : bool or str, optional</span>
+<span class="sd">        Whether to include the Condon-Shortley phase term. If ``True``,</span>
+<span class="sd">        Condon-Shortley is included, if ``False`` or ``&#39;auto&#39;``, it is not</span>
+<span class="sd">        included. The default is ``&#39;auto&#39;``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Y : ndarray, float</span>
+<span class="sd">        Real valued spherical harmonic basis matrix.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;FuMa channel convention is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;MaxN normalization is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condon_shortley</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">condon_shortley</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Condon_shortley has to be a bool, or &#39;auto&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">condon_shortley</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">condon_shortley</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">n_coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">coordinates</span><span class="o">.</span><span class="n">csize</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">acn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span><span class="p">:</span>
+            <span class="n">order</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">fuma_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">order</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_harmonic_real</span><span class="p">(</span>
+            <span class="n">order</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">colatitude</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">azimuth</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">:</span>
+            <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span><span class="p">:</span>
+            <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">condon_shortley</span><span class="p">:</span>
+            <span class="c1"># Condon-Shortley phase term is not included in</span>
+            <span class="c1"># the special.spherical_harmonic function</span>
+            <span class="n">basis</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">basis</span></div>
+
+
+
+<div class="viewcode-block" id="spherical_harmonic_basis_gradient_real">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.spherical_harmonic_basis_gradient_real">[docs]</a>
+<span class="k">def</span> <span class="nf">spherical_harmonic_basis_gradient_real</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span>
+                                           <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;n3d&quot;</span><span class="p">,</span>
+                                           <span class="n">channel_convention</span><span class="o">=</span><span class="s2">&quot;acn&quot;</span><span class="p">,</span>
+                                           <span class="n">condon_shortley</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the unit sphere gradients of the real valued spherical</span>
+<span class="sd">    harmonics.</span>
+
+<span class="sd">    The spherical harmonic functions are fully normalized (N3D) and follow</span>
+<span class="sd">    the AmbiX phase convention [#]_.</span>
+
+<span class="sd">    The angular parts of the gradient are defined as</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \nabla_{(\theta, \phi)} Y_n^m(\theta, \phi) =</span>
+<span class="sd">        \frac{1}{\sin \theta} \frac{\partial Y_n^m(\theta, \phi)}</span>
+<span class="sd">        {\partial \phi} \vec{e}_\phi +</span>
+<span class="sd">        \frac{\partial Y_n^m(\theta, \theta)}</span>
+<span class="sd">        {\partial \theta} \vec{e}_\theta .</span>
+
+
+<span class="sd">    This implementation avoids singularities at the poles using identities</span>
+<span class="sd">    derived in [#]_.</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A</span>
+<span class="sd">            Suggested Ambisonics Format (revised by F. Zotter),” International</span>
+<span class="sd">            Symposium on Ambisonics and Spherical Acoustics,</span>
+<span class="sd">            vol. 3, pp. 1-11, 2011.</span>
+<span class="sd">    .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical</span>
+<span class="sd">            harmonic expressions of geomagnetic vector and gradient tensor</span>
+<span class="sd">            fields in the local north-oriented reference frame,” Geoscientific</span>
+<span class="sd">            Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        Spherical harmonic order</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        objects with sampling points for which the basis matrix is</span>
+<span class="sd">        calculated</span>
+<span class="sd">    normalization : str, optional</span>
+<span class="sd">        Normalization convention, either ``&#39;n3d&#39;``, ``&#39;maxN&#39;`` or ``&#39;sn3d&#39;``.</span>
+<span class="sd">        The default is ``&#39;n3d&#39;``.</span>
+<span class="sd">        (maxN is only supported up to 3rd order)</span>
+<span class="sd">    channel_convention : str, optional</span>
+<span class="sd">        Channel ordering convention, either ``&#39;acn&#39;`` or ``&#39;fuma&#39;``.</span>
+<span class="sd">        The default is ``&#39;acn&#39;``.</span>
+<span class="sd">        (FuMa is only supported up to 3rd order)</span>
+<span class="sd">    condon_shortley : bool or str, optional</span>
+<span class="sd">        Whether to include the Condon-Shortley phase term. If ``True``,</span>
+<span class="sd">        Condon-Shortley is included, if ``False`` or ``&#39;auto&#39;``, it is not</span>
+<span class="sd">        included. The default is ``&#39;auto&#39;``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grad_theta : ndarray, float</span>
+<span class="sd">        Gradient with respect to the co-latitude angle.</span>
+<span class="sd">    grad_phi : ndarray, float</span>
+<span class="sd">        Gradient with respect to the azimuth angle.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;FuMa channel convention is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span> <span class="ow">and</span> <span class="n">n_max</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;MaxN normalization is only supported up to 3rd order.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condon_shortley</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">condon_shortley</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Condon_shortley has to be a bool, or &#39;auto&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">condon_shortley</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">condon_shortley</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">n_points</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">csize</span>
+    <span class="n">n_coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">colatitude</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">azimuth</span>
+    <span class="n">grad_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_points</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">grad_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_points</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">acn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">channel_convention</span> <span class="o">==</span> <span class="s2">&quot;fuma&quot;</span><span class="p">:</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">fuma_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">acn_to_nm</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+
+        <span class="n">grad_theta</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">_special</span><span class="o">.</span><span class="n">spherical_harmonic_derivative_theta_real</span><span class="p">(</span>
+                <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+        <span class="n">grad_phi</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">_special</span><span class="o">.</span><span class="n">spherical_harmonic_gradient_phi_real</span><span class="p">(</span>
+                <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;sn3d&quot;</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">n3d_to_sn3d_norm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s2">&quot;maxN&quot;</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">*=</span> <span class="n">n3d_to_maxn</span><span class="p">(</span><span class="n">acn</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">condon_shortley</span><span class="p">:</span>
+            <span class="c1"># Condon-Shortley phase term is not included in</span>
+            <span class="c1"># the special.spherical_harmonic function</span>
+            <span class="n">factor</span> <span class="o">*=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="n">grad_theta</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">factor</span>
+        <span class="n">grad_phi</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">*=</span> <span class="n">factor</span>
+
+    <span class="k">return</span> <span class="n">grad_theta</span><span class="p">,</span> <span class="n">grad_phi</span></div>
+
+
+
+<div class="viewcode-block" id="modal_strength">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.modal_strength">[docs]</a>
+<span class="k">def</span> <span class="nf">modal_strength</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span>
+                   <span class="n">kr</span><span class="p">,</span>
+                   <span class="n">arraytype</span><span class="o">=</span><span class="s1">&#39;rigid&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modal strength function for microphone arrays.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        b(kr) =</span>
+<span class="sd">        \begin{cases}</span>
+<span class="sd">            \displaystyle 4\pi i^n j_n(kr),  &amp; \text{open} \newline</span>
+<span class="sd">            \displaystyle  4\pi i^{(n-1)} \frac{1}{(kr)^2 h_n^\prime(kr)},</span>
+<span class="sd">                &amp; \text{rigid} \newline</span>
+<span class="sd">            \displaystyle  4\pi i^n (j_n(kr) - i j_n^\prime(kr)),</span>
+<span class="sd">                &amp; \text{cardioid}</span>
+<span class="sd">        \end{cases}</span>
+
+
+<span class="sd">    This implementation uses the second order Hankel function, see [#]_ for an</span>
+<span class="sd">    overview of the corresponding sign conventions.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and</span>
+<span class="sd">            Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        The spherical harmonic order</span>
+<span class="sd">    kr : ndarray, float</span>
+<span class="sd">        Wave number * radius</span>
+<span class="sd">    arraytype : string</span>
+<span class="sd">        Array configuration. Can be a microphones mounted on a rigid sphere,</span>
+<span class="sd">        on a virtual open sphere or cardioid microphones on an open sphere.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    B : ndarray, float</span>
+<span class="sd">        Modal strength diagonal matrix</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">n_bins</span> <span class="o">=</span> <span class="n">kr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">modal_strength_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">,</span> <span class="n">n_coeff</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">bn</span> <span class="o">=</span> <span class="n">_modal_strength</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">kr</span><span class="p">,</span> <span class="n">arraytype</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">acn</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="n">n</span> <span class="o">+</span> <span class="n">m</span>
+            <span class="n">modal_strength_mat</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">modal_strength_mat</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_modal_strength</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">kr</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function for the calculation of the modal strength for</span>
+<span class="sd">    plane waves&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">config</span> <span class="o">==</span> <span class="s1">&#39;open&#39;</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="nb">pow</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_bessel</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">kr</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span> <span class="o">==</span> <span class="s1">&#39;rigid&#39;</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="nb">pow</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="n">_special</span><span class="o">.</span><span class="n">spherical_hankel</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">kr</span><span class="p">,</span> <span class="n">derivative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">kr</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">config</span> <span class="o">==</span> <span class="s1">&#39;cardioid&#39;</span><span class="p">:</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="nb">pow</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> \
+            <span class="p">(</span><span class="n">_special</span><span class="o">.</span><span class="n">spherical_bessel</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">kr</span><span class="p">)</span> <span class="o">-</span>
+                <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_bessel</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">kr</span><span class="p">,</span> <span class="n">derivative</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid configuration.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ms</span>
+
+
+<div class="viewcode-block" id="aperture_vibrating_spherical_cap">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.aperture_vibrating_spherical_cap">[docs]</a>
+<span class="k">def</span> <span class="nf">aperture_vibrating_spherical_cap</span><span class="p">(</span>
+        <span class="n">n_max</span><span class="p">,</span>
+        <span class="n">rad_sphere</span><span class="p">,</span>
+        <span class="n">rad_cap</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aperture function for a vibrating spherical cap.</span>
+
+<span class="sd">    The cap has radius :math:`r_c` and is mounted in a rigid sphere with</span>
+<span class="sd">    radius :math:`r_s` [#]_, [#]_</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        a_n (r_{s}, \alpha) = 4 \pi</span>
+<span class="sd">        \begin{cases}</span>
+<span class="sd">            \displaystyle \left(2n+1\right)\left[</span>
+<span class="sd">                P_{n-1} \left(\cos\alpha\right) -</span>
+<span class="sd">                P_{n+1} \left(\cos\alpha\right) \right],</span>
+<span class="sd">                &amp; {n&gt;0} \newline</span>
+<span class="sd">            \displaystyle  (1 - \cos\alpha)/2,  &amp; {n=0}</span>
+<span class="sd">        \end{cases}</span>
+
+<span class="sd">    where :math:`\alpha = \arcsin \left(\frac{r_c}{r_s} \right)` is the</span>
+<span class="sd">    aperture angle.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : integer, ndarray</span>
+<span class="sd">        Maximal spherical harmonic order</span>
+<span class="sd">    r_sphere : double, ndarray</span>
+<span class="sd">        Radius of the sphere</span>
+<span class="sd">    r_cap : double</span>
+<span class="sd">        Radius of the vibrating cap</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A : ndarray, float</span>
+<span class="sd">        Aperture function in diagonal matrix form with shape</span>
+<span class="sd">        :math:`[(n_{max}+1)^2~\times~(n_{max}+1)^2]`</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.</span>
+<span class="sd">    .. [#]  B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and</span>
+<span class="sd">             Independent Steering for Spherical Loudspeaker Arrays,” IEEE</span>
+<span class="sd">             Transactions on Audio, Speech, and Language Processing, vol. 19,</span>
+<span class="sd">             no. 7, pp. 2234-2238, 2011</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Eq. (3) in the second Ref. contains an error, here, the power of 2 on pi is</span>
+<span class="sd">    omitted on the normalization term.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angle_cap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">rad_cap</span> <span class="o">/</span> <span class="n">rad_sphere</span><span class="p">)</span>
+    <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_cap</span><span class="p">)</span>
+    <span class="n">n_sh</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">aperture</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_sh</span><span class="p">,</span> <span class="n">n_sh</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">aperture</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">arg</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">legendre_minus</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">legendre</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="n">legendre_plus</span> <span class="o">=</span> <span class="n">special</span><span class="o">.</span><span class="n">legendre</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="n">legendre_term</span> <span class="o">=</span> <span class="n">legendre_minus</span> <span class="o">-</span> <span class="n">legendre_plus</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">acn</span> <span class="o">=</span> <span class="n">nm_to_acn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+            <span class="n">aperture</span><span class="p">[</span><span class="n">acn</span><span class="p">,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">legendre_term</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">aperture</span></div>
+
+
+
+<div class="viewcode-block" id="radiation_from_sphere">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.radiation_from_sphere">[docs]</a>
+<span class="k">def</span> <span class="nf">radiation_from_sphere</span><span class="p">(</span>
+        <span class="n">n_max</span><span class="p">,</span>
+        <span class="n">rad_sphere</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">,</span>
+        <span class="n">density_medium</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+        <span class="n">speed_of_sound</span><span class="o">=</span><span class="mf">343.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Radiation function in SH for a vibrating spherical cap.</span>
+<span class="sd">    Includes the radiation impedance and the propagation to a arbitrary</span>
+<span class="sd">    distance from the sphere.</span>
+<span class="sd">    The sign and phase conventions result in a positive pressure response for</span>
+<span class="sd">    a positive cap velocity with the intensity vector pointing away from the</span>
+<span class="sd">    source. [#]_, [#]_</span>
+
+<span class="sd">    TODO: This function does not have a test yet.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.</span>
+<span class="sd">    .. [#]  F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical</span>
+<span class="sd">            loudspeaker system as multipole source,” in Proceedings of the 33rd</span>
+<span class="sd">            DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : integer</span>
+<span class="sd">        Maximal spherical harmonic order</span>
+<span class="sd">    rad_sphere : float</span>
+<span class="sd">        Radius of the sphere</span>
+<span class="sd">    k : ndarray, float</span>
+<span class="sd">        Wave number</span>
+<span class="sd">    distance : float</span>
+<span class="sd">        Radial distance from the center of the sphere</span>
+<span class="sd">    density_medium : float</span>
+<span class="sd">        Density of the medium surrounding the sphere. Default is 1.2 for air.</span>
+<span class="sd">    speed_of_sound : float</span>
+<span class="sd">        Speed of sound in m/s</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    R : ndarray, float</span>
+<span class="sd">        Radiation function in diagonal matrix form with shape</span>
+<span class="sd">        :math:`[K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_sh</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">n_bins</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">radiation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">n_sh</span><span class="p">,</span> <span class="n">n_sh</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">hankel</span> <span class="o">=</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_hankel</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">*</span><span class="n">distance</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">hankel_prime</span> <span class="o">=</span> <span class="n">_special</span><span class="o">.</span><span class="n">spherical_hankel</span><span class="p">(</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">*</span><span class="n">rad_sphere</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">derivative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">radiation_order</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">hankel</span><span class="o">/</span><span class="n">hankel_prime</span> <span class="o">*</span> \
+            <span class="n">density_medium</span> <span class="o">*</span> <span class="n">speed_of_sound</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">acn</span> <span class="o">=</span> <span class="n">nm_to_acn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+            <span class="n">radiation</span><span class="p">[:,</span> <span class="n">acn</span><span class="p">,</span> <span class="n">acn</span><span class="p">]</span> <span class="o">=</span> <span class="n">radiation_order</span>
+
+    <span class="k">return</span> <span class="n">radiation</span></div>
+
+
+
+<div class="viewcode-block" id="sid">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.sid">[docs]</a>
+<span class="k">def</span> <span class="nf">sid</span><span class="p">(</span><span class="n">n_max</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the SID indices up to spherical harmonic order n_max.</span>
+<span class="sd">    The SID indices were originally proposed by Daniel [#]_, more recently</span>
+<span class="sd">    ACN indexing has been favored and is used in the AmbiX format [#]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        The maximum spherical harmonic order</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sid_n : ndarray, int</span>
+<span class="sd">        The SID indices for all orders</span>
+<span class="sd">    sid_m : ndarray, int</span>
+<span class="sd">        The SID indices for all degrees</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#]  J. Daniel, “Représentation de champs acoustiques, application à la</span>
+<span class="sd">            transmission et à la reproduction de scènes sonores complexes dans</span>
+<span class="sd">            un contexte multimédia,” Dissertation, l’Université Paris 6, Paris,</span>
+<span class="sd">            2001.</span>
+
+<span class="sd">    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A</span>
+<span class="sd">            Suggested Ambisonics Format (revised by F. Zotter),” International</span>
+<span class="sd">            Symposium on Ambisonics and Spherical Acoustics,</span>
+<span class="sd">            vol. 3, pp. 1-11, 2011.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_sh</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">sid_n</span> <span class="o">=</span> <span class="n">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="s1">&#39;n-nm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">sid_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sh</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">idx_n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">sid_m</span><span class="p">[</span><span class="n">idx_n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">sid_m</span><span class="p">[</span><span class="n">idx_n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sid_m</span><span class="p">[</span><span class="n">idx_n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">idx_n</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">sid_n</span><span class="p">,</span> <span class="n">sid_m</span></div>
+
+
+
+<div class="viewcode-block" id="sid_to_acn">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.sid_to_acn">[docs]</a>
+<span class="k">def</span> <span class="nf">sid_to_acn</span><span class="p">(</span><span class="n">n_max</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert from SID channel indexing to ACN indeces.</span>
+<span class="sd">    Returns the indices to achieve a corresponding linear acn indexing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        The maximum spherical harmonic order.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    acn : ndarray, int</span>
+<span class="sd">        The SID indices sorted according to a respective linear ACN indexing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sid_n</span><span class="p">,</span> <span class="n">sid_m</span> <span class="o">=</span> <span class="n">sid</span><span class="p">(</span><span class="n">n_max</span><span class="p">)</span>
+    <span class="n">linear_sid</span> <span class="o">=</span> <span class="n">nm_to_acn</span><span class="p">(</span><span class="n">sid_n</span><span class="p">,</span> <span class="n">sid_m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">linear_sid</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sph_identity_matrix">
+<a class="viewcode-back" href="../../modules/spharpy.spherical.html#spharpy.spherical.sph_identity_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;n-nm&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate a spherical harmonic identity matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_max : int</span>
+<span class="sd">        The spherical harmonic order.</span>
+<span class="sd">    type : str, optional</span>
+<span class="sd">        The type of identity matrix. Currently only &#39;n-nm&#39; is implemented.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    identity_matrix : ndarray, int</span>
+<span class="sd">        The spherical harmonic identity matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    The identity matrix can for example be used to decompress from order only</span>
+<span class="sd">    vectors to a full order and degree representation.</span>
+
+<span class="sd">    &gt;&gt;&gt; import spharpy</span>
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; n_max = 2</span>
+<span class="sd">    &gt;&gt;&gt; E = spharpy.spherical.sph_identity_matrix(n_max, type=&#39;n-nm&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; a_n = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; a_nm = E.T @ a_n</span>
+<span class="sd">    &gt;&gt;&gt; a_nm</span>
+<span class="sd">    array([1, 2, 2, 2, 3, 3, 3, 3, 3])</span>
+
+<span class="sd">    The matrix E in this case has the following form.</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">        &gt;&gt;&gt; n_max = 2</span>
+<span class="sd">        &gt;&gt;&gt; E = spharpy.spherical.sph_identity_matrix(n_max, type=&#39;n-nm&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; plt.matshow(E, cmap=plt.get_cmap(&#39;Greys&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; plt.gca().set_aspect(&#39;equal&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_sh</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="s1">&#39;n-nm&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="n">identity_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_sh</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">linear_nm</span> <span class="o">=</span> <span class="n">nm_to_acn</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">m</span><span class="p">)</span>
+        <span class="n">identity_matrix</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">linear_nm</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">identity_matrix</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020 - 2023, Marco Berzborn; 2023, The pyfar developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

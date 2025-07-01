@@ -1,0 +1,1529 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spharpy.samplings &#8212; spharpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=9e3b4b97" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5459b468"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/spharpy.samplings';</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="spharpy.spatial" href="spharpy.spatial.html" />
+    <link rel="prev" title="spharpy.plot" href="spharpy.plot.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-light" alt="spharpy - Home"/>
+    <img src="../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-dark pst-js-only" alt="spharpy - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Packages
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Getting Started</a></li>
+
+
+<li class="toctree-l1 current active"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../spharpy.html" class="nav-link">spharpy</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../api_reference.html" class="nav-link">API Reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">spharpy.samplings</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-spharpy.samplings">
+<span id="spharpy-samplings"></span><h1>spharpy.samplings<a class="headerlink" href="#module-spharpy.samplings" title="Link to this heading">#</a></h1>
+<p><strong>Functions:</strong></p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.calculate_sampling_weights" title="spharpy.samplings.calculate_sampling_weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a>(sampling[, ...])</p></td>
+<td><p>Calculate the sampling weights for numeric integration.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.cube_equidistant" title="spharpy.samplings.cube_equidistant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cube_equidistant</span></code></a>(n_points)</p></td>
+<td><p>Create a cuboid sampling with equidistant spacings in x, y, and z.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.dodecahedron" title="spharpy.samplings.dodecahedron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dodecahedron</span></code></a>([radius])</p></td>
+<td><p>Generate a sampling based on the center points of the twelve dodecahedron faces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.eigenmike_em32" title="spharpy.samplings.eigenmike_em32"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenmike_em32</span></code></a>()</p></td>
+<td><p>Microphone positions of the Eigenmike em32 by mhacoustics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.eigenmike_em64" title="spharpy.samplings.eigenmike_em64"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenmike_em64</span></code></a>()</p></td>
+<td><p>Microphone positions of the Eigenmike em64 by mhacoustics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.equal_angle" title="spharpy.samplings.equal_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal_angle</span></code></a>(delta_angles[, radius])</p></td>
+<td><p>Generate sampling of the sphere with equally spaced angles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.equal_area" title="spharpy.samplings.equal_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal_area</span></code></a>(n_max[, condition_num, n_points])</p></td>
+<td><p>Sampling based on partitioning into faces with equal area.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.equiangular" title="spharpy.samplings.equiangular"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equiangular</span></code></a>([n_points, n_max, radius])</p></td>
+<td><p>Generate an equiangular sampling of the sphere.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.fliege" title="spharpy.samplings.fliege"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fliege</span></code></a>([n_points, n_max, radius])</p></td>
+<td><p>Return Fliege-Maier spherical sampling grid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.gaussian" title="spharpy.samplings.gaussian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gaussian</span></code></a>([n_points, n_max, radius])</p></td>
+<td><p>Generate sampling of the sphere based on the Gaussian quadrature.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.great_circle" title="spharpy.samplings.great_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">great_circle</span></code></a>([elevation, gcd, radius, ...])</p></td>
+<td><p>Spherical sampling grid according to the great circle distance criterion.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.hyperinterpolation" title="spharpy.samplings.hyperinterpolation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyperinterpolation</span></code></a>([n_points, n_max, radius])</p></td>
+<td><p>Return a Hyperinterpolation sampling grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.icosahedron" title="spharpy.samplings.icosahedron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icosahedron</span></code></a>([radius])</p></td>
+<td><p>Generate a sampling from the center points of the twenty icosahedron faces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.icosahedron_ke4" title="spharpy.samplings.icosahedron_ke4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icosahedron_ke4</span></code></a>()</p></td>
+<td><p>Microphone positions of IHTA's KE4 spherical microphone array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.interior_stabilization_points" title="spharpy.samplings.interior_stabilization_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interior_stabilization_points</span></code></a>(kr_max[, ...])</p></td>
+<td><p>Find stabilization points inside for an open spherical microphone array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.lebedev" title="spharpy.samplings.lebedev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lebedev</span></code></a>([n_points, n_max, radius])</p></td>
+<td><p>Return Lebedev spherical sampling grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.spherical_voronoi" title="spharpy.samplings.spherical_voronoi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_voronoi</span></code></a>(sampling[, ...])</p></td>
+<td><p>Calculate a Voronoi diagram on the sphere for the given samplings points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.samplings.spiral_points" title="spharpy.samplings.spiral_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spiral_points</span></code></a>(n_max[, condition_num, n_points])</p></td>
+<td><p>Sampling based on a spiral distribution of points on a sphere.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.samplings.t_design" title="spharpy.samplings.t_design"><code class="xref py py-obj docutils literal notranslate"><span class="pre">t_design</span></code></a>([degree, n_max, criterion, radius])</p></td>
+<td><p>Return spherical t-design sampling grid.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.calculate_sampling_weights">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">calculate_sampling_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/helpers.html#calculate_sampling_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.calculate_sampling_weights" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the sampling weights for numeric integration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sampling</strong> (<a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><em>SamplingSphere</em></a>) – Sampling points on a sphere</p></li>
+<li><p><strong>round_decimals</strong> (<em>int</em><em>, </em><em>optional</em>)</p></li>
+<li><p><strong>apply</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether or not to store the weights into the class object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>weigths</strong> – Sampling weights</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.cube_equidistant">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">cube_equidistant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#cube_equidistant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.cube_equidistant" title="Link to this definition">#</a></dt>
+<dd><p>Create a cuboid sampling with equidistant spacings in x, y, and z.</p>
+<p>The cube will have dimensions 1 x 1 x 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_points</strong> (<em>int</em><em>, </em><em>tuple</em>) – Number of points in the sampling. If a single value is given, the
+number of sampling positions will be the same in every axis. If a
+tuple is given, the number of points will be set as
+<code class="docutils literal notranslate"><span class="pre">(n_x,</span> <span class="pre">n_y,</span> <span class="pre">n_z)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions as Coordinate object.
+Does not contain sampling weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">cube_equidistant</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/26169143ff167cc150bdc13104a6535a/spharpy-samplings-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/914de95653c8031e94d370cd666a73a9/spharpy-samplings-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/b2ae5763ecabf99ee84c08aa528f46fb/spharpy-samplings-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/30e35c6dfe831f897a6c54545fe29780/spharpy-samplings-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-1.png" class="plot-directive" src="../_images/spharpy-samplings-1.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.dodecahedron">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">dodecahedron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#dodecahedron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.dodecahedron" title="Link to this definition">#</a></dt>
+<dd><p>Generate a sampling based on the center points of the twelve
+dodecahedron faces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions. Sampling weights can be obtained from
+<a class="reference internal" href="#spharpy.samplings.calculate_sampling_weights" title="spharpy.samplings.calculate_sampling_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">dodecahedron</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/e15ea7579719a1516f9379ccea41e1e3/spharpy-samplings-2.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/965cc3fae90cb6fd38bd1fdef38754c1/spharpy-samplings-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/234db7215a37fd3297b25370dbeaf8fa/spharpy-samplings-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/8aeeba5ad1ad41eec3487211fc396031/spharpy-samplings-2.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-2.png" class="plot-directive" src="../_images/spharpy-samplings-2.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.eigenmike_em32">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">eigenmike_em32</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#eigenmike_em32"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.eigenmike_em32" title="Link to this definition">#</a></dt>
+<dd><p>Microphone positions of the Eigenmike em32 by mhacoustics.</p>
+<p>The data are according to the Eigenstudio user manual on the homepage <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Eigenstudio User Manual, <a class="reference external" href="https://mhacoustics.com/download">https://mhacoustics.com/download</a></p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sampling</strong> – SamplingSphere object containing all sampling points</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">eigenmike_em32</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/019bb3ea6a47766e6b9d8ec2d3a1d662/spharpy-samplings-3.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/d4fc632646e84c196c54067045b8cdf5/spharpy-samplings-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/dbfc34883662386da40bcb9bb0200c85/spharpy-samplings-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/98b662e9891b8d2a06eb2e8ad5278dd0/spharpy-samplings-3.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-3.png" class="plot-directive" src="../_images/spharpy-samplings-3.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.eigenmike_em64">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">eigenmike_em64</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#eigenmike_em64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.eigenmike_em64" title="Link to this definition">#</a></dt>
+<dd><p>Microphone positions of the Eigenmike em64 by mhacoustics.</p>
+<p>according to
+the Eigenmuke user manual on the homepage <a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>Eigenmike em64 User Manual, <a class="reference external" href="https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf">https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf</a></p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sampling</strong> – SamplingSphere object containing all sampling points</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere">SamplingSphere</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.equal_angle">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">equal_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta_angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#equal_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.equal_angle" title="Link to this definition">#</a></dt>
+<dd><p>Generate sampling of the sphere with equally spaced angles.</p>
+<p>This sampling contain points at the North and South Pole. See
+<a class="reference internal" href="#spharpy.samplings.equiangular" title="spharpy.samplings.equiangular"><code class="xref py py-func docutils literal notranslate"><span class="pre">equiangular</span></code></a>, <a class="reference internal" href="#spharpy.samplings.gaussian" title="spharpy.samplings.gaussian"><code class="xref py py-func docutils literal notranslate"><span class="pre">gaussian</span></code></a>, and
+<a class="reference internal" href="#spharpy.samplings.great_circle" title="spharpy.samplings.great_circle"><code class="xref py py-func docutils literal notranslate"><span class="pre">great_circle</span></code></a> for samplings that do not contain points at the
+poles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta_angles</strong> (<em>tuple</em><em>, </em><em>number</em>) – Tuple that gives the angular spacing in azimuth and colatitude in
+degrees. If a number is provided, the same spacing is applied in both
+dimensions.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions. Sampling weights can be obtained from
+<a class="reference internal" href="#spharpy.samplings.calculate_sampling_weights" title="spharpy.samplings.calculate_sampling_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">equal_angle</span><span class="p">(</span><span class="n">delta_angles</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/788489a25705848d3732b8d3c2680622/spharpy-samplings-4.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/757018c3ec5dee1eade91d5334de599f/spharpy-samplings-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2d7f4a17a1ca0580f2484dfd5cdc065e/spharpy-samplings-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/bf875701aaee59ad7794110ab41f8c50/spharpy-samplings-4.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-4.png" class="plot-directive" src="../_images/spharpy-samplings-4.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.equal_area">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">equal_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#equal_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.equal_area" title="Link to this definition">#</a></dt>
+<dd><p>Sampling based on partitioning into faces with equal area.</p>
+<p>The implementation is based on <a class="footnote-reference brackets" href="#id6" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> and Leopardi’s MATLAB implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>condition_num</strong> (<em>double</em>) – Desired maximum condition number of the spherical harmonic basis matrix</p></li>
+<li><p><strong>n_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of points to start the condition number optimization. If set to
+None n_points will be (n_max+1)**2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – SamplingSphere object containing all sampling points</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
+<p>P. Leopardi, “A partition of the unit sphere into regions of equal
+area and small diameter,” Electronic Transactions on Numerical
+Analysis, vol. 25, no. 12, pp. 309-327, 2006.</p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">equal_area</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/26437c8bdb6bacf030030a517987c800/spharpy-samplings-5.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/76a2f9d692c23bb7f04b3591a9ec61c6/spharpy-samplings-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/7fdd0dd4a8aff5cf7f8420f37904bcd4/spharpy-samplings-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/8b392d88ba15bf7dffd4ba165015f561/spharpy-samplings-5.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-5.png" class="plot-directive" src="../_images/spharpy-samplings-5.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.equiangular">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">equiangular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#equiangular"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.equiangular" title="Link to this definition">#</a></dt>
+<dd><p>Generate an equiangular sampling of the sphere.</p>
+<p>For detailed information, see <a class="footnote-reference brackets" href="#id8" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>, Chapter 3.2. This is a quadrature
+sampling with the sum of the sampling weights in <cite>sampling.weights</cite>
+being <span class="math notranslate nohighlight">\(4\pi\)</span> if the number of rings is even and the number of
+points in azimuth and elevation are equal. This condition is always
+fulfilled if the number of points is chosen through <code class="docutils literal notranslate"><span class="pre">n_max</span></code>.
+This sampling does not contain points at the North and South Pole and is
+typically used for spherical harmonics processing. See
+<a class="reference internal" href="#spharpy.samplings.equal_angle" title="spharpy.samplings.equal_angle"><code class="xref py py-func docutils literal notranslate"><span class="pre">equal_angle</span></code></a> and <a class="reference internal" href="#spharpy.samplings.great_circle" title="spharpy.samplings.great_circle"><code class="xref py py-func docutils literal notranslate"><span class="pre">great_circle</span></code></a> for samplings
+containing points at the poles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_points</strong> (<em>int</em><em>, </em><em>tuple</em><em> of </em><em>two ints</em>) – Number of sampling points in azimuth and elevation. Either <cite>n_points</cite>
+or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>n_max</strong> (<em>int</em>) – Maximum applicable spherical harmonic order. If this is provided,
+‘n_points’ is set to <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">n_max</span> <span class="pre">+</span> <span class="pre">1</span></code>. Either <cite>n_points</cite> or
+<cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions including sampling weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">4</a><span class="fn-bracket">]</span></span>
+<p>B. Rafaely, Fundamentals of spherical array processing, 1st ed.
+Berlin, Heidelberg, Germany: Springer, 2015.</p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">equiangular</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/c0e92860623234932911102a338a24cd/spharpy-samplings-6.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/c0cdb2f57fa1b8b6a6d27cc62feeda63/spharpy-samplings-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/98746a5499abbd62f7fb91cbef7b3b4d/spharpy-samplings-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/32ed535b821698bbd2052cd1bf564445/spharpy-samplings-6.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-6.png" class="plot-directive" src="../_images/spharpy-samplings-6.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.fliege">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">fliege</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#fliege"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.fliege" title="Link to this definition">#</a></dt>
+<dd><p>Return Fliege-Maier spherical sampling grid.</p>
+<p>For detailed information, see <a class="footnote-reference brackets" href="#id11" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>. Call <code class="xref py py-func docutils literal notranslate"><span class="pre">sph_fliege</span></code>
+for a list of possible values for <cite>n_points</cite> and <cite>n_max</cite>. This is a
+quadrature sampling with the sum of the sampling weights in
+<cite>sampling.weights</cite> being <span class="math notranslate nohighlight">\(4\pi\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of sampling points in the grid. Related to the spherical
+harmonic order by <code class="docutils literal notranslate"><span class="pre">n_points</span> <span class="pre">=</span> <span class="pre">(n_max</span> <span class="pre">+</span> <span class="pre">1)**2</span></code>. Either <cite>n_points</cite>
+or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>n_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum applicable spherical harmonic order. Related to the number of
+points by <code class="docutils literal notranslate"><span class="pre">n_max</span> <span class="pre">=</span> <span class="pre">np.sqrt(n_points)</span> <span class="pre">-</span> <span class="pre">1</span></code>. Either <cite>n_points</cite> or
+<cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid in meters. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions including sampling weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This implementation uses pre-calculated points from the SOFiA
+toolbox <a class="footnote-reference brackets" href="#id12" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>. Possible combinations of <cite>n_points</cite> and <cite>n_max</cite> are:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><cite>n_points</cite></p></th>
+<th class="head"><p><cite>n_max</cite></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>25</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-even"><td><p>36</p></td>
+<td><p>5</p></td>
+</tr>
+<tr class="row-odd"><td><p>49</p></td>
+<td><p>6</p></td>
+</tr>
+<tr class="row-even"><td><p>64</p></td>
+<td><p>7</p></td>
+</tr>
+<tr class="row-odd"><td><p>81</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>9</p></td>
+</tr>
+<tr class="row-odd"><td><p>121</p></td>
+<td><p>10</p></td>
+</tr>
+<tr class="row-even"><td><p>144</p></td>
+<td><p>11</p></td>
+</tr>
+<tr class="row-odd"><td><p>169</p></td>
+<td><p>12</p></td>
+</tr>
+<tr class="row-even"><td><p>196</p></td>
+<td><p>13</p></td>
+</tr>
+<tr class="row-odd"><td><p>225</p></td>
+<td><p>14</p></td>
+</tr>
+<tr class="row-even"><td><p>256</p></td>
+<td><p>15</p></td>
+</tr>
+<tr class="row-odd"><td><p>289</p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-even"><td><p>324</p></td>
+<td><p>17</p></td>
+</tr>
+<tr class="row-odd"><td><p>361</p></td>
+<td><p>18</p></td>
+</tr>
+<tr class="row-even"><td><p>400</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-odd"><td><p>441</p></td>
+<td><p>20</p></td>
+</tr>
+<tr class="row-even"><td><p>484</p></td>
+<td><p>21</p></td>
+</tr>
+<tr class="row-odd"><td><p>529</p></td>
+<td><p>22</p></td>
+</tr>
+<tr class="row-even"><td><p>576</p></td>
+<td><p>23</p></td>
+</tr>
+<tr class="row-odd"><td><p>625</p></td>
+<td><p>24</p></td>
+</tr>
+<tr class="row-even"><td><p>676</p></td>
+<td><p>25</p></td>
+</tr>
+<tr class="row-odd"><td><p>729</p></td>
+<td><p>26</p></td>
+</tr>
+<tr class="row-even"><td><p>784</p></td>
+<td><p>27</p></td>
+</tr>
+<tr class="row-odd"><td><p>841</p></td>
+<td><p>28</p></td>
+</tr>
+<tr class="row-even"><td><p>900</p></td>
+<td><p>29</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id11" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">5</a><span class="fn-bracket">]</span></span>
+<p>J. Fliege and U. Maier, “The distribution of points on the sphere
+and corresponding cubature formulae,” IMA J. Numerical Analysis,
+Vol. 19, pp. 317-334, Apr. 1999, doi: 10.1093/imanum/19.2.317.</p>
+</aside>
+<aside class="footnote brackets" id="id12" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">6</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://audiogroup.web.th-koeln.de/SOFiA_wiki/DOWNLOAD.html">https://audiogroup.web.th-koeln.de/SOFiA_wiki/DOWNLOAD.html</a></p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">fliege</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/351f1126c871ebceeba399a153d04ad2/spharpy-samplings-7.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2cad2f8ff3f2233466971e22013b0ea1/spharpy-samplings-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2ec6af71e71ea3a009a4bf1799577d90/spharpy-samplings-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/412934dd71aaa6a9cf67e3d5985bbd7d/spharpy-samplings-7.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-7.png" class="plot-directive" src="../_images/spharpy-samplings-7.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.gaussian">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.gaussian" title="Link to this definition">#</a></dt>
+<dd><p>Generate sampling of the sphere based on the Gaussian quadrature.</p>
+<p>For detailed information, see <a class="footnote-reference brackets" href="#id14" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> (Section 3.3). This is a quadrature
+sampling with the sum of the sampling weights in <cite>sampling.weights</cite>
+being <span class="math notranslate nohighlight">\(4\pi\)</span>.
+This sampling does not contain points at the North and South Pole and is
+typically used for spherical harmonics processing. See
+<a class="reference internal" href="#spharpy.samplings.equal_angle" title="spharpy.samplings.equal_angle"><code class="xref py py-func docutils literal notranslate"><span class="pre">equal_angle</span></code></a> and <a class="reference internal" href="#spharpy.samplings.great_circle" title="spharpy.samplings.great_circle"><code class="xref py py-func docutils literal notranslate"><span class="pre">great_circle</span></code></a> for samplings
+containing points at the poles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_points</strong> (<em>int</em>) – Number of sampling points in elevation. The number of points in
+azimuth is always <code class="docutils literal notranslate"><span class="pre">2*n_points</span></code>. Either <cite>n_points</cite>
+or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>n_max</strong> (<em>int</em>) – Maximum applicable spherical harmonic order. If this is provided,
+<cite>n_points</cite> is set to <code class="docutils literal notranslate"><span class="pre">(2</span> <span class="pre">*</span> <span class="pre">(n_max</span> <span class="pre">+</span> <span class="pre">1),</span> <span class="pre">n_max</span> <span class="pre">+</span> <span class="pre">1)</span></code>. Either
+<cite>n_points</cite> or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid in meters. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions including sampling weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id14" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id13">7</a><span class="fn-bracket">]</span></span>
+<p>B. Rafaely, Fundamentals of spherical array processing, 1st ed.
+Berlin, Heidelberg, Germany: Springer, 2015.</p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">gaussian</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/df58fedefa7959f7caef9aa62631f251/spharpy-samplings-8.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/de47d37c0b9b1faf56b3291f73ee21ff/spharpy-samplings-8.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/25330e2ca1d0ba58128697a22c96d9f1/spharpy-samplings-8.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/dee2738e2934712f0955a13bad95d669/spharpy-samplings-8.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-8.png" class="plot-directive" src="../_images/spharpy-samplings-8.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.great_circle">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">great_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([-90.,</span> <span class="pre">-80.,</span> <span class="pre">-70.,</span> <span class="pre">-60.,</span> <span class="pre">-50.,</span> <span class="pre">-40.,</span> <span class="pre">-30.,</span> <span class="pre">-20.,</span> <span class="pre">-10.,</span> <span class="pre">0.,</span> <span class="pre">10.,</span> <span class="pre">20.,</span> <span class="pre">30.,</span> <span class="pre">40.,</span> <span class="pre">50.,</span> <span class="pre">60.,</span> <span class="pre">70.,</span> <span class="pre">80.,</span> <span class="pre">90.])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gcd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuth_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">360</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#great_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.great_circle" title="Link to this definition">#</a></dt>
+<dd><p>Spherical sampling grid according to the great circle distance criterion.</p>
+<p>Sampling grid where neighboring points of the same elevation have approx.
+the same great circle distance across elevations <a class="footnote-reference brackets" href="#id16" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elevation</strong> (<em>array like</em><em>, </em><em>optional</em>) – Contains the elevation from wich the sampling grid is generated, with
+<span class="math notranslate nohighlight">\(-90^\circ\leq elevation \leq 90^\circ\)</span> (<span class="math notranslate nohighlight">\(90^\circ\)</span>:
+North Pole, <span class="math notranslate nohighlight">\(-90^\circ\)</span>: South Pole). The default is
+<code class="docutils literal notranslate"><span class="pre">np.linspace(-90,</span> <span class="pre">90,</span> <span class="pre">19)</span></code>.</p></li>
+<li><p><strong>gcd</strong> (<em>number</em><em>, </em><em>optional</em>) – Desired great circle distance (GCD). Note that the actual GCD of the
+sampling grid is equal or smaller then the desired GCD and that the GCD
+may vary across elevations. The default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid in meters. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>azimuth_res</strong> (<em>number</em><em>, </em><em>optional</em>) – Minimum resolution of the azimuth angle in degree. The default is
+<code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>match</strong> (<em>number</em><em>, </em><em>optional</em>) – Forces azimuth entries to appear with a period of match degrees. E.g.,
+if <code class="docutils literal notranslate"><span class="pre">match=90</span></code>, the grid includes the azimuth angles 0, 90, 180, and
+270 degrees. The default is <code class="docutils literal notranslate"><span class="pre">360</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions. Sampling weights can be obtained from
+<a class="reference internal" href="#spharpy.samplings.calculate_sampling_weights" title="spharpy.samplings.calculate_sampling_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id16" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">8</a><span class="fn-bracket">]</span></span>
+<p>B. P. Bovbjerg, F. Christensen, P. Minnaar, and X. Chen, “Measuring
+the head-related transfer functions of an artificial head with a
+high directional resolution,” 109th AES Convention, Los Angeles,
+USA, Sep. 2000.</p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">great_circle</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/d449f0f751fa72ff88cd0db3687f783b/spharpy-samplings-9.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/ed81616ca5500e8c0c7144f8d06312b5/spharpy-samplings-9.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/748eb1187b88ce3a56202858190f7f09/spharpy-samplings-9.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/68a1c6e47bcacc61f0d7d5f181d565a4/spharpy-samplings-9.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-9.png" class="plot-directive" src="../_images/spharpy-samplings-9.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.hyperinterpolation">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">hyperinterpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#hyperinterpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.hyperinterpolation" title="Link to this definition">#</a></dt>
+<dd><p>Return a Hyperinterpolation sampling grid.</p>
+<p>After Sloan and Womersley <a class="footnote-reference brackets" href="#id19" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>. The samplings are available for
+1 &lt;= <cite>n_max</cite> &lt;= 200 (<code class="docutils literal notranslate"><span class="pre">n_points</span> <span class="pre">=</span> <span class="pre">(n_max</span> <span class="pre">+</span> <span class="pre">1)^2</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_points</strong> (<em>int</em>) – Number of sampling points in the grid. Related to the spherical
+harmonic order by <code class="docutils literal notranslate"><span class="pre">n_points</span> <span class="pre">=</span> <span class="pre">(n_max</span> <span class="pre">+</span> <span class="pre">1)**2</span></code>. Either <cite>n_points</cite>
+or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>n_max</strong> (<em>int</em>) – Maximum applicable spherical harmonic order. Related to the number of
+points by <code class="docutils literal notranslate"><span class="pre">n_max</span> <span class="pre">=</span> <span class="pre">np.sqrt(n_points)</span> <span class="pre">-</span> <span class="pre">1</span></code>. Either <cite>n_points</cite> or
+<cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid in meters. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions including sampling weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This implementation uses precalculated sets of points from <a class="footnote-reference brackets" href="#id20" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>. The data
+up to <code class="docutils literal notranslate"><span class="pre">n_max</span> <span class="pre">=</span> <span class="pre">20</span></code> are loaded the first time this function is called.
+The remaining data is loaded upon request.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id19" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id17">9</a><span class="fn-bracket">]</span></span>
+<p>I. H. Sloan and R. S. Womersley, “Extremal Systems of Points and
+Numerical Integration on the Sphere,” Advances in Computational
+Mathematics, vol. 21, no. 1/2, pp. 107-125, 2004.</p>
+</aside>
+<aside class="footnote brackets" id="id20" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">10</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://web.maths.unsw.edu.au/~rsw/Sphere/MaxDet/">https://web.maths.unsw.edu.au/~rsw/Sphere/MaxDet/</a></p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">hyperinterpolation</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/508d04cab7ea61b21fbfd2c5b188313d/spharpy-samplings-10.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0705fe41c8793e70b6f8e16ba7728553/spharpy-samplings-10.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/ad00fc5141f9f46596f442444babd483/spharpy-samplings-10.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/1c43eae91aa7100a7d64f48598a74bd6/spharpy-samplings-10.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-10.png" class="plot-directive" src="../_images/spharpy-samplings-10.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.icosahedron">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">icosahedron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#icosahedron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.icosahedron" title="Link to this definition">#</a></dt>
+<dd><p>Generate a sampling from the center points of the twenty icosahedron faces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions. Sampling weights can be obtained from
+<a class="reference internal" href="#spharpy.samplings.calculate_sampling_weights" title="spharpy.samplings.calculate_sampling_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">icosahedron</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/0cd846bfc2457f4f98477d133263f895/spharpy-samplings-11.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/a9c9c6be7ca773ba38e0a0e64a2b9c87/spharpy-samplings-11.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/70ac0fd345d911bc052344f2567de386/spharpy-samplings-11.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/df22ff31bb8d084208ba28f224d10f25/spharpy-samplings-11.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-11.png" class="plot-directive" src="../_images/spharpy-samplings-11.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.icosahedron_ke4">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">icosahedron_ke4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#icosahedron_ke4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.icosahedron_ke4" title="Link to this definition">#</a></dt>
+<dd><p>Microphone positions of IHTA’s KE4 spherical microphone array.
+The microphone marked as “1” defines the positive x-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sampling</strong> – SamplingSphere object containing all sampling points</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">icosahedron_ke4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/53921521924840808d57dcf9e648da2b/spharpy-samplings-12.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/990b755d688af52c94baf9075facdd79/spharpy-samplings-12.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/8b71b11ef703871e1f1559f311b42705/spharpy-samplings-12.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/9733bf1a865d8516bdeecbd6aac792c0/spharpy-samplings-12.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-12.png" class="plot-directive" src="../_images/spharpy-samplings-12.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.interior_stabilization_points">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">interior_stabilization_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kr_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/interior.html#interior_stabilization_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.interior_stabilization_points" title="Link to this definition">#</a></dt>
+<dd><p>Find stabilization points inside for an open spherical microphone array.
+The interior points stabilize the array response at the eigenfrequencies of
+the array. The algorithm is based on <a class="footnote-reference brackets" href="#id23" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a> and implemented following the
+Matlab code provided by Gilles Chardon on his homepage at <a class="footnote-reference brackets" href="#id24" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>.
+The stabilization points are independent of the sampling of the sphere
+and can therefore be combined with arbitrary spherical samplings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kr_max</strong> (<em>float</em>) – The maximum kr value to be considered. This will define
+the upper frequency limit of the array.</p></li>
+<li><p><strong>resolution_factor</strong> (<em>int</em>) – Factor to increase the spatial resolution of the grid
+used to estimate the stabilization points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling_interior</strong> – Coordinates of the stabilization points</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Coordinates</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id23" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">11</a><span class="fn-bracket">]</span></span>
+<p>G. Chardon, W. Kreuzer, und M. Noisternig, “Design of spatial
+microphone arrays for sound field interpolation”, IEEE Journal of
+Selected Topics in Signal Processing</p>
+</aside>
+<aside class="footnote brackets" id="id24" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">12</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://gilleschardon.fr/jstsp_array/">https://gilleschardon.fr/jstsp_array/</a></p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.lebedev">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">lebedev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#lebedev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.lebedev" title="Link to this definition">#</a></dt>
+<dd><p>Return Lebedev spherical sampling grid.</p>
+<p>For detailed information, see <a class="footnote-reference brackets" href="#id27" id="id25" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a>. For a list of available values
+for <cite>n_points</cite> and <cite>n_max</cite> call <code class="xref py py-func docutils literal notranslate"><span class="pre">sph_lebedev</span></code>. This is a
+quadrature  sampling with the sum of the sampling weights in
+<cite>sampling.weights</cite> being <span class="math notranslate nohighlight">\(4\pi\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of sampling points in the grid. Related to the spherical
+harmonic order by <code class="docutils literal notranslate"><span class="pre">n_points</span> <span class="pre">=</span> <span class="pre">(n_max</span> <span class="pre">+</span> <span class="pre">1)**2</span></code>. Either <cite>n_points</cite>
+or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>n_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum applicable spherical harmonic order. Related to the number of
+points by <code class="docutils literal notranslate"><span class="pre">n_max</span> <span class="pre">=</span> <span class="pre">np.sqrt(n_points)</span> <span class="pre">-</span> <span class="pre">1</span></code>. Either <cite>n_points</cite> or
+<cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid in meters. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions including sampling weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is a Python port of the Matlab Code written by Rob Parrish <a class="footnote-reference brackets" href="#id28" id="id26" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a>.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id27" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id25">13</a><span class="fn-bracket">]</span></span>
+<p>V.I. Lebedev, and D.N. Laikov
+“A quadrature formula for the sphere of the 131st
+algebraic order of accuracy”
+Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.</p>
+</aside>
+<aside class="footnote brackets" id="id28" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id26">14</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://de.mathworks.com/matlabcentral/fileexchange/27097-getlebedevsphere">https://de.mathworks.com/matlabcentral/fileexchange/27097-getlebedevsphere</a></p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">lebedev</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/622f05a773fc8c9dcdf3de0ad1120e8a/spharpy-samplings-13.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/66b1bd26e672ed0a31ed1a8172203be6/spharpy-samplings-13.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/62574909d698524c7d1cf7b01c624317/spharpy-samplings-13.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f19422b5eaef58845eaeb62fc1f82faf/spharpy-samplings-13.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-13.png" class="plot-directive" src="../_images/spharpy-samplings-13.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.spherical_voronoi">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">spherical_voronoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/helpers.html#spherical_voronoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.spherical_voronoi" title="Link to this definition">#</a></dt>
+<dd><p>Calculate a Voronoi diagram on the sphere for the given samplings
+points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sampling</strong> (<a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><em>SamplingSphere</em></a>) – Sampling points on a sphere</p></li>
+<li><p><strong>round_decimals</strong> (<em>int</em>) – Number of decimals to be rounded to.</p></li>
+<li><p><strong>center</strong> (<em>double</em>) – Center point of the voronoi diagram.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>voronoi</strong> – Spherical voronoi diagram as implemented in scipy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SphericalVoronoi</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.spiral_points">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">spiral_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#spiral_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.spiral_points" title="Link to this definition">#</a></dt>
+<dd><p>Sampling based on a spiral distribution of points on a sphere.</p>
+<p>The implementation is based on <a class="footnote-reference brackets" href="#id30" id="id29" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>condition_num</strong> (<em>double</em>) – Desired maximum condition number of the spherical harmonic basis matrix</p></li>
+<li><p><strong>n_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of points to start the condition number optimization. If set to
+None n_points will be (n_max+1)**2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – SamplingSphere object containing all sampling points</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id30" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id29">15</a><span class="fn-bracket">]</span></span>
+<p>E. a. Rakhmanov, E. B. Saff, and Y. M. Zhou, “Minimal Discrete
+Energy on the Sphere,” Mathematical Research Letters, vol. 1,
+no. 6, pp. 647-662, 1994.</p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">spiral_points</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/469e54e79e1dd5ed3298976832873e96/spharpy-samplings-14.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/6e3ae4a0e2594318b8379164a8454a72/spharpy-samplings-14.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/beffae9e173b4f210af4f0c1a28fad71/spharpy-samplings-14.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/cd57f9c9077f3b38c11602e07b8a3f2c/spharpy-samplings-14.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-14.png" class="plot-directive" src="../_images/spharpy-samplings-14.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.samplings.t_design">
+<span class="sig-prename descclassname"><span class="pre">spharpy.samplings.</span></span><span class="sig-name descname"><span class="pre">t_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const_energy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/samplings/samplings.html#t_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.samplings.t_design" title="Link to this definition">#</a></dt>
+<dd><p>Return spherical t-design sampling grid.</p>
+<p>For detailed information, see <a class="footnote-reference brackets" href="#id34" id="id31" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>.
+For a spherical harmonic order <span class="math notranslate nohighlight">\(n_{sh}\)</span>, a t-Design of degree
+<span class="math notranslate nohighlight">\(t=2n_{sh}\)</span> for constant energy or <span class="math notranslate nohighlight">\(t=2n_{sh}+1\)</span> additionally
+ensuring a constant angular spread of energy is required <a class="footnote-reference brackets" href="#id35" id="id32" role="doc-noteref"><span class="fn-bracket">[</span>17<span class="fn-bracket">]</span></a>. For a given
+degree t</p>
+<div class="math notranslate nohighlight">
+\[L = \lceil \frac{(t+1)^2}{2} \rceil+1,\]</div>
+<p>points will be generated, except for t = 3, 5, 7, 9, 11, 13, and 15.
+T-designs allow for an inverse spherical harmonic transform matrix
+calculated as <span class="math notranslate nohighlight">\(D = \frac{4\pi}{L} \mathbf{Y}^\mathrm{H}\)</span> with
+<span class="math notranslate nohighlight">\(\mathbf{Y}^\mathrm{H}\)</span> being the hermitian transpose of the
+spherical harmonics matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>degree</strong> (<em>int</em>) – T-design degree between <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">180</span></code>. Either <cite>degree</cite> or
+<cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>n_max</strong> (<em>int</em>) – Maximum applicable spherical harmonic order. Related to the degree
+by <code class="docutils literal notranslate"><span class="pre">degree</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">n_max</span></code> (<code class="docutils literal notranslate"><span class="pre">const_energy</span></code>) and
+<code class="docutils literal notranslate"><span class="pre">degree</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">n_max</span> <span class="pre">+</span> <span class="pre">1</span></code> (<code class="docutils literal notranslate"><span class="pre">const_angular_spread</span></code>). Either
+<cite>degree</cite> or <cite>n_max</cite> must be provided. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>criterion</strong> (<code class="docutils literal notranslate"><span class="pre">const_energy</span></code>, <code class="docutils literal notranslate"><span class="pre">const_angular_spread</span></code>) – Design criterion ensuring only a constant energy or additionally
+constant angular spread of energy. The default is <code class="docutils literal notranslate"><span class="pre">const_energy</span></code>.</p></li>
+<li><p><strong>radius</strong> (<em>number</em><em>, </em><em>optional</em>) – Radius of the sampling grid in meters. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sampling</strong> – Sampling positions. Sampling weights can be obtained from
+<a class="reference internal" href="#spharpy.samplings.calculate_sampling_weights" title="spharpy.samplings.calculate_sampling_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function downloads a pre-calculated set of points from <a class="footnote-reference brackets" href="#id36" id="id33" role="doc-noteref"><span class="fn-bracket">[</span>18<span class="fn-bracket">]</span></a> . The data
+up to <code class="docutils literal notranslate"><span class="pre">degree</span> <span class="pre">=</span> <span class="pre">20</span></code> are loaded the first time this function is called.
+The remaining data is loaded upon request.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id34" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id31">16</a><span class="fn-bracket">]</span></span>
+<p>C. An, X. Chen, I. H. Sloan, and R. S. Womersley, “Well Conditioned
+Spherical Designs for Integration and Interpolation on the
+Two-Sphere,” SIAM Journal on Numerical Analysis, vol. 48, no. 6,
+pp. 2135-2157, Jan. 2010.</p>
+</aside>
+<aside class="footnote brackets" id="id35" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id32">17</a><span class="fn-bracket">]</span></span>
+<p>F. Zotter, M. Frank, and A. Sontacchi, “The Virtual T-Design
+Ambisonics-Rig Using VBAP,” in Proceedings on the Congress on
+Sound and Vibration, 2010.</p>
+</aside>
+<aside class="footnote brackets" id="id36" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id33">18</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html">http://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/sf.html</a></p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">t_design</span><span class="p">(</span><span class="n">n_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/5ff5e4b3527344690497553d85095c80/spharpy-samplings-15.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/554b91850aef4830e73a12d4cfe5e363/spharpy-samplings-15.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/4c60f97b514f0145a88e686ec9ac0ed0/spharpy-samplings-15.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/d1dea1531c35cc98a7eeac0c47b5d395/spharpy-samplings-15.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-samplings-15.png" class="plot-directive" src="../_images/spharpy-samplings-15.png" />
+</figure>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="spharpy.plot.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">spharpy.plot</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="spharpy.spatial.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">spharpy.spatial</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.calculate_sampling_weights"><code class="docutils literal notranslate"><span class="pre">calculate_sampling_weights</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.cube_equidistant"><code class="docutils literal notranslate"><span class="pre">cube_equidistant</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.dodecahedron"><code class="docutils literal notranslate"><span class="pre">dodecahedron</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.eigenmike_em32"><code class="docutils literal notranslate"><span class="pre">eigenmike_em32</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.eigenmike_em64"><code class="docutils literal notranslate"><span class="pre">eigenmike_em64</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.equal_angle"><code class="docutils literal notranslate"><span class="pre">equal_angle</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.equal_area"><code class="docutils literal notranslate"><span class="pre">equal_area</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.equiangular"><code class="docutils literal notranslate"><span class="pre">equiangular</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.fliege"><code class="docutils literal notranslate"><span class="pre">fliege</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.gaussian"><code class="docutils literal notranslate"><span class="pre">gaussian</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.great_circle"><code class="docutils literal notranslate"><span class="pre">great_circle</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.hyperinterpolation"><code class="docutils literal notranslate"><span class="pre">hyperinterpolation</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.icosahedron"><code class="docutils literal notranslate"><span class="pre">icosahedron</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.icosahedron_ke4"><code class="docutils literal notranslate"><span class="pre">icosahedron_ke4</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.interior_stabilization_points"><code class="docutils literal notranslate"><span class="pre">interior_stabilization_points</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.lebedev"><code class="docutils literal notranslate"><span class="pre">lebedev</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.spherical_voronoi"><code class="docutils literal notranslate"><span class="pre">spherical_voronoi</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.spiral_points"><code class="docutils literal notranslate"><span class="pre">spiral_points</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.samplings.t_design"><code class="docutils literal notranslate"><span class="pre">t_design</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020 - 2023, Marco Berzborn; 2023, The pyfar developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

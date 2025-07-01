@@ -1,0 +1,1026 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spharpy.special &#8212; spharpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9e3b4b97" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=5459b468"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spharpy.special';</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-light" alt="spharpy - Home"/>
+    <img src="_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-dark pst-js-only" alt="spharpy - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Packages
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">spharpy.special</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-spharpy.special">
+<span id="spharpy-special"></span><h1>spharpy.special<a class="headerlink" href="#module-spharpy.special" title="Link to this heading">#</a></h1>
+<p>Subpackage implementing or wrapping special functions required in the
+spharpy package.</p>
+<p><strong>Functions:</strong></p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.chebyshev_coefficients" title="spharpy.special.chebyshev_coefficients"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chebyshev_coefficients</span></code></a>(order)</p></td>
+<td><p>Calculate the coefficients of a Chebyshev polynomial of the specified order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.legendre_coefficients" title="spharpy.special.legendre_coefficients"><code class="xref py py-obj docutils literal notranslate"><span class="pre">legendre_coefficients</span></code></a>(order)</p></td>
+<td><p>Calculate the coefficients of a Legendre polynomial of the specified order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.legendre_function" title="spharpy.special.legendre_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">legendre_function</span></code></a>(n, m, z[, cs_phase])</p></td>
+<td><p>Legendre function of order n and degree m with argument z.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.spherical_bessel" title="spharpy.special.spherical_bessel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_bessel</span></code></a>(n, z[, derivative])</p></td>
+<td><p>Spherical bessel function of order n evaluated at z.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.spherical_bessel_zeros" title="spharpy.special.spherical_bessel_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_bessel_zeros</span></code></a>(n_max, n_zeros)</p></td>
+<td><p>Compute the zeros of the spherical Bessel function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.spherical_hankel" title="spharpy.special.spherical_hankel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_hankel</span></code></a>(n, z[, kind, derivative])</p></td>
+<td><p>Spherical Hankel function of order n evaluated at z.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic" title="spharpy.special.spherical_harmonic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic</span></code></a>(n, m, theta, phi)</p></td>
+<td><p>The spherical harmonics of order n and degree m.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_derivative_phi" title="spharpy.special.spherical_harmonic_derivative_phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_phi</span></code></a>(n, m, ...)</p></td>
+<td><p>Calculate the derivative of the spherical harmonics with respect to the azimuth angle phi.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_derivative_phi_real" title="spharpy.special.spherical_harmonic_derivative_phi_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_phi_real</span></code></a>(n, m, ...)</p></td>
+<td><p>The derivative of the real valued spherical harmonics with respect to the azimuth angle $phi$.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_derivative_theta" title="spharpy.special.spherical_harmonic_derivative_theta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_theta</span></code></a>(n, m, ...)</p></td>
+<td><p>Calculate the derivative of the spherical harmonics with respect to the elevation angle theta.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_derivative_theta_real" title="spharpy.special.spherical_harmonic_derivative_theta_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_theta_real</span></code></a>(n, ...)</p></td>
+<td><p>The derivative of the real valued spherical harmonics with respect to the elevation angle $theta$.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_gradient_phi" title="spharpy.special.spherical_harmonic_gradient_phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_gradient_phi</span></code></a>(n, m, theta, phi)</p></td>
+<td><p>Calculate the derivative of the spherical harmonics with respect to the azimuth angle phi divided by sin(theta)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_gradient_phi_real" title="spharpy.special.spherical_harmonic_gradient_phi_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_gradient_phi_real</span></code></a>(n, m, ...)</p></td>
+<td><p>The gradient of the real valued spherical harmonics with respect to the azimuth angle phi.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_normalization" title="spharpy.special.spherical_harmonic_normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_normalization</span></code></a>(n, m[, norm])</p></td>
+<td><p>The normalization factor for real valued spherical harmonics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.special.spherical_harmonic_real" title="spharpy.special.spherical_harmonic_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_real</span></code></a>(n, m, theta, phi)</p></td>
+<td><p>Real valued spherical harmonic function of order n and degree m evaluated at the angles theta and phi.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.chebyshev_coefficients">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">chebyshev_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#chebyshev_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.chebyshev_coefficients" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the coefficients of a Chebyshev polynomial of the
+specified order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> (<em>int</em>) – The order of the polynomial</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coefficients</strong> – The coefficients of the polynomial</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.legendre_coefficients">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">legendre_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#legendre_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.legendre_coefficients" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the coefficients of a Legendre polynomial of the
+specified order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> (<em>int</em>) – The order of the polynomial</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coefficients</strong> – The coefficients of the polynomial</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.legendre_function">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">legendre_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_phase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#legendre_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.legendre_function" title="Link to this definition">#</a></dt>
+<dd><p>Legendre function of order n and degree m with argument z.</p>
+<div class="math notranslate nohighlight">
+\[P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n{z}\]</div>
+<p>where the Condon-Shotley phase term $(-1)^m$ is dropped when cs_phase=False
+is used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – The order</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – The degree</p></li>
+<li><p><strong>z</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The argument as an array</p></li>
+<li><p><strong>cs_phase</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use include the Condon-Shotley phase term (-1)^m or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>legendre</strong> – The Legendre function. This will return zeros if $|m| &gt; n$.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a wrapper for the Legendre function implementation from scipy. The
+scipy implementation uses the Condon-Shotley phase. Therefore, the sign
+needs to be flipped here for uneven degrees when dropping the
+Condon-Shotley phase.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_bessel">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_bessel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_bessel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_bessel" title="Link to this definition">#</a></dt>
+<dd><p>Spherical bessel function of order n evaluated at z.</p>
+<div class="math notranslate nohighlight">
+\[j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>ndarray</em>) – Order of the spherical bessel function</p></li>
+<li><p><strong>z</strong> (<em>double</em><em>, </em><em>ndarray</em>) – Argument of the spherical bessel function. Has to be real valued.</p></li>
+<li><p><strong>derivative</strong> (<em>bool</em>) – Return the derivative of the spherical Bessel function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>jn</strong> – Spherical bessel function. Array with dimensions [N x Z], where N is
+the number of elements in n and Z is the number of elements in z.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>double, ndarray</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a wrapper around the Scipy implementation of the spherical Bessel
+function.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_bessel_zeros">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_bessel_zeros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_zeros</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_bessel_zeros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_bessel_zeros" title="Link to this definition">#</a></dt>
+<dd><p>Compute the zeros of the spherical Bessel function.
+This function will always start at order zero which is equal
+to sin(x)/x and iteratively compute the roots for higher orders.
+The roots are computed using Brents algorithm from the scipy package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – The order of the spherical bessel function</p></li>
+<li><p><strong>n_zeros</strong> (<em>int</em>) – The number of roots to be computed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>roots</strong> – The roots of the spherical bessel function</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_hankel">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_hankel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_hankel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_hankel" title="Link to this definition">#</a></dt>
+<dd><p>Spherical Hankel function of order n evaluated at z.</p>
+<div class="math notranslate nohighlight">
+\[j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>ndarray</em>) – Order of the spherical bessel function</p></li>
+<li><p><strong>z</strong> (<em>double</em><em>, </em><em>ndarray</em>) – Argument of the spherical bessel function. Has to be real valued.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>hn</strong> – Spherical bessel function. Array with dimensions [N x Z], where N is
+the number of elements in n and Z is the number of elements in z.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>double, ndarray</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is based on the Hankel functions implemented in the scipy package.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic" title="Link to this definition">#</a></dt>
+<dd><p>The spherical harmonics of order n and degree m.
+The spherical harmonic functions are fully normalized (N3D) and
+include the Condon-Shortley phase according to <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+<dl class="simple">
+<dt>n<span class="classifier">unsigned int</span></dt><dd><p>The spherical harmonic order</p>
+</dd>
+<dt>m<span class="classifier">int</span></dt><dd><p>The spherical harmonic degree</p>
+</dd>
+<dt>theta<span class="classifier">ndarray, double</span></dt><dd><p>The colatitude angle</p>
+</dd>
+<dt>phi<span class="classifier">ndarray, double</span></dt><dd><p>The azimuth angle</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spherical_harmonic</strong> – The complex valued spherical harmonic of order n and degree m</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ndarray, double</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function wraps the spherical harmonic implementation from scipy.</p>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>B. Rafaely, “Fundamentals of Spherical Array Processing”, (2015),
+Springer-Verlag</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_derivative_phi">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_derivative_phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_derivative_phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_derivative_phi" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the derivative of the spherical harmonics with respect to
+the azimuth angle phi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – Spherical harmonic degree</p></li>
+<li><p><strong>theta</strong> (<em>double</em>) – Elevation angle 0 &lt; theta &lt; pi</p></li>
+<li><p><strong>phi</strong> (<em>double</em>) – Azimuth angle 0 &lt; phi &lt; 2*pi</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sh_diff</strong> – Spherical harmonic derivative</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>complex double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_derivative_phi_real">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_derivative_phi_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_derivative_phi_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_derivative_phi_real" title="Link to this definition">#</a></dt>
+<dd><p>The derivative of the real valued spherical harmonics with respect
+to the azimuth angle $phi$.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – The spherical harmonic order.</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – The spherical harmonic degree.</p></li>
+<li><p><strong>theta</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The elevation angle</p></li>
+<li><p><strong>phi</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The azimuth angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>derivative</strong> – The derivative</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This implementation does not include the Condon-Shotley phase term.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_derivative_theta">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_derivative_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_derivative_theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_derivative_theta" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the derivative of the spherical harmonics with respect to
+the elevation angle theta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – Spherical harmonic degree</p></li>
+<li><p><strong>theta</strong> (<em>double</em>) – Elevation angle 0 &lt; theta &lt; pi</p></li>
+<li><p><strong>phi</strong> (<em>double</em>) – Azimuth angle 0 &lt; phi &lt; 2*pi</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sh_diff</strong> – Spherical harmonic derivative</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>complex double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_derivative_theta_real">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_derivative_theta_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_derivative_theta_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_derivative_theta_real" title="Link to this definition">#</a></dt>
+<dd><p>The derivative of the real valued spherical harmonics with respect
+to the elevation angle $theta$.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – The spherical harmonic order.</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – The spherical harmonic degree.</p></li>
+<li><p><strong>theta</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The elevation angle</p></li>
+<li><p><strong>phi</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The azimuth angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>derivative</strong> – The derivative</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This implementation does not include the Condon-Shotley phase term.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_gradient_phi">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_gradient_phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_gradient_phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_gradient_phi" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the derivative of the spherical harmonics with respect to
+the azimuth angle phi divided by sin(theta)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – Spherical harmonic degree</p></li>
+<li><p><strong>theta</strong> (<em>double</em>) – Elevation angle 0 &lt; theta &lt; pi</p></li>
+<li><p><strong>phi</strong> (<em>double</em>) – Azimuth angle 0 &lt; phi &lt; 2*pi</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sh_diff</strong> – Spherical harmonic derivative</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>complex double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_gradient_phi_real">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_gradient_phi_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_gradient_phi_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_gradient_phi_real" title="Link to this definition">#</a></dt>
+<dd><p>The gradient of the real valued spherical harmonics with respect
+to the azimuth angle phi.
+The singularities at the poles are avoided using the formulation proposed
+in <a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – The spherical harmonic order.</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – The spherical harmonic degree.</p></li>
+<li><p><strong>theta</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The elevation angle</p></li>
+<li><p><strong>phi</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The azimuth angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>derivative</strong> – The derivative</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This implementation does not include the Condon-Shotley phase term.</p>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+harmonic expressions of geomagnetic vector and gradient tensor
+fields in the local north-oriented reference frame,” Geoscientific
+Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_normalization">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_normalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_normalization" title="Link to this definition">#</a></dt>
+<dd><p>The normalization factor for real valued spherical harmonics.</p>
+<div class="math notranslate nohighlight">
+\[N_n^m = \sqrt{\frac{2n+1}{4\pi}\frac{(n-m)!}{(n+m)!}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – The spherical harmonic order.</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – The spherical harmonic degree.</p></li>
+<li><p><strong>norm</strong> (<em>'full'</em><em>, </em><em>'semi'</em><em>, </em><em>optional</em>) – Normalization to use. Can be either fully normalized on the sphere or
+semi-normalized.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>norm</strong> – The normalization factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.special.spherical_harmonic_real">
+<span class="sig-prename descclassname"><span class="pre">spharpy.special.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spharpy/special.html#spherical_harmonic_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.special.spherical_harmonic_real" title="Link to this definition">#</a></dt>
+<dd><p>Real valued spherical harmonic function of order n and degree m
+evaluated at the angles theta and phi.
+The spherical harmonic functions are fully normalized (N3D) and follow
+the AmbiX phase convention, which does not include the Condon-Shortley
+phase <a class="footnote-reference brackets" href="#id6" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<div class="math notranslate nohighlight">
+\[Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+\frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+\begin{cases}
+    \displaystyle \cos(|m|\phi),  &amp; \text{if $m \ge 0$} \newline
+    \displaystyle \sin(|m|\phi) ,  &amp; \text{if $m &lt; 0$}
+\end{cases}\]</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
+<p>C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+Suggested Ambisonics Format (revised by F. Zotter),” International
+Symposium on Ambisonics and Spherical Acoustics,
+vol. 3, pp. 1–11, 2011.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>unsigned int</em>) – The spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>int</em>) – The spherical harmonic degree</p></li>
+<li><p><strong>theta</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The colatitude angle</p></li>
+<li><p><strong>phi</strong> (<em>ndarray</em><em>, </em><em>double</em>) – The azimuth angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>spherical_harmonic</strong> – The real valued spherial harmonic of order n and degree m</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, double</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.chebyshev_coefficients"><code class="docutils literal notranslate"><span class="pre">chebyshev_coefficients</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.legendre_coefficients"><code class="docutils literal notranslate"><span class="pre">legendre_coefficients</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.legendre_function"><code class="docutils literal notranslate"><span class="pre">legendre_function</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_bessel"><code class="docutils literal notranslate"><span class="pre">spherical_bessel</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_bessel_zeros"><code class="docutils literal notranslate"><span class="pre">spherical_bessel_zeros</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_hankel"><code class="docutils literal notranslate"><span class="pre">spherical_hankel</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_derivative_phi"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_phi</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_derivative_phi_real"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_phi_real</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_derivative_theta"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_theta</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_derivative_theta_real"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_derivative_theta_real</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_gradient_phi"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_gradient_phi</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_gradient_phi_real"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_gradient_phi_real</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_normalization"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_normalization</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.special.spherical_harmonic_real"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_real</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020 - 2023, Marco Berzborn; 2023, The pyfar developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

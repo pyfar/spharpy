@@ -2,7 +2,7 @@ from .sh import (
     SphericalHarmonics
 )
 
-from .audio import (
+from .sh import (
     SphericalHarmonicSignal,
 )
 

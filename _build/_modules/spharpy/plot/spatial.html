@@ -1,0 +1,1446 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spharpy.plot.spatial &#8212; spharpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=9e3b4b97" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5459b468"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/spharpy/plot/spatial';</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-light" alt="spharpy - Home"/>
+    <img src="../../../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-dark pst-js-only" alt="spharpy - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Packages
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">spharpy.plot.spatial</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for spharpy.plot.spatial</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Plot functions for spatial data</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.tri</span> <span class="k">as</span> <span class="nn">mtri</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.spatial</span> <span class="k">as</span> <span class="nn">sspat</span>
+<span class="kn">import</span> <span class="nn">pyfar</span> <span class="k">as</span> <span class="nn">pf</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="n">Axes3D</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.art3d</span> <span class="kn">import</span> <span class="n">Poly3DCollection</span>
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">circmean</span>
+
+<span class="kn">from</span> <span class="nn">.cmap</span> <span class="kn">import</span> <span class="n">phase_twilight</span>
+
+<span class="kn">from</span> <span class="nn">spharpy.samplings</span> <span class="kn">import</span> <span class="n">spherical_voronoi</span>
+<span class="kn">from</span> <span class="nn">pyfar.classes.coordinates</span> <span class="kn">import</span> <span class="n">sph2cart</span>
+
+
+<span class="k">def</span> <span class="nf">set_aspect_equal_3d</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fix equal aspect bug for 3D plots.&quot;&quot;&quot;</span>
+
+    <span class="n">xlim</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim3d</span><span class="p">()</span>
+    <span class="n">ylim</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim3d</span><span class="p">()</span>
+    <span class="n">zlim</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlim3d</span><span class="p">()</span>
+
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">mean</span>
+    <span class="n">xmean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+    <span class="n">ymean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+    <span class="n">zmean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">zlim</span><span class="p">)</span>
+
+    <span class="n">plot_radius</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">lim</span> <span class="o">-</span> <span class="n">mean_</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">lims</span><span class="p">,</span> <span class="n">mean_</span> <span class="ow">in</span> <span class="p">((</span><span class="n">xlim</span><span class="p">,</span> <span class="n">xmean</span><span class="p">),</span>
+                                           <span class="p">(</span><span class="n">ylim</span><span class="p">,</span> <span class="n">ymean</span><span class="p">),</span>
+                                           <span class="p">(</span><span class="n">zlim</span><span class="p">,</span> <span class="n">zmean</span><span class="p">))</span>
+                       <span class="k">for</span> <span class="n">lim</span> <span class="ow">in</span> <span class="n">lims</span><span class="p">])</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim3d</span><span class="p">([</span><span class="n">xmean</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">xmean</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim3d</span><span class="p">([</span><span class="n">ymean</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">ymean</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">([</span><span class="n">zmean</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">zmean</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="scatter">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.scatter">[docs]</a>
+<span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the x, y, and z coordinates of the sampling grid in the 3d space.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        The coordinates to be plotted</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.gaussian(n_max=5)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.scatter(coords)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;3d&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The projection of the axis needs to be &#39;3d&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_box_aspect</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">z</span><span class="p">)])</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_triangulation_sphere</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Triangulation for data points sampled on a spherical surface.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Coordinate object for which the triangulation is calculated</span>
+<span class="sd">    xyz : list of arrays</span>
+<span class="sd">        x, y, and z values of the data points in the triangulation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    triangulation : matplotlib Triangulation</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa: 501</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">sph2cart</span><span class="p">(</span>
+        <span class="n">sampling</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span>
+        <span class="n">sampling</span><span class="o">.</span><span class="n">colatitude</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">hull</span> <span class="o">=</span> <span class="n">sspat</span><span class="o">.</span><span class="n">ConvexHull</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sph2cart</span><span class="p">(</span>
+            <span class="n">sampling</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span>
+            <span class="n">sampling</span><span class="o">.</span><span class="n">colatitude</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sampling</span><span class="o">.</span><span class="n">colatitude</span><span class="p">))))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">tri</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">triangles</span><span class="o">=</span><span class="n">hull</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tri</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">interpolate_data_on_sphere</span><span class="p">(</span>
+        <span class="n">sampling</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">overlap</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">refine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">interpolator</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Linear interpolator for data on a spherical surface. The interpolator</span>
+<span class="sd">    exploits that the data on the sphere is periodic with regard to the</span>
+<span class="sd">    elevation and azimuth angle. The data is periodically extended to a</span>
+<span class="sd">    specified overlap angle before interpolation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        The coordinates at which the data is sampled.</span>
+<span class="sd">    data : ndarray, double</span>
+<span class="sd">        The sampled data points.</span>
+<span class="sd">    overlap : float, (pi/4)</span>
+<span class="sd">        The overlap for the periodic extension in azimuth angle, given in</span>
+<span class="sd">        radians</span>
+<span class="sd">    refine : bool (False)</span>
+<span class="sd">        Refine the mesh before interpolating</span>
+<span class="sd">    interpolator : linear, cubic</span>
+<span class="sd">        The interpolation method to be used</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    interp : LinearTriInterpolator, CubicTriInterpolator</span>
+<span class="sd">        The interpolator object.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator</span>
+<span class="sd">    are used.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa: 501</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span> <span class="o">=</span> <span class="n">coordinates2latlon</span><span class="p">(</span><span class="n">sampling</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">lons</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">overlap</span>
+    <span class="n">lons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">lons</span><span class="p">,</span> <span class="n">lons</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">lats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">lats</span><span class="p">,</span> <span class="n">lats</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">lons</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">+</span> <span class="n">overlap</span>
+    <span class="n">lons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">lons</span><span class="p">,</span> <span class="n">lons</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">lats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">lats</span><span class="p">,</span> <span class="n">lats</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
+
+    <span class="n">tri</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="n">lats</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">refine</span><span class="p">:</span>
+        <span class="n">refiner</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">UniformTriRefiner</span><span class="p">(</span><span class="n">tri</span><span class="p">)</span>
+        <span class="n">tri</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">refine_field</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">triinterpolator</span><span class="o">=</span><span class="n">mtri</span><span class="o">.</span><span class="n">LinearTriInterpolator</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
+            <span class="n">subdiv</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">interpolator</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>
+        <span class="n">interpolator</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">LinearTriInterpolator</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">interpolator</span> <span class="o">==</span> <span class="s1">&#39;cubic&#39;</span><span class="p">:</span>
+        <span class="n">interpolator</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">CubicTriInterpolator</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;mind_E&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please give a valid interpolation method.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">interpolator</span>
+
+
+<span class="k">def</span> <span class="nf">_balloon_color_data</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">itype</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the data array that is to be mapped to the colormap of the</span>
+<span class="sd">    balloon.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tri : Triangulation</span>
+<span class="sd">        The matplotlib triangulation for the sphere</span>
+<span class="sd">    data : ndarray, double, complex double</span>
+<span class="sd">        The data array</span>
+<span class="sd">    itype : &#39;magnitude&#39;, &#39;phase&#39;, &#39;amplitude&#39;</span>
+<span class="sd">        Whether to plot magnitude levels or the phase.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    color_data : ndarray, double</span>
+<span class="sd">        The data array for the colormap.</span>
+<span class="sd">    vmin : double</span>
+<span class="sd">        The minimum of the color data</span>
+
+<span class="sd">    vmax : double</span>
+<span class="sd">        The maximum of the color data</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">itype</span> <span class="o">==</span> <span class="s1">&#39;phase&#39;</span><span class="p">:</span>
+        <span class="n">cdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">circmean</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="n">tri</span><span class="o">.</span><span class="n">triangles</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="s1">&#39;magnitude&#39;</span><span class="p">:</span>
+        <span class="n">cdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">cdata</span><span class="p">)</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cdata</span><span class="p">)</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="n">tri</span><span class="o">.</span><span class="n">triangles</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="s1">&#39;amplitude&#39;</span><span class="p">:</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">tri</span><span class="o">.</span><span class="n">triangles</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid type of data mapping.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span>
+
+
+<div class="viewcode-block" id="pcolor_sphere">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.pcolor_sphere">[docs]</a>
+<span class="k">def</span> <span class="nf">pcolor_sphere</span><span class="p">(</span>
+        <span class="n">coordinates</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">phase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot data on the surface of a sphere defined by the coordinate angles</span>
+<span class="sd">    theta and phi. The data array will be mapped onto the surface of a sphere.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    When plotting the phase encoded in the colormap, the function will switch</span>
+<span class="sd">    to the HSV colormap and ignore the user input for the cmap input variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Coordinates defining a sphere</span>
+<span class="sd">    data : ndarray, double</span>
+<span class="sd">        Data for each angle, must have size corresponding to the number of</span>
+<span class="sd">        points given in coordinates.</span>
+<span class="sd">    cmap : matplotlib colomap, optional</span>
+<span class="sd">        Colormap for the plot, see matplotlib.cm</span>
+<span class="sd">    phase : boolean, optional</span>
+<span class="sd">        Encode the phase of the data in the colormap. This option will be</span>
+<span class="sd">        activated by default of the data is complex valued.</span>
+<span class="sd">    ax : matplotlib.axis, None, optional</span>
+<span class="sd">        The matplotlib axis object used for plotting. By default `None`, which</span>
+<span class="sd">        will create a new axis object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa: 501</span>
+    <span class="n">tri</span><span class="p">,</span> <span class="n">xyz</span> <span class="o">=</span> <span class="n">_triangulation_sphere</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="s1">&#39;3d&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The projection of the axis needs to be &#39;3d&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">phase</span><span class="p">:</span>
+        <span class="n">itype</span> <span class="o">=</span> <span class="s1">&#39;phase&#39;</span>
+        <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">phase_twilight</span><span class="p">()</span>
+        <span class="n">clabel</span> <span class="o">=</span> <span class="s1">&#39;Phase (rad)&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">itype</span> <span class="o">=</span> <span class="s1">&#39;amplitude&#39;</span>
+        <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+        <span class="n">clabel</span> <span class="o">=</span> <span class="s1">&#39;Amplitude&#39;</span>
+
+    <span class="n">cdata</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">_balloon_color_data</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">itype</span><span class="p">)</span>
+
+    <span class="n">plot</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_trisurf</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span>
+                           <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                           <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                           <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+                           <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">cdata</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">clabel</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z[m]&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_box_aspect</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">z</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">plot</span></div>
+
+
+
+<div class="viewcode-block" id="balloon_wireframe">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.balloon_wireframe">[docs]</a>
+<span class="k">def</span> <span class="nf">balloon_wireframe</span><span class="p">(</span>
+        <span class="n">coordinates</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">phase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot data on a sphere defined by the coordinate angles</span>
+<span class="sd">    theta and phi. The magnitude information is mapped onto the radius of the</span>
+<span class="sd">    sphere. The colormap represents either the phase or the magnitude of the</span>
+<span class="sd">    data array.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    When plotting the phase encoded in the colormap, the function will switch</span>
+<span class="sd">    to the HSV colormap and ignore the user input for the cmap input variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Coordinates defining a sphere</span>
+<span class="sd">    data : ndarray, double</span>
+<span class="sd">        Data for each angle, must have size corresponding to the number of</span>
+<span class="sd">        points given in coordinates.</span>
+<span class="sd">    cmap : matplotlib colomap, optional</span>
+<span class="sd">        Colormap for the plot, see matplotlib.cm</span>
+<span class="sd">    phase : boolean, optional</span>
+<span class="sd">        Encode the phase of the data in the colormap. This option will be</span>
+<span class="sd">        activated by default of the data is complex valued.</span>
+<span class="sd">    show : boolean, optional</span>
+<span class="sd">        Whether to show the figure or not</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.equal_area(n_max=0, n_points=500)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.sin(coords.colatitude) * np.cos(coords.azimuth)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.balloon_wireframe(coords, data, phase=True)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">tri</span><span class="p">,</span> <span class="n">xyz</span> <span class="o">=</span> <span class="n">_triangulation_sphere</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="s1">&#39;3d&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The projection of the axis needs to be &#39;3d&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">phase</span><span class="p">:</span>
+        <span class="n">itype</span> <span class="o">=</span> <span class="s1">&#39;phase&#39;</span>
+        <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">phase_twilight</span><span class="p">()</span>
+        <span class="n">clabel</span> <span class="o">=</span> <span class="s1">&#39;Phase (rad)&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">itype</span> <span class="o">=</span> <span class="s1">&#39;amplitude&#39;</span>
+        <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+        <span class="n">clabel</span> <span class="o">=</span> <span class="s1">&#39;Amplitude&#39;</span>
+
+    <span class="n">cdata</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">_balloon_color_data</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">itype</span><span class="p">)</span>
+
+    <span class="n">plot</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_trisurf</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span>
+                           <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                           <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+                           <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+
+    <span class="n">cnorm</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+    <span class="n">cmap_colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">cnorm</span><span class="p">(</span><span class="n">cdata</span><span class="p">))</span>
+
+    <span class="n">cmappable</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span><span class="n">cnorm</span><span class="p">,</span> <span class="n">cmap</span><span class="p">)</span>
+    <span class="n">cmappable</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">cdata</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_edgecolors</span><span class="p">(</span><span class="n">cmap_colors</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_facecolors</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">cmap_colors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">*</span><span class="mf">0.9</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cmappable</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">clabel</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z[m]&#39;</span><span class="p">)</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_facecolors</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">cmap_colors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">*</span><span class="mf">0.9</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_box_aspect</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">plot</span></div>
+
+
+
+<div class="viewcode-block" id="balloon">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.balloon">[docs]</a>
+<span class="k">def</span> <span class="nf">balloon</span><span class="p">(</span>
+        <span class="n">coordinates</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">phase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot data on a sphere defined by the coordinate angles theta and phi.</span>
+<span class="sd">    The magnitude information is mapped onto the radius of the sphere.</span>
+<span class="sd">    The colormap represents either the phase or the magnitude of the</span>
+<span class="sd">    data array.</span>
+
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    When plotting the phase encoded in the colormap, the function will switch</span>
+<span class="sd">    to the HSV colormap and ignore the user input for the cmap input variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Coordinates defining a sphere</span>
+<span class="sd">    data : ndarray, double</span>
+<span class="sd">        Data for each angle, must have size corresponding to the number of</span>
+<span class="sd">        points given in coordinates.</span>
+<span class="sd">    cmap : matplotlib colomap, optional</span>
+<span class="sd">        Colormap for the plot, see matplotlib.cm</span>
+<span class="sd">    phase : boolean, optional</span>
+<span class="sd">        Encode the phase of the data in the colormap. This option will be</span>
+<span class="sd">        activated by default of the data is complex valued.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.equal_area(n_max=0, n_points=500)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.sin(coords.colatitude) * np.cos(coords.azimuth)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.balloon(coords, data)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">tri</span><span class="p">,</span> <span class="n">xyz</span> <span class="o">=</span> <span class="n">_triangulation_sphere</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="s1">&#39;3d&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The projection of the axis needs to be &#39;3d&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">phase</span><span class="p">:</span>
+        <span class="n">itype</span> <span class="o">=</span> <span class="s1">&#39;phase&#39;</span>
+        <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">phase_twilight</span><span class="p">()</span>
+        <span class="n">clabel</span> <span class="o">=</span> <span class="s1">&#39;Phase (rad)&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">itype</span> <span class="o">=</span> <span class="s1">&#39;amplitude&#39;</span>
+        <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+        <span class="n">clabel</span> <span class="o">=</span> <span class="s1">&#39;Amplitude&#39;</span>
+
+    <span class="n">cdata</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">_balloon_color_data</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">itype</span><span class="p">)</span>
+
+    <span class="n">plot</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_trisurf</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span>
+                           <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                           <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                           <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+                           <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+                           <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">cdata</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_box_aspect</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
+
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">clabel</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z[m]&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plot</span></div>
+
+
+
+<div class="viewcode-block" id="voronoi_cells_sphere">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.voronoi_cells_sphere">[docs]</a>
+<span class="k">def</span> <span class="nf">voronoi_cells_sphere</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="n">round_decimals</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the Voronoi cells of a Voronoi tesselation on a sphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Sampling as SamplingSphere object</span>
+<span class="sd">    round_decimals : int</span>
+<span class="sd">        Decimals to be rounded to for eliminating duplicate points in</span>
+<span class="sd">        the voronoi diagram</span>
+<span class="sd">    ax : AxesSubplot, None, optional</span>
+<span class="sd">        The subplot axes to use for plotting. The used projection needs to be</span>
+<span class="sd">        &#39;3d&#39;.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.gaussian(n_max=5)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.voronoi_cells_sphere(coords)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa: 501</span>
+    <span class="n">sv</span> <span class="o">=</span> <span class="n">spherical_voronoi</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="n">round_decimals</span><span class="o">=</span><span class="n">round_decimals</span><span class="p">)</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">sort_vertices_of_regions</span><span class="p">()</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">.</span><span class="n">cartesian</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;3d&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The projection of the axis needs to be &#39;3d&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;3.1.0&#39;</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+    <span class="c1"># plot the unit sphere for reference (optional)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">u</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">sv</span><span class="o">.</span><span class="n">regions</span><span class="p">:</span>
+        <span class="n">polygon</span> <span class="o">=</span> <span class="n">Poly3DCollection</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">sv</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">]],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">polygon</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">polygon</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_collection3d</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_box_aspect</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">sampling</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">sampling</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">sampling</span><span class="o">.</span><span class="n">z</span><span class="p">)])</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y[m]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z[m]&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_combined_contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine a filled contour plot with a black line contour plot for</span>
+<span class="sd">    better highlighting.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ndarray, double</span>
+<span class="sd">        The x coordinates.</span>
+<span class="sd">    y : ndarray, double</span>
+<span class="sd">        The y coordinates.</span>
+<span class="sd">    data : ndarray, double</span>
+<span class="sd">        The data array.</span>
+<span class="sd">    limits : tuple, list</span>
+<span class="sd">        Tuple or list containing the maximum and minimum to which the colormap</span>
+<span class="sd">        needs to be clipped.</span>
+<span class="sd">    cmap : matplotlib.colormap</span>
+<span class="sd">        The colormap</span>
+<span class="sd">    ax : matplotlib.axes</span>
+<span class="sd">        The axes object into which the contour is plotted</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cf : matplotlib.ScalarMappable</span>
+<span class="sd">        The scalar mappable for the contour plot</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;neither&#39;</span>
+    <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask_min</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">mask_min</span><span class="p">]</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mask_max</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">mask_max</span><span class="p">]</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
+        <span class="k">elif</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;min&#39;</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">tricontour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                  <span class="n">vmin</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="pcolor_map">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.pcolor_map">[docs]</a>
+<span class="k">def</span> <span class="nf">pcolor_map</span><span class="p">(</span>
+        <span class="n">coordinates</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;mollweide&#39;</span><span class="p">,</span>
+        <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">),</span>
+        <span class="n">refine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the map projection of data points sampled on a spherical surface.</span>
+<span class="sd">    The data has to be real.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    In case limits are given, all out of bounds data will be clipped to the</span>
+<span class="sd">    respective limit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Coordinates defining a sphere</span>
+<span class="sd">    data: ndarray, double</span>
+<span class="sd">        Data for each angle, must have size corresponding to the number of</span>
+<span class="sd">        points given in coordinates.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.equal_area(n_max=0, n_points=500)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.pcolor_map(coords, data)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">height</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span> <span class="o">=</span> <span class="n">coordinates2latlon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+    <span class="n">tri</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">longitude</span><span class="p">,</span> <span class="n">latitude</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">refine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">subdiv</span> <span class="o">=</span> <span class="n">refine</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refine</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="mi">2</span>
+        <span class="n">refiner</span> <span class="o">=</span> <span class="n">mtri</span><span class="o">.</span><span class="n">UniformTriRefiner</span><span class="p">(</span><span class="n">tri</span><span class="p">)</span>
+        <span class="n">tri</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">refine_field</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">triinterpolator</span><span class="o">=</span><span class="n">mtri</span><span class="o">.</span><span class="n">LinearTriInterpolator</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
+            <span class="n">subdiv</span><span class="o">=</span><span class="n">subdiv</span><span class="p">)</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">projection</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Projection does not match the projection of the axis&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Needs to be &#39;</span><span class="si">{</span><span class="n">projection</span><span class="si">}</span><span class="s2">&#39;, but is &#39;</span><span class="si">{</span><span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [$^</span><span class="se">\\</span><span class="s1">circ$]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [$^</span><span class="se">\\</span><span class="s1">circ$]&#39;</span><span class="p">)</span>
+
+    <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;neither&#39;</span>
+    <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask_min</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">mask_min</span><span class="p">]</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mask_max</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">mask_max</span><span class="p">]</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
+        <span class="k">elif</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;min&#39;</span>
+
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">tripcolor</span><span class="p">(</span>
+        <span class="n">tri</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cf</span></div>
+
+
+
+<div class="viewcode-block" id="contour_map">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.contour_map">[docs]</a>
+<span class="k">def</span> <span class="nf">contour_map</span><span class="p">(</span>
+        <span class="n">coordinates</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;mollweide&#39;</span><span class="p">,</span>
+        <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">),</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the map projection of data points sampled on a spherical surface.</span>
+<span class="sd">    The data has to be real.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    In case limits are given, all out of bounds data will be clipped to the</span>
+<span class="sd">    respective limit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    latitude: ndarray, double</span>
+<span class="sd">        Geodetic latitude angle of the map, must be in [-pi/2, pi/2]</span>
+<span class="sd">    longitude: ndarray, double</span>
+<span class="sd">        Geodetic longitude angle of the map, must be in [-pi, pi]</span>
+<span class="sd">    data: ndarray, double</span>
+<span class="sd">        Data for each angle, must have size corresponding to the number of</span>
+<span class="sd">        points given in coordinates.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.equal_area(n_max=0, n_points=500)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.contour_map(coords, data)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">csize</span><span class="p">)))</span>
+
+    <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">res</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">res</span><span class="p">))</span>
+
+    <span class="n">interp</span> <span class="o">=</span> <span class="n">interpolate_data_on_sphere</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">zi</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">projection</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Projection does not match the projection of the axis&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Needs to be &#39;</span><span class="si">{</span><span class="n">projection</span><span class="si">}</span><span class="s2">&#39;, but is &#39;</span><span class="si">{</span><span class="n">ax</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [$^</span><span class="se">\\</span><span class="s1">circ$]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [$^</span><span class="se">\\</span><span class="s1">circ$]&#39;</span><span class="p">)</span>
+
+    <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;neither&#39;</span>
+    <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">zi</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">zi</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask_min</span> <span class="o">=</span> <span class="n">zi</span> <span class="o">&lt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">zi</span><span class="p">[</span><span class="n">mask_min</span><span class="p">]</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mask_max</span> <span class="o">=</span> <span class="n">zi</span> <span class="o">&gt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">zi</span><span class="p">[</span><span class="n">mask_max</span><span class="p">]</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_max</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_min</span><span class="p">):</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="s1">&#39;min&#39;</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+               <span class="n">vmin</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">)</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;gouraud&#39;</span><span class="p">,</span>
+                       <span class="n">vmin</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="n">levels</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cf</span></div>
+
+
+
+<div class="viewcode-block" id="contour">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.contour">[docs]</a>
+<span class="k">def</span> <span class="nf">contour</span><span class="p">(</span>
+        <span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">),</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the map projection of data points sampled on a spherical surface.</span>
+<span class="sd">    The data has to be real-valued.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    In case limits are given, all out of bounds data will be clipped to the</span>
+<span class="sd">    respective limit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`</span>
+<span class="sd">        Coordinates defining a sphere</span>
+<span class="sd">    data: ndarray, double</span>
+<span class="sd">        Data for each angle, must have size corresponding to the number of</span>
+<span class="sd">        points given in coordinates.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        &gt;&gt;&gt; import spharpy</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; coords = spharpy.samplings.equal_area(n_max=0, n_points=500)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)</span>
+<span class="sd">        &gt;&gt;&gt; spharpy.plot.contour(coords, data)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">height</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span> <span class="o">=</span> <span class="n">coordinates2latlon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+    <span class="n">lat_deg</span> <span class="o">=</span> <span class="n">latitude</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">lon_deg</span> <span class="o">=</span> <span class="n">longitude</span> <span class="o">*</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [$^</span><span class="se">\\</span><span class="s1">circ$]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [$^</span><span class="se">\\</span><span class="s1">circ$]&#39;</span><span class="p">)</span>
+
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">_combined_contour</span><span class="p">(</span><span class="n">lon_deg</span><span class="p">,</span> <span class="n">lat_deg</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cf</span></div>
+
+
+
+<div class="viewcode-block" id="MidpointNormalize">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.MidpointNormalize">[docs]</a>
+<span class="k">class</span> <span class="nc">MidpointNormalize</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Colormap norm with a defined midpoint. Useful for normalization of</span>
+<span class="sd">    colormaps representing deviations from a defined midpoint.</span>
+<span class="sd">    Taken from the official matplotlib documentation at</span>
+<span class="sd">    https://matplotlib.org/users/colormapnorms.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MidpointNormalize.__init__">
+<a class="viewcode-back" href="../../../modules/spharpy.plot.html#spharpy.plot.MidpointNormalize.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">midpoint</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">midpoint</span> <span class="o">=</span> <span class="n">midpoint</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># I&#39;m ignoring masked values and all kinds of edge cases to make a</span>
+        <span class="c1"># simple example...</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">midpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">coordinates2latlon</span><span class="p">(</span><span class="n">coords</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">Coordinates</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transforms from Cartesian coordinates to Geocentric coordinates</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        h = \\sqrt{x^2 + y^2 + z^2},</span>
+
+<span class="sd">        \\theta = \\pi/2 - \\arccos(\\frac{z}{r}),</span>
+
+<span class="sd">        \\phi = \\arctan(\\frac{y}{x})</span>
+
+<span class="sd">        -\\pi/2 &lt; \\theta &lt; \\pi/2,</span>
+
+<span class="sd">        -\\pi &lt; \\phi &lt; \\pi</span>
+
+<span class="sd">    where :math:`h` is the heigth, :math:`\\theta` is the latitude angle</span>
+<span class="sd">    and :math:`\\phi` is the longitude angle</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : pf.Coordinates</span>
+<span class="sd">        Cartesian Coordiantes are transformed to Geocentric coordinates</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    height : ndarray, number</span>
+<span class="sd">        The radius is rendered as height information</span>
+<span class="sd">    latitude : ndarray, number</span>
+<span class="sd">        Geocentric latitude angle</span>
+<span class="sd">    longitude : ndarray, number</span>
+<span class="sd">        Geocentric longitude angle</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">z</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">latitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="n">height</span><span class="p">)</span>
+    <span class="n">longitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">height</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020 - 2023, Marco Berzborn; 2023, The pyfar developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

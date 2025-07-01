@@ -1,0 +1,1351 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spharpy.spherical &#8212; spharpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=9e3b4b97" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5459b468"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/spharpy.spherical';</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="spharpy.transforms" href="spharpy.transforms.html" />
+    <link rel="prev" title="spharpy.spatial" href="spharpy.spatial.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-light" alt="spharpy - Home"/>
+    <img src="../_static/pyfar_logos_fixed_size_spharpy.png" class="logo__image only-dark pst-js-only" alt="spharpy - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Packages
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-oer.readthedocs.io">
+    Educational
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/help/index.html">
+    Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar-gallery.readthedocs.io/en/latest/contribute/index.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyfar.readthedocs.io">
+    pyfar
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofar.readthedocs.io">
+    sofar
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../spharpy.html">
+    spharpy
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://pyrato.readthedocs.io">
+    pyrato
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyfar" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Getting Started</a></li>
+
+
+<li class="toctree-l1 current active"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../spharpy.html" class="nav-link">spharpy</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../api_reference.html" class="nav-link">API Reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">spharpy.spherical</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-spharpy.spherical">
+<span id="spharpy-spherical"></span><h1>spharpy.spherical<a class="headerlink" href="#module-spharpy.spherical" title="Link to this heading">#</a></h1>
+<p><strong>Functions:</strong></p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.acn_to_nm" title="spharpy.spherical.acn_to_nm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acn_to_nm</span></code></a>(acn)</p></td>
+<td><p>Calculate the order n and degree m from the linear coefficient index.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.aperture_vibrating_spherical_cap" title="spharpy.spherical.aperture_vibrating_spherical_cap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aperture_vibrating_spherical_cap</span></code></a>(n_max, ...)</p></td>
+<td><p>Aperture function for a vibrating spherical cap.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.change_channel_convention" title="spharpy.spherical.change_channel_convention"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_channel_convention</span></code></a>(data, current, ...)</p></td>
+<td><p>Change the channel convention of spherical harmonics coefficients or basis functions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.fuma_to_nm" title="spharpy.spherical.fuma_to_nm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuma_to_nm</span></code></a>(fuma)</p></td>
+<td><p>Calculate the spherical harmonic order n and degree m for a linear coefficient index, according to the FuMa (Furse-Malham) Channel Ordering Convention <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.modal_strength" title="spharpy.spherical.modal_strength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">modal_strength</span></code></a>(n_max, kr[, arraytype])</p></td>
+<td><p>Modal strength function for microphone arrays.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.n3d_to_maxn" title="spharpy.spherical.n3d_to_maxn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n3d_to_maxn</span></code></a>(acn)</p></td>
+<td><p>Calculate the scaling factor which converts from N3D (normalized 3D) normalization to max N normalization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.n3d_to_sn3d_norm" title="spharpy.spherical.n3d_to_sn3d_norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n3d_to_sn3d_norm</span></code></a>(n)</p></td>
+<td><p>Calculate the scaling factor which converts from N3D (normalized 3D) normalization to SN3D (Schmidt semi-normalized 3D) normalization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.nm_to_acn" title="spharpy.spherical.nm_to_acn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nm_to_acn</span></code></a>(n, m)</p></td>
+<td><p>Calculate the linear index coefficient for a order n and degree m,</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.nm_to_fuma" title="spharpy.spherical.nm_to_fuma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nm_to_fuma</span></code></a>(n, m)</p></td>
+<td><p>Calculate the FuMa channel index for a given spherical harmonic order n and degree m, according to the FuMa (Furse-Malham) Channel Ordering Convention.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.radiation_from_sphere" title="spharpy.spherical.radiation_from_sphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radiation_from_sphere</span></code></a>(n_max, rad_sphere, k, ...)</p></td>
+<td><p>Radiation function in SH for a vibrating spherical cap.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.renormalize" title="spharpy.spherical.renormalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormalize</span></code></a>(data, channel_convention, ...)</p></td>
+<td><p>Renormalize spherical harmonics coefficients or basis functions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.sid" title="spharpy.spherical.sid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sid</span></code></a>(n_max)</p></td>
+<td><p>Calculates the SID indices up to spherical harmonic order n_max.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.sid_to_acn" title="spharpy.spherical.sid_to_acn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sid_to_acn</span></code></a>(n_max)</p></td>
+<td><p>Convert from SID channel indexing to ACN indeces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.sph_identity_matrix" title="spharpy.spherical.sph_identity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sph_identity_matrix</span></code></a>(n_max[, type])</p></td>
+<td><p>Calculate a spherical harmonic identity matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.spherical_harmonic_basis" title="spharpy.spherical.spherical_harmonic_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_basis</span></code></a>(n_max, coordinates)</p></td>
+<td><p>Calculates the complex valued spherical harmonic basis matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.spherical_harmonic_basis_gradient" title="spharpy.spherical.spherical_harmonic_basis_gradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_basis_gradient</span></code></a>(n_max, ...)</p></td>
+<td><p>Calculates the unit sphere gradients of the complex spherical harmonics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spharpy.spherical.spherical_harmonic_basis_gradient_real" title="spharpy.spherical.spherical_harmonic_basis_gradient_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_basis_gradient_real</span></code></a>(...)</p></td>
+<td><p>Calculates the unit sphere gradients of the real valued spherical harmonics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spharpy.spherical.spherical_harmonic_basis_real" title="spharpy.spherical.spherical_harmonic_basis_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_harmonic_basis_real</span></code></a>(n_max, coordinates)</p></td>
+<td><p>Calculates the real valued spherical harmonic basis matrix.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.acn_to_nm">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">acn_to_nm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#acn_to_nm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.acn_to_nm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the order n and degree m from the linear coefficient index.</p>
+<p>The linear index corresponds to the Ambisonics Channel Convention <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}n = \lfloor \sqrt{\mathrm{acn} + 1} \rfloor - 1\\m = \mathrm{acn} - n^2 -n\end{aligned}\end{align} \]</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+Suggested Ambisonics Format (revised by F. Zotter),” International
+Symposium on Ambisonics and Spherical Acoustics,
+vol. 3, pp. 1-11, 2011.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>acn</strong> (<em>ndarray</em><em>, </em><em>int</em>) – Linear index</p></li>
+<li><p><strong>n</strong> (<em>ndarray</em><em>, </em><em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>ndarray</em><em>, </em><em>int</em>) – Spherical harmonic degree</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.aperture_vibrating_spherical_cap">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">aperture_vibrating_spherical_cap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad_sphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad_cap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#aperture_vibrating_spherical_cap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.aperture_vibrating_spherical_cap" title="Link to this definition">#</a></dt>
+<dd><p>Aperture function for a vibrating spherical cap.</p>
+<p>The cap has radius <span class="math notranslate nohighlight">\(r_c\)</span> and is mounted in a rigid sphere with
+radius <span class="math notranslate nohighlight">\(r_s\)</span> <a class="footnote-reference brackets" href="#id7" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id9" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p>
+<div class="math notranslate nohighlight">
+\[a_n (r_{s}, \alpha) = 4 \pi
+\begin{cases}
+    \displaystyle \left(2n+1\right)\left[
+        P_{n-1} \left(\cos\alpha\right) -
+        P_{n+1} \left(\cos\alpha\right) \right],
+        &amp; {n&gt;0} \newline
+    \displaystyle  (1 - \cos\alpha)/2,  &amp; {n=0}
+\end{cases}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha = \arcsin \left(\frac{r_c}{r_s} \right)\)</span> is the
+aperture angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>integer</em><em>, </em><em>ndarray</em>) – Maximal spherical harmonic order</p></li>
+<li><p><strong>r_sphere</strong> (<em>double</em><em>, </em><em>ndarray</em>) – Radius of the sphere</p></li>
+<li><p><strong>r_cap</strong> (<em>double</em>) – Radius of the vibrating cap</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>A</strong> – Aperture function in diagonal matrix form with shape
+<span class="math notranslate nohighlight">\([(n_{max}+1)^2~\times~(n_{max}+1)^2]\)</span></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, float</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="5">
+<li><ol class="upperalpha simple" start="7">
+<li><p>Williams, Fourier Acoustics. Academic Press, 1999.</p></li>
+</ol>
+</li>
+</ol>
+</aside>
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p>B. Rafaely and D. Khaykin, “Optimal Model-Based Beamforming and
+Independent Steering for Spherical Loudspeaker Arrays,” IEEE
+Transactions on Audio, Speech, and Language Processing, vol. 19,
+no. 7, pp. 2234-2238, 2011</p>
+</aside>
+</aside>
+<p class="rubric">Notes</p>
+<p>Eq. (3) in the second Ref. contains an error, here, the power of 2 on pi is
+omitted on the normalization term.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.change_channel_convention">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">change_channel_convention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#change_channel_convention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.change_channel_convention" title="Link to this definition">#</a></dt>
+<dd><p>Change the channel convention of spherical harmonics coefficients
+or basis functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – Data of which channel convention should be changed. Either spherical
+harmonics coefficients or bases functions.</p></li>
+<li><p><strong>current</strong> (<em>str</em>) – Current channel convention. Valid conventions are <cite>“acn”</cite> or <cite>“fuma”</cite>.</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – Desired channel convention. Valid conventions are <cite>“acn”</cite> or <cite>“fuma”</cite>.</p></li>
+<li><p><strong>axis</strong> (<em>integer</em>) – Axis along which the channel convention should be changed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – Data with changed channel convention</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.fuma_to_nm">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">fuma_to_nm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fuma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#fuma_to_nm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.fuma_to_nm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the spherical harmonic order n and degree m for a linear
+coefficient index, according to the FuMa (Furse-Malham)
+Channel Ordering Convention <a class="footnote-reference brackets" href="#id11" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.</p>
+<p>FuMa = WXYZ | RSTUV | KLMNOPQ
+ACN = WYZX | VTRSU | QOMKLNP</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fuma</strong> (<em>integer</em><em>, </em><em>ndarray</em>) – FuMa channel index</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>n</strong> (<em>integer, ndarray</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>integer, ndarray</em>) – Spherical harmonic degree</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id9" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">4</a><span class="fn-bracket">]</span></span>
+<p>D. Malham, “Higher order Ambisonic systems” Space in Music –
+Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.modal_strength">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">modal_strength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arraytype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rigid'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#modal_strength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.modal_strength" title="Link to this definition">#</a></dt>
+<dd><p>Modal strength function for microphone arrays.</p>
+<div class="math notranslate nohighlight">
+\[b(kr) =
+\begin{cases}
+    \displaystyle 4\pi i^n j_n(kr),  &amp; \text{open} \newline
+    \displaystyle  4\pi i^{(n-1)} \frac{1}{(kr)^2 h_n^\prime(kr)},
+        &amp; \text{rigid} \newline
+    \displaystyle  4\pi i^n (j_n(kr) - i j_n^\prime(kr)),
+        &amp; \text{cardioid}
+\end{cases}\]</div>
+<p>This implementation uses the second order Hankel function, see <a class="footnote-reference brackets" href="#id13" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a> for an
+overview of the corresponding sign conventions.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id11" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">5</a><span class="fn-bracket">]</span></span>
+<p>V. Tourbabin and B. Rafaely, “On the Consistent Use of Space and
+Time Conventions in Array Processing,” vol. 101, pp. 470–473, 2015.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – The spherical harmonic order</p></li>
+<li><p><strong>kr</strong> (<em>ndarray</em><em>, </em><em>float</em>) – Wave number * radius</p></li>
+<li><p><strong>arraytype</strong> (<em>string</em>) – Array configuration. Can be a microphones mounted on a rigid sphere,
+on a virtual open sphere or cardioid microphones on an open sphere.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>B</strong> – Modal strength diagonal matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.n3d_to_maxn">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">n3d_to_maxn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#n3d_to_maxn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.n3d_to_maxn" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the scaling factor which converts from N3D (normalized 3D)
+normalization to max N normalization. ACN must be less or equal to 15.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>acn</strong> (<em>integer</em><em>, </em><em>ndarray</em>) – linear index</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>maxN</strong> – Scaling factor which converts from N3D to max N</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.n3d_to_sn3d_norm">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">n3d_to_sn3d_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#n3d_to_sn3d_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.n3d_to_sn3d_norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the scaling factor which converts from N3D (normalized 3D)
+normalization to SN3D (Schmidt semi-normalized 3D) normalization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>integer</em><em>, </em><em>ndarray</em>) – Spherical harmonic order</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sn3d</strong> – normalization factor which converts from N3D to SN3D</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.nm_to_acn">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">nm_to_acn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#nm_to_acn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.nm_to_acn" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the linear index coefficient for a order n and degree m,</p>
+<p>The linear index corresponds to the Ambisonics Channel Convention <a class="footnote-reference brackets" href="#id14" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>.</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{acn} = n^2 + n + m\]</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id13" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">6</a><span class="fn-bracket">]</span></span>
+<p>C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+Suggested Ambisonics Format (revised by F. Zotter),” International
+Symposium on Ambisonics and Spherical Acoustics,
+vol. 3, pp. 1-11, 2011.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>ndarray</em><em>, </em><em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>ndarray</em><em>, </em><em>int</em>) – Spherical harmonic degree</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>acn</strong> – Linear index</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.nm_to_fuma">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">nm_to_fuma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#nm_to_fuma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.nm_to_fuma" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the FuMa channel index for a given spherical harmonic order n
+and degree m, according to the FuMa (Furse-Malham)
+Channel Ordering Convention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>integer</em><em>, </em><em>ndarray</em>) – Spherical harmonic order</p></li>
+<li><p><strong>m</strong> (<em>integer</em><em>, </em><em>ndarray</em>) – Spherical harmonic degree</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fuma</strong> – FuMa channel index</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id14" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">7</a><span class="fn-bracket">]</span></span>
+<p>D. Malham, “Higher order Ambisonic systems” Space in Music –
+Music in Space (Mphil thesis). University of York. pp. 2–3., 2003.</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.radiation_from_sphere">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">radiation_from_sphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad_sphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_medium</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_of_sound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">343.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#radiation_from_sphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.radiation_from_sphere" title="Link to this definition">#</a></dt>
+<dd><p>Radiation function in SH for a vibrating spherical cap.
+Includes the radiation impedance and the propagation to a arbitrary
+distance from the sphere.
+The sign and phase conventions result in a positive pressure response for
+a positive cap velocity with the intensity vector pointing away from the
+source. <a class="footnote-reference brackets" href="#id17" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id18" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a></p>
+<p>TODO: This function does not have a test yet.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id17" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">8</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="5">
+<li><ol class="upperalpha simple" start="7">
+<li><p>Williams, Fourier Acoustics. Academic Press, 1999.</p></li>
+</ol>
+</li>
+</ol>
+</aside>
+<aside class="footnote brackets" id="id18" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">9</a><span class="fn-bracket">]</span></span>
+<p>F. Zotter, A. Sontacchi, and R. Höldrich, “Modeling a spherical
+loudspeaker system as multipole source,” in Proceedings of the 33rd
+DAGA German Annual Conference on Acoustics, 2007, pp. 221-222.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>integer</em>) – Maximal spherical harmonic order</p></li>
+<li><p><strong>rad_sphere</strong> (<em>float</em>) – Radius of the sphere</p></li>
+<li><p><strong>k</strong> (<em>ndarray</em><em>, </em><em>float</em>) – Wave number</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – Radial distance from the center of the sphere</p></li>
+<li><p><strong>density_medium</strong> (<em>float</em>) – Density of the medium surrounding the sphere. Default is 1.2 for air.</p></li>
+<li><p><strong>speed_of_sound</strong> (<em>float</em>) – Speed of sound in m/s</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>R</strong> – Radiation function in diagonal matrix form with shape
+<span class="math notranslate nohighlight">\([K \times (n_{max}+1)^2~\times~(n_{max}+1)^2]\)</span></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.renormalize">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">renormalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_convention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#renormalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.renormalize" title="Link to this definition">#</a></dt>
+<dd><p>Renormalize spherical harmonics coefficients or basis functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – Data which should be renormalized, either spherical harmonics
+coefficients or basis functions.</p></li>
+<li><p><strong>channel_convention</strong> (<em>str</em>) – Channel convention of the data which should be renormalized. Valid
+conventions are <cite>“acn”</cite> or <cite>“fuma”</cite>.</p></li>
+<li><p><strong>current_norm</strong> (<em>str</em>) – Current normalization. Valid normalizations are <cite>“n3d”</cite>, <cite>“maxN”</cite>, or
+<cite>“sn3d”</cite>.</p></li>
+<li><p><strong>target_norm</strong> (<em>str</em>) – Desired normalization. Valid normalizations are <cite>“n3d”</cite>,
+<cite>“maxN”</cite>, or <cite>“sn3d”</cite>.</p></li>
+<li><p><strong>axis</strong> (<em>integer</em>) – Axis along which the renormalization should be applied</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – Renormalized data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.sid">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">sid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#sid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.sid" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the SID indices up to spherical harmonic order n_max.
+The SID indices were originally proposed by Daniel <a class="footnote-reference brackets" href="#id21" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>, more recently
+ACN indexing has been favored and is used in the AmbiX format <a class="footnote-reference brackets" href="#id22" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_max</strong> (<em>int</em>) – The maximum spherical harmonic order</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>sid_n</strong> (<em>ndarray, int</em>) – The SID indices for all orders</p></li>
+<li><p><strong>sid_m</strong> (<em>ndarray, int</em>) – The SID indices for all degrees</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id21" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">10</a><span class="fn-bracket">]</span></span>
+<p>J. Daniel, “Représentation de champs acoustiques, application à la
+transmission et à la reproduction de scènes sonores complexes dans
+un contexte multimédia,” Dissertation, l’Université Paris 6, Paris,
+2001.</p>
+</aside>
+<aside class="footnote brackets" id="id22" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id20">11</a><span class="fn-bracket">]</span></span>
+<p>C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+Suggested Ambisonics Format (revised by F. Zotter),” International
+Symposium on Ambisonics and Spherical Acoustics,
+vol. 3, pp. 1-11, 2011.</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.sid_to_acn">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">sid_to_acn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#sid_to_acn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.sid_to_acn" title="Link to this definition">#</a></dt>
+<dd><p>Convert from SID channel indexing to ACN indeces.
+Returns the indices to achieve a corresponding linear acn indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_max</strong> (<em>int</em>) – The maximum spherical harmonic order.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>acn</strong> – The SID indices sorted according to a respective linear ACN indexing.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.sph_identity_matrix">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">sph_identity_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n-nm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#sph_identity_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.sph_identity_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Calculate a spherical harmonic identity matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – The spherical harmonic order.</p></li>
+<li><p><strong>type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of identity matrix. Currently only ‘n-nm’ is implemented.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>identity_matrix</strong> – The spherical harmonic identity matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, int</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>The identity matrix can for example be used to decompress from order only
+vectors to a full order and degree representation.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_max</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">spharpy</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;n-nm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_n</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_nm</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">a_n</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_nm</span>
+<span class="go">array([1, 2, 2, 2, 3, 3, 3, 3, 3])</span>
+</pre></div>
+</div>
+<p>The matrix E in this case has the following form.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_max</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">spharpy</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">sph_identity_matrix</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;n-nm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;Greys&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/50631632ee9cce6952811030b16f8fbb/spharpy-spherical-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/492acab5bcd443c3af8d5999cfb42db1/spharpy-spherical-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/5bf439d84ac1b3e4c906a283942359dc/spharpy-spherical-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f5e716c24284b35c7bb4ee99f5056c12/spharpy-spherical-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/spharpy-spherical-1.png" class="plot-directive" src="../_images/spharpy-spherical-1.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.spherical_harmonic_basis">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n3d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'acn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condon_shortley</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#spherical_harmonic_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.spherical_harmonic_basis" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the complex valued spherical harmonic basis matrix.</p>
+<p>See <a class="footnote-reference brackets" href="#id25" id="id23" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a> and <a class="footnote-reference brackets" href="#id26" id="id24" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a> for details.
+See also <a class="reference internal" href="#spharpy.spherical.spherical_harmonic_basis_real" title="spharpy.spherical.spherical_harmonic_basis_real"><code class="xref py py-func docutils literal notranslate"><span class="pre">spherical_harmonic_basis_real</span></code></a>.</p>
+<div class="math notranslate nohighlight">
+\[Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(n\)</span> is the degree</p></li>
+<li><p><span class="math notranslate nohighlight">\(m\)</span> is the order</p></li>
+<li><p><span class="math notranslate nohighlight">\(P_{nm}\)</span> is the associated Legendre function</p></li>
+<li><p><span class="math notranslate nohighlight">\(N_{nm}\)</span> is the normalization term</p></li>
+<li><p><span class="math notranslate nohighlight">\(CS_m\)</span> is the Condon-Shortley phase term</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta\)</span> is the colatitude (angle from the positive z-axis)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi\)</span> is the azimuth (angle from the positive x-axis in the
+xy-plane), see <a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#module-pyfar.classes.coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">coordinates</span></code></a></p></li>
+</ul>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id25" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id23">12</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="5">
+<li><ol class="upperalpha simple" start="7">
+<li><p>Williams, Fourier Acoustics. Academic Press, 1999.</p></li>
+</ol>
+</li>
+</ol>
+</aside>
+<aside class="footnote brackets" id="id26" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id24">13</a><span class="fn-bracket">]</span></span>
+<p>B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
+Springer, 2015.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>integer</em>) – Spherical harmonic order</p></li>
+<li><p><strong>coordinates</strong> (<a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a>, <a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a>) – objects with sampling points for which the basis matrix is calculated</p></li>
+<li><p><strong>normalization</strong> (<em>str</em><em>, </em><em>optional</em>) – Normalization convention, either <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maxN'</span></code> or <code class="docutils literal notranslate"><span class="pre">'sn3d'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>.
+(maxN is only supported up to 3rd order)</p></li>
+<li><p><strong>channel_convention</strong> (<em>str</em><em>, </em><em>optional</em>) – Channel ordering convention, either <code class="docutils literal notranslate"><span class="pre">'acn'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fuma'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'acn'</span></code>.
+(FuMa is only supported up to 3rd order)</p></li>
+<li><p><strong>condon_shortley</strong> (<em>bool</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Whether to include the Condon-Shortley phase term. If <code class="docutils literal notranslate"><span class="pre">True</span></code> or
+<code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, Condon-Shortley is included, if <code class="docutils literal notranslate"><span class="pre">False</span></code> it is not
+included. The default is <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Y</strong> – Complex spherical harmonic basis matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, complex</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_max</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">spharpy</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">icosahedron</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">spharpy</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">spherical_harmonic_basis</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.spherical_harmonic_basis_gradient">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_basis_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n3d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'acn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condon_shortley</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#spherical_harmonic_basis_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.spherical_harmonic_basis_gradient" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the unit sphere gradients of the complex spherical harmonics.</p>
+<p>The angular parts of the gradient are defined as</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{(\theta, \phi)} Y_n^m(\theta, \phi) =
+\frac{1}{\sin \theta} \frac{\partial Y_n^m(\theta, \phi)}
+{\partial \phi} \vec{e}_\phi +
+\frac{\partial Y_n^m(\theta, \theta)}
+{\partial \theta} \vec{e}_\theta .\]</div>
+<p>This implementation avoids singularities at the poles using identities
+derived in <a class="footnote-reference brackets" href="#id28" id="id27" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a>.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id28" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id27">14</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="5">
+<li><ol class="upperalpha simple" start="7">
+<li><p>Williams, Fourier Acoustics. Academic Press, 1999.</p></li>
+</ol>
+</li>
+</ol>
+</aside>
+<aside class="footnote brackets" id="id29" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id30">15</a><span class="fn-bracket">]</span></span>
+<p>J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+harmonic expressions of geomagnetic vector and gradient tensor
+fields in the local north-oriented reference frame,” Geoscientific
+Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>coordinates</strong> (<a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a>, <a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a>) – objects with sampling points for which the basis matrix is
+calculated</p></li>
+<li><p><strong>normalization</strong> (<em>str</em><em>, </em><em>optional</em>) – Normalization convention, either <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maxN'</span></code> or <code class="docutils literal notranslate"><span class="pre">'sn3d'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>.
+(maxN is only supported up to 3rd order)</p></li>
+<li><p><strong>channel_convention</strong> (<em>str</em><em>, </em><em>optional</em>) – Channel ordering convention, either <code class="docutils literal notranslate"><span class="pre">'acn'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fuma'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'acn'</span></code>.
+(FuMa is only supported up to 3rd order)</p></li>
+<li><p><strong>condon_shortley</strong> (<em>bool</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Whether to include the Condon-Shortley phase term. If <code class="docutils literal notranslate"><span class="pre">True</span></code> or
+<code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, Condon-Shortley is included, if <code class="docutils literal notranslate"><span class="pre">False</span></code> it is not
+included. The default is <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>grad_theta</strong> (<em>ndarray, complex</em>) – Gradient with regard to the co-latitude angle.</p></li>
+<li><p><strong>grad_azimuth</strong> (<em>ndarray, complex</em>) – Gradient with regard to the azimuth angle.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spharpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_max</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">spharpy</span><span class="o">.</span><span class="n">samplings</span><span class="o">.</span><span class="n">icosahedron</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grad_theta</span><span class="p">,</span> <span class="n">grad_phi</span> <span class="o">=</span> <span class="o">/</span>
+<span class="go">    spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.spherical_harmonic_basis_gradient_real">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_basis_gradient_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n3d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'acn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condon_shortley</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#spherical_harmonic_basis_gradient_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.spherical_harmonic_basis_gradient_real" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the unit sphere gradients of the real valued spherical
+harmonics.</p>
+<p>The spherical harmonic functions are fully normalized (N3D) and follow
+the AmbiX phase convention <a class="footnote-reference brackets" href="#id29" id="id30" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a>.</p>
+<p>The angular parts of the gradient are defined as</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{(\theta, \phi)} Y_n^m(\theta, \phi) =
+\frac{1}{\sin \theta} \frac{\partial Y_n^m(\theta, \phi)}
+{\partial \phi} \vec{e}_\phi +
+\frac{\partial Y_n^m(\theta, \theta)}
+{\partial \theta} \vec{e}_\theta .\]</div>
+<p>This implementation avoids singularities at the poles using identities
+derived in <a class="footnote-reference brackets" href="#id32" id="id31" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id32" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id31">16</a><span class="fn-bracket">]</span></span>
+<p>C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
+Suggested Ambisonics Format (revised by F. Zotter),” International
+Symposium on Ambisonics and Spherical Acoustics,
+vol. 3, pp. 1-11, 2011.</p>
+</aside>
+<aside class="footnote brackets" id="id33" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>17<span class="fn-bracket">]</span></span>
+<p>J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
+harmonic expressions of geomagnetic vector and gradient tensor
+fields in the local north-oriented reference frame,” Geoscientific
+Model Development, vol. 8, no. 7, pp. 1979-1990, Jul. 2015.</p>
+</aside>
+</aside>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>coordinates</strong> (<a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a>, <a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a>) – objects with sampling points for which the basis matrix is
+calculated</p></li>
+<li><p><strong>normalization</strong> (<em>str</em><em>, </em><em>optional</em>) – Normalization convention, either <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maxN'</span></code> or <code class="docutils literal notranslate"><span class="pre">'sn3d'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>.
+(maxN is only supported up to 3rd order)</p></li>
+<li><p><strong>channel_convention</strong> (<em>str</em><em>, </em><em>optional</em>) – Channel ordering convention, either <code class="docutils literal notranslate"><span class="pre">'acn'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fuma'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'acn'</span></code>.
+(FuMa is only supported up to 3rd order)</p></li>
+<li><p><strong>condon_shortley</strong> (<em>bool</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Whether to include the Condon-Shortley phase term. If <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+Condon-Shortley is included, if <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, it is not
+included. The default is <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>grad_theta</strong> (<em>ndarray, float</em>) – Gradient with respect to the co-latitude angle.</p></li>
+<li><p><strong>grad_phi</strong> (<em>ndarray, float</em>) – Gradient with respect to the azimuth angle.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spharpy.spherical.spherical_harmonic_basis_real">
+<span class="sig-prename descclassname"><span class="pre">spharpy.spherical.</span></span><span class="sig-name descname"><span class="pre">spherical_harmonic_basis_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n3d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'acn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condon_shortley</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spharpy/spherical.html#spherical_harmonic_basis_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spharpy.spherical.spherical_harmonic_basis_real" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the real valued spherical harmonic basis matrix.
+See also <a class="reference internal" href="#spharpy.spherical.spherical_harmonic_basis" title="spharpy.spherical.spherical_harmonic_basis"><code class="xref py py-func docutils literal notranslate"><span class="pre">spherical_harmonic_basis</span></code></a>.</p>
+<div class="math notranslate nohighlight">
+\[Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
+\frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
+\begin{cases}
+    \displaystyle \cos(|m|\phi),  &amp; \text{if $m \ge 0$} \newline
+    \displaystyle \sin(|m|\phi) ,  &amp; \text{if $m &lt; 0$}
+\end{cases}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_max</strong> (<em>int</em>) – Spherical harmonic order</p></li>
+<li><p><strong>coordinates</strong> (<a class="reference external" href="https://pyfar.readthedocs.io/en/stable/classes/pyfar.coordinates.html#pyfar.Coordinates" title="(in pyfar v0.7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyfar.Coordinates</span></code></a>, <a class="reference internal" href="../classes/spharpy.coordinates.html#spharpy.SamplingSphere" title="spharpy.SamplingSphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">spharpy.SamplingSphere</span></code></a>) – objects with sampling points for which the basis matrix is
+calculated</p></li>
+<li><p><strong>normalization</strong> (<em>str</em><em>, </em><em>optional</em>) – Normalization convention, either <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>, <code class="docutils literal notranslate"><span class="pre">'maxN'</span></code> or <code class="docutils literal notranslate"><span class="pre">'sn3d'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'n3d'</span></code>.
+(maxN is only supported up to 3rd order)</p></li>
+<li><p><strong>channel_convention</strong> (<em>str</em><em>, </em><em>optional</em>) – Channel ordering convention, either <code class="docutils literal notranslate"><span class="pre">'acn'</span></code> or <code class="docutils literal notranslate"><span class="pre">'fuma'</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'acn'</span></code>.
+(FuMa is only supported up to 3rd order)</p></li>
+<li><p><strong>condon_shortley</strong> (<em>bool</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Whether to include the Condon-Shortley phase term. If <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+Condon-Shortley is included, if <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, it is not
+included. The default is <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Y</strong> – Real valued spherical harmonic basis matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="spharpy.spatial.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">spharpy.spatial</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="spharpy.transforms.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">spharpy.transforms</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.acn_to_nm"><code class="docutils literal notranslate"><span class="pre">acn_to_nm</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.aperture_vibrating_spherical_cap"><code class="docutils literal notranslate"><span class="pre">aperture_vibrating_spherical_cap</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.change_channel_convention"><code class="docutils literal notranslate"><span class="pre">change_channel_convention</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.fuma_to_nm"><code class="docutils literal notranslate"><span class="pre">fuma_to_nm</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.modal_strength"><code class="docutils literal notranslate"><span class="pre">modal_strength</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.n3d_to_maxn"><code class="docutils literal notranslate"><span class="pre">n3d_to_maxn</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.n3d_to_sn3d_norm"><code class="docutils literal notranslate"><span class="pre">n3d_to_sn3d_norm</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.nm_to_acn"><code class="docutils literal notranslate"><span class="pre">nm_to_acn</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.nm_to_fuma"><code class="docutils literal notranslate"><span class="pre">nm_to_fuma</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.radiation_from_sphere"><code class="docutils literal notranslate"><span class="pre">radiation_from_sphere</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.renormalize"><code class="docutils literal notranslate"><span class="pre">renormalize</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.sid"><code class="docutils literal notranslate"><span class="pre">sid</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.sid_to_acn"><code class="docutils literal notranslate"><span class="pre">sid_to_acn</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.sph_identity_matrix"><code class="docutils literal notranslate"><span class="pre">sph_identity_matrix</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.spherical_harmonic_basis"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_basis</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.spherical_harmonic_basis_gradient"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_basis_gradient</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.spherical_harmonic_basis_gradient_real"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_basis_gradient_real</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spharpy.spherical.spherical_harmonic_basis_real"><code class="docutils literal notranslate"><span class="pre">spherical_harmonic_basis_real</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2020 - 2023, Marco Berzborn; 2023, The pyfar developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
