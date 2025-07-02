@@ -194,6 +194,6 @@ def test_quadrature_setter_errors():
     weights = [2 * np.pi, 2 * np.pi]
     sampling = SamplingSphere([1, 1], 0, 0, n_max=1, weights=weights)
     with pytest.raises(
-            ValueError, match="quadrature can not be True because the "
-                              "sampling is not a valid quadrature"):
+            ValueError, match="quadrature can not be True because spherical "
+                              "harmonics inner product is not identity."):
         sampling.quadrature = True

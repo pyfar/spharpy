@@ -150,8 +150,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted Spherical
-            Harmonics matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted spherical
+            harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -213,8 +213,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted Spherical
-            Harmonics matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted spherical
+            harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -276,8 +276,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted Spherical
-            Harmonics matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted spherical
+            harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -337,8 +337,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted Spherical
-            Harmonics matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted spherical
+            harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -399,8 +399,8 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted Spherical
-            Harmonics matrix from the identity matrix is smaller than the
+            if the deviation of the inner product of the weighted spherical
+            harmonics matrix from the identity matrix is smaller than the
             specified tolerance. The default is ``1e-10``.
 
         Examples
@@ -621,7 +621,9 @@ class SamplingSphere(pf.Coordinates):
     @weights.setter
     def weights(self, weights):
         r"""The area/quadrature weights of the sampling.
-        Their sum must equal to :math:`4\pi`.
+        Their sum must equal to :math:`4\pi`. If the provided
+        weights do not fulfill the quadrature condition,
+        the quadrature flag will be updated accordingly.
         """
         super(__class__, type(self)).weights.fset(self, weights)
         if self.quadrature:
@@ -650,7 +652,7 @@ class SamplingSphere(pf.Coordinates):
         # check if sampling is a quadrature grid
         if value and not self._check_quadrature():
             raise ValueError(
-                'quadrature can not be True because the sampling is not a '
-                'valid quadrature')
+                'quadrature can not be True because spherical harmonics inner '
+                'product is not identity.')
 
         self._quadrature = value
