@@ -98,7 +98,7 @@ def _triangulation_sphere(sampling, data):
     -------
     triangulation : matplotlib Triangulation
 
-    """
+    """ # noqa: E501
     x, y, z = sph2cart(
         sampling.azimuth,
         sampling.colatitude,
@@ -149,7 +149,7 @@ def interpolate_data_on_sphere(
     Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
     are used.
 
-    """
+    """ # noqa: E501
     _, lats, lons = coordinates2latlon(sampling)
 
     mask = lons > np.pi - overlap
@@ -274,7 +274,7 @@ def pcolor_sphere(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.pcolor_sphere(coords, data)
 
-    """
+    """ # noqa: E501
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
@@ -546,7 +546,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         >>> coords = spharpy.samplings.gaussian(n_max=5)
         >>> spharpy.plot.voronoi_cells_sphere(coords)
 
-    """
+    """ # noqa: E501
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
