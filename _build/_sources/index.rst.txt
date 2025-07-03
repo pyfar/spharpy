@@ -1,4 +1,0 @@
-spharpy
-=======
-
-.. include:: header.rst
