@@ -113,6 +113,7 @@ def isht(sh_signal, coordinates):
         basis_type=sh_signal.basis_type,
         channel_convention=sh_signal.channel_convention,
         normalization=sh_signal.normalization,
+        inverse_method="pseudo_inverse",
         condon_shortley=sh_signal.condon_shortley)
 
     # perform inverse transform
