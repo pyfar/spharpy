@@ -124,7 +124,7 @@ class RotationSH(Rotation):
 
         degrees : bool, optional
             If True, then the given angles are assumed to be in degrees.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------

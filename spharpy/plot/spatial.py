@@ -135,7 +135,7 @@ def interpolate_data_on_sphere(
         The overlap for the periodic extension in azimuth angle, given in
         radians
     refine : bool
-        Refine the mesh before interpolating. The default is False.
+        Refine the mesh before interpolating. The default is ``False``.
     interpolator : 'linear', 'cubic'
         The interpolation method to be used. The default is 'linear'.
 

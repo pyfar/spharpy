@@ -961,7 +961,8 @@ def radiation_from_sphere(
     distance : float
         Radial distance from the center of the sphere
     density_medium : float
-        Density of the medium surrounding the sphere. Default is 1.2 for air.
+        Density of the medium surrounding the sphere. Default is ``1.2```
+        for air.
     speed_of_sound : float
         Speed of sound in m/s
 

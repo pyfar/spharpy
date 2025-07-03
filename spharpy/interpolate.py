@@ -28,7 +28,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
     eps : float, 1e-16
         The eps valued to be considered for interpolator estimation.
         Depends on the used data type and numerical precision. The default
-        is 1e-16.
+        is ```1e-16``.
 
     Note
     ----
