@@ -11,18 +11,18 @@ def coordinates2latlon(coordinates):
 
     .. math::
 
-        h = \\sqrt{x^2 + y^2 + z^2},
+        h = \sqrt{x^2 + y^2 + z^2},
 
-        \\theta = \\pi/2 - \\arccos(\\frac{z}{r}),
+        \theta = \pi/2 - \arccos(\frac{z}{r}),
 
-        \\phi = \\arctan(\\frac{y}{x})
+        \phi = \arctan(\frac{y}{x})
 
-        -\\pi/2 < \\theta < \\pi/2,
+        -\pi/2 < \theta < \pi/2,
 
-        -\\pi < \\phi < \\pi
+        -\pi < \phi < \pi
 
-    where :math:`h` is the heigth, :math:`\\theta` is the latitude angle
-    and :math:`\\phi` is the longitude angle
+    where :math:`h` is the height, :math:`\theta` is the latitude angle
+    and :math:`\phi` is the longitude angle
 
     Parameters
     ----------
