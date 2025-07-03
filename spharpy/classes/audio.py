@@ -1,4 +1,4 @@
-"""SphericalHarmonicSignal class."""
+"""Implementations of audio data container classes."""
 
 from pyfar import Signal
 from spharpy.spherical import renormalize, change_channel_convention
