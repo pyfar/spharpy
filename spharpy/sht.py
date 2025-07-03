@@ -74,7 +74,20 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
     data_nm = np.tensordot(Y_inv, signal.time, [1, axis])
 
     # ensure that number of SH channels is at -2
-    data_nm = data_nm.reshape((-1, (n_max+1)**2, signal.n_samples))
+    target_m = (n_max+1)**2
+    target_n = signal.n_samples
+
+    # find corresponding axes
+    axis_m = next(i for i, dim in enumerate(data_nm.shape) if dim == target_m)
+    axis_n = next(i for i, dim in enumerate(data_nm.shape)
+                  if dim == target_n and i != axis_m)
+
+    # create new shape
+    new_axes = [
+        i for i in range(len(data_nm.shape)) if i not in (axis_m, axis_n)
+    ] + [axis_m, axis_n]
+
+    data_nm = data_nm.transpose(*new_axes)
 
     return SphericalHarmonicSignal(
         data=data_nm,
