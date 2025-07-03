@@ -938,7 +938,7 @@ def radiation_from_sphere(
     distance from the sphere.
     The sign and phase conventions result in a positive pressure response for
     a positive cap velocity with the intensity vector pointing away from the
-    source. [#]_, [#]_.
+    source [#]_, [#]_.
 
     TODO: This function does not have a test yet.
 
