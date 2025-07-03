@@ -1,4 +1,4 @@
-"""Spherical harmonics samplings."""
+"""Calculation of interior stabilization points for open arrays."""
 import numpy as np
 import scipy.special as spspecial
 from spharpy.special import spherical_bessel_zeros, spherical_harmonic
