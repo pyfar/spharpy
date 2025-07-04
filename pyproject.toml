@@ -97,8 +97,8 @@ lint.ignore = [
     "D417",
 ]
 lint.select = [
-    # "B",      # bugbear extension
     "ARG",    # Remove unused function/method arguments
+    "B",      # bugbear extension
     "C4",     # Check for common security issues
     "E",      # PEP8 errors
     # "F",      # Pyflakes
