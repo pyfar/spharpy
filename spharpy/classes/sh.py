@@ -348,7 +348,8 @@ class SphericalHarmonics:
 
     def _compute_basis_gradient(self):
         """
-        Compute the gradient of the basis matrix for the SphericalHarmonics class
+        Compute the gradient of the basis matrix for the SphericalHarmonics
+        class.
         """
         if any(
             (self.normalization in ["maxN", "sn3d"],
