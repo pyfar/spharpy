@@ -1,6 +1,8 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
+import pyfar as pf
+import spharpy as sy
 
 
 def acn_to_nm(acn):
@@ -949,7 +951,7 @@ def radiation_from_sphere(
     ----------
     n_max : integer
         Maximal spherical harmonic order
-    r_sphere : float
+    rad_sphere : float
         Radius of the sphere
     k : ndarray, float
         Wave number

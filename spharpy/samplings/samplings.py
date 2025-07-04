@@ -130,7 +130,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     else:
         if n_points not in [(n + 1)**2 for n in range(1, 200)]:
             raise ValueError('invalid value for n_points')
-        n_max = np.sqrt(n_points) - 1
+        n_max = int(np.sqrt(n_points) - 1)
 
     # download data if necessary
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)
@@ -166,8 +166,8 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
     return sampling
 
 
-def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
-                       radius=1.):
+def t_design(degree=None, n_max=None, criterion='const_energy',
+             radius=1.):
     """
     Return spherical t-design sampling grid.
 
@@ -233,7 +233,7 @@ def spherical_t_design(degree=None, n_max=None, criterion='const_energy',
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.spherical_t_design(n_max=3)
+        >>> coords = sp.samplings.t_design(n_max=3)
         >>> sp.plot.scatter(coords)
 
     """
@@ -1119,7 +1119,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     # list possible sh orders and degrees
     if n_points is None and n_max is None:
         print('Possible input values:')
-        for o, d in zip(orders, degrees):
+        for o, d in zip(orders, degrees, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
@@ -1286,7 +1286,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     # list possible sh orders and number of points
     if n_points is None and n_max is None:
-        for o, d in zip(orders, points):
+        for o, d in zip(orders, points, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
@@ -1329,7 +1329,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights, quadrature=True)
+        n_max=n_max, weights=weights, quadrature=False)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]
