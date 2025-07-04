@@ -135,6 +135,6 @@ def test_setter_inverse_method():
 
     with pytest.raises(
             ValueError,
-            match="Invalid inverse_method. Allowed: 'pseudo_inverse', " \
-            "'quadrature', or 'auto'."):
+            match=("Invalid inverse_method. Allowed: 'pseudo_inverse', "
+                   "'quadrature', or 'auto'.")):
         sph_harm.inverse_method = "invalid"  # Invalid value
