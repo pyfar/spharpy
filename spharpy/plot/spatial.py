@@ -476,7 +476,6 @@ def balloon(
                            antialiased=True,
                            vmin=vmin,
                            vmax=vmax,
-                           *args,
                            **kwargs)
 
     plot.set_array(cdata)
