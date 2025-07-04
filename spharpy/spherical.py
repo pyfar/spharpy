@@ -96,6 +96,8 @@ def nm_to_fuma(n, m):
     and degree m, according to the FuMa (Furse-Malham)
     Channel Ordering Convention.
 
+    See [#]_ for details.
+
     Parameters
     ----------
     n : integer, ndarray
@@ -142,7 +144,9 @@ def fuma_to_nm(fuma):
     r"""
     Calculate the spherical harmonic order n and degree m for a linear
     coefficient index, according to the FuMa (Furse-Malham)
-    Channel Ordering Convention [#]_.
+    Channel Ordering Convention.
+
+    See [#]_ for details.
 
     FuMa = WXYZ | RSTUV | KLMNOPQ
     ACN = WYZX | VTRSU | QOMKLNP
@@ -479,7 +483,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
 
 
     This implementation avoids singularities at the poles using identities
-    derived in [#]_.
+    derived in [#]_ and [#]_.
 
 
     References

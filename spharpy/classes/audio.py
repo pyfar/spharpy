@@ -50,7 +50,7 @@ class SphericalHarmonicSignal(Signal):
     fft_norm : str, optional
         The normalization of the Discrete Fourier Transform (DFT). Can be
         ``'none'``, ``'unitary'``, ``'amplitude'``, ``'rms'``, ``'power'``,
-        or ``'psd'``. See :py:func:`~pyfar.dsp.fft.normalization` and [#]_
+        or ``'psd'``. See :py:func:`~pyfar.dsp.fft.normalization`
         for more information. The default is ``'none'``, which is typically
         used for energy signals, such as impulse responses.
     comment : str
