@@ -118,8 +118,8 @@ class SphericalHarmonicsFrequencyData(SphericalHarmonicsAudio, FrequencyData):
         SphericalHarmonicsAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
-        TimeData.__init__(self, data=data, frequencies=frequencies,
-                          comment=comment)
+        FrequencyData.__init__(self, data=data, frequencies=frequencies,
+                               comment=comment)
 
         # check dimensions
         if len(data.shape) < 3:
