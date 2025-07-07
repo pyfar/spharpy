@@ -508,15 +508,8 @@ class SamplingSphere(pf.Coordinates):
             raise ValueError(
                 'The quadrature tolerance must be a number greater than zero')
 
-        # update value and check data
-        current_tolerance = self.quadrature_tolerance
         self._quadrature_tolerance = float(value)
-        try:
-            self._check_quadrature()
-        except ValueError as e:
-            # revert setting the tolerance and raise the error
-            self._quadrature_tolerance = current_tolerance
-            raise e
+        self._quadrature = None
 
     def _check_points(self, x, y, z):
         """Check input data before setting coordinates"""
@@ -577,13 +570,12 @@ class SamplingSphere(pf.Coordinates):
         """
         if self.n_max is None or self.weights is None:
             return False
-        # generate SH object at N=1
-        n_eval = 1 if self.n_max > 0 else 0
-        sh_basis = spherical_harmonic_basis_real(n_eval, self)
+        # generate SH object
+        sh_basis = spherical_harmonic_basis_real(self.n_max, self)
 
         # test if basis is quadrature
         quad_evaluation = sh_basis.T @ np.diag(self.weights) @ sh_basis
-        identity = np.eye((n_eval + 1)**2)
+        identity = np.eye((self.n_max + 1)**2)
 
         error = np.max(np.abs(quad_evaluation-identity))
         return error < self.quadrature_tolerance
@@ -602,16 +594,16 @@ class SamplingSphere(pf.Coordinates):
         weights do not fulfill the quadrature condition,
         the quadrature flag will be updated accordingly.
         """
-        super(__class__, type(self)).weights.fset(self, weights)
-
-        if weights != self.weights:
+        if not np.array_equal(weights, self.weights):
             self._quadrature = None
+
+        super(__class__, type(self)).weights.fset(self, weights)
 
     @property
     def quadrature(self):
-        """Get or set the quadrature flag."""
+        """Get the quadrature flag."""
         if self._quadrature is None:
-            # recompute if it is None
+            # recompute _quadrature flag
             self._quadrature = self._check_quadrature()
 
         return self._quadrature
