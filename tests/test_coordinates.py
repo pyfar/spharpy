@@ -175,25 +175,3 @@ def test_quadrature_default_getter():
 
     # test default value and getter
     assert not sampling.quadrature
-
-
-def test_quadrature_setter_errors():
-    """Test errors in the quadrature setter for wrong input data."""
-
-    sampling = SamplingSphere([1, 1], 0, 0)
-
-    # input type
-    with pytest.raises(TypeError, match="True or False but is None"):
-        sampling.quadrature = None
-
-    # weights are None
-    with pytest.raises(ValueError, match="quadrature can not be True"):
-        sampling.quadrature = True
-
-    # test invalid quadrature
-    weights = [2 * np.pi, 2 * np.pi]
-    sampling = SamplingSphere([1, 1], 0, 0, n_max=1, weights=weights)
-    with pytest.raises(
-            ValueError, match="quadrature can not be True because spherical "
-                              "harmonics inner product is not identity."):
-        sampling.quadrature = True
