@@ -4,7 +4,7 @@ from spharpy.spherical import renormalize, change_channel_convention
 import numpy as np
 
 
-class SphericalHarmonicsAudio(_Audio):
+class SphericalHarmonicAudio(_Audio):
     """Base class for spherical harmonics audio objects.
 
     This class extends the pyfar Audio class with all methods and
@@ -133,7 +133,7 @@ class SphericalHarmonicsAudio(_Audio):
             self._channel_convention = value
 
 
-class SphericalHarmonicsTimeData(SphericalHarmonicsAudio, TimeData):
+class SphericalHarmonicTimeData(SphericalHarmonicsAudio, TimeData):
     """_summary_
 
     Parameters
@@ -177,7 +177,7 @@ class SphericalHarmonicsTimeData(SphericalHarmonicsAudio, TimeData):
         self._n_max = int(n_max)
 
 
-class SphericalHarmonicsFrequencyData(SphericalHarmonicsAudio, FrequencyData):
+class SphericalHarmonicFrequencyData(SphericalHarmonicsAudio, FrequencyData):
     """_summary_
 
     Parameters
