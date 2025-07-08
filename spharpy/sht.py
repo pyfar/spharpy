@@ -1,47 +1,25 @@
 import numpy as np
 from pyfar import Signal
-import warnings
 from . import SphericalHarmonicSignal
 from . import SphericalHarmonics
 
 
-def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
-        channel_convention='acn', normalization='n3d', condon_shortley='auto',
-        inverse_method='pseudo_inverse'):
+def sht(signal, spherical_harmonics, axis='auto'):
     """Compute the spherical harmonics transform
 
     Parameters
     ----------
-    signal: Signal
+    signal: Signal, TimeData, or FrequencyData
         the signal for which the spherical harmonics transform is computed
-    coordinates: :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates
-        <pyfar:classes/pyfar.coordinates>`
-        Coordinates on which the signal has been sampled
-    n_max: integer
-        Spherical harmonic order
-    basis_type: str
-        Use real or complex valued SH bases ``'real'``, ``'complex'``
-        default is ``'real'``
+    spherical_harmonics: :class:`spharpy.SphericalHarmonics`
+        Spherical harmonics object
     axis: integer
         Axis along which the SH transform is computed
-    channel_convention : str
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        (FuMa is only supported up to 3rd order)
-    normalization : str
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. (maxN is only supported up to 3rd order)
-    condon_shortley : bool or str
-        Flag to indicate if the Condon-Shortley phase term is included
-        (``True``) or not (``False``).
-    inverse_method: str
-        Method for computing the inverse transform:
-        - ‘auto’: use ‘quadrature’ when applicable, otherwise ‘pseudo_inverse’.
-        - ‘quadrature’: compute the inverse via numerical quadrature.
-        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse approximation.
 
     Returns
     ----------
-    SphericalHarmonicSignal
+    SphericalHarmonicSignal, SphericalHarmonicsTimeData,
+    or SphericalHarmonicsFrequencyData
 
     References
     ----------
@@ -54,27 +32,26 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
             Acoustics, Speech, and Signal Processing (ICASSP), Montreal,
             Canada, May 2004, p. 45-48, doi: 10.1109/ICASSP.2004.1326759.
     """
-
-    if not signal.time.shape[axis] == coordinates.csize:
-        if coordinates.csize not in signal.time.shape:
-            raise ValueError("Signal shape does not match "
-                             "number of coordinates.")
-        else:
-            axis = signal.time.shape.index(coordinates.csize)
-            warnings.warn("Compute spherical harmonics transform along "
-                          f"axis = {axis}.", UserWarning)
-
-    spherical_harmonics = SphericalHarmonics(
-        n_max=n_max, coordinates=coordinates, basis_type=basis_type,
-        channel_convention=channel_convention,
-        normalization=normalization, inverse_method=inverse_method,
-        condon_shortley=condon_shortley)
-
     Y_inv = spherical_harmonics.basis_inv
+
+    if axis == 'auto':
+        axis = np.where(np.array(signal.cshape) == Y_inv.shape[1])[0]
+        if len(axis) == 0:
+            raise ValueError("No axes matches the number of spherical "
+                             "harmonics basis functions")
+        if len(axis) > 1:
+            raise ValueError("To many axis matche the number of spherical "
+                             "harmonics basis functions")
+
+    if axis != Y_inv.shape[1]:
+        raise ValueError("Spherical samples of provided axis does not match "
+                         "the number of spherical harmonics basis functions.")
+
+    # get data from Signal, TimeData or FrequencyData
     data_nm = np.tensordot(Y_inv, signal.time, [1, axis])
 
     # ensure that number of SH channels is at -2
-    target_m = (n_max+1)**2
+    target_m = (spherical_harmonics.n_max+1)**2
     target_n = signal.n_samples
 
     # find corresponding axes
@@ -91,9 +68,9 @@ def sht(signal, coordinates, n_max, basis_type="real", axis=-2,
 
     return SphericalHarmonicSignal(
         data=data_nm,
-        basis_type=basis_type,
-        normalization=normalization,
-        channel_convention=channel_convention,
+        basis_type=spherical_harmonics.basis_type,
+        normalization=spherical_harmonics.normalization,
+        channel_convention=spherical_harmonics.channel_convention,
         condon_shortley=spherical_harmonics.condon_shortley,
         sampling_rate=signal.sampling_rate,
         fft_norm=signal.fft_norm,
