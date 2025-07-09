@@ -43,9 +43,6 @@ def test_sphharm_compute_basis_gradient():
 
 def test_sphharm_compute_inverse_quad():
     coordinates = gaussian(n_points=4)
-    weights = calculate_sampling_weights(coordinates, round_decimals=17)
-    coordinates.weights = weights
-    coordinates.quadrature = True
     sh = SphericalHarmonics(2, coordinates, inverse_method='quadrature')
     assert sh.basis_inv is not None
 
