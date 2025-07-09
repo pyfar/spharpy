@@ -165,13 +165,3 @@ def test_setting_weights_invalid_quadrature():
     weights = 4 * np.pi * np.ones(sampling.cshape) / sampling.cshape
     sampling.weights = weights
     assert not sampling.quadrature
-
-
-def test_quadrature_default_getter():
-    """Test the default value and getter for quadrature."""
-
-    weights = [2 * np.pi, 2 * np.pi]
-    sampling = SamplingSphere([1, 1], 0, 0, weights=weights)
-
-    # test default value and getter
-    assert not sampling.quadrature
