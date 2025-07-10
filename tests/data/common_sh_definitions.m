@@ -1,0 +1,62 @@
+% compute reference values for checking spharpy spherical harmonic
+% implementation against common definitions from others
+close all; clear; clc
+
+% add code from mathworks.com/matlabcentral/fileexchange/68655-fundamentals-of-spherical-array-processing to path
+startup_rafaely
+% add code from github.com/sfstoolbox/sfs-matlab to path
+startup_ahrens
+% SHT from Archontis Politis github.com/polarch/Spherical-Harmonic-Transform
+startup_politits_sht
+% SOFAtoolbox
+startup_sofa
+
+% maximum order and angles for testing
+n_max = 5;
+% azimuth [0, 2 pi]. 0 in front pi/2 to the left
+azimuth = [1 1, 4, 4];
+% colatitude [0, pi]. 0 above, pi below
+colatitude = [1, 2, 1, 2];
+
+% ACN channel indices, orders, and degrees
+acn_ch_index = nan((n_max+1)^2, 1);
+acn_order_n = acn_ch_index;
+acn_degree_m = acn_ch_index;
+for n = 0:n_max
+    for m = -n:n
+        index = n^2 + n + m;
+        acn_ch_index(index + 1) = index;
+        acn_order_n(index + 1) = n;
+        acn_degree_m(index + 1) = m;
+    end
+end
+
+% Rafaely definitino ACN channel ordering
+Y_rafaely = sh2(n_max, colatitude, azimuth).';
+
+% Polits definition
+Y_polits = getSH(n_max, [azimuth' colatitude'], 'complex');
+
+% Ahrens definition
+Y_ahrens = nan(size(Y_rafaely));
+for n = 0:n_max
+    for m = -n:n
+        Y_ahrens(:, n^2 + n + m + 1) = sphharm(n, m, colatitude, azimuth);
+    end
+end
+
+% SOFA definition (should equal MPEG-H and ADM)
+Y_sofa = sph2SH([azimuth', 90-colatitude'] / 180 * pi, n_max);
+
+% Comparisons
+% Rafaely and Polits agree:
+Y_rp = Y_rafaely - Y_polits;
+
+% Rafaely & Polits vs. Ahrens: flipped signs in real and immaginary parts
+% for positve and uneven m = 1, 3, 5, ...
+Y_ra = Y_rafaely - Y_ahrens;
+
+save('common_sh_definitions.mat', ...
+    'acn_ch_index', 'acn_order_n', 'acn_degree_m', ...
+    'azimuth', 'colatitude', ...
+    'Y_rafaely', 'Y_ahrens', 'Y_sofa')
