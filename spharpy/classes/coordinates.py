@@ -19,7 +19,7 @@ product of the weighted spherical harmonics matrix :math:`\mathrm{Y}`
 yields the identity matrix
 :math:`\mathrm{Y}^\mathrm{T} \text{diag}\{w\}\mathrm{Y}=\mathrm{I}`,
 with the weights vector :math:`w`. The sampling is considered a valid
-quadrature if the deviation of
+quadrature if the maximum absolute deviation of
 :math:`\mathrm{Y}^\mathrm{T} \text{diag}\{w\}\mathrm{Y}` from :math:`I` is
 smaller than the specified
 :py:attr:`~spharpy.SamplingSphere.quadrature_tolerance`.
@@ -83,9 +83,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
         """
         self._radius_tolerance = None
         self.radius_tolerance = radius_tolerance
@@ -140,9 +140,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
 
         Examples
         --------
@@ -200,9 +200,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
 
         Examples
         --------
@@ -260,9 +260,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
 
         Examples
         --------
@@ -318,9 +318,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
 
         Examples
         --------
@@ -376,9 +376,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
 
         Examples
         --------
@@ -433,9 +433,9 @@ class SamplingSphere(pf.Coordinates):
         quadrature_tolerance : float, optional
             Tolerance for testing whether the provided sampling grid is
             a valid quadrature. The sampling is considered a valid quadrature
-            if the deviation of the inner product of the weighted spherical
-            harmonics matrix from the identity matrix is smaller than the
-            specified tolerance. The default is ``1e-10``.
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
 
         Examples
         --------
@@ -527,6 +527,10 @@ class SamplingSphere(pf.Coordinates):
                 ' m, which exceeds the tolerance of '
                 f'{self.radius_tolerance:.3g} m. The tolerance can be changed '
                 'using SamplingSphere.radius_tolerance.')
+
+        # reset the quadrature flag to make sure it is checked again after
+        # adding or changing points in the SamplingSphere
+        self._quadrature = None
 
         return x, y, z
 

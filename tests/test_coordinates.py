@@ -156,7 +156,7 @@ def test_setting_weights_invalid():
         sampling.weights = weights_invalid
 
 
-def test_setting_weights_invalid_quadrature():
+def test_quadrature_getter_changing_weights():
     # create a quadrature grid (gaussian)
     sampling = gaussian(n_max=3)
     # check if quadrature is set properly
@@ -164,4 +164,16 @@ def test_setting_weights_invalid_quadrature():
     # update weights such that quadrature requirement is not valid anymore
     weights = 4 * np.pi * np.ones(sampling.cshape) / sampling.cshape
     sampling.weights = weights
+    assert not sampling.quadrature
+
+
+def test_quadrature_getter_changing_points():
+    # create a quadrature grid (gaussian)
+    sampling = gaussian(n_max=3)
+    # check if quadrature is set properly
+    assert sampling.quadrature
+    # update points such that quadrature is not valid anymore
+    sampling.set_sph(np.random.rand(sampling.csize, 1),
+                     np.ones((sampling.csize, 1)),
+                     np.ones((sampling.csize, 1)))
     assert not sampling.quadrature
