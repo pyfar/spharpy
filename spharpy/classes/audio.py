@@ -133,7 +133,7 @@ class SphericalHarmonicAudio(_Audio):
             self._channel_convention = value
 
 
-class SphericalHarmonicTimeData(SphericalHarmonicsAudio, TimeData):
+class SphericalHarmonicTimeData(SphericalHarmonicAudio, TimeData):
     """_summary_
 
     Parameters
@@ -158,7 +158,7 @@ class SphericalHarmonicTimeData(SphericalHarmonicsAudio, TimeData):
     def __init__(self, data, times, basis_type, normalization,
                  channel_convention, condon_shortley, comment="",
                  is_complex=False):
-        SphericalHarmonicsAudio.__init__(
+        SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
         TimeData.__init__(self, data=data, times=times, comment=comment,
@@ -177,7 +177,7 @@ class SphericalHarmonicTimeData(SphericalHarmonicsAudio, TimeData):
         self._n_max = int(n_max)
 
 
-class SphericalHarmonicFrequencyData(SphericalHarmonicsAudio, FrequencyData):
+class SphericalHarmonicFrequencyData(SphericalHarmonicAudio, FrequencyData):
     """_summary_
 
     Parameters
@@ -199,7 +199,7 @@ class SphericalHarmonicFrequencyData(SphericalHarmonicsAudio, FrequencyData):
     """
     def __init__(self, data, frequencies, basis_type, normalization,
                  channel_convention, condon_shortley, comment=""):
-        SphericalHarmonicsAudio.__init__(
+        SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
@@ -218,7 +218,7 @@ class SphericalHarmonicFrequencyData(SphericalHarmonicsAudio, FrequencyData):
         self._n_max = int(n_max)
 
 
-class SphericalHarmonicSignal(SphericalHarmonicsAudio, Signal):
+class SphericalHarmonicSignal(SphericalHarmonicAudio, Signal):
     """Create audio object with spherical harmonics coefficients in time or
     frequency domain.
 
@@ -297,7 +297,7 @@ class SphericalHarmonicSignal(SphericalHarmonicsAudio, Signal):
                  fft_norm='none',
                  comment="",
                  is_complex=False):
-        SphericalHarmonicsAudio.__init__(
+        SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
