@@ -53,7 +53,17 @@ class SphericalHarmonicAudio(_Audio):
                  condon_shortley, domain, comment=""):
         _Audio.__init__(self, domain=domain, comment=comment)
 
-        self._n_max = None
+        # check dimensions
+        if len(self._data.shape) < 3:
+            raise ValueError("Invalid number of dimensions. Data should have "
+                             "at least 3 dimensions.")
+
+        # set n_max
+        n_max = np.sqrt(self._data.shape[-2])-1
+        if n_max - int(n_max) != 0:
+            raise ValueError("Invalid number of SH channels: "
+                             f"{self._data.shape[-2]}. It must match (n_max + 1)^2.")
+        self._n_max = int(n_max)
 
         # set basis_type
         if basis_type not in ["complex", "real"]:
@@ -134,88 +144,95 @@ class SphericalHarmonicAudio(_Audio):
 
 
 class SphericalHarmonicTimeData(SphericalHarmonicAudio, TimeData):
-    """_summary_
+    """
+    Create spherical harmonic audio object with time domain spherical
+    harmonic coefficients and times.
+
+    Objects of this class contain time data which is not directly convertible
+    to frequency domain, i.e., non-equidistant samples.
 
     Parameters
     ----------
-    data : _type_
-        _description_
-    times : _type_
-        _description_
-    basis_type : _type_
-        _description_
-    normalization : _type_
-        _description_
-    channel_convention : _type_
-        _description_
-    condon_shortley : _type_
-        _description_
-    comment : str, optional
-        _description_, by default ""
+    data : array, double
+        Raw data in the time domain. The data should have at least 3
+        dimensions, according to the 'C' memory layout, e.g. data of
+        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+        coefficients with 1024 samples each. The data can be ``int`` or
+        ``float`` and is converted to ``float`` in any case.
+    times : array, double
+        Times in seconds at which the data is sampled. The number of times
+        must match the `size` of the last dimension of `data`.
+    basis_type : str
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``.
+    normalization : str
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or
+        ``'sn3d'``. (maxN is only supported up to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
+    comment : str
+        A comment related to `data`. The default is ``None``.
     is_complex : bool, optional
-        _description_, by default False
+        A flag which indicates if the time data are real or complex-valued.
+        The default is ``False``.
     """
     def __init__(self, data, times, basis_type, normalization,
                  channel_convention, condon_shortley, comment="",
                  is_complex=False):
+        TimeData.__init__(self, data=data, times=times, comment=comment,
+                          is_complex=is_complex)
         SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
-        TimeData.__init__(self, data=data, times=times, comment=comment,
-                          is_complex=is_complex)
-
-        # check dimensions
-        if len(data.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
-
-        # set n_max
-        n_max = np.sqrt(data.shape[-2])-1
-        if n_max - int(n_max) != 0:
-            raise ValueError("Invalid number of SH channels: "
-                             f"{data.shape[-2]}. It must match (n_max + 1)^2.")
-        self._n_max = int(n_max)
 
 
 class SphericalHarmonicFrequencyData(SphericalHarmonicAudio, FrequencyData):
-    """_summary_
+    """
+    Create spherical harmonic audio object with frequency domain spherical
+    harmonic coefficients and frequencies.
+
+    Objects of this class contain frequency data which is not directly
+    convertible to the time domain, i.e., non-equidistantly spaced bins or
+    incomplete spectra.
 
     Parameters
     ----------
-    data : _type_
-        _description_
-    frequencies : _type_
-        _description_
-    basis_type : _type_
-        _description_
-    normalization : _type_
-        _description_
-    channel_convention : _type_
-        _description_
-    condon_shortley : _type_
-        _description_
-    comment : str, optional
-        _description_, by default ""
+    data : array, double
+        Raw data in the frequency domain. The data should have at least
+        3 dimensions, according to the 'C' memory layout, e.g. data of
+        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+        coefficients with 1024 frequency bins each.. Data can be ``int``,
+        ``float`` or ``complex``. Data of type ``int`` is converted to
+        ``float``.
+    frequencies : array, double
+        Frequencies of the data in Hz. The number of frequencies must match
+        the size of the last dimension of data.
+    basis_type : str
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``.
+    normalization : str
+        Normalization convention, either ``'n3d'``, ``'maxN'`` or
+        ``'sn3d'``. (maxN is only supported up to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
+    comment : str
+        A comment related to `data`. The default is ``None``.
     """
     def __init__(self, data, frequencies, basis_type, normalization,
                  channel_convention, condon_shortley, comment=""):
+        FrequencyData.__init__(self, data=data, frequencies=frequencies,
+                               comment=comment)
         SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
-        FrequencyData.__init__(self, data=data, frequencies=frequencies,
-                               comment=comment)
-
-        # check dimensions
-        if len(data.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
-
-        # set n_max
-        n_max = np.sqrt(data.shape[-2])-1
-        if n_max - int(n_max) != 0:
-            raise ValueError("Invalid number of SH channels: "
-                             f"{data.shape[-2]}. It must match (n_max + 1)^2.")
-        self._n_max = int(n_max)
 
 
 class SphericalHarmonicSignal(SphericalHarmonicAudio, Signal):
@@ -297,21 +314,9 @@ class SphericalHarmonicSignal(SphericalHarmonicAudio, Signal):
                  fft_norm='none',
                  comment="",
                  is_complex=False):
-        SphericalHarmonicAudio.__init__(
-            self, basis_type, normalization, channel_convention,
-            condon_shortley, domain="time", comment=comment)
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)
-
-        # check dimensions
-        if len(data.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
-
-        # set n_max
-        n_max = np.sqrt(data.shape[-2])-1
-        if n_max - int(n_max) != 0:
-            raise ValueError("Invalid number of SH channels: "
-                             f"{data.shape[-2]}. It must match (n_max + 1)^2.")
-        self._n_max = int(n_max)
+        SphericalHarmonicAudio.__init__(
+            self, basis_type, normalization, channel_convention,
+            condon_shortley, domain="time", comment=comment)

@@ -6,13 +6,6 @@ import numpy as np
 import re
 
 
-def test_init_sh_audio():
-    sh_audio = SphericalHarmonicAudio(
-        basis_type='real', normalization='sn3d', channel_convention="acn",
-        condon_shortley=False, domain="time", comment="")
-    assert isinstance(sh_audio, SphericalHarmonicAudio)
-
-
 def test_init_sh_time_data():
     data = np.ones((1, 4, 4))
     times = [1, 2, 3, 4]
