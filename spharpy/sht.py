@@ -42,13 +42,17 @@ def sht(signal, spherical_harmonics, axis='auto'):
         if len(axis) > 1:
             raise ValueError("To many axis matche the number of spherical "
                              "harmonics basis functions")
+        axis = axis[0]
 
-    if axis != Y_inv.shape[1]:
+    if signal.cshape[axis] != Y_inv.shape[1]:
         raise ValueError("Spherical samples of provided axis does not match "
                          "the number of spherical harmonics basis functions.")
 
     # get data from Signal, TimeData or FrequencyData
     data_nm = np.tensordot(Y_inv, signal.time, [1, axis])
+
+    if len(data_nm.shape) < 3:
+        data_nm = data_nm[np.newaxis, ...]
 
     # ensure that number of SH channels is at -2
     target_m = (spherical_harmonics.n_max+1)**2
