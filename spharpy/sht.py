@@ -40,7 +40,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
             raise ValueError("No axes matches the number of spherical "
                              "harmonics basis functions")
         if len(axis) > 1:
-            raise ValueError("To many axis matche the number of spherical "
+            raise ValueError("To many axis match the number of spherical "
                              "harmonics basis functions")
         axis = axis[0]
 
