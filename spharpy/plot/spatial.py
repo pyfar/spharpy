@@ -735,7 +735,7 @@ def contour_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour_map(coords, data)
 
-    """  # noqa: E501
+    """
     fig = plt.gcf()
 
     res = int(np.ceil(np.sqrt(coordinates.csize)))
