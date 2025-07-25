@@ -17,7 +17,7 @@ def test_sphharm_init():
     assert sph_harm.normalization == 'n3d'
     assert sph_harm.channel_convention == 'acn'
     assert sph_harm.inverse_method == 'quadrature'
-    assert sph_harm.condon_shortley == False
+    assert not sph_harm.condon_shortley
 
 def test_sphharm_init_invalid_coordinates():
     with pytest.raises(TypeError,
@@ -96,7 +96,7 @@ def test_setter_phase_convention():
     coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.condon_shortley = "auto"
-    assert sph_harm.condon_shortley == False
+    assert not sph_harm.condon_shortley
 
     with pytest.raises(TypeError):
         sph_harm.condon_shortley = 123  # Invalid type
@@ -133,7 +133,8 @@ def test_setter_inverse_method():
     sph_harm.inverse_method = "quadrature"
     assert sph_harm.inverse_method == "quadrature"
 
-    with pytest.raises(ValueError,
-                       match="Invalid inverse_method. Allowed: 'pseudo_inverse', " \
-                       "'quadrature', or 'auto'."):
+    with pytest.raises(
+            ValueError,
+            match=("Invalid inverse_method. Allowed: 'pseudo_inverse', "
+                   "'quadrature', or 'auto'.")):
         sph_harm.inverse_method = "invalid"  # Invalid value
