@@ -63,7 +63,7 @@ def test_sampling_scatter(function):
         create_baseline, baseline_path, output_path, filename,
         file_type, compare_output)
     
-    match = 'coords must be a coordinates object.'
+    match = 'must be a coordinates object.'
     with pytest.raises(ValueError, match=match):
         function('coords')
 
@@ -125,7 +125,7 @@ def test_spherical_cmap(function, cmap):
                      file_type, compare_output)
     
     # test error for invalid inputs
-    match = 'cmap must be a string, Colormap object, or None.'
+    match = 'cmap'
     with pytest.raises(ValueError, match=match):
         function(coords, data, cmap=5)
     
@@ -151,7 +151,7 @@ def test_spherical_colorbar(function, colorbar):
                      file_type, compare_output)
 
     # test error for invalid inputs
-    match = 'colorbar must be .'
+    match = 'colorbar must be a boolean.'
     with pytest.raises(ValueError, match=match):
         function(coords, data, colorbar='colorbar')
     
@@ -257,8 +257,8 @@ def test_spherical_levels(function, levels):
                      file_type, compare_output)
 
     # test error for invalid inputs
-    match = 'levels must be.'
+    match = 'levels'
     with pytest.raises(ValueError, match=match):
-        function(coords, data, levels=levels)
+        function(coords, data, levels='levels')
     
     

@@ -70,6 +70,9 @@ def scatter(coordinates, ax=None):
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
 
+    if not isinstance(coordinates, pf.Coordinates):
+        raise ValueError("coords must be a coordinates object.")
+    
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
@@ -99,6 +102,10 @@ def _triangulation_sphere(sampling, data):
     triangulation : matplotlib Triangulation
 
     """ # noqa: E501
+    if data.shape[-1] != sampling.cshape[-1]:
+        raise ValueError(
+            "data must be a 1D array with the same cshape as the coordinates")
+
     x, y, z = sph2cart(
         sampling.azimuth,
         sampling.colatitude,
@@ -275,6 +282,9 @@ def pcolor_sphere(
         >>> spharpy.plot.pcolor_sphere(coords, data)
 
     """ # noqa: E501
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
 
@@ -368,6 +378,16 @@ def balloon_wireframe(
         >>> spharpy.plot.balloon_wireframe(coords, data, phase=True)
 
     """  # noqa: E501
+    # input checks
+    if not isinstance(cmap, (str, type(None), mpl.colors.Colormap)):
+        raise ValueError(
+            "cmap must be a string, Colormap object, or None.")
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+    
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -397,6 +417,7 @@ def balloon_wireframe(
                            vmax=vmax)
 
     cnorm = plt.Normalize(vmin, vmax)
+
     cmap_colors = cmap(cnorm(cdata))
 
     cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
@@ -475,6 +496,11 @@ def balloon(
         >>> spharpy.plot.balloon(coords, data)
 
     """  # noqa: E501
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+    if not isinstance(coordinates, pf.Coordinates):
+        raise ValueError("coords must be a coordinates object.")
+
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
 
@@ -641,6 +667,7 @@ def pcolor_map(
         data,
         projection='mollweide',
         limits=None,
+        colorbar=True,
         cmap=plt.get_cmap('viridis'),
         refine=False,
         ax=None,
@@ -669,6 +696,8 @@ def pcolor_map(
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
     cmap : matplotlib colormap, optional
         Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
     refine : bool, optional
@@ -691,6 +720,9 @@ def pcolor_map(
         >>> spharpy.plot.pcolor_map(coords, data)
 
     """  # noqa: E501
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+    
     height, latitude, longitude = coordinates2latlon(coordinates)
     tri = mtri.Triangulation(longitude, latitude)
     if refine is not None:
@@ -733,8 +765,9 @@ def pcolor_map(
         tri, data, cmap=cmap, vmin=limits[0], vmax=limits[1], **kwargs)
 
     plt.grid(True)
-    cb = fig.colorbar(cf, ax=ax, extend=extend)
-    cb.set_label('Amplitude')
+    if colorbar:
+        cb = fig.colorbar(cf, ax=ax, extend=extend)
+        cb.set_label('Amplitude')
 
     return cf
 
@@ -804,6 +837,9 @@ def contour_map(
         >>> spharpy.plot.contour_map(coords, data)
 
     """  # noqa: E501
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+    
     fig = plt.gcf()
 
     res = int(np.ceil(np.sqrt(coordinates.csize)))
@@ -855,8 +891,8 @@ def contour_map(
 
 
 def contour(
-        coordinates, data, limits=None, cmap=plt.get_cmap('viridis'),
-        ax=None):
+        coordinates, data, limits=None, colorbar=True,
+        cmap=plt.get_cmap('viridis'), ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
@@ -877,6 +913,8 @@ def contour(
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
     cmap : matplotlib colormap, optional
         Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
     ax : matplotlib.axis, None, optional
@@ -900,6 +938,12 @@ def contour(
         >>> spharpy.plot.contour(coords, data)
 
     """  # noqa: E501
+    # input checks
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+    if not isinstance(cmap, (str, type(None), mpl.colors.Colormap)):
+        raise ValueError(
+            "cmap must be a string, Colormap object, or None.")
     height, latitude, longitude = coordinates2latlon(coordinates)
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
@@ -912,8 +956,9 @@ def contour(
     cf = _combined_contour(lon_deg, lat_deg, data, limits, cmap, ax)
 
     plt.grid(True)
-    cb = fig.colorbar(cf, ax=ax)
-    cb.set_label('Amplitude')
+    if colorbar:
+        cb = fig.colorbar(cf, ax=ax)
+        cb.set_label('Amplitude')
 
     return cf
 
