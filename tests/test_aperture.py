@@ -1,5 +1,5 @@
 """
-Tests for the aperture function of a spherical loudspeaker array
+Tests for the aperture function of a spherical loudspeaker array.
 """
 import spharpy.spherical as sh
 from scipy.special import legendre
