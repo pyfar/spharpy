@@ -1,3 +1,5 @@
+"""spharpy classes."""
+
 from .sh import (
     SphericalHarmonics
 )

@@ -1,3 +1,5 @@
+"""Spherical samplings."""
+
 from .samplings import (
     cube_equidistant,
     hyperinterpolation,

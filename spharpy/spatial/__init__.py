@@ -1,3 +1,4 @@
+"""Wave field representations in the spatial domain."""
 from .spatial import greens_function_plane_wave, greens_function_point_source
 
 
