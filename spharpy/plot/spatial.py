@@ -778,7 +778,8 @@ def contour_map(
         Whether to show a colorbar or not. Default is `True`.
     levels : int or array-like, optional
         Determines the number and positions of the contour lines / regions.
-        If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`, which tries to automatically choose
+        If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
+        which tries to automatically choose
         no more than n+1 "nice" contour levels between minimum and maximum
         numeric values of Z. If array-like, draw contour lines at the
         specified levels. The values must be in increasing order.
@@ -802,7 +803,7 @@ def contour_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour_map(coords, data)
 
-    """
+    """  # noqa: E501
     fig = plt.gcf()
 
     res = int(np.ceil(np.sqrt(coordinates.csize)))
