@@ -102,7 +102,7 @@ lint.select = [
     "C4",     # Check for common security issues
     "E",      # PEP8 errors
     "F",      # Pyflakes
-    # "W",      # PEP8 warnings
+    "W",      # PEP8 warnings
     "D",      # Docstring guidelines
     "NPY",    # Check all numpy related deprecations
     "D417",   # Missing argument descriptions in the docstring

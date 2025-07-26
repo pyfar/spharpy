@@ -187,7 +187,7 @@ def find_interior_points(k_max, resolution_factor=1):
     -------
     x, y, z : ndarray, float
         Coordinates of the stabilization points
-        
+
     References
     ----------
     .. [#]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial

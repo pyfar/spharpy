@@ -1,4 +1,4 @@
-"""Wave field representations in the spatial domain."""  
+"""Wave field representations in the spatial domain."""
 import numpy as np
 import scipy.spatial as sspat
 
