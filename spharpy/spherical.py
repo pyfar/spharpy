@@ -126,9 +126,7 @@ def nm_to_fuma(n, m):
     acn = nm_to_acn(n, m)
 
     if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
-        raise ValueError(
-            "nm2fuma only supports up to 3rd order"
-        )
+        raise ValueError("nm2fuma only supports up to 3rd order")
 
     acn = np.atleast_2d(acn).T
     fuma = np.array([], dtype=int)
@@ -173,8 +171,7 @@ def fuma_to_nm(fuma):
     if np.any(fuma) < 0 or np.any(fuma >= len(fuma_mapping)):
         raise ValueError(
             "Invalid FuMa channel index, must be between 0 and 15 "
-            "(supported up to 3rd order)"
-        )
+            "(supported up to 3rd order)")
 
     acn = np.array([], dtype=int)
     for f in fuma:
@@ -446,8 +443,7 @@ def spherical_harmonic_basis(
         else:
             order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
-            order, degree, coordinates.colatitude, coordinates.azimuth
-        )
+            order, degree, coordinates.colatitude, coordinates.azimuth)
         if normalization == "sn3d":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":
@@ -555,8 +551,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
             n, m = acn_to_nm(acn)
 
         grad_theta[:, acn] = _special.spherical_harmonic_derivative_theta(
-            n, m, theta, phi
-        )
+            n, m, theta, phi)
         grad_phi[:, acn] = _special.spherical_harmonic_gradient_phi(
             n, m, theta, phi)
 
@@ -645,8 +640,7 @@ def spherical_harmonic_basis_real(
         else:
             order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
-            order, degree, coordinates.colatitude, coordinates.azimuth
-        )
+            order, degree, coordinates.colatitude, coordinates.azimuth)
         if normalization == "sn3d":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
         elif normalization == "maxN":

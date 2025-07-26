@@ -256,9 +256,7 @@ def test_equiangular_weights_n_max(n_max):
 
 
 @pytest.mark.parametrize(
-    'basis_func', [
-        spherical_harmonic_basis, spherical_harmonic_basis_real
-    ])
+    'basis_func', [spherical_harmonic_basis, spherical_harmonic_basis_real])
 def test_equiangular_orthogonality(basis_func):
     n_max = 4
     sampling = samplings.equiangular(n_max=n_max)
@@ -267,8 +265,7 @@ def test_equiangular_orthogonality(basis_func):
     npt.assert_allclose(
         Y.conj().T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max+1)**2),
-        atol=1e-6, rtol=1e-6
-    )
+        atol=1e-6, rtol=1e-6)
 
 
 @pytest.mark.parametrize("n_points", np.arange(1, 40))
@@ -290,9 +287,7 @@ def test_gaussian_weights_n_max(n_max):
 
 
 @pytest.mark.parametrize(
-    'basis_func', [
-        spherical_harmonic_basis, spherical_harmonic_basis_real
-    ])
+    'basis_func', [spherical_harmonic_basis, spherical_harmonic_basis_real])
 def test_gaussian_orthogonality(basis_func):
     n_max = 4
     sampling = samplings.gaussian(n_max=n_max)
@@ -301,8 +296,7 @@ def test_gaussian_orthogonality(basis_func):
     npt.assert_allclose(
         Y.conj().T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max+1)**2),
-        atol=1e-6, rtol=1e-6
-    )
+        atol=1e-6, rtol=1e-6)
 
 
 def test_gaussian():
