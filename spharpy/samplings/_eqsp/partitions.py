@@ -234,7 +234,12 @@ def ideal_region_list(dimension, N, c_polar, n_collars):
         The dimension
     N : int
         The number of points
-    c_polar :
+    c_polar : float
+        The colatitude angle of the polar caps in radians. This defines the
+        angular boundary between the north/south polar caps and the collar
+        region. The north polar cap extends from 0 to c_polar, the collar
+        region spans from c_polar to (π - c_polar), and the south polar cap
+        extends from (π - c_polar) to π. Must be in the range [0, π/2].
     n_collars : int
         The number of collar elements
 
@@ -452,6 +457,7 @@ def area_of_sphere(dimension):
     Parameters
     ----------
     dimension : int
+        Dimension of the sphere.
 
     Returns
     -------

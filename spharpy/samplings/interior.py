@@ -65,7 +65,7 @@ def calculate_eigenspaces(kr_max, theta, phi, rad):
 
     Parameters
     ----------
-    k_max : float
+    kr_max : float
         The largest wave number to be included
     theta : array, float
         Azimuth angle

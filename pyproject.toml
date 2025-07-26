@@ -94,7 +94,7 @@ lint.ignore = [
     "PT018",  # Assertion should be broken down into multiple parts
     "PT019",  # Fixture `_` without value is injected as parameter
     # add more ignores, to match flake8 rules
-    "D417",
+    #"D417",
 ]
 lint.select = [
     "ARG",    # Remove unused function/method arguments

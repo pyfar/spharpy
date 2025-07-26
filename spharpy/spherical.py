@@ -17,6 +17,17 @@ def acn_to_nm(acn):
 
         m = \mathrm{acn} - n^2 -n
 
+    Parameters
+    ----------
+    acn : ndarray, int
+        Linear index
+
+    Returns
+    -------
+    n : ndarray, int
+        Spherical harmonic order
+    m : ndarray, int
+        Spherical harmonic degree
 
     References
     ----------
@@ -24,20 +35,6 @@ def acn_to_nm(acn):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
-
-
-    Parameters
-    ----------
-    acn : ndarray, int
-        Linear index
-
-    Parameters
-    ----------
-    n : ndarray, int
-        Spherical harmonic order
-    m : ndarray, int
-        Spherical harmonic degree
-
     """
     acn = np.asarray(acn, dtype=int)
 
@@ -874,9 +871,9 @@ def aperture_vibrating_spherical_cap(
     ----------
     n_max : integer, ndarray
         Maximal spherical harmonic order
-    r_sphere : double, ndarray
+    rad_sphere : double, ndarray
         Radius of the sphere
-    r_cap : double
+    rad_cap : double
         Radius of the vibrating cap
 
     Returns
