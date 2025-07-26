@@ -4,7 +4,6 @@ Tests for special functions.
 
 import pytest
 from spharpy import special
-from spharpy import samplings
 
 import numpy as np
 import numpy.testing as npt

@@ -6,7 +6,6 @@
 import pytest
 
 
-import spharpy
 
 
 @pytest.fixture

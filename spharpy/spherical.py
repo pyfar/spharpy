@@ -3,8 +3,6 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-import pyfar as pf
-import spharpy as sy
 
 
 def acn_to_nm(acn):
