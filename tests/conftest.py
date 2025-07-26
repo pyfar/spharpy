@@ -19,7 +19,7 @@ def make_coordinates():
             elif implementation == 'spharpy':
                 return SamplingSphere.from_spherical_colatitude(
                     phi, theta, rad)
-    yield Factory
+    return Factory
 
 
 @pytest.fixture

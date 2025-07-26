@@ -62,14 +62,14 @@ def test_error_multiple_radius_setter():
         sampling_sphere.x = [1, 0]
 
 
-@pytest.mark.parametrize(['sampling'], [
-    (SamplingSphere([1, 1], 0, 0), ),
-    (SamplingSphere.from_cartesian([1, 1], 0, 0), ),
-    (SamplingSphere.from_spherical_elevation([0, 0], 0, 1), ),
-    (SamplingSphere.from_spherical_colatitude([0, 0], 0, 1), ),
-    (SamplingSphere.from_spherical_side([0, 0], 0, 1), ),
-    (SamplingSphere.from_spherical_front([0, 0], 0, 1), ),
-    (SamplingSphere.from_cylindrical([0, 0], 0, 1), ),
+@pytest.mark.parametrize('sampling', [
+    SamplingSphere([1, 1], 0, 0),
+    SamplingSphere.from_cartesian([1, 1], 0, 0),
+    SamplingSphere.from_spherical_elevation([0, 0], 0, 1),
+    SamplingSphere.from_spherical_colatitude([0, 0], 0, 1),
+    SamplingSphere.from_spherical_side([0, 0], 0, 1),
+    SamplingSphere.from_spherical_front([0, 0], 0, 1),
+    SamplingSphere.from_cylindrical([0, 0], 0, 1),
 ])
 def test_radius_tolerance(sampling):
     """
@@ -98,8 +98,8 @@ def test_radius_tolerance_error():
         sampling.radius_tolerance = .01
 
 
-@pytest.mark.parametrize(['tolerance'], [
-    (None, ), ([0, 1], ), (np.array([0, 1]), ), (-.1, )
+@pytest.mark.parametrize('tolerance', [
+    None, [0, 1], np.array([0, 1]), -.1,
 ])
 def test_radius_tolerance_input(tolerance):
     """Test if passing wrong values raises the expected error."""
@@ -140,14 +140,14 @@ def test_setting_weights_invalid():
         sampling._set_weights(np.ones(6)/6)
 
     message = "All weights must be positive."
+    weights_invalid = np.ones(6)*4*np.pi/6
+    weights_invalid[0] = np.nan
     with pytest.raises(ValueError, match=message):
-        weights_invalid = np.ones(6)*4*np.pi/6
-        weights_invalid[0] = np.nan
         sampling.weights = weights_invalid
 
+    weights_invalid = np.ones(6)*4*np.pi/6 * -1
+    weights_invalid[0] = -1
     with pytest.raises(ValueError, match=message):
-        weights_invalid = np.ones(6)*4*np.pi/6 * -1
-        weights_invalid[0] = -1
         sampling.weights = weights_invalid
 
 

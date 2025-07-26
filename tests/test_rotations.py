@@ -144,7 +144,7 @@ def test_RotationSH():
     assert rot._n_max == n_max
     assert rot.n_max == n_max
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='order needs to be a positive value'):
         rot.n_max = -1
 
     D_Rot = rot.as_spherical_harmonic(type='real')

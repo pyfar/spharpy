@@ -66,7 +66,7 @@ class TestHankel(object):
 
     def test_kind_exception(self):
         """Test if ValueError is raised for invalid kind."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='first or second kind'):
             special.spherical_hankel([0], [1], kind=3)
 
     def test_val_second_kind(self):
@@ -98,7 +98,7 @@ class TestHankelPrime(object):
 
     def test_kind_exception(self):
         """Test if ValueError is raised for invalid kind."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='first or second kind'):
             special.spherical_hankel([0], [1], kind=3, derivative=True)
 
     def test_val_second_kind(self):
@@ -120,7 +120,7 @@ class TestHankelPrime(object):
         npt.assert_allclose(res, truth)
 
 
-@pytest.mark.parametrize(['m'], [(-1, ), (0, ), (1, )])
+@pytest.mark.parametrize('m', [-1, 0, 1])
 def test_spherical_harmonic_complex(m):
     """
     Test first order complex valued spherical harmonics for selected angels.
