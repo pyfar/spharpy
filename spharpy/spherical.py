@@ -647,8 +647,12 @@ def spherical_harmonic_basis_real(
         basis[:, acn] = _special.spherical_harmonic_real(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
+        if "nm":
+            basis[:, acn] *= np.sqrt(4*np.pi)
         if normalization == "sn3d":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
+        if normalization == "snm":
+            basis[:, acn] *= n3d_to_sn3d_norm(order) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
         if condon_shortley:

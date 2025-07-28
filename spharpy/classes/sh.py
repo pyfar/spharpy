@@ -71,6 +71,10 @@ class SphericalHarmonics:
         (also known as fully normalized).
       - ``'sn3d'``: Uses the SN3D normalization
         (also known as Schmidt normalized).
+      - ``'nm'``: Uses the monopole normalization
+        (analogous to n3d but normalized to a monopole not the sphere)
+      - ``'snm'``: Uses the monopole semi-normalization
+        (analogous to sn3d but semi-normalized to a monopole not the sphere)
 
     - channel_convention: Defines the channel ordering convention.
 
@@ -100,8 +104,9 @@ class SphericalHarmonics:
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``. The default is ``'real'``.
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. The default is ``'n3d'``.
+        Normalization convention, either ``'n3d'``, ``'nm'``,
+        ``'maxN'``, ``'sn3d'``, or ``'snm'``.
+        The default is ``'n3d'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
