@@ -100,7 +100,7 @@ def dolph_chebyshev_weights(
                         (1/2**j)*t_2N[2*j]*P_N[i, n]*x0**(2*j)
         d_n[n] = (2*np.pi/R)*temp
 
-    return sph_identity_matrix(n_max, type='n-nm').T @ d_n
+    return sph_identity_matrix(n_max, matrix_type='n-nm').T @ d_n
 
 
 def rE_max_weights(n_max, normalize=True):
