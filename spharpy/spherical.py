@@ -396,8 +396,8 @@ def spherical_harmonic_basis(
     coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'n3d'``, ``'nm'``, ``'maxN'``,
+        ``'sn3d'``, or ``'snm'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -448,8 +448,12 @@ def spherical_harmonic_basis(
         basis[:, acn] = _special.spherical_harmonic(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
+        if normalization == "nm":
+            basis[:, acn] *= np.sqrt(4*np.pi)
         if normalization == "sn3d":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
+        if normalization == "snm":
+            basis[:, acn] *= n3d_to_sn3d_norm(order) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
         if not condon_shortley:
@@ -498,8 +502,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'n3d'``, ``'nm'``, ``'maxN'``,
+        ``'sn3d'``, or ``'snm'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -560,9 +564,13 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         grad_phi[:, acn] = _special.spherical_harmonic_gradient_phi(
             n, m, theta, phi)
 
-        factor = 1.0
+        factor = 1.
+        if normalization == "nm":
+            factor = np.sqrt(4*np.pi)
         if normalization == "sn3d":
             factor = n3d_to_sn3d_norm(n)
+        if normalization == "snm":
+            factor = n3d_to_sn3d_norm(n) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
@@ -602,8 +610,8 @@ def spherical_harmonic_basis_real(
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'n3d'``, ``'nm'``, ``'maxN'``,
+        ``'sn3d'``, or ``'snm'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -647,7 +655,7 @@ def spherical_harmonic_basis_real(
         basis[:, acn] = _special.spherical_harmonic_real(
             order, degree, coordinates.colatitude, coordinates.azimuth
         )
-        if "nm":
+        if normalization == "nm":
             basis[:, acn] *= np.sqrt(4*np.pi)
         if normalization == "sn3d":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
@@ -708,8 +716,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'n3d'``, ``'nm'``,
+        ``'maxN'``, ``'sn3d'``, or ``'snm'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -764,8 +772,12 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                 n, m, theta, phi)
 
         factor = 1.0
+        if normalization == "nm":
+            factor = np.sqrt(4*np.pi)
         if normalization == "sn3d":
             factor = n3d_to_sn3d_norm(n)
+        if normalization == "snm":
+            factor = n3d_to_sn3d_norm(n) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
