@@ -77,9 +77,9 @@ class SphericalHarmonics:
       - ``'sn3d'``: Uses the SN3D normalization
         (also known as Schmidt normalized).
       - ``'nm'``: Uses the monopole normalization
-        (analogous to n3d but normalized to a monopole not the sphere)
+        (similar to n3d but normalized to a monopole)
       - ``'snm'``: Uses the monopole semi-normalization
-        (analogous to sn3d but semi-normalized to a monopole not the sphere)
+        (similar to sn3d but semi-normalized to a monopole)
 
     - channel_convention: Defines the channel ordering convention.
 
