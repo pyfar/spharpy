@@ -32,7 +32,7 @@ def test_contour_plot(icosahedron, make_coordinates, implementation):
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_scatter(icosahedron, make_coordinates, implementation):
-    """Test if the plot executes without raising an exception
+    """Test if the plot executes without raising an exception.
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
@@ -61,7 +61,7 @@ def test_scatter(icosahedron, make_coordinates, implementation):
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_pcolor_map(icosahedron, make_coordinates, implementation):
-    """Test if the plot executes without raising an exception
+    """Test if the plot executes without raising an exception.
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
@@ -87,7 +87,7 @@ def test_pcolor_map(icosahedron, make_coordinates, implementation):
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_contour_map(icosahedron, make_coordinates, implementation):
-    """Test if the plot executes without raising an exception
+    """Test if the plot executes without raising an exception.
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
@@ -114,7 +114,7 @@ def test_contour_map(icosahedron, make_coordinates, implementation):
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_contour(icosahedron, make_coordinates, implementation):
-    """Test if the plot executes without raising an exception
+    """Test if the plot executes without raising an exception.
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(
@@ -136,7 +136,7 @@ def test_contour(icosahedron, make_coordinates, implementation):
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_plot_voronoi_sphere(icosahedron, make_coordinates, implementation):
-    """Test if the plot executes without raising an exception
+    """Test if the plot executes without raising an exception.
     """
     rad, theta, phi = icosahedron
     coords = make_coordinates.create_coordinates(

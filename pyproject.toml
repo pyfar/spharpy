@@ -97,13 +97,13 @@ lint.ignore = [
     "D417",
 ]
 lint.select = [
+    "ARG",    # Remove unused function/method arguments
     "B",      # bugbear extension
-    # "ARG",    # Remove unused function/method arguments
     "C4",     # Check for common security issues
     "E",      # PEP8 errors
     # "F",      # Pyflakes
     # "W",      # PEP8 warnings
-    # "D",      # Docstring guidelines
+    "D",      # Docstring guidelines
     "NPY",    # Check all numpy related deprecations
     "D417",   # Missing argument descriptions in the docstring
     # "PT",     # Pytest style

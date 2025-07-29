@@ -1,3 +1,6 @@
+"""
+Documentation for the SphericalHarmonics class, will be added in an other PR.
+"""
 import numpy as np
 import pyfar as pf
 import spharpy as sy
@@ -6,6 +9,7 @@ import spharpy as sy
 class SphericalHarmonics:
     r"""
     Compute spherical harmonic basis matrices, their inverses, and gradients.
+
     The spherical harmonic Ynm is given by:
 
     .. math::
@@ -18,7 +22,8 @@ class SphericalHarmonics:
     - :math:`m` is the order
     - :math:`P_{nm}` is the associated Legendre function
     - :math:`N_{nm}` is the normalization term
-    - :math:`T_{nm}` is a term that depends on whether the harmonics are real or complex
+    - :math:`T_{nm}` is a term that depends on whether the harmonics are
+      real or complex
     - :math:`\theta` is the colatitude (angle from the positive z-axis)
     - :math:`\phi` is the azimuth (angle in the x-y plane from the x-axis)
 
@@ -117,7 +122,8 @@ class SphericalHarmonics:
 
         - ‘auto’: use ‘quadrature’ when applicable, otherwise ‘pseudo_inverse’.
         - ‘quadrature’: compute the inverse via numerical quadrature.
-        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse approximation.
+        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse
+          approximation.
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
         Condon-Shortley is included, if ``False`` it is not
@@ -165,7 +171,8 @@ class SphericalHarmonics:
         """Get or set the Condon-Shortley phase term."""
         if isinstance(value, str):
             if value != 'auto':
-                raise ValueError("condon_shortley must be a bool or the string 'auto'")
+                raise ValueError(
+                    "condon_shortley must be a bool or the string 'auto'")
             # If basis_type hasn't been set yet, assume "complex" by default,
             # but in practice __init__ sets basis_type before condon_shortley.
             if self.basis_type == "complex":
@@ -174,7 +181,8 @@ class SphericalHarmonics:
                 resolved = False
             value = resolved
         elif not isinstance(value, bool):
-            raise TypeError("condon_shortley must be a bool or the string 'auto'")
+            raise TypeError(
+                "condon_shortley must be a bool or the string 'auto'")
         if value != self._condon_shortley:
             self._reset_compute_attributes()
         self._condon_shortley = value
@@ -246,8 +254,12 @@ class SphericalHarmonics:
         # If the user passes "auto", require SamplingSphere and resolve it
         if isinstance(value, str) and value == "auto":
             if not isinstance(self.coordinates,sy.SamplingSphere):
-                raise ValueError("'auto' is only valid if `coordinates` is a SamplingSphere.")
-            if isinstance(self.coordinates, sy.SamplingSphere) and self.coordinates.quadrature:
+                raise ValueError(
+                    "'auto' is only valid if `coordinates` is "
+                    "a SamplingSphere.")
+            if isinstance(
+                    self.coordinates, sy.SamplingSphere) and \
+                        self.coordinates.quadrature:
                 value = "quadrature"
             else:
                 value = "pseudo_inverse"
@@ -257,8 +269,9 @@ class SphericalHarmonics:
                 raise ValueError("'quadrature' requires `coordinates` to be " \
                 "a SamplingSphere and coordinates.quadrature to be True.")
         elif value != "pseudo_inverse":
-            raise ValueError("Invalid inverse_method. Allowed: 'pseudo_inverse', " \
-            "'quadrature', or 'auto'.")
+            raise ValueError(
+                "Invalid inverse_method. Allowed: 'pseudo_inverse', "
+                "'quadrature', or 'auto'.")
 
         if value != self._inverse_method:
             self._reset_compute_attributes()
@@ -344,7 +357,8 @@ class SphericalHarmonics:
 
     def _compute_basis_gradient(self):
         """
-        Compute the gradient of the basis matrix for the SphericalHarmonics class
+        Compute the gradient of the basis matrix for the SphericalHarmonics
+        class.
         """
         if any(
             (self.normalization in ["maxN", "sn3d"],
@@ -378,7 +392,7 @@ class SphericalHarmonics:
 
     def _compute_inverse(self):
         """
-        Compute the inverse basis matrix for the SphericalHarmonics class
+        Compute the inverse basis matrix for the SphericalHarmonics class.
         """
         if self._basis is None:
             self._compute_basis()
@@ -391,7 +405,8 @@ class SphericalHarmonics:
 
     def _reset_compute_attributes(self):
         """Reset the computed attributes for the SphericalHarmonics class in
-        case of changes in the parameters."""
+        case of changes in the parameters.
+        """
         self._basis = None
         self._basis_gradient_theta = None
         self._basis_gradient_phi = None
