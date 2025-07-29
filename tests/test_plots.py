@@ -18,7 +18,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = True
+create_baseline = False
 
 # file type used for saving the plots
 file_type = "png"
@@ -234,7 +234,7 @@ def test_spherical_projection(function, projection):
                      file_type, compare_output)
     
     # test error for invalid inputs
-    match = 'Projection does not match the projection'
+    match = "The projection of the axis needs to be 'projection'"
     with pytest.raises(ValueError, match=match):
         function(coords, data, projection='projection')
 
