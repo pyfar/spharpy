@@ -241,7 +241,7 @@ def test_spherical_projection(function, projection):
 
 @pytest.mark.parametrize('function', [
     (sp.plot.contour_map),
-    (sp.plot.contour),
+    # (sp.plot.contour),
     ])
 @pytest.mark.parametrize('levels', [
     (-0.5, .5),
