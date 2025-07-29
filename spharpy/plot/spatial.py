@@ -102,9 +102,6 @@ def _triangulation_sphere(sampling, data):
     triangulation : matplotlib Triangulation
 
     """ # noqa: E501
-    if data.shape[-1] != sampling.cshape[-1]:
-        raise ValueError(
-            "data must be a 1D array with the same cshape as the coordinates")
 
     x, y, z = sph2cart(
         sampling.azimuth,
@@ -238,6 +235,7 @@ def pcolor_sphere(
         data,
         cmap=None,
         colorbar=True,
+        limits=None,
         phase=False,
         ax=None):
     """Plot data on the surface of a sphere defined by the coordinate angles
@@ -250,15 +248,19 @@ def pcolor_sphere(
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colomap, optional
-        Colormap for the plot, see matplotlib.cm
-    colorbar : boolean, optional
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. By default see Note.
+    colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
@@ -282,8 +284,11 @@ def pcolor_sphere(
         >>> spharpy.plot.pcolor_sphere(coords, data)
 
     """ # noqa: E501
-    if not isinstance(colorbar, bool):
-        raise ValueError("colorbar must be a boolean.")
+    # input checks
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    if not isinstance(phase, bool):
+        raise ValueError("phase must be a boolean.")
+
 
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
     fig = plt.gcf()
@@ -306,6 +311,9 @@ def pcolor_sphere(
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+
+    if limits is not None:
+        vmin, vmax = limits
 
     plot = ax.plot_trisurf(tri,
                            xyz[2],
@@ -335,8 +343,9 @@ def balloon_wireframe(
         coordinates,
         data,
         cmap=None,
-        phase=False,
         colorbar=True,
+        limits=None,
+        phase=False,
         ax=None):
     """Plot data on a sphere defined by the coordinate angles
     theta and phi. The magnitude information is mapped onto the radius of the
@@ -350,18 +359,22 @@ def balloon_wireframe(
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colomap, optional
-        Colormap for the plot, see matplotlib.cm
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. By default see Note.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    colorbar : boolean, optional
-        Whether to show a colorbar or not. Default is `True`.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
@@ -377,13 +390,11 @@ def balloon_wireframe(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.balloon_wireframe(coords, data, phase=True)
 
-    """  # noqa: E501
+    """
     # input checks
-    if not isinstance(cmap, (str, type(None), mpl.colors.Colormap)):
-        raise ValueError(
-            "cmap must be a string, Colormap object, or None.")
-    if not isinstance(colorbar, bool):
-        raise ValueError("colorbar must be a boolean.")
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    if not isinstance(phase, bool):
+        raise ValueError("phase must be a boolean.")
     
     if isinstance(cmap, str):
         cmap = plt.get_cmap(cmap)
@@ -409,6 +420,9 @@ def balloon_wireframe(
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+
+    if limits is not None:
+        vmin, vmax = limits
 
     plot = ax.plot_trisurf(tri,
                            xyz[2],
@@ -449,8 +463,9 @@ def balloon(
         coordinates,
         data,
         cmap=None,
-        phase=False,
         colorbar=True,
+        limits=None,
+        phase=False,
         ax=None,
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles theta and phi.
@@ -466,18 +481,22 @@ def balloon(
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colomap, optional
-        Colormap for the plot, see matplotlib.cm
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
     phase : boolean, optional
         Encode the phase of the data in the colormap. This option will be
         activated by default of the data is complex valued.
-    colorbar : boolean, optional
-        Whether to show a colorbar or not. Default is `True`.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
@@ -495,11 +514,11 @@ def balloon(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.balloon(coords, data)
 
-    """  # noqa: E501
-    if not isinstance(colorbar, bool):
-        raise ValueError("colorbar must be a boolean.")
-    if not isinstance(coordinates, pf.Coordinates):
-        raise ValueError("coords must be a coordinates object.")
+    """
+    # input checks
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    if not isinstance(phase, bool):
+        raise ValueError("phase must be a boolean.")
 
     tri, xyz = _triangulation_sphere(coordinates, data)
     fig = plt.gcf()
@@ -522,6 +541,9 @@ def balloon(
         clabel = 'Amplitude'
 
     cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+
+    if limits is not None:
+        vmin, vmax = limits
 
     plot = ax.plot_trisurf(tri,
                            xyz[2],
@@ -631,7 +653,7 @@ def _combined_contour(x, y, data, limits, cmap, ax):
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped.
     cmap : matplotlib.colormap
-        The colormap
+        Colormap for the plot, see matplotlib.cm.
     ax : matplotlib.axes
         The axes object into which the contour is plotted
 
@@ -665,10 +687,10 @@ def _combined_contour(x, y, data, limits, cmap, ax):
 def pcolor_map(
         coordinates,
         data,
-        projection='mollweide',
-        limits=None,
-        colorbar=True,
         cmap=plt.get_cmap('viridis'),
+        colorbar=True,
+        limits=None,
+        projection='mollweide',
         refine=False,
         ax=None,
         **kwargs):
@@ -683,23 +705,23 @@ def pcolor_map(
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
-    data: ndarray, double
+    data : numpy.ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    projection : str, optional
-        The projection of the map. Default is 'mollweide'. See
-        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
-        for more information on available projections in matplotlib.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
-    colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
-    cmap : matplotlib colormap, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    projection : str, optional
+        The projection of the map. Default is 'mollweide'. See
+        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
+        for more information on available projections in matplotlib.
     refine : bool, optional
         Whether to refine the triangulation before plotting. Default is `False`.
     ax : matplotlib.axis, None, optional
@@ -720,8 +742,8 @@ def pcolor_map(
         >>> spharpy.plot.pcolor_map(coords, data)
 
     """  # noqa: E501
-    if not isinstance(colorbar, bool):
-        raise ValueError("colorbar must be a boolean.")
+    # input checks
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     
     height, latitude, longitude = coordinates2latlon(coordinates)
     tri = mtri.Triangulation(longitude, latitude)
@@ -775,10 +797,10 @@ def pcolor_map(
 def contour_map(
         coordinates,
         data,
-        projection='mollweide',
-        limits=None,
         cmap=plt.get_cmap('viridis'),
         colorbar=True,
+        limits=None,
+        projection='mollweide',
         levels=None,
         ax=None):
     """
@@ -792,23 +814,23 @@ def contour_map(
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
-    data: ndarray, double
+    data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    projection : str, optional
-        The projection of the map. Default is 'mollweide'. See
-        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
-        for more information on available projections in matplotlib.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
-    cmap : matplotlib colormap, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
-    colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+    projection : str, optional
+        The projection of the map. Default is 'mollweide'. See
+        :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
+        for more information on available projections in matplotlib.
     levels : int or array-like, optional
         Determines the number and positions of the contour lines / regions.
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
@@ -837,8 +859,8 @@ def contour_map(
         >>> spharpy.plot.contour_map(coords, data)
 
     """  # noqa: E501
-    if not isinstance(colorbar, bool):
-        raise ValueError("colorbar must be a boolean.")
+    # input checks
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     
     fig = plt.gcf()
 
@@ -891,8 +913,12 @@ def contour_map(
 
 
 def contour(
-        coordinates, data, limits=None, colorbar=True,
-        cmap=plt.get_cmap('viridis'), ax=None):
+        coordinates,
+        data,
+        cmap=plt.get_cmap('viridis'),
+        colorbar=True,
+        limits=None,
+        ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
@@ -909,14 +935,14 @@ def contour(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
-    colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
-    cmap : matplotlib colormap, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
@@ -939,11 +965,8 @@ def contour(
 
     """  # noqa: E501
     # input checks
-    if not isinstance(colorbar, bool):
-        raise ValueError("colorbar must be a boolean.")
-    if not isinstance(cmap, (str, type(None), mpl.colors.Colormap)):
-        raise ValueError(
-            "cmap must be a string, Colormap object, or None.")
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    
     height, latitude, longitude = coordinates2latlon(coordinates)
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
@@ -1021,3 +1044,47 @@ def coordinates2latlon(coords: pf.Coordinates):
     latitude = np.pi/2 - np.arccos(z/height)
     longitude = np.arctan2(y, x)
     return height, latitude, longitude
+
+
+def _check_input_parameters(coordinates, data, cmap, colorbar, limits):
+    """Check the input parameters for the plotting functions.
+
+    The function raises ValueError if the input parameters are not valid.
+
+    Parameters
+    ----------
+    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+        Coordinates defining a sphere
+    data : ndarray, double
+        Data for each angle, must have size corresponding to the number of
+        points given in coordinates.
+    cmap : matplotlib colormap, optional
+        Colormap for the plot, see matplotlib.cm
+    colorbar : bool, optional
+        Whether to show a colorbar or not. Default is `True`.
+    limits : tuple, list, optional
+        Tuple or list containing the maximum and minimum to which the colormap
+        needs to be clipped. If `None`, the limits are set to the minimum and
+        maximum of the data.
+    """
+    if not isinstance(colorbar, bool):
+        raise ValueError("colorbar must be a boolean.")
+    if not isinstance(cmap, (str, type(None), mpl.colors.Colormap)):
+        raise ValueError(
+            "cmap must be a string, Colormap object, or None.")
+    if not isinstance(coordinates, pf.Coordinates):
+        raise ValueError("coordinates must be a coordinates object.")
+    if not isinstance(data, np.ndarray):
+        raise ValueError(
+            "data must be a 1D array with the same cshape as the coordinates.")
+    if data.shape[-1] != coordinates.cshape[-1]:
+        raise ValueError(
+            "data must be a 1D array with the same cshape as the coordinates.")
+    if limits is not None and not isinstance(limits, (tuple, list)):
+        raise ValueError(
+            "limits must be a tuple or list containing the minimum and "
+            "maximum values for the colormap or None.")
+    if limits is not None and len(limits) != 2:
+        raise ValueError(
+            "limits must be a tuple or list containing the minimum and "
+            "maximum values for the colormap or None.")

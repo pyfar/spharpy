@@ -81,7 +81,7 @@ def test_spherical_default(function):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'{function.__name__}_default'
+    filename = f'default_{function.__name__}'
     create_figure()
     function(coords, data)
     save_and_compare(
@@ -93,7 +93,7 @@ def test_spherical_default(function):
     with pytest.raises(ValueError, match=match):
         function(coords, 'data')
 
-    match = 'coords must be a coordinates object.'
+    match = 'coordinates must be a coordinates object.'
     with pytest.raises(ValueError, match=match):
         function('coords', data)
 
@@ -118,7 +118,7 @@ def test_spherical_cmap(function, cmap):
     else:
         # otherwise use the string representation of the colormap
         cmap_str = str(cmap)
-    filename = f'{function.__name__}_cmap_{cmap_str}'
+    filename = f'cmap_{function.__name__}_{cmap_str}'
     create_figure()
     function(coords, data, cmap=cmap)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -144,7 +144,7 @@ def test_spherical_colorbar(function, colorbar):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     
     # do plotting
-    filename = f'{function.__name__}_colorbar_{colorbar}'
+    filename = f'colorbar_{function.__name__}_{colorbar}'
     create_figure()
     function(coords, data, colorbar=colorbar)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -173,21 +173,22 @@ def test_spherical_limits(function, limits):
     if limits is None:
         limits_str = 'None'
     else:
-        limits_str = f'{type(limits)}'
-    filename = f'{function.__name__}_limits_{limits_str}'
+        limits_str = f'{type(limits).__name__}'
+    filename = f'limits_{function.__name__}_{limits_str}'
     create_figure()
     function(coords, data, limits=limits)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
 
     # test error for invalid inputs
-    match = 'limits must .'
+    match = (
+        "limits must be a tuple or list containing the minimum and "
+        "maximum values for the colormap or None.")
     with pytest.raises(ValueError, match=match):
         function(coords, data, limits='limits')
     with pytest.raises(ValueError, match=match):
         function(coords, data, limits=[0, 1, 2])
 
-    
 
 @pytest.mark.parametrize('function', [
     (sp.plot.balloon),
@@ -203,14 +204,14 @@ def test_spherical_phase(function, phase):
         data = np.exp(1j * data)
     
     # do plotting
-    filename = f'{function.__name__}_phase_{phase}'
+    filename = f'phase_{function.__name__}_{phase}'
     create_figure()
     function(coords, data, phase=phase)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
     
     # test error for invalid inputs
-    match = 'phase must .'
+    match = 'phase must be a boolean.'
     with pytest.raises(ValueError, match=match):
         function(coords, data, phase=5)
     
@@ -226,31 +227,34 @@ def test_spherical_projection(function, projection):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     
     # do plotting
-    filename = f'{function.__name__}_projection_{projection}'
+    filename = f'projection_{function.__name__}_{projection}'
     create_figure()
     function(coords, data, projection=projection)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
     
     # test error for invalid inputs
-    match = 'projection must be.'
+    match = 'Projection does not match the projection'
     with pytest.raises(ValueError, match=match):
-        function(coords, data, projection=projection)
-    
-        
+        function(coords, data, projection='projection')
+
 
 @pytest.mark.parametrize('function', [
     (sp.plot.contour_map),
-    (sp.plot.contour),
+    # (sp.plot.contour),
     ])
-@pytest.mark.parametrize('levels', [(-0.5, 0, .5), ])
+@pytest.mark.parametrize('levels', [
+    (-0.5, 0, .5),
+    [-0.5, 0, .5],
+    np.array((-0.5, 0, .5)),
+    ])
 def test_spherical_levels(function, levels):
     """Test all spherical plots with custom arguments."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     
     # do plotting
-    filename = f'{function.__name__}_levels_{type(levels)}'
+    filename = f'levels_{function.__name__}_{type(levels).__name__}'
     create_figure()
     function(coords, data, levels=levels)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
