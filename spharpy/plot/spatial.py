@@ -48,7 +48,7 @@ def scatter(coordinates, ax=None):
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         The coordinates to be plotted
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
@@ -65,7 +65,7 @@ def scatter(coordinates, ax=None):
         >>> spharpy.plot.scatter(coords)
 
 
-    """  # noqa: E501
+    """ 
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -92,7 +92,7 @@ def _triangulation_sphere(sampling, data):
 
     Parameters
     ----------
-    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    sampling : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinate object for which the triangulation is calculated
     data : list of arrays
         x, y, and z values of the data points in the triangulation
@@ -101,7 +101,7 @@ def _triangulation_sphere(sampling, data):
     -------
     triangulation : matplotlib Triangulation
 
-    """ # noqa: E501
+    """
 
     x, y, z = sph2cart(
         sampling.azimuth,
@@ -131,7 +131,7 @@ def interpolate_data_on_sphere(
 
     Parameters
     ----------
-    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    sampling : pyfar.Coordinates, spharpy.SamplingSphere
         The coordinates at which the data is sampled.
     data : ndarray, double
         The sampled data points.
@@ -153,7 +153,7 @@ def interpolate_data_on_sphere(
     Internally, matplotlibs LinearTriInterpolator or CubicTriInterpolator
     are used.
 
-    """ # noqa: E501
+    """
     _, lats, lons = coordinates2latlon(sampling)
 
     mask = lons > np.pi - overlap
@@ -283,7 +283,7 @@ def pcolor_sphere(
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
         >>> spharpy.plot.pcolor_sphere(coords, data)
 
-    """ # noqa: E501
+    """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     if not isinstance(phase, bool):
@@ -575,7 +575,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
 
     Parameters
     ----------
-    sampling : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    sampling : pyfar.Coordinates, spharpy.SamplingSphere
         Sampling as SamplingSphere object
     round_decimals : int
         Decimals to be rounded to for eliminating duplicate points in
@@ -594,7 +594,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         >>> coords = spharpy.samplings.gaussian(n_max=5)
         >>> spharpy.plot.voronoi_cells_sphere(coords)
 
-    """ # noqa: E501
+    """
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
@@ -723,7 +723,8 @@ def pcolor_map(
         :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
         for more information on available projections in matplotlib.
     refine : bool, optional
-        Whether to refine the triangulation before plotting. Default is `False`.
+        Whether to refine the triangulation before plotting.
+        Default is `False`.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
@@ -741,7 +742,7 @@ def pcolor_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.pcolor_map(coords, data)
 
-    """  # noqa: E501
+    """ 
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     
@@ -858,7 +859,7 @@ def contour_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour_map(coords, data)
 
-    """  # noqa: E501
+    """ 
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     
@@ -930,7 +931,7 @@ def contour(
 
     Parameters
     ----------
-    coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -963,7 +964,7 @@ def contour(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour(coords, data)
 
-    """  # noqa: E501
+    """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     
@@ -1024,7 +1025,7 @@ def coordinates2latlon(coords: pf.Coordinates):
 
     Parameters
     ----------
-    coords : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
+    coords : pyfar.Coordinates, spharpy.SamplingSphere
         Cartesian Coordiantes are transformed to Geocentric coordinates
 
     Returns
