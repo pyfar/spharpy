@@ -17,13 +17,15 @@ def test_renormalize_errors():
                        'n3d', axis=0)
 
     # test current norm
-    with raises(ValueError, match="Invalid normalization. Has to be 'sn3d', "
-                                  "'n3d', or 'maxN', but is wrong_norm"):
+    with raises(ValueError, match="Invalid normalization. Has to be 'n3d', "
+                                  "'nm', 'maxN', 'sn3d', or 'snm' "
+                                  "but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', 'wrong_norm', 'n3d', axis=0)
 
     # test target norm
-    with raises(ValueError, match="Invalid normalization. Has to be 'sn3d', "
-                                  "'n3d', or 'maxN', but is wrong_norm"):
+    with raises(ValueError, match="Invalid normalization. Has to be 'n3d', "
+                                  "'nm', 'maxN', 'sn3d', or 'snm' "
+                                  "but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', 'n3d', 'wrong_norm', axis=0)
 
 
@@ -44,6 +46,14 @@ def test_renormalize(channel_convention):
 
     np.testing.assert_equal(sh_data_n3d_to_maxN,
                             sh_data_ref)
+
+    # test from n3d to nm
+    target_norm = 'nm'
+    sh_data_n3d_to_nm = sh.renormalize(sh_data, channel_convention,
+                                       current_norm,
+                                       target_norm, axis=0)
+    np.testing.assert_equal(sh_data_n3d_to_nm,
+                            sh_data * np.sqrt(4*np.pi))
 
     # test from maxN to n3d
     current_norm = 'maxN'
@@ -103,6 +113,17 @@ def test_renormalize(channel_convention):
                                           channel_convention,
                                           current_norm,
                                           target_norm, axis=0)
+
+    # test from sn3d to snm
+    current_norm = 'sn3d'
+    target_norm = 'snm'
+    sh_data_sn3d_to_snm = sh.renormalize(sh_data_n3d_to_sn3d,
+                                         channel_convention,
+                                         current_norm,
+                                         target_norm, axis=0)
+    np.testing.assert_equal(sh_data_sn3d_to_snm,
+                            sh_data_n3d_to_sn3d * np.sqrt(4*np.pi))
+
     # back to n3d to check against 0
     sh_data_maxN_to_n3d = sh.renormalize(sh_data_sn3d_to_maxN,
                                          channel_convention,
