@@ -70,6 +70,9 @@ def scatter(coordinates, ax=None):
 
 
     """ 
+    if not isinstance(coordinates, pf.Coordinates):
+        raise ValueError("coordinates must be a coordinates object.")
+
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -622,6 +625,9 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         >>> spharpy.plot.voronoi_cells_sphere(coords)
 
     """
+    if not isinstance(sampling, pf.Coordinates):
+        raise ValueError("sampling must be a coordinates object.")
+
     sv = spherical_voronoi(sampling, round_decimals=round_decimals)
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
