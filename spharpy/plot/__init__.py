@@ -1,3 +1,5 @@
+"""Plotting functions for spherical data."""
+
 from .spatial import (
     scatter,
     pcolor_map,

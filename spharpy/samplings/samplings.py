@@ -1,5 +1,5 @@
 """
-Collection of sampling schemes for the sphere
+Collection of sampling schemes for the sphere.
 """
 import os
 from urllib3.exceptions import InsecureRequestWarning
@@ -168,7 +168,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
 
 def t_design(degree=None, n_max=None, criterion='const_energy',
              radius=1.):
-    """
+    r"""
     Return spherical t-design sampling grid.
 
     For detailed information, see [#]_.
@@ -179,12 +179,12 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
 
     .. math::
 
-        L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
+        L = \lceil \frac{(t+1)^2}{2} \rceil+1,
 
     points will be generated, except for t = 3, 5, 7, 9, 11, 13, and 15.
     T-designs allow for an inverse spherical harmonic transform matrix
-    calculated as :math:`D = \\frac{4\\pi}{L} \\mathbf{Y}^\\mathrm{H}` with
-    :math:`\\mathbf{Y}^\\mathrm{H}` being the hermitian transpose of the
+    calculated as :math:`D = \frac{4\pi}{L} \mathbf{Y}^\mathrm{H}` with
+    :math:`\mathbf{Y}^\mathrm{H}` being the hermitian transpose of the
     spherical harmonics matrix.
 
     Parameters
@@ -840,7 +840,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
         n_points = (n_max+1)**2
 
     def _spiral_points(n_points):
-        """Helper function doing the actual calculation of the points"""
+        """Helper function doing the actual calculation of the points."""
         r = np.zeros(n_points)
         h = np.zeros(n_points)
         theta = np.zeros(n_points)
@@ -958,7 +958,7 @@ def equal_angle(delta_angles, radius=1.):
 def great_circle(
         elevation=np.linspace(-90, 90, 19), gcd=10, radius=1,
         azimuth_res=1, match=360):
-    """
+    r"""
     Spherical sampling grid according to the great circle distance criterion.
 
     Sampling grid where neighboring points of the same elevation have approx.
@@ -968,8 +968,8 @@ def great_circle(
     ----------
     elevation : array like, optional
         Contains the elevation from wich the sampling grid is generated, with
-        :math:`-90^\\circ\\leq elevation \\leq 90^\\circ` (:math:`90^\\circ`:
-        North Pole, :math:`-90^\\circ`: South Pole). The default is
+        :math:`-90^\circ\leq elevation \leq 90^\circ` (:math:`90^\circ`:
+        North Pole, :math:`-90^\circ`: South Pole). The default is
         ``np.linspace(-90, 90, 19)``.
     gcd : number, optional
         Desired great circle distance (GCD). Note that the actual GCD of the
@@ -1117,7 +1117,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     # list possible sh orders and degrees
     if n_points is None and n_max is None:
         print('Possible input values:')
-        for o, d in zip(orders, degrees):
+        for o, d in zip(orders, degrees, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
@@ -1284,7 +1284,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     # list possible sh orders and number of points
     if n_points is None and n_max is None:
-        for o, d in zip(orders, points):
+        for o, d in zip(orders, points, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None

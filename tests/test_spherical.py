@@ -1,5 +1,5 @@
 """
-Tests renormalization and change channel convention methods
+Tests renormalization and change channel convention methods.
 """
 from pytest import raises, mark
 import numpy as np

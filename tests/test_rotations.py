@@ -1,4 +1,4 @@
-""" Tests for sh rotations"""
+"""Tests for sh rotations."""
 
 import numpy as np
 import spharpy.transforms as transforms
