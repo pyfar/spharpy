@@ -593,10 +593,8 @@ class SamplingSphere(pf.Coordinates):
 
     @weights.setter
     def weights(self, weights):
-        r"""The area/quadrature weights of the sampling.
-        Their sum must equal to :math:`4\pi`. If the provided
-        weights do not fulfill the quadrature condition,
-        the quadrature flag will be updated accordingly.
+        r"""Get or set the area/quadrature weights of the sampling.
+        Their sum must equal to :math:`4\pi`.
         """
         if not np.array_equal(weights, self.weights):
             self._quadrature = None
