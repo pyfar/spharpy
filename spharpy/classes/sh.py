@@ -305,15 +305,15 @@ class SphericalHarmonics:
     @normalization.setter
     def normalization(self, value):
         """Get or set the normalization convention."""
-        if value not in ["n3d", "maxN", "sn3d"]:
+        if value not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
             raise ValueError(
                 "Invalid normalization, "
-                "currently only 'n3d', 'maxN', 'sn3d' are "
+                "currently only 'n3d', 'nm', 'maxN', 'sn3d', 'snm' are "
                 "supported"
             )
         if value == "maxN" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with " \
-                            "'maxN' normalization")
+            raise ValueError("n_max > 3 is not allowed with "
+                             "'maxN' normalization")
         if value != self._normalization:
             self._reset_compute_attributes()
             self._normalization = value

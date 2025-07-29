@@ -265,11 +265,11 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         Channel convention of the data which should be renormalized. Valid
         conventions are `"acn"` or `"fuma"`.
     current_norm : str
-        Current normalization. Valid normalizations are `"n3d"`, `"maxN"`, or
-        `"sn3d"`.
+        Current normalization. Valid normalizations are `"n3d"`, `"nm"`,
+        `"maxN"`, `"sn3d"`, or `"snm"`.
     target_norm : str
-        Desired normalization. Valid normalizations are `"n3d"`,
-        `"maxN"`, or `"sn3d"`.
+        Desired normalization. Valid normalizations are `"n3d"`, `"nm"`
+        `"maxN"`, `"sn3d"`, or `"snm"`.
     axis : integer
         Axis along which the renormalization should be applied
 
@@ -282,13 +282,15 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         raise ValueError("Invalid channel convention. Has to be 'acn' "
                          f"or 'fuma', but is {channel_convention}")
 
-    if current_norm not in ["n3d", "maxN", "sn3d"]:
-        raise ValueError("Invalid normalization. Has to be 'sn3d', "
-                         f"'n3d', or 'maxN', but is {current_norm}")
+    if current_norm not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
+        raise ValueError("Invalid normalization. Has to be 'n3d', "
+                         "'nm', 'maxN', 'sn3d', or 'snm' "
+                         f"but is {current_norm}")
 
     if target_norm not in ["n3d", "maxN", "sn3d"]:
-        raise ValueError("Invalid normalization. Has to be 'sn3d', "
-                         f"'n3d', or 'maxN', but is {target_norm}")
+        raise ValueError("Invalid normalization. Has to be 'n3d', "
+                         "'nm', 'maxN', 'sn3d', or 'snm' "
+                         f"but is {target_norm}")
     acn = np.arange(data.shape[axis])
 
     if channel_convention == "fuma":
@@ -302,22 +304,61 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
 
     data_renorm = data.copy()
     if current_norm == 'n3d':
+        if target_norm == "nm":
+            data_renorm *= np.sqrt(4*np.pi)
         if target_norm == "sn3d":
             data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+        if target_norm == "snm":
+            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+            data_renorm *= np.sqrt(4*np.pi)
         elif target_norm == "maxN":
             data_renorm *= n3d_to_maxn(acn).reshape(shape)
 
     if current_norm == 'sn3d':
-        # convert to n3d
-        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
-        if target_norm == "maxN":
-            data_renorm *= n3d_to_maxn(acn).reshape(shape)
+        if target_norm == "snm":
+            data_renorm *= np.sqrt(4*np.pi)
+        else:
+            # convert to n3d
+            data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
+            if target_norm == "nm":
+                data_renorm *= np.sqrt(4*np.pi)
+            if target_norm == "maxN":
+                data_renorm *= n3d_to_maxn(acn).reshape(shape)
 
     if current_norm == 'maxN':
         # convert to n3d
         data_renorm /= n3d_to_maxn(acn).reshape(shape)
+        if target_norm == "nm":
+            data_renorm *= np.sqrt(4*np.pi)
         if target_norm == "sn3d":
             data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+        if target_norm == "snm":
+            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+            data_renorm *= np.sqrt(4*np.pi)
+    
+    if current_norm == 'nm':
+        # convert to n3d
+        data_renorm /= np.sqrt(4*np.pi)
+        if target_norm == "sn3d":
+            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+        if target_norm == "snm":
+            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+            data_renorm *= np.sqrt(4*np.pi)
+        if target_norm == "maxN":
+            data_renorm *= n3d_to_maxn(acn).reshape(shape)
+
+    if current_norm == 'snm':
+        # convert so sn3d
+        data_renorm /= np.sqrt(4*np.pi)
+
+        if target_norm != "sn3d":
+            # convert so n3d
+            data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
+            if target_norm == "nm":
+                data_renorm *= np.sqrt(4*np.pi)
+            if target_norm == "maxN":
+                data_renorm *= n3d_to_maxn(acn).reshape(shape)
+
     return data_renorm
 
 

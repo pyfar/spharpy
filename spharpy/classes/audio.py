@@ -35,8 +35,9 @@ class SphericalHarmonicSignal(Signal):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. (maxN is only supported up to 3rd order)
+        Normalization convention, either ``'n3d'``, ``'nm'``,
+        ``'maxN'``, ``'sn3d'``, or ``'snm'``.
+        (maxN is only supported up to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
@@ -108,9 +109,10 @@ class SphericalHarmonicSignal(Signal):
         self._basis_type = basis_type
 
         # set normalization
-        if normalization not in ["n3d", "maxN", "sn3d"]:
-            raise ValueError("Invalid normalization, has to be 'sn3d', "
-                             f"'n3d', or 'maxN', but is {normalization}")
+        if normalization not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
+            raise ValueError("Invalid normalization, has to be 'n3d', 'nm', "
+                             "'maxN', 'sn3d', or 'snm', "
+                             f"but is {normalization}")
         self._normalization = normalization
 
         # set channel_convention
