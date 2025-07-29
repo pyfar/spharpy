@@ -287,7 +287,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
                          "'nm', 'maxN', 'sn3d', or 'snm' "
                          f"but is {current_norm}")
 
-    if target_norm not in ["n3d", "maxN", "sn3d"]:
+    if target_norm not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
         raise ValueError("Invalid normalization. Has to be 'n3d', "
                          "'nm', 'maxN', 'sn3d', or 'snm' "
                          f"but is {target_norm}")
