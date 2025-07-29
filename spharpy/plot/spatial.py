@@ -760,6 +760,13 @@ def pcolor_map(
     **kwargs : optional
         Additional arguments passed to the tripcolor function.
 
+    Returns
+    -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
+    cf : matplotlib.tri.TriContourSet
+        The contour plot object.
+        
     Examples
     --------
 
@@ -792,8 +799,8 @@ def pcolor_map(
 
     if ax.name != projection:
         raise ValueError(
-            "Projection does not match the projection of the axis",
-            f"Needs to be '{projection}', but is '{ax.name}'")
+            f"The projection of the axis needs to be '{projection}'"
+            f", but is '{ax.name}'")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -821,7 +828,7 @@ def pcolor_map(
         cb = fig.colorbar(cf, ax=ax, extend=extend)
         cb.set_label('Amplitude')
 
-    return cf
+    return ax, cf
 
 
 def contour_map(
@@ -874,6 +881,8 @@ def contour_map(
 
     Returns
     -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
     cf : matplotlib.contour.QuadContourSet
         The contour plot object.
 
@@ -908,8 +917,8 @@ def contour_map(
 
     if ax.name != projection:
         raise ValueError(
-            "Projection does not match the projection of the axis",
-            f"Needs to be '{projection}', but is '{ax.name}'")
+            f"The projection of the axis needs to be '{projection}'"
+            f", but is '{ax.name}'")
 
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
@@ -939,7 +948,7 @@ def contour_map(
         cb = fig.colorbar(cf, ax=ax, ticks=levels)
         cb.set_label('Amplitude')
 
-    return cf
+    return ax, cf
 
 
 def contour(
@@ -979,6 +988,8 @@ def contour(
 
     Returns
     -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
     cf : matplotlib.contour.QuadContourSet
         The contour plot object.
 
@@ -1003,6 +1014,12 @@ def contour(
     fig = plt.gcf()
     if ax is None:
         ax = plt.gca()
+
+    if ax.name != 'rectilinear':
+        raise ValueError(
+            f"The projection of the axis needs to be 'rectilinear'"
+            f", but is '{ax.name}'")
+    
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 
@@ -1013,7 +1030,7 @@ def contour(
         cb = fig.colorbar(cf, ax=ax)
         cb.set_label('Amplitude')
 
-    return cf
+    return ax, cf
 
 
 class MidpointNormalize(colors.Normalize):

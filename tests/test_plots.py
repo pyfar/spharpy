@@ -266,30 +266,33 @@ def test_spherical_levels(function, levels):
         function(coords, data, levels='levels')
     
    
-@pytest.mark.parametrize('function', [
-    (sp.plot.balloon),
-    (sp.plot.balloon_wireframe),
-    (sp.plot.pcolor_sphere),
-    ]) 
-def test_axes_3d(function):
+@pytest.mark.parametrize('function,projection', [
+    (sp.plot.balloon, '3d'),
+    (sp.plot.balloon_wireframe, '3d'),
+    (sp.plot.pcolor_sphere, '3d'),
+    (sp.plot.contour, 'rectilinear'),
+    (sp.plot.contour_map, 'mollweide'),
+    (sp.plot.pcolor_map, 'mollweide'),
+    ])
+def test_axes_in_out(function, projection):
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     # do plotting
-    filename = f'axes_3d_{function.__name__}'
+    filename = f'axes_{function.__name__}_{projection}'
     create_figure()
-    ax = plt.axes(projection='3d')
+    ax = plt.axes(projection=projection)
 
     (ax_out, _) = function(coords, data, ax=ax)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
 
     # check if the returned axis is a 3D axis
-    assert ax_out.name == '3d'
+    assert ax_out.name == projection
 
     # test error for invalid inputs
-    match = "The projection of the axis needs to be '3d'"
+    match = f"The projection of the axis needs to be '{projection}'"
     with pytest.raises(ValueError, match=match):
-        function(coords, data, ax=plt.axes())
+        function(coords, data, ax=plt.axes(projection='polar'))
 
    
 @pytest.mark.parametrize('function', [
