@@ -78,7 +78,7 @@ def scatter(coordinates, ax=None):
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
 
     if not isinstance(coordinates, pf.Coordinates):
-        raise ValueError("coords must be a coordinates object.")
+        raise ValueError("coordinates must be a coordinates object.")
     
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
@@ -257,7 +257,7 @@ def pcolor_sphere(
 
     Parameters
     ----------
-    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -371,7 +371,7 @@ def balloon_wireframe(
 
     Parameters
     ----------
-    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -500,7 +500,7 @@ def balloon(
 
     Parameters
     ----------
-    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -740,7 +740,7 @@ def pcolor_map(
 
     Parameters
     ----------
-    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : numpy.ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -857,7 +857,7 @@ def contour_map(
 
     Parameters
     ----------
-    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
@@ -1106,7 +1106,7 @@ def _check_input_parameters(coordinates, data, cmap, colorbar, limits):
 
     Parameters
     ----------
-    coordinates :pyfar.Coordinates, spharpy.SamplingSphere
+    coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         Coordinates defining a sphere
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
