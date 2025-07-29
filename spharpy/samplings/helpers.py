@@ -4,7 +4,6 @@ Helper functions for coordinate operations.
 
 import numpy as np
 from scipy.spatial import cKDTree, SphericalVoronoi
-import pyfar as pf
 
 
 def coordinates2latlon(coordinates):
