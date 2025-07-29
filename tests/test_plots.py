@@ -241,12 +241,12 @@ def test_spherical_projection(function, projection):
 
 @pytest.mark.parametrize('function', [
     (sp.plot.contour_map),
-    # (sp.plot.contour),
+    (sp.plot.contour),
     ])
 @pytest.mark.parametrize('levels', [
-    (-0.5, 0, .5),
-    [-0.5, 0, .5],
-    np.array((-0.5, 0, .5)),
+    (-0.5, .5),
+    [-0.5, .5],
+    np.array((-0.5, .5)),
     ])
 def test_spherical_levels(function, levels):
     """Test all spherical plots with custom arguments."""
