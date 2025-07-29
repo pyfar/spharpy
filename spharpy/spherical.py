@@ -335,7 +335,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         if target_norm == "snm":
             data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
             data_renorm *= np.sqrt(4*np.pi)
-    
+
     if current_norm == 'nm':
         # convert to n3d
         data_renorm /= np.sqrt(4*np.pi)
