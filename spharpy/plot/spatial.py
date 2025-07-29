@@ -54,6 +54,10 @@ def scatter(coordinates, ax=None):
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
 
+    Returns
+    -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
 
     Examples
     --------
@@ -85,6 +89,8 @@ def scatter(coordinates, ax=None):
         np.ptp(coordinates.x),
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
+
+    return ax
 
 
 def _triangulation_sphere(sampling, data):
@@ -267,14 +273,17 @@ def pcolor_sphere(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
-    
+
     Returns
     -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
     plot : matplotlib.trisurf
-        The plot object of the trisurf plot.
+        The trisurf object created by the function.
 
     Examples
     --------
+
     .. plot::
 
         >>> import spharpy
@@ -336,7 +345,7 @@ def pcolor_sphere(
         np.ptp(coordinates.y),
         np.ptp(coordinates.z)])
 
-    return plot
+    return (ax, plot)
 
 
 def balloon_wireframe(
@@ -378,6 +387,13 @@ def balloon_wireframe(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
+
+    Returns
+    -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
+    plot : matplotlib.trisurf
+        The trisurf object created by the function.
 
     Examples
     --------
@@ -456,7 +472,7 @@ def balloon_wireframe(
 
     plot.set_facecolor([0.9, 0.9, 0.9, 0.9])
 
-    return plot
+    return (ax, plot)
 
 
 def balloon(
@@ -502,6 +518,13 @@ def balloon(
         will create a new axis object.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
+
+    Returns
+    -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
+    plot : matplotlib.trisurf
+        The trisurf object created by the function.
 
     Examples
     --------
@@ -567,7 +590,7 @@ def balloon(
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
 
-    return plot
+    return (ax, plot)
 
 
 def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
@@ -584,6 +607,10 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         The subplot axes to use for plotting. The used projection needs to be
         '3d'.
 
+    Returns
+    -------
+    ax : matplotlib.axis
+        The axis object used for plotting.
 
     Examples
     --------
@@ -635,6 +662,8 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
+
+    return ax
 
 
 def _combined_contour(x, y, data, limits, cmap, ax):

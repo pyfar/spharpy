@@ -265,4 +265,52 @@ def test_spherical_levels(function, levels):
     with pytest.raises(ValueError, match=match):
         function(coords, data, levels='levels')
     
-    
+   
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.pcolor_sphere),
+    ]) 
+def test_axes_3d(function):
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+    # do plotting
+    filename = f'axes_3d_{function.__name__}'
+    create_figure()
+    ax = plt.axes(projection='3d')
+
+    (ax_out, _) = function(coords, data, ax=ax)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+
+    # check if the returned axis is a 3D axis
+    assert ax_out.name == '3d'
+
+    # test error for invalid inputs
+    match = "The projection of the axis needs to be '3d'"
+    with pytest.raises(ValueError, match=match):
+        function(coords, data, ax=plt.axes())
+
+   
+@pytest.mark.parametrize('function', [
+    (sp.plot.scatter),
+    (sp.plot.voronoi_cells_sphere),
+    ]) 
+def test_scatter_axes3d(function):
+    coords = sp.samplings.equal_area(n_max=0, n_points=12)
+    # do plotting
+    filename = f'scatter_axes3d_{function.__name__}'
+    create_figure()
+    ax = plt.axes(projection='3d')
+
+    ax_out = function(coords, ax=ax)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+
+    # check if the returned axis is a 3D axis
+    assert ax_out.name == '3d'
+
+    # test error for invalid inputs
+    match = "The projection of the axis needs to be '3d'"
+    with pytest.raises(ValueError, match=match):
+        function(coords, ax=plt.axes())
