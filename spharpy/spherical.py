@@ -303,61 +303,27 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     shape[axis] = -1
 
     data_renorm = data.copy()
-    if current_norm == 'n3d':
-        if target_norm == "nm":
-            data_renorm *= np.sqrt(4*np.pi)
-        if target_norm == "sn3d":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-        if target_norm == "snm":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-            data_renorm *= np.sqrt(4*np.pi)
-        elif target_norm == "maxN":
-            data_renorm *= n3d_to_maxn(acn).reshape(shape)
-
-    if current_norm == 'sn3d':
-        if target_norm == "snm":
-            data_renorm *= np.sqrt(4*np.pi)
-        else:
-            # convert to n3d
-            data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
-            if target_norm == "nm":
-                data_renorm *= np.sqrt(4*np.pi)
-            if target_norm == "maxN":
-                data_renorm *= n3d_to_maxn(acn).reshape(shape)
-
-    if current_norm == 'maxN':
-        # convert to n3d
-        data_renorm /= n3d_to_maxn(acn).reshape(shape)
-        if target_norm == "nm":
-            data_renorm *= np.sqrt(4*np.pi)
-        if target_norm == "sn3d":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-        if target_norm == "snm":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-            data_renorm *= np.sqrt(4*np.pi)
-
+    # normalize to 'n3d'
     if current_norm == 'nm':
-        # convert to n3d
         data_renorm /= np.sqrt(4*np.pi)
-        if target_norm == "sn3d":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-        if target_norm == "snm":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-            data_renorm *= np.sqrt(4*np.pi)
-        if target_norm == "maxN":
-            data_renorm *= n3d_to_maxn(acn).reshape(shape)
-
+    if current_norm == 'sn3d':
+        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
     if current_norm == 'snm':
-        # convert so sn3d
+        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
         data_renorm /= np.sqrt(4*np.pi)
+    if current_norm == 'maxN':
+        data_renorm /= n3d_to_maxn(acn).reshape(shape)
 
-        if target_norm != "sn3d":
-            # convert so n3d
-            data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
-            if target_norm == "nm":
-                data_renorm *= np.sqrt(4*np.pi)
-            if target_norm == "maxN":
-                data_renorm *= n3d_to_maxn(acn).reshape(shape)
+    # convert to target norm
+    if target_norm == "nm":
+        data_renorm *= np.sqrt(4*np.pi)
+    if target_norm == "sn3d":
+        data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+    if target_norm == "snm":
+        data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+        data_renorm *= np.sqrt(4*np.pi)
+    if target_norm == 'maxN':
+        data_renorm *= n3d_to_maxn(acn).reshape(shape)
 
     return data_renorm
 
