@@ -1,5 +1,5 @@
 from pytest import raises
-from spharpy.classes.audio import SphericalHarmonicAudio
+from spharpy.classes.audio import _SphericalHarmonicAudio
 from spharpy.classes.audio import SphericalHarmonicTimeData
 from spharpy.classes.audio import SphericalHarmonicFrequencyData
 import numpy as np

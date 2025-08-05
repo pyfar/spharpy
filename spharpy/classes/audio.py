@@ -4,7 +4,7 @@ from spharpy.spherical import renormalize, change_channel_convention
 import numpy as np
 
 
-class SphericalHarmonicAudio(_Audio):
+class _SphericalHarmonicAudio(_Audio):
     """Base class for spherical harmonics audio objects.
 
     This class extends the pyfar Audio class with all methods and
@@ -51,7 +51,6 @@ class SphericalHarmonicAudio(_Audio):
     """
     def __init__(self, basis_type, normalization, channel_convention,
                  condon_shortley, domain, comment=""):
-        _Audio.__init__(self, domain=domain, comment=comment)
 
         # check dimensions
         if len(self._data.shape) < 3:
@@ -143,7 +142,7 @@ class SphericalHarmonicAudio(_Audio):
             self._channel_convention = value
 
 
-class SphericalHarmonicTimeData(SphericalHarmonicAudio, TimeData):
+class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     """
     Create spherical harmonic audio object with time domain spherical
     harmonic coefficients and times.
@@ -185,12 +184,12 @@ class SphericalHarmonicTimeData(SphericalHarmonicAudio, TimeData):
                  is_complex=False):
         TimeData.__init__(self, data=data, times=times, comment=comment,
                           is_complex=is_complex)
-        SphericalHarmonicAudio.__init__(
+        _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley, domain="time", comment=comment)
 
 
-class SphericalHarmonicFrequencyData(SphericalHarmonicAudio, FrequencyData):
+class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     """
     Create spherical harmonic audio object with frequency domain spherical
     harmonic coefficients and frequencies.
@@ -230,12 +229,12 @@ class SphericalHarmonicFrequencyData(SphericalHarmonicAudio, FrequencyData):
                  channel_convention, condon_shortley, comment=""):
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
                                comment=comment)
-        SphericalHarmonicAudio.__init__(
+        _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley, domain="time", comment=comment)
+            condon_shortley, domain="freq", comment=comment)
 
 
-class SphericalHarmonicSignal(SphericalHarmonicAudio, Signal):
+class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     """Create audio object with spherical harmonics coefficients in time or
     frequency domain.
 
@@ -317,6 +316,6 @@ class SphericalHarmonicSignal(SphericalHarmonicAudio, Signal):
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)
-        SphericalHarmonicAudio.__init__(
+        _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley, domain="time", comment=comment)
+            condon_shortley, domain=domain, comment=comment)
