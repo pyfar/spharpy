@@ -173,8 +173,9 @@ def test_quadrature_getter_changing_points():
     # check if quadrature is set properly
     assert sampling.quadrature
     # update points such that quadrature is not valid anymore
+    rng = np.random.default_rng()
     sampling.spherical_colatitude = np.concatenate([
-        np.random.rand(sampling.csize, 1),
+        rng.random((sampling.csize, 1)),
         np.ones((sampling.csize, 1)),
         np.ones((sampling.csize, 1))], axis=1)
     assert not sampling.quadrature

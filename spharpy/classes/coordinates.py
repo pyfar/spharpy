@@ -161,8 +161,8 @@ class SamplingSphere(pf.Coordinates):
     @classmethod
     def from_spherical_elevation(
             cls, azimuth, elevation, radius, n_max=None,
-            weights: np.array = None, quadrature: bool = False,
-            comment: str = "", radius_tolerance: float = 1e-6,
+            weights: np.array = None, comment: str = "",
+            radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
         r"""Create a Coordinates class object from a set of points on a sphere.
 
