@@ -283,12 +283,12 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
                          f"or 'fuma', but is {channel_convention}")
 
     if current_norm not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
-        raise ValueError("Invalid normalization. Has to be 'n3d', "
+        raise ValueError("Invalid current normalization. Has to be 'n3d', "
                          "'nm', 'maxN', 'sn3d', or 'snm' "
                          f"but is {current_norm}")
 
     if target_norm not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
-        raise ValueError("Invalid normalization. Has to be 'n3d', "
+        raise ValueError("Invalid target normalization. Has to be 'n3d', "
                          "'nm', 'maxN', 'sn3d', or 'snm' "
                          f"but is {target_norm}")
     acn = np.arange(data.shape[axis])

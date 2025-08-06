@@ -17,14 +17,14 @@ def test_renormalize_errors():
                        'n3d', axis=0)
 
     # test current norm
-    with raises(ValueError, match="Invalid normalization. Has to be 'n3d', "
-                                  "'nm', 'maxN', 'sn3d', or 'snm' "
+    with raises(ValueError, match="Invalid current normalization. Has to be "
+                                  "'n3d', 'nm', 'maxN', 'sn3d', or 'snm' "
                                   "but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', 'wrong_norm', 'n3d', axis=0)
 
     # test target norm
-    with raises(ValueError, match="Invalid normalization. Has to be 'n3d', "
-                                  "'nm', 'maxN', 'sn3d', or 'snm' "
+    with raises(ValueError, match="Invalid target normalization. Has to be "
+                                  "'n3d', 'nm', 'maxN', 'sn3d', or 'snm' "
                                   "but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', 'n3d', 'wrong_norm', axis=0)
 
