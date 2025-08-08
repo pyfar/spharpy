@@ -107,7 +107,7 @@ lint.select = [
     "NPY",    # Check all numpy related deprecations
     "D417",   # Missing argument descriptions in the docstring
     # "PT",     # Pytest style
-    # "A",      # Avoid builtin function and type shadowing
+    "A",      # Avoid builtin function and type shadowing
     # "ERA",    # No commented out code
     "NPY",    # Check all numpy related deprecations
     # "COM",    # trailing comma rules

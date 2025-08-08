@@ -245,13 +245,13 @@ class RotationSH(Rotation):
             raise ValueError("The order needs to be a positive value.")
         self._n_max = value
 
-    def as_spherical_harmonic(self, type='real'):
+    def as_spherical_harmonic(self, basis_type='real'):
         """Export the rotation operations as a spherical harmonic rotation
         matrices. Supports complex and real-valued spherical harmonics.
 
         Parameters
         ----------
-        real : string, optional
+        basis_type : string, optional
             Spherical harmonic definition. Can either be 'complex' or 'real',
             by default 'real' is used.
 
@@ -264,14 +264,15 @@ class RotationSH(Rotation):
         n_matrices = euler_angles.shape[0]
 
         n_sh = (self.n_max+1)**2
-        if type == 'real':
+        if basis_type == 'real':
             dtype = float
             rot_func = wigner_d_rotation_real
-        elif type == 'complex':
+        elif basis_type == 'complex':
             dtype = complex
             rot_func = wigner_d_rotation
         else:
-            raise ValueError("Invalid spherical harmonic type {}".format(type))
+            raise ValueError(
+                "Invalid spherical harmonic type {}".format(basis_type))
 
         D = np.zeros((n_matrices, n_sh, n_sh), dtype=dtype)
 
@@ -281,7 +282,7 @@ class RotationSH(Rotation):
 
         return np.squeeze(D)
 
-    def apply(self, coefficients, type='real'):
+    def apply(self, coefficients, basis_type='real'):
         """Apply the rotation to L sets of spherical harmonic coefficients.
 
         Parameters
@@ -289,13 +290,16 @@ class RotationSH(Rotation):
         coefficients : array, complex, shape :math:`((n_max+1)^2, L)`
             L sets of spherical harmonic coefficients with a respective order
             :math:`((n_max+1)^2`
+        basis_type : string, optional
+            Spherical harmonic definition. Can either be 'complex' or 'real',
+            by default 'real' is used.
 
         Returns
         -------
         array, complex
             The rotated data
         """
-        D = self.as_spherical_harmonic(type=type)
+        D = self.as_spherical_harmonic(basis_type=basis_type)
         if D.ndim > 2:
             M = np.diag(np.ones((self.n_max+1)**2))
             for d in D:
