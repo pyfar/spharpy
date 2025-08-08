@@ -14,12 +14,11 @@ def make_coordinates():
 
             if implementation == 'pyfar':
                 return pf.Coordinates(
-                    phi, theta, rad, domain='sph', convention='top_colat'
-                )
+                    phi, theta, rad, domain='sph', convention='top_colat')
             elif implementation == 'spharpy':
                 return SamplingSphere.from_spherical_colatitude(
                     phi, theta, rad)
-    yield Factory
+    return Factory
 
 
 @pytest.fixture

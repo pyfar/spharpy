@@ -24,6 +24,12 @@ class RotationSH(Rotation):
             norm.
         n_max : int
             The spherical harmonic order
+        *args : optional
+            Arguments are passed to
+            :py:class:`~scipy.spatial.transform.Rotation`
+        **kwargs : optional
+            Keyword arguments are passed to
+            :py:class:`~scipy.spatial.transform.Rotation`
 
         Returns
         -------
@@ -57,6 +63,14 @@ class RotationSH(Rotation):
         degrees : bool, optional
             Specify if rotation angles are defined in degrees instead of
             radians, by default False.
+        *args : optional
+            Arguments are passed to
+            :py:meth:`Rotation.from_rotvec
+            <scipy.spatial.transform.Rotation.from_rotvec>`
+        **kwargs : optional
+            Keyword arguments are passed to
+            :py:meth:`Rotation.from_rotvec
+            <scipy.spatial.transform.Rotation.from_rotvec>`
 
         Returns
         -------
@@ -125,6 +139,10 @@ class RotationSH(Rotation):
         degrees : bool, optional
             If True, then the given angles are assumed to be in degrees.
             Default is ``False``.
+        **kwargs : optional
+            Keyword arguments are passed to
+            :py:meth:`Rotation.from_euler
+            <scipy.spatial.transform.Rotation.from_euler>`
 
         Returns
         -------
@@ -162,6 +180,10 @@ class RotationSH(Rotation):
             Each row is a (possibly non-unit norm) quaternion in scalar-last
             (x, y, z, w) format. Each quaternion will be normalized to unit
             norm.
+        **kwargs : optional
+            Keyword arguments are passed to
+            :py:meth:`Rotation.from_quat
+            <scipy.spatial.transform.Rotation.from_quat>`
 
         Returns
         -------
@@ -197,6 +219,10 @@ class RotationSH(Rotation):
         matrix : (array_like, shape (N, 3, 3) or (3, 3))
             A single matrix or a stack of matrices, where ``matrix[i]`` is
             the i-th matrix.
+        **kwargs : optional
+            Keyword arguments are passed to
+            :py:meth:`Rotation.from_matrix
+            <scipy.spatial.transform.Rotation.from_matrix>`
 
         Returns
         -------
@@ -254,6 +280,9 @@ class RotationSH(Rotation):
         basis_type : string, optional
             Spherical harmonic definition. Can either be 'complex' or 'real',
             by default 'real' is used.
+        type : str, optional
+            Type of spherical harmonic basis, either ``'complex'`` or
+            ``'real'``. The default is ``'real'``.
 
         Returns
         -------

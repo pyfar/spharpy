@@ -144,7 +144,7 @@ def test_RotationSH():
     assert rot._n_max == n_max
     assert rot.n_max == n_max
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='order needs to be a positive value'):
         rot.n_max = -1
 
     D_Rot = rot.as_spherical_harmonic(basis_type='real')
@@ -185,9 +185,3 @@ def test_RotationSH():
     np.testing.assert_allclose(
         rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-7)
-
-    # mrp = [0, 0, np.tan(np.pi/2/4)]
-    # rot = RotationSH.from_mrp(n_max, mrp)
-    # np.testing.assert_allclose(
-    #     rot.as_spherical_harmonic(type='real'),
-    #     reference, atol=1e-7)
