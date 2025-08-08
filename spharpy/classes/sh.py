@@ -6,6 +6,117 @@ import pyfar as pf
 import spharpy as sy
 
 
+class SphericalHarmonicDefinition:
+    """Class storing the definition of spherical harmonics.
+
+    Attributes
+    ----------
+    condon_shortley : bool
+        Condon-Shortley phase term.
+    basis_type : str
+        Type of spherical harmonic basis, either 'real' or 'complex'.
+    channel_convention : str
+        Channel ordering convention, either 'acn' or 'fuma'.
+    normalization : str
+        Normalization convention, either 'n3d', 'maxN', or 'sn3d'.
+    """
+
+    def __init__(
+            self,
+            basis_type="real",
+            channel_convention="acn",
+            normalization="n3d",
+            condon_shortley="auto",
+        ):
+        self.condon_shortley = condon_shortley
+        self.basis_type = basis_type
+        self.channel_convention = channel_convention
+        self.normalization = normalization
+
+    @property
+    def condon_shortley(self):
+        """Get or set the Condon-Shortley phase term."""
+        return self._condon_shortley
+
+    @condon_shortley.setter
+    def condon_shortley(self, value):
+        """Get or set the Condon-Shortley phase term."""
+        if isinstance(value, str):
+            if value != 'auto':
+                raise ValueError(
+                    "condon_shortley must be a bool or the string 'auto'")
+            # If basis_type hasn't been set yet, assume "complex" by default,
+            # but in practice __init__ sets basis_type before condon_shortley.
+            if self.basis_type == "complex":
+                resolved = True
+            else:
+                resolved = False
+            value = resolved
+        elif not isinstance(value, bool):
+            raise TypeError(
+                "condon_shortley must be a bool or the string 'auto'")
+        if value != self._condon_shortley:
+            self._reset_compute_attributes()
+        self._condon_shortley = value
+
+    @property
+    def basis_type(self):
+        """The type of spherical harmonic basis. Can be ``'complex'`` or
+        ``'real'``.
+        """
+        return self._basis_type
+
+    @basis_type.setter
+    def basis_type(self, value):
+        """The type of spherical harmonic basis. Can be ``'complex'`` or
+        ``'real'``.
+        """
+        if value not in ["complex", "real"]:
+            raise ValueError("Invalid basis type, only "
+                             "'complex' and 'real' are supported")
+        if value != self._basis_type:
+            self._basis_type = value
+
+    @property
+    def channel_convention(self):
+        """Get or set the channel ordering convention."""
+        return self._channel_convention
+
+    @channel_convention.setter
+    def channel_convention(self, value):
+        """Get or set the channel order convention."""
+        if value not in ["acn", "fuma"]:
+            raise ValueError("Invalid channel convention, "
+                             "currently only 'acn' "
+                             "and 'fuma' are supported")
+        if value == "fuma" and self.n_max > 3:
+            raise ValueError("n_max > 3 is not allowed with 'fuma' " \
+                            "channel convention")
+        if value != self._channel_convention:
+            self._reset_compute_attributes()
+            self._channel_convention = value
+
+    @property
+    def normalization(self):
+        """Get or set the normalization convention."""
+        return self._normalization
+
+    @normalization.setter
+    def normalization(self, value):
+        """Get or set the normalization convention."""
+        if value not in ["n3d", "maxN", "sn3d"]:
+            raise ValueError(
+                "Invalid normalization, "
+                "currently only 'n3d', 'maxN', 'sn3d' are "
+                "supported")
+        if value == "maxN" and self.n_max > 3:
+            raise ValueError("n_max > 3 is not allowed with " \
+                            "'maxN' normalization")
+        if value != self._normalization:
+            self._reset_compute_attributes()
+            self._normalization = value
+
+
 class SphericalHarmonics:
     r"""
     Compute spherical harmonic basis matrices, their inverses, and gradients.
