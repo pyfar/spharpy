@@ -1044,14 +1044,14 @@ def sid_to_acn(n_max):
     return np.argsort(linear_sid)
 
 
-def sph_identity_matrix(n_max, type='n-nm'):
+def sph_identity_matrix(n_max, matrix_type='n-nm'):
     """Calculate a spherical harmonic identity matrix.
 
     Parameters
     ----------
     n_max : int
         The spherical harmonic order.
-    type : str, optional
+    matrix_type : str, optional
         The type of identity matrix. Currently only 'n-nm' is implemented.
 
     Returns
@@ -1067,7 +1067,7 @@ def sph_identity_matrix(n_max, type='n-nm'):
     >>> import spharpy
     >>> import matplotlib.pyplot as plt
     >>> n_max = 2
-    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+    >>> E = spharpy.spherical.sph_identity_matrix(n_max, matrix_type='n-nm')
     >>> a_n = [1, 2, 3]
     >>> a_nm = E.T @ a_n
     >>> a_nm
@@ -1080,14 +1080,14 @@ def sph_identity_matrix(n_max, type='n-nm'):
         >>> import spharpy
         >>> import matplotlib.pyplot as plt
         >>> n_max = 2
-        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+        >>> E = spharpy.spherical.sph_identity_matrix(n_max, matrix_type='n-nm')
         >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
         >>> plt.gca().set_aspect('equal')
 
-    """
+    """  # noqa: E501
     n_sh = (n_max+1)**2
 
-    if type != 'n-nm':
+    if matrix_type != 'n-nm':
         raise NotImplementedError
 
     identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)
