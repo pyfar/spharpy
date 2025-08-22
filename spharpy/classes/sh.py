@@ -55,8 +55,6 @@ class SphericalHarmonicDefinition:
         elif not isinstance(value, bool):
             raise TypeError(
                 "condon_shortley must be a bool or the string 'auto'")
-        if value != self._condon_shortley:
-            self._reset_compute_attributes()
         self._condon_shortley = value
 
     @property
@@ -74,8 +72,7 @@ class SphericalHarmonicDefinition:
         if value not in ["complex", "real"]:
             raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
-        if value != self._basis_type:
-            self._basis_type = value
+        self._basis_type = value
 
     @property
     def channel_convention(self):
@@ -92,9 +89,7 @@ class SphericalHarmonicDefinition:
         if value == "fuma" and self.n_max > 3:
             raise ValueError("n_max > 3 is not allowed with 'fuma' " \
                             "channel convention")
-        if value != self._channel_convention:
-            self._reset_compute_attributes()
-            self._channel_convention = value
+        self._channel_convention = value
 
     @property
     def normalization(self):
@@ -112,12 +107,10 @@ class SphericalHarmonicDefinition:
         if value == "maxN" and self.n_max > 3:
             raise ValueError("n_max > 3 is not allowed with " \
                             "'maxN' normalization")
-        if value != self._normalization:
-            self._reset_compute_attributes()
-            self._normalization = value
+        self._normalization = value
 
 
-class SphericalHarmonics:
+class SphericalHarmonics(SphericalHarmonicDefinition):
     r"""
     Compute spherical harmonic basis matrices, their inverses, and gradients.
 
@@ -272,31 +265,13 @@ class SphericalHarmonics:
         self.condon_shortley = condon_shortley
 
     # Properties
-    @property
-    def condon_shortley(self):
-        """Get or set the Condon-Shortley phase term."""
-        return self._condon_shortley
 
-    @condon_shortley.setter
+    @SphericalHarmonicDefinition.condon_shortley.setter
     def condon_shortley(self, value):
         """Get or set the Condon-Shortley phase term."""
-        if isinstance(value, str):
-            if value != 'auto':
-                raise ValueError(
-                    "condon_shortley must be a bool or the string 'auto'")
-            # If basis_type hasn't been set yet, assume "complex" by default,
-            # but in practice __init__ sets basis_type before condon_shortley.
-            if self.basis_type == "complex":
-                resolved = True
-            else:
-                resolved = False
-            value = resolved
-        elif not isinstance(value, bool):
-            raise TypeError(
-                "condon_shortley must be a bool or the string 'auto'")
+        super(__class__, SphericalHarmonics).condon_shortley.fset(self, value)
         if value != self._condon_shortley:
             self._reset_compute_attributes()
-        self._condon_shortley = value
 
     @property
     def n_max(self):
@@ -339,20 +314,12 @@ class SphericalHarmonics:
             self._reset_compute_attributes()
             self._coordinates = value
 
-    @property
-    def basis_type(self):
-        """Get or set the type of spherical harmonic basis."""
-        return self._basis_type
-
-    @basis_type.setter
+    @SphericalHarmonicDefinition.basis_type.setter
     def basis_type(self, value):
         """Get or set the type of spherical harmonic basis."""
-        if value not in ["complex", "real"]:
-            raise ValueError("Invalid basis type, only "
-                             "'complex' and 'real' are supported")
+        super(__class__, SphericalHarmonics).basis_type.fset(self, value)
         if value != self._basis_type:
             self._reset_compute_attributes()
-            self._basis_type = value
 
     @property
     def inverse_method(self):
@@ -388,45 +355,20 @@ class SphericalHarmonics:
             self._reset_compute_attributes()
             self._inverse_method = value
 
-    @property
-    def channel_convention(self):
-        """Get or set the channel ordering convention."""
-        return self._channel_convention
-
-    @channel_convention.setter
+    @SphericalHarmonicDefinition.channel_convention.setter
     def channel_convention(self, value):
         """Get or set the channel order convention."""
-        if value not in ["acn", "fuma"]:
-            raise ValueError("Invalid channel convention, "
-                             "currently only 'acn' "
-                             "and 'fuma' are supported")
-        if value == "fuma" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with 'fuma' " \
-                            "channel convention")
+        super(__class__, SphericalHarmonics).channel_convention.fset(
+            self, value)
         if value != self._channel_convention:
             self._reset_compute_attributes()
-            self._channel_convention = value
 
-    @property
-    def normalization(self):
-        """Get or set the normalization convention."""
-        return self._normalization
-
-    @normalization.setter
+    @SphericalHarmonicDefinition.normalization.setter
     def normalization(self, value):
         """Get or set the normalization convention."""
-        if value not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
-            raise ValueError(
-                "Invalid normalization, "
-                "currently only 'N3D', 'NM', 'maxN', 'SN3D', 'SNM' are "
-                "supported",
-            )
-        if value == "maxN" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with "
-                             "'maxN' normalization")
+        super(__class__, SphericalHarmonics).normalization.fset(self, value)
         if value != self._normalization:
             self._reset_compute_attributes()
-            self._normalization = value
 
     @property
     def basis(self):
