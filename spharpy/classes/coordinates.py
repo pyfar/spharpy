@@ -574,7 +574,7 @@ class SamplingSphere(pf.Coordinates):
         """
         if self.n_max is None or self.weights is None:
             return False
-        # generate SH object
+        # create basis matrix
         sh_basis = spherical_harmonic_basis_real(self.n_max, self)
 
         # test if basis is quadrature
