@@ -258,7 +258,7 @@ def pcolor_sphere(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
-    
+
     Returns
     -------
     plot : matplotlib.trisurf

@@ -1,4 +1,4 @@
-"""Wave field representations in the spatial domain."""  
+"""Wave field representations in the spatial domain."""
 import numpy as np
 import scipy.spatial as sspat
 
@@ -131,12 +131,15 @@ def greens_function_point_source(sources, receivers, k, gradient=False):
 
     Parameters
     ----------
-    source : :py:class:`pyfar.Coordinates`
+    sources : :py:class:`pyfar.Coordinates`
         source points as Coordinates object
     receivers : :py:class:`pyfar.Coordinates`
         receiver points as Coordinates object
     k : ndarray, float
         The wave number
+    gradient : bool, optional
+        Flag to indicate if the gradient should be computed and returned. The
+        default is ``False``.
 
     Returns
     -------

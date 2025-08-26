@@ -86,12 +86,10 @@ def point_set_polar(dimension, N):
     if dimension == 1:
         points_s = a_cap - np.pi/N
     else:
-        # import ipdb; ipdb.set_trace()
         n_collars = np.size(n_regions) - 2
 
         points_s = np.zeros((dimension, N))
         point_n = 2
-        # points = np.zeros((dimension, N))
 
         offset = 0
 
@@ -105,21 +103,11 @@ def point_set_polar(dimension, N):
             # n_in_collar is the number of regions in the current collar.
             n_in_collar = n_regions[collar_n+1]
 
-            # if use_cache:
-            #     twin_collar_n = n_collars - collar_n
-            #
-            #     # if twin_collar_n <= cache_size && ...
-            #     #     size(cache{twin_collar_n},2) == n_in_collar
-            #     #     points_1 = cache{twin_collar_n};
-            #     # else
-            #     points_l = point_set_polar(dimension - 1, n_in_collar)
-            # else:
             points_l = point_set_polar(dimension - 1, n_in_collar)
 
             a_point = (a_top + a_bot)/2
 
             point_l_n = np.arange(0, np.size(points_l), dtype=int)
-            # points_l = points_l[np.newaxis]
 
             if dimension == 2:
                 points_s[0:dimension-1, point_n+point_l_n-1] = \
@@ -131,10 +119,7 @@ def point_set_polar(dimension, N):
                 points_s[0:dimension-2, point_n+point_l_n-1] = \
                     points_l[:, point_l_n]
 
-            # import ipdb; ipdb.set_trace()
-
             points_s[dimension-1, point_n+point_l_n-1] = a_point
-            # point_n = point_n + points_l.shape[1]
             point_n += np.size(points_l)
 
         points_s[:, -1] = np.zeros(dimension)
@@ -221,8 +206,6 @@ def polar_colat(dimension, N):
     colatitude : double
         The colatitude angle of the top cap.
     """
-    # enough = N > 2
-    # c_polar = np.empty()
     if N == 1:
         c_polar = np.pi
     elif N == 2:
@@ -251,7 +234,12 @@ def ideal_region_list(dimension, N, c_polar, n_collars):
         The dimension
     N : int
         The number of points
-    c_polar :
+    c_polar : float
+        The colatitude angle of the polar caps in radians. This defines the
+        angular boundary between the north/south polar caps and the collar
+        region. The north polar cap extends from 0 to c_polar, the collar
+        region spans from c_polar to (π - c_polar), and the south polar cap
+        extends from (π - c_polar) to π. Must be in the range [0, π/2].
     n_collars : int
         The number of collar elements
 
@@ -469,6 +457,7 @@ def area_of_sphere(dimension):
     Parameters
     ----------
     dimension : int
+        Dimension of the sphere.
 
     Returns
     -------

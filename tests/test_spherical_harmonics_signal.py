@@ -1,4 +1,4 @@
-from pytest import raises
+import pytest
 from spharpy.classes import SphericalHarmonicSignal
 import numpy as np
 import re
@@ -54,9 +54,9 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                      [1., 2., 3.]])
 
     # test if dimension of data is < 3
-    with raises(ValueError,
-                match="Invalid number of dimensions. Data should have "
-                      "at least 3 dimensions."):
+    with pytest.raises(ValueError,
+                       match="Invalid number of dimensions. Data should have "
+                             "at least 3 dimensions."):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -69,10 +69,10 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 5, 3)
 
-    with raises(ValueError,
-                match=re.escape("Invalid number of SH channels: "
-                                f"{data.shape[-2]}. It must match "
-                                "(n_max + 1)^2.")):
+    with pytest.raises(ValueError,
+                       match=re.escape("Invalid number of SH channels: "
+                                       f"{data.shape[-2]}. It must match "
+                                       "(n_max + 1)^2.")):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -111,7 +111,7 @@ def test_init_wrong_basis_type():
                      [1., 2., 3.],
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
-    with raises(ValueError,
+    with pytest.raises(ValueError,
                 match="Invalid basis type, only "
                       "'complex' and 'real' are supported"):
         SphericalHarmonicSignal(data,
@@ -141,10 +141,9 @@ def test_init_wrong_normalization():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
-    with raises(ValueError,
-                match="Invalid normalization, has to be 'n3d', 'nm', "
-                      "'maxN', 'sn3d', or 'snm', "
-                      "but is invalid_normalization"):
+    with pytest.raises(ValueError,
+                       match="Invalid normalization, has to be 'sn3d', "
+                             "'n3d', or 'maxN', but is invalid_normalization"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -184,9 +183,9 @@ def test_init_wrong_channel_convention():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
-    with raises(ValueError,
-                match="Invalid channel convention, has to be 'acn' "
-                      "or 'fuma', but is invalid_convention"):
+    with pytest.raises(ValueError,
+                       match="Invalid channel convention, has to be 'acn' "
+                             "or 'fuma', but is invalid_convention"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='invalid_convention',

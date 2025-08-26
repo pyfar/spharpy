@@ -3,8 +3,6 @@
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-import pyfar as pf
-import spharpy as sy
 
 
 def acn_to_nm(acn):
@@ -19,6 +17,17 @@ def acn_to_nm(acn):
 
         m = \mathrm{acn} - n^2 -n
 
+    Parameters
+    ----------
+    acn : ndarray, int
+        Linear index
+
+    Returns
+    -------
+    n : ndarray, int
+        Spherical harmonic order
+    m : ndarray, int
+        Spherical harmonic degree
 
     References
     ----------
@@ -26,20 +35,6 @@ def acn_to_nm(acn):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
-
-
-    Parameters
-    ----------
-    acn : ndarray, int
-        Linear index
-
-    Parameters
-    ----------
-    n : ndarray, int
-        Spherical harmonic order
-    m : ndarray, int
-        Spherical harmonic degree
-
     """
     acn = np.asarray(acn, dtype=int)
 
@@ -128,9 +123,7 @@ def nm_to_fuma(n, m):
     acn = nm_to_acn(n, m)
 
     if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
-        raise ValueError(
-            "nm2fuma only supports up to 3rd order"
-        )
+        raise ValueError("nm2fuma only supports up to 3rd order")
 
     acn = np.atleast_2d(acn).T
     fuma = np.array([], dtype=int)
@@ -175,8 +168,7 @@ def fuma_to_nm(fuma):
     if np.any(fuma) < 0 or np.any(fuma >= len(fuma_mapping)):
         raise ValueError(
             "Invalid FuMa channel index, must be between 0 and 15 "
-            "(supported up to 3rd order)"
-        )
+            "(supported up to 3rd order)")
 
     acn = np.array([], dtype=int)
     for f in fuma:
@@ -581,8 +573,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
             n, m = acn_to_nm(acn)
 
         grad_theta[:, acn] = _special.spherical_harmonic_derivative_theta(
-            n, m, theta, phi
-        )
+            n, m, theta, phi)
         grad_phi[:, acn] = _special.spherical_harmonic_gradient_phi(
             n, m, theta, phi)
 
@@ -918,9 +909,9 @@ def aperture_vibrating_spherical_cap(
     ----------
     n_max : integer, ndarray
         Maximal spherical harmonic order
-    r_sphere : double, ndarray
+    rad_sphere : double, ndarray
         Radius of the sphere
-    r_cap : double
+    rad_cap : double
         Radius of the vibrating cap
 
     Returns
@@ -1091,14 +1082,14 @@ def sid_to_acn(n_max):
     return np.argsort(linear_sid)
 
 
-def sph_identity_matrix(n_max, type='n-nm'):
+def sph_identity_matrix(n_max, matrix_type='n-nm'):
     """Calculate a spherical harmonic identity matrix.
 
     Parameters
     ----------
     n_max : int
         The spherical harmonic order.
-    type : str, optional
+    matrix_type : str, optional
         The type of identity matrix. Currently only 'n-nm' is implemented.
 
     Returns
@@ -1114,7 +1105,7 @@ def sph_identity_matrix(n_max, type='n-nm'):
     >>> import spharpy
     >>> import matplotlib.pyplot as plt
     >>> n_max = 2
-    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+    >>> E = spharpy.spherical.sph_identity_matrix(n_max, matrix_type='n-nm')
     >>> a_n = [1, 2, 3]
     >>> a_nm = E.T @ a_n
     >>> a_nm
@@ -1127,14 +1118,14 @@ def sph_identity_matrix(n_max, type='n-nm'):
         >>> import spharpy
         >>> import matplotlib.pyplot as plt
         >>> n_max = 2
-        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+        >>> E = spharpy.spherical.sph_identity_matrix(n_max, matrix_type='n-nm')
         >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
         >>> plt.gca().set_aspect('equal')
 
-    """
+    """  # noqa: E501
     n_sh = (n_max+1)**2
 
-    if type != 'n-nm':
+    if matrix_type != 'n-nm':
         raise NotImplementedError
 
     identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)

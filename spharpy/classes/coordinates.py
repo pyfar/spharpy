@@ -14,7 +14,7 @@ It also adds two additional properties:
 
 - :py:attr:`~spharpy.SamplingSphere.n_max`: the maximum spherical harmonic
   order of the sampling grid.
-- :py:attr:`~spharpy.SamplingSphere.quadrature`: a flag that indicates if 
+- :py:attr:`~spharpy.SamplingSphere.quadrature`: a flag that indicates if
   the points belong to a quadrature, which requires that the
   :py:attr:`~spharpy.SamplingSphere.weights` sum to :math:`4 \pi` and
   the inner product of the Spherical Harmonics matrix :math:`\mathrm{Y}`

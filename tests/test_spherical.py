@@ -1,7 +1,7 @@
 """
 Tests renormalization and change channel convention methods.
 """
-from pytest import raises, mark
+import pytest
 import numpy as np
 import spharpy.spherical as sh
 import re
@@ -11,26 +11,28 @@ def test_renormalize_errors():
     sh_data = np.ones((4, 2))
 
     # test channel convention
-    with raises(ValueError,
-                match="Invalid channel convention. Has to be 'acn' "
-                      "or 'fuma', but is wrong_channel_convention"):
+    with pytest.raises(ValueError, match="Invalid channel convention. Has to "
+                                         "be 'acn' or 'fuma', but is "
+                                         "wrong_channel_convention"):
         sh.renormalize(sh_data, 'wrong_channel_convention', 'maxN',
                        'n3d', axis=0)
 
     # test current norm
-    with raises(ValueError, match="Invalid current normalization. Has to be "
-                                  "'n3d', 'nm', 'maxN', 'sn3d', or 'snm' "
-                                  "but is wrong_norm"):
+    with pytest.raises(ValueError,
+                       match="Invalid current normalization. Has to be "
+                             "'n3d', 'nm', 'maxN', 'sn3d', or 'snm' "
+                             "but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', 'wrong_norm', 'n3d', axis=0)
 
     # test target norm
-    with raises(ValueError, match="Invalid target normalization. Has to be "
-                                  "'n3d', 'nm', 'maxN', 'sn3d', or 'snm' "
-                                  "but is wrong_norm"):
+    with pytest.raises(ValueError,
+                       match="Invalid target normalization. Has to be "
+                             "'n3d', 'nm', 'maxN', 'sn3d', or 'snm' "
+                             "but is wrong_norm"):
         sh.renormalize(sh_data, 'acn', 'n3d', 'wrong_norm', axis=0)
 
 
-@mark.parametrize("channel_convention", ['acn', 'fuma'])
+@pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
 def test_renormalize(channel_convention):
     sh_data = np.ones((4, 2))
 
@@ -136,22 +138,24 @@ def test_renormalize(channel_convention):
 
 def test_renormalize_wrong_channel_number():
     sh_data = np.ones((5, 2))
-    with raises(ValueError,
-                match=re.escape("Invalid number of SH channels: 5. "
-                                "It must match (n_max + 1)^2.")):
+    with pytest.raises(
+        ValueError, match=re.escape("Invalid number of SH channels: 5. "
+                                    "It must match (n_max + 1)^2.")):
         sh.renormalize(sh_data, 'acn', 'n3d', 'maxN', axis=0)
 
 
 def test_change_channel_convention_errors():
     sh_data = np.ones((4, 2))
     # test current channel convention
-    with raises(ValueError, match="Invalid current channel convention. Has to "
-                                  "be 'acn' or 'fuma', but is wrong"):
+    with pytest.raises(
+            ValueError, match="Invalid current channel convention. Has to "
+            "be 'acn' or 'fuma', but is wrong"):
         sh.change_channel_convention(sh_data, 'wrong', 'fuma', axis=0)
 
     # test target channel convention
-    with raises(ValueError, match="Invalid target channel convention. Has to "
-                                  "be 'acn' or 'fuma', but is wrong"):
+    with pytest.raises(
+            ValueError, match="Invalid target channel convention. Has to "
+            "be 'acn' or 'fuma', but is wrong"):
         sh.change_channel_convention(sh_data, 'fuma', 'wrong', axis=0)
 
 

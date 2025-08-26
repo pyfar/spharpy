@@ -1,6 +1,5 @@
 """Tests for coordinate transforms."""
 
-import pytest
 import numpy as np
 import pyfar as pf
 import spharpy.samplings as samplings

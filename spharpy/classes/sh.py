@@ -288,8 +288,7 @@ class SphericalHarmonics:
         if value not in ["acn", "fuma"]:
             raise ValueError("Invalid channel convention, "
                              "currently only 'acn' "
-                             "and 'fuma' are supported"
-                             )
+                             "and 'fuma' are supported")
         if value == "fuma" and self.n_max > 3:
             raise ValueError("n_max > 3 is not allowed with 'fuma' " \
                             "channel convention")
@@ -349,8 +348,7 @@ class SphericalHarmonics:
             function = sy.spherical.spherical_harmonic_basis_real
         else:
             raise ValueError(
-                "Invalid basis type, should be either 'complex' or 'real'"
-            )
+                "Invalid basis type, should be either 'complex' or 'real'")
         self._basis = function(
             self.n_max, self.coordinates,
             self.normalization, self.channel_convention)
@@ -360,15 +358,12 @@ class SphericalHarmonics:
         Compute the gradient of the basis matrix for the SphericalHarmonics
         class.
         """
-        if any(
-            (self.normalization in ["maxN", "sn3d"],
-             self.channel_convention == "fuma")
-        ):
+        if any((self.normalization in ["maxN", "sn3d"],
+                self.channel_convention == "fuma")):
             raise ValueError(
             f"Gradient computation not supported for normalization "
             f"'{self.normalization}' and "
-            f"channel convention '{self.channel_convention}'."
-            )
+            f"channel convention '{self.channel_convention}'.")
         else:
             if self.basis_type == "complex":
                 function = sy.spherical.spherical_harmonic_basis_gradient
@@ -376,8 +371,7 @@ class SphericalHarmonics:
                 function = sy.spherical.spherical_harmonic_basis_gradient_real
             else:
                 raise ValueError(
-                    "Invalid basis type, should be either 'complex' or 'real'"
-                )
+                    "Invalid basis type, should be either 'complex' or 'real'")
             self._basis_gradient_theta, self._basis_gradient_phi = function(
                 self.n_max, self.coordinates)
 
