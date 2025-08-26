@@ -10,9 +10,9 @@ defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance`. If the
 :py:attr:`~spharpy.SamplingSphere.weights` are not None, their sum must
 equal the integral over the unit sphere, which is :math:`4\pi`.
 
-The flag :py:attr:`~spharpy.SamplingSphere.quadrature` specifies if the
+The property :py:attr:`~spharpy.SamplingSphere.quadrature` specifies if the
 points belong to a quadrature, which requires that the
-:py:attr:`~spharpy.SamplingSphere.weights` sum to :math:`4 \pi`, the maximum
+valid weights, the maximum
 spherical harmonic order of the sampling
 grid :py:attr:`~spharpy.SamplingSphere.n_max` is specified and the inner
 product of the weighted spherical harmonics matrix :math:`\mathrm{Y}`
@@ -570,7 +570,7 @@ class SamplingSphere(pf.Coordinates):
         Returns
         -------
         check : bool
-            Flag which indicates if quadrature is a valid quadrature
+            Indicates if sampling is a valid quadrature
         """
         if self.n_max is None or self.weights is None:
             return False
