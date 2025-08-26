@@ -4,6 +4,7 @@ Tests renormalization and change channel convention methods.
 from pytest import raises, mark
 import numpy as np
 import spharpy.spherical as sh
+import re
 
 
 def test_renormalize_errors():
@@ -131,6 +132,14 @@ def test_renormalize(channel_convention):
                                          'n3d', axis=0)
     np.testing.assert_equal(sh_data_maxN_to_n3d,
                             np.ones((4, 2)))
+
+
+def test_renormalize_wrong_channel_number():
+    sh_data = np.ones((5, 2))
+    with raises(ValueError,
+                match=re.escape("Invalid number of SH channels: 5. "
+                                "It must match (n_max + 1)^2.")):
+        sh.renormalize(sh_data, 'acn', 'n3d', 'maxN', axis=0)
 
 
 def test_change_channel_convention_errors():

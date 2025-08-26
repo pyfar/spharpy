@@ -271,13 +271,21 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         Desired normalization. Valid normalizations are `"n3d"`, `"nm"`
         `"maxN"`, `"sn3d"`, or `"snm"`.
     axis : integer
-        Axis along which the renormalization should be applied
+        Axis along which the renormalization should be applied. The axis
+        contains the spherical harmonics coefficients and must hence have
+        :math:Q = (N+1)^2 channels with :math:N being the spherical harmonics
+        order of data.
 
     Returns
     -------
     data : ndarray
         Renormalized data
     """
+    sh_channels = data.shape[axis]
+    if np.sqrt(sh_channels) % 1:
+        raise ValueError("Invalid number of SH channels: "
+                         f"{data.shape[-2]}. It must match (n_max + 1)^2.")
+
     if channel_convention not in ["acn", "fuma"]:
         raise ValueError("Invalid channel convention. Has to be 'acn' "
                          f"or 'fuma', but is {channel_convention}")
@@ -291,6 +299,9 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         raise ValueError("Invalid target normalization. Has to be 'n3d', "
                          "'nm', 'maxN', 'sn3d', or 'snm' "
                          f"but is {target_norm}")
+    if current_norm == target_norm:
+        return data
+
     acn = np.arange(data.shape[axis])
 
     if channel_convention == "fuma":
@@ -298,9 +309,11 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     else:
         orders, _ = acn_to_nm(acn)
 
-    # prepare helper for reshaping
+    # One (re)normalization factor is computed per Ambisonics channel. To make
+    # sure that the factors can be applied, new axes must be added. This is
+    # done by reshaping to the following shape
     shape = [1] * data.ndim
-    shape[axis] = -1
+    shape[axis] = data.shape[axis]  
 
     data_renorm = data.copy()
     # normalize to 'n3d'
