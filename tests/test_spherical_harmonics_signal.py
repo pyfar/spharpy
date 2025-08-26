@@ -142,8 +142,9 @@ def test_init_wrong_normalization():
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
     with pytest.raises(ValueError,
-                       match="Invalid normalization, has to be 'sn3d', "
-                             "'n3d', or 'maxN', but is invalid_normalization"):
+                       match="Invalid normalization, has to be 'n3d', 'nm', "
+                             "'maxN', 'sn3d', or 'snm', but is "
+                             "invalid_normalization"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
