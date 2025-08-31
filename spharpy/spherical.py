@@ -666,7 +666,7 @@ def spherical_harmonic_basis_real(
         else:
             order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
-            order, degree, coordinates.colatitude, coordinates.azimuth
+            order, degree, coordinates.colatitude, coordinates.azimuth,
         )
         if normalization == "nm":
             basis[:, acn] *= np.sqrt(4*np.pi)
