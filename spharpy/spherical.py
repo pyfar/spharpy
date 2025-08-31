@@ -305,7 +305,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     # sure that the factors can be applied, new axes must be added. This is
     # done by reshaping to the following shape
     shape = [1] * data.ndim
-    shape[axis] = data.shape[axis]  
+    shape[axis] = data.shape[axis]
 
     data_renorm = data.copy()
     # normalize to 'n3d'
@@ -460,7 +460,7 @@ def spherical_harmonic_basis(
         else:
             order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
-            order, degree, coordinates.colatitude, coordinates.azimuth
+            order, degree, coordinates.colatitude, coordinates.azimuth,
         )
         if normalization == "nm":
             basis[:, acn] *= np.sqrt(4*np.pi)

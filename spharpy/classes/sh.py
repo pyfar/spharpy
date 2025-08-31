@@ -308,7 +308,7 @@ class SphericalHarmonics:
             raise ValueError(
                 "Invalid normalization, "
                 "currently only 'n3d', 'nm', 'maxN', 'sn3d', 'snm' are "
-                "supported"
+                "supported",
             )
         if value == "maxN" and self.n_max > 3:
             raise ValueError("n_max > 3 is not allowed with "
