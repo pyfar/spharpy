@@ -43,7 +43,7 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(coordinates, ax=None):
+def scatter(coordinates, ax=None, **kwargs):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
@@ -53,6 +53,8 @@ def scatter(coordinates, ax=None):
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
+    **kwargs : optional
+        Additional keyword arguments passed to the scatter function.
 
     Returns
     -------
@@ -83,7 +85,7 @@ def scatter(coordinates, ax=None):
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
-    ax.scatter(coordinates.x, coordinates.y, coordinates.z)
+    ax.scatter(coordinates.x, coordinates.y, coordinates.z, **kwargs)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
@@ -246,7 +248,8 @@ def pcolor_sphere(
         colorbar=True,
         limits=None,
         phase=False,
-        ax=None):
+        ax=None,
+        **kwargs):
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi. The data array will be mapped onto the surface of a sphere.
 
@@ -276,6 +279,8 @@ def pcolor_sphere(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
+    **kwargs : optional
+        Additional arguments passed to the plot_trisurf function.
 
     Returns
     -------
@@ -332,7 +337,8 @@ def pcolor_sphere(
                            cmap=cmap,
                            antialiased=True,
                            vmin=vmin,
-                           vmax=vmax)
+                           vmax=vmax,
+                           **kwargs)
 
     plot.set_array(cdata)
 
@@ -358,7 +364,8 @@ def balloon_wireframe(
         colorbar=True,
         limits=None,
         phase=False,
-        ax=None):
+        ax=None,
+        **kwargs):
     """Plot data on a sphere defined by the coordinate angles
     theta and phi. The magnitude information is mapped onto the radius of the
     sphere. The colormap represents either the phase or the magnitude of the
@@ -390,6 +397,8 @@ def balloon_wireframe(
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
+    **kwargs : optional
+        Additional arguments passed to the plot_trisurf function.
 
     Returns
     -------
@@ -447,7 +456,8 @@ def balloon_wireframe(
                            xyz[2],
                            antialiased=True,
                            vmin=vmin,
-                           vmax=vmax)
+                           vmax=vmax,
+                           **kwargs)
 
     cnorm = plt.Normalize(vmin, vmax)
 
