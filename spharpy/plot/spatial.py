@@ -71,7 +71,7 @@ def scatter(coordinates, ax=None, **kwargs):
         >>> spharpy.plot.scatter(coords)
 
 
-    """ 
+    """
     if not isinstance(coordinates, pf.Coordinates):
         raise ValueError("coordinates must be a coordinates object.")
 
@@ -81,7 +81,7 @@ def scatter(coordinates, ax=None, **kwargs):
 
     if not isinstance(coordinates, pf.Coordinates):
         raise ValueError("coordinates must be a coordinates object.")
-    
+
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
@@ -423,7 +423,7 @@ def balloon_wireframe(
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     if not isinstance(phase, bool):
         raise ValueError("phase must be a boolean.")
-    
+
     if isinstance(cmap, str):
         cmap = plt.get_cmap(cmap)
 
@@ -782,7 +782,7 @@ def pcolor_map(
         The axis object used for plotting.
     cf : matplotlib.tri.TriContourSet
         The contour plot object.
-        
+
     Examples
     --------
 
@@ -794,10 +794,10 @@ def pcolor_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.pcolor_map(coords, data)
 
-    """ 
+    """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
-    
+
     height, latitude, longitude = coordinates2latlon(coordinates)
     tri = mtri.Triangulation(longitude, latitude)
     if refine is not None:
@@ -913,10 +913,10 @@ def contour_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour_map(coords, data)
 
-    """ 
+    """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
-    
+
     fig = plt.gcf()
 
     res = int(np.ceil(np.sqrt(coordinates.csize)))
@@ -1023,7 +1023,7 @@ def contour(
     """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
-    
+
     height, latitude, longitude = coordinates2latlon(coordinates)
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
@@ -1035,7 +1035,7 @@ def contour(
         raise ValueError(
             f"The projection of the axis needs to be 'rectilinear'"
             f", but is '{ax.name}'")
-    
+
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 

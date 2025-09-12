@@ -62,7 +62,7 @@ def test_sampling_scatter(function):
     save_and_compare(
         create_baseline, baseline_path, output_path, filename,
         file_type, compare_output)
-    
+
     match = 'must be a coordinates object.'
     with pytest.raises(ValueError, match=match):
         function('coords')
@@ -87,7 +87,7 @@ def test_spherical_default(function):
     save_and_compare(
         create_baseline, baseline_path, output_path, filename,
         file_type, compare_output)
-    
+
     # test error for invalid inputs
     match = 'data must be a 1D array with the same cshape as the coordinates'
     with pytest.raises(ValueError, match=match):
@@ -123,12 +123,12 @@ def test_spherical_cmap(function, cmap):
     function(coords, data, cmap=cmap)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
-    
+
     # test error for invalid inputs
     match = 'cmap'
     with pytest.raises(ValueError, match=match):
         function(coords, data, cmap=5)
-    
+
 
 @pytest.mark.parametrize('function', [
     (sp.plot.balloon),
@@ -142,7 +142,7 @@ def test_spherical_colorbar(function, colorbar):
     """Test all spherical plots with custom arguments."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-    
+
     # do plotting
     filename = f'colorbar_{function.__name__}_{colorbar}'
     create_figure()
@@ -154,7 +154,7 @@ def test_spherical_colorbar(function, colorbar):
     match = 'colorbar must be a boolean.'
     with pytest.raises(ValueError, match=match):
         function(coords, data, colorbar='colorbar')
-    
+
 
 @pytest.mark.parametrize('function', [
     (sp.plot.balloon),
@@ -168,7 +168,7 @@ def test_spherical_limits(function, limits):
     """Test all spherical plots with custom arguments."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-    
+
     # do plotting
     if limits is None:
         limits_str = 'None'
@@ -202,19 +202,19 @@ def test_spherical_phase(function, phase):
     if phase:
         # use complex data to test phase plotting
         data = np.exp(1j * data)
-    
+
     # do plotting
     filename = f'phase_{function.__name__}_{phase}'
     create_figure()
     function(coords, data, phase=phase)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
-    
+
     # test error for invalid inputs
     match = 'phase must be a boolean.'
     with pytest.raises(ValueError, match=match):
         function(coords, data, phase=5)
-    
+
 
 @pytest.mark.parametrize('function', [
     (sp.plot.pcolor_map),
@@ -225,14 +225,14 @@ def test_spherical_projection(function, projection):
     """Test all spherical plots with custom arguments."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-    
+
     # do plotting
     filename = f'projection_{function.__name__}_{projection}'
     create_figure()
     function(coords, data, projection=projection)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
-    
+
     # test error for invalid inputs
     match = "The projection of the axis needs to be 'projection'"
     with pytest.raises(ValueError, match=match):
@@ -240,8 +240,8 @@ def test_spherical_projection(function, projection):
 
 
 @pytest.mark.parametrize('function', [
-    (sp.plot.contour_map),
-    # (sp.plot.contour),
+    sp.plot.contour_map,
+    # placeholder after level implementation in sp.plot.contour,
     ])
 @pytest.mark.parametrize('levels', [
     (-0.5, .5),
@@ -252,7 +252,7 @@ def test_spherical_levels(function, levels):
     """Test all spherical plots with custom arguments."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-    
+
     # do plotting
     filename = f'levels_{function.__name__}_{type(levels).__name__}'
     create_figure()
@@ -264,9 +264,9 @@ def test_spherical_levels(function, levels):
     match = 'levels'
     with pytest.raises(ValueError, match=match):
         function(coords, data, levels='levels')
-    
-   
-@pytest.mark.parametrize('function,projection', [
+
+
+@pytest.mark.parametrize(("function", "projection"), [
     (sp.plot.balloon, '3d'),
     (sp.plot.balloon_wireframe, '3d'),
     (sp.plot.pcolor_sphere, '3d'),
@@ -294,11 +294,11 @@ def test_axes_in_out(function, projection):
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=plt.axes(projection='polar'))
 
-   
+
 @pytest.mark.parametrize('function', [
     (sp.plot.scatter),
     (sp.plot.voronoi_cells_sphere),
-    ]) 
+    ])
 def test_scatter_axes3d(function):
     coords = sp.samplings.equal_area(n_max=0, n_points=12)
     # do plotting
