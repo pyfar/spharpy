@@ -87,7 +87,9 @@ def calculate_sampling_weights(sampling, round_decimals=12):
     sampling : SamplingSphere
         Sampling points on a sphere
     round_decimals : int, optional
-
+        Decimal precision used for ``sampling.radius``. All radii must be
+        identical to compute the sampling weights. This can be used to ignore
+        numerical noise on the radii. The default is ``12``.
     apply : boolean, optional
         Whether or not to store the weights into the class object
 

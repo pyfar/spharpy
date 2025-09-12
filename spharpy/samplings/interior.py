@@ -65,7 +65,7 @@ def calculate_eigenspaces(kr_max, theta, phi, rad):
 
     Parameters
     ----------
-    k_max : float
+    kr_max : float
         The largest wave number to be included
     theta : array, float
         Azimuth angle
@@ -187,7 +187,7 @@ def find_interior_points(k_max, resolution_factor=1):
     -------
     x, y, z : ndarray, float
         Coordinates of the stabilization points
-        
+
     References
     ----------
     .. [#]  G. Chardon, W. Kreuzer, und M. Noisternig, "Design of spatial
