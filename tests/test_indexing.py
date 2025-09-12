@@ -1,4 +1,4 @@
-""" Tests for sh channel indexing"""
+"""Tests for sh channel indexing."""
 
 import spharpy.spherical as sh
 import numpy as np
@@ -60,7 +60,7 @@ def test_identity_matrix_n_nm():
                           [0, 1, 1, 1, 0, 0, 0, 0, 0],
                           [0, 0, 0, 0, 1, 1, 1, 1, 1]])
 
-    identity = sh.sph_identity_matrix(2, type='n-nm')
+    identity = sh.sph_identity_matrix(2, matrix_type='n-nm')
     np.testing.assert_allclose(reference, identity)
 
 

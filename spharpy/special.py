@@ -108,6 +108,12 @@ def spherical_hankel(n, z, kind=2, derivative=False):
         Order of the spherical bessel function
     z : double, ndarray
         Argument of the spherical bessel function. Has to be real valued.
+    kind : int, optional
+        The kind of the spherical Hankel function. Must be ``1`` or ``2``. The
+        default is ``2``.
+    derivative : bool, optional
+        Flag to indicate if the derivative os the spherical Hankel function
+        should be returned. The default is ``False``.
 
     Returns
     -------
@@ -160,7 +166,7 @@ def _spherical_hankel_derivative(n, z, kind):
 def spherical_harmonic(n, m, theta, phi):
     """The spherical harmonics of order n and degree m.
     The spherical harmonic functions are fully normalized (N3D) and
-    include the Condon-Shortley phase according to [#]_
+    include the Condon-Shortley phase according to [#]_.
 
     n : unsigned int
         The spherical harmonic order
@@ -251,7 +257,6 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
 
     Parameters
     ----------
-
     n : int
         Spherical harmonic order
     m : int
@@ -263,7 +268,6 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
 
     Returns
     -------
-
     sh_diff : complex double
         Spherical harmonic derivative
 
@@ -278,11 +282,10 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
 
 def spherical_harmonic_gradient_phi(n, m, theta, phi):
     """Calculate the derivative of the spherical harmonics with respect to
-    the azimuth angle phi divided by sin(theta)
+    the azimuth angle phi divided by sin(theta).
 
     Parameters
     ----------
-
     n : int
         Spherical harmonic order
     m : int
@@ -294,7 +297,6 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
 
     Returns
     -------
-
     sh_diff : complex double
         Spherical harmonic derivative
 
@@ -319,7 +321,6 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     Parameters
     ----------
-
     n : int
         Spherical harmonic order
     m : int
@@ -331,7 +332,6 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
     Returns
     -------
-
     sh_diff : complex double
         Spherical harmonic derivative
 

@@ -1,4 +1,4 @@
-""" Tests for sh rotations"""
+"""Tests for sh rotations."""
 
 import numpy as np
 import spharpy.transforms as transforms
@@ -144,10 +144,10 @@ def test_RotationSH():
     assert rot._n_max == n_max
     assert rot.n_max == n_max
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='order needs to be a positive value'):
         rot.n_max = -1
 
-    D_Rot = rot.as_spherical_harmonic(type='real')
+    D_Rot = rot.as_spherical_harmonic(basis_type='real')
 
     reference = np.array([
         [1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -164,17 +164,17 @@ def test_RotationSH():
 
     rot = RotationSH.from_rotvec(n_max, [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(type='real'),
+        rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-10)
 
     rot = RotationSH.from_euler(n_max, 'zyz', [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(type='real'),
+        rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-10)
 
     rot = RotationSH.from_quat(n_max, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(type='real'),
+        rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-10)
 
     rot_mat_z_spat = np.array([
@@ -183,11 +183,5 @@ def test_RotationSH():
         [0, 0, 1]])
     rot = RotationSH.from_matrix(n_max, rot_mat_z_spat)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(type='real'),
+        rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-7)
-
-    # mrp = [0, 0, np.tan(np.pi/2/4)]
-    # rot = RotationSH.from_mrp(n_max, mrp)
-    # np.testing.assert_allclose(
-    #     rot.as_spherical_harmonic(type='real'),
-    #     reference, atol=1e-7)
