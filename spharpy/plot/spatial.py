@@ -843,8 +843,8 @@ def contour_map(
 
     ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
                vmin=limits[0], vmax=limits[1], extend=extend)
-    cf = ax.pcolormesh(xi, yi, zi, cmap=cmap, shading='gouraud',
-                       vmin=limits[0], vmax=limits[1])
+    cf = ax.contourf(xi, yi, zi, cmap=cmap, shading='gouraud',
+                     vmin=limits[0], vmax=limits[1])
 
     plt.grid(True)
     if colorbar:
