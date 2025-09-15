@@ -589,7 +589,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     ax.set_zlabel('z[m]')
 
 
-def _combined_contour(x, y, data, limits, cmap, ax):
+def _combined_contour(x, y, data, limits, cmap, levels, ax):
     """Combine a filled contour plot with a black line contour plot for
     better highlighting.
 
@@ -606,6 +606,13 @@ def _combined_contour(x, y, data, limits, cmap, ax):
         needs to be clipped.
     cmap : matplotlib.colormap
         The colormap
+    levels : int or array-like, optional
+        Determines the number and positions of the contour lines / regions.
+        If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
+        which tries to automatically choose
+        no more than n+1 "nice" contour levels between minimum and maximum
+        numeric values of Z. If array-like, draw contour lines at the
+        specified levels. The values must be in increasing order.
     ax : matplotlib.axes
         The axes object into which the contour is plotted
 
@@ -630,10 +637,11 @@ def _combined_contour(x, y, data, limits, cmap, ax):
         elif ~np.any(mask_max) & np.any(mask_min):
             extend = 'min'
 
-    ax.tricontour(x, y, data, linewidths=0.5, colors='k',
+    ax.tricontour(x, y, data, levels=levels, linewidths=0.5, colors='k',
                   vmin=limits[0], vmax=limits[1], extend=extend)
     return ax.tricontourf(
-        x, y, data, cmap=cmap, vmin=limits[0], vmax=limits[1], extend=extend)
+        x, y, data, levels=levels, cmap=cmap, vmin=limits[0], vmax=limits[1],
+        extend=extend)
 
 
 def pcolor_map(
@@ -856,7 +864,7 @@ def contour_map(
 
 def contour(
         coordinates, data, limits=None, cmap=plt.get_cmap('viridis'),
-        ax=None):
+        levels=None, ax=None):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
@@ -879,6 +887,13 @@ def contour(
         maximum of the data.
     cmap : matplotlib colormap, optional
         Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    levels : int or array-like, optional
+        Determines the number and positions of the contour lines / regions.
+        If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
+        which tries to automatically choose
+        no more than n+1 "nice" contour levels between minimum and maximum
+        numeric values of Z. If array-like, draw contour lines at the
+        specified levels. The values must be in increasing order.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
@@ -909,10 +924,10 @@ def contour(
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 
-    cf = _combined_contour(lon_deg, lat_deg, data, limits, cmap, ax)
+    cf = _combined_contour(lon_deg, lat_deg, data, limits, cmap, levels, ax)
 
     plt.grid(True)
-    cb = fig.colorbar(cf, ax=ax)
+    cb = fig.colorbar(cf, ax=ax, ticks=levels)
     cb.set_label('Amplitude')
 
     return cf
