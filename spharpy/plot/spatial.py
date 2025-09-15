@@ -79,9 +79,6 @@ def scatter(coordinates, ax=None, **kwargs):
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection='3d')
 
-    if not isinstance(coordinates, pf.Coordinates):
-        raise ValueError("coordinates must be a coordinates object.")
-
     if '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
