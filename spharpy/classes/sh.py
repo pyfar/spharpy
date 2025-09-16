@@ -28,6 +28,11 @@ class SphericalHarmonicDefinition:
             normalization="n3d",
             condon_shortley="auto",
         ):
+        self._basis_type = None
+        self._channel_convention = None
+        self._condon_shortley = None
+        self._normalization = None
+
         self.condon_shortley = condon_shortley
         self.basis_type = basis_type
         self.channel_convention = channel_convention
