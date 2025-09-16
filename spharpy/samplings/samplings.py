@@ -160,7 +160,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
         file_data[:, 0] * radius,
         file_data[:, 1] * radius,
         file_data[:, 2] * radius,
-        n_max=n_max, weights=weights, quadrature=False,
+        n_max=n_max, weights=weights,
         comment='extremal spherical sampling grid')
 
     return sampling
@@ -300,7 +300,7 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
         points[..., 0] * radius,
         points[..., 1] * radius,
         points[..., 2] * radius,
-        n_max=n_max, quadrature=False)
+        n_max=n_max)
 
     return sampling
 
@@ -364,7 +364,7 @@ def dodecahedron(radius=1.):
     rad = radius * np.ones(np.size(theta))
 
     return spharpy.SamplingSphere.from_spherical_colatitude(
-        phi, theta, rad, quadrature=False)
+        phi, theta, rad)
 
 
 def icosahedron(radius=1.):
@@ -404,7 +404,7 @@ def icosahedron(radius=1.):
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi / 5, 2)))
 
     return spharpy.SamplingSphere.from_spherical_colatitude(
-        phi, theta, radius, quadrature=False)
+        phi, theta, radius)
 
 
 def equiangular(n_points=None, n_max=None, radius=1.):
@@ -489,19 +489,17 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     # and the number of points in azimuth and elevation are equal
     if (n_theta != n_phi) or np.any(np.mod(n_points, 2) > 0):
         weights = None
-        quadrature = False
     else:
         q = 2 * np.arange(0, n_max + 1) + 1
         weights_theta = np.sin(theta_angles) * (
             1/q @ np.sin(q[np.newaxis].T @ theta_angles[np.newaxis]))
 
         weights = np.tile(weights_theta*2*np.pi / (n_max+1)**2, n_phi)
-        quadrature = True
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), rad,
-        weights=weights, n_max=n_max, quadrature=quadrature)
+        weights=weights, n_max=n_max)
 
     return sampling
 
@@ -593,7 +591,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), radius,
-        weights=weights, n_max=n_max, quadrature=True)
+        weights=weights, n_max=n_max)
 
     return sampling
 
@@ -742,7 +740,7 @@ def icosahedron_ke4():
     rad = np.ones(20) * 0.065
 
     return spharpy.SamplingSphere.from_spherical_colatitude(
-        phi, theta, rad, quadrature=False)
+        phi, theta, rad)
 
 
 def equal_area(n_max, condition_num=2.5, n_points=None):
@@ -787,7 +785,7 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
     while True:
         point_data = eq_point_set(2, n_points)
         sampling = spharpy.SamplingSphere(
-            point_data[0], point_data[1], point_data[2], quadrature=False)
+            point_data[0], point_data[1], point_data[2])
 
         if condition_num == np.inf:
             break
@@ -871,7 +869,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     while True:
         theta, phi = _spiral_points(n_points)
         sampling = spharpy.SamplingSphere.from_spherical_colatitude(
-            phi, theta, np.ones(n_points), quadrature=False)
+            phi, theta, np.ones(n_points))
         if condition_num == np.inf:
             break
         Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
@@ -951,7 +949,7 @@ def equal_angle(delta_angles, radius=1.):
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
-        phi/180*np.pi, theta/180*np.pi, radius, quadrature=False,
+        phi/180*np.pi, theta/180*np.pi, radius,
         comment='equal angle spherical sampling grid')
 
     return sampling
@@ -1050,7 +1048,7 @@ def great_circle(
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_elevation(
-        azim/180*np.pi, elev/180*np.pi, radius, quadrature=False,
+        azim/180*np.pi, elev/180*np.pi, radius,
         comment='spherical great circle sampling grid')
 
     return sampling
@@ -1158,7 +1156,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
-        n_max=n_max, weights=weights, quadrature=True,
+        n_max=n_max, weights=weights,
         comment='spherical Lebedev sampling grid')
 
     return sampling
@@ -1329,7 +1327,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights, quadrature=False)
+        n_max=n_max, weights=weights)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]

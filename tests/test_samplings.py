@@ -219,7 +219,7 @@ def test_equiangular_weights_n_points_even(n_points):
     npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
     assert sampling.cshape == sampling.weights.shape
     assert sampling.cshape == n_points*n_points
-    assert sampling.quadrature is True
+    assert sampling.quadrature
 
 
 @pytest.mark.parametrize("n_points", np.arange(1, 40, 2))
@@ -227,7 +227,7 @@ def test_equiangular_weights_n_points_odd(n_points):
     sampling = samplings.equiangular(n_points=n_points)
     assert sampling.weights is None
     assert sampling.cshape == n_points*n_points
-    assert sampling.quadrature is False
+    assert not sampling.quadrature
 
 
 @pytest.mark.parametrize(
@@ -299,6 +299,13 @@ def test_gaussian_orthogonality(basis_func):
         atol=1e-6, rtol=1e-6)
 
 
+def test_gaussian_quadrature():
+    n_max = 3
+    sampling = samplings.gaussian(n_max=n_max)
+
+    assert sampling.quadrature
+
+
 def test_gaussian():
     # test without parameters
     with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
@@ -306,7 +313,7 @@ def test_gaussian():
 
     # n_points must be a positive natural number
     with pytest.raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2,2))
+        samplings.gaussian(n_points=(2, 2))
 
     # n_points must be a positive natural number
     with pytest.raises(ValueError, match='positive natural number'):
