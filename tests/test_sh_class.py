@@ -5,7 +5,45 @@ import pytest
 import numpy as np
 import pyfar as pf
 from spharpy import SphericalHarmonics
-from spharpy.samplings import gaussian, equiangular
+from spharpy.samplings import gaussian, calculate_sampling_weights, equiangular
+from spharpy.classes.sh import SphericalHarmonicDefinition
+
+
+def test_spherical_harmonics_definition_init():
+    """Test default behavior.
+    """
+    definition = SphericalHarmonicDefinition()
+    assert definition.basis_type == 'real'
+    assert definition.normalization == 'n3d'
+    assert definition.channel_convention == 'acn'
+
+
+def test_setter_phase_convention():
+    sph_harm = SphericalHarmonicDefinition()
+    sph_harm.condon_shortley = "auto"
+    assert not sph_harm.condon_shortley
+
+    with pytest.raises(TypeError):
+        sph_harm.condon_shortley = 123  # Invalid type
+
+
+def test_setter_channel_convention_definition():
+    sph_harm = SphericalHarmonicDefinition(channel_convention='acn')
+    sph_harm.channel_convention = "fuma"
+    assert sph_harm.channel_convention == "fuma"
+
+    with pytest.raises(ValueError, match='Invalid channel convention'):
+        sph_harm.channel_convention = "invalid"  # Invalid value
+
+
+def test_setter_normalization_definition():
+    sph_harm = SphericalHarmonicDefinition(normalization='n3d')
+    sph_harm.normalization = "sn3d"
+    assert sph_harm.normalization == "sn3d"
+
+    with pytest.raises(ValueError, match='Invalid normalization'):
+        sph_harm.normalization = "invalid"  # Invalid value
+
 
 def test_sphharm_init():
     """Test default behaviour after initialization."""
@@ -13,9 +51,6 @@ def test_sphharm_init():
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     assert sph_harm.n_max == 2
     assert np.all(sph_harm.coordinates == coordinates)
-    assert sph_harm.basis_type == 'real'
-    assert sph_harm.normalization == 'N3D'
-    assert sph_harm.channel_convention == 'acn'
     assert sph_harm.inverse_method == 'quadrature'
     assert not sph_harm.condon_shortley
 
@@ -91,23 +126,10 @@ def test_setter_n_max():
         # set maxN normalization
         sph_harm.normalization = "maxN"  # Invalid with n_max > 3
 
-def test_setter_phase_convention():
-    coordinates = equiangular(n_points=4)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    sph_harm.condon_shortley = "auto"
-    assert not sph_harm.condon_shortley
-
-    with pytest.raises(TypeError):
-        sph_harm.condon_shortley = 123  # Invalid type
 
 def test_setter_channel_convention():
     coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    sph_harm.channel_convention = "fuma"
-    assert sph_harm.channel_convention == "fuma"
-
-    with pytest.raises(ValueError, match='Invalid channel convention'):
-        sph_harm.channel_convention = "invalid"  # Invalid value
 
     sph_harm.channel_convention = "fuma"  # Invalid with n_max > 3
     with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
@@ -115,14 +137,8 @@ def test_setter_channel_convention():
 
 def test_setter_normalization():
     coordinates = equiangular(n_points=4)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    sph_harm.normalization = "SN3D"
-    assert sph_harm.normalization == "SN3D"
+    sph_harm = SphericalHarmonics(n_max=4, coordinates=coordinates)
 
-    with pytest.raises(ValueError, match='Invalid normalization'):
-        sph_harm.normalization = "invalid"  # Invalid value
-
-    sph_harm.n_max = 4
     with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
         sph_harm.normalization = "maxN"  # Invalid with n_max > 3
 
