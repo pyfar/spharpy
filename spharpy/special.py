@@ -392,10 +392,13 @@ def legendre_function(n, m, z, cs_phase=True):
     """
     z = np.atleast_1d(z)
 
+    if m == 0:
+        legendre = _spspecial.eval_legendre(n, z)  # This is reliable
+    else:
     # squeeze required because the legendre function introduced in scipy 1.15
     # returns a 2D array, whereas the previous function `lpmn` returned a 1D
     # array
-    legendre = np.squeeze(_spspecial.assoc_legendre_p(n, m, z))
+        legendre = np.squeeze(_spspecial.assoc_legendre_p(n, m, z))
 
     # remove Condon-Shortley phase
     if not cs_phase and m % 2:
