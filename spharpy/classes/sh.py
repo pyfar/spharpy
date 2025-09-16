@@ -91,9 +91,6 @@ class SphericalHarmonicDefinition:
             raise ValueError("Invalid channel convention, "
                              "currently only 'acn' "
                              "and 'fuma' are supported")
-        if value == "fuma" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with 'fuma' " \
-                            "channel convention")
         self._channel_convention = value
 
     @property
@@ -109,9 +106,6 @@ class SphericalHarmonicDefinition:
                 "Invalid normalization, "
                 "currently only 'n3d', 'maxN', 'sn3d' are "
                 "supported")
-        if value == "maxN" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with " \
-                            "'maxN' normalization")
         self._normalization = value
 
 
@@ -358,6 +352,10 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @SphericalHarmonicDefinition.channel_convention.setter
     def channel_convention(self, value):
         """Get or set the channel order convention."""
+        if value == "fuma" and self.n_max > 3:
+            raise ValueError("n_max > 3 is not allowed with 'fuma' " \
+                            "channel convention")
+
         super(__class__, SphericalHarmonics).channel_convention.fset(
             self, value)
         if value != self._channel_convention:
@@ -366,6 +364,10 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @SphericalHarmonicDefinition.normalization.setter
     def normalization(self, value):
         """Get or set the normalization convention."""
+        if value == "maxN" and self.n_max > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'maxN' normalization")
+
         super(__class__, SphericalHarmonics).normalization.fset(self, value)
         if value != self._normalization:
             self._reset_compute_attributes()
