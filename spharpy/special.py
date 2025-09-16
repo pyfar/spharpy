@@ -108,6 +108,12 @@ def spherical_hankel(n, z, kind=2, derivative=False):
         Order of the spherical bessel function
     z : double, ndarray
         Argument of the spherical bessel function. Has to be real valued.
+    kind : int, optional
+        The kind of the spherical Hankel function. Must be ``1`` or ``2``. The
+        default is ``2``.
+    derivative : bool, optional
+        Flag to indicate if the derivative os the spherical Hankel function
+        should be returned. The default is ``False``.
 
     Returns
     -------

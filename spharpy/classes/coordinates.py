@@ -390,7 +390,7 @@ class SamplingSphere(pf.Coordinates):
         y, z, x = sph2cart(frontal, upper, radius)
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
-            radius_tolerance=radius_tolerance, 
+            radius_tolerance=radius_tolerance,
             quadrature_tolerance=quadrature_tolerance)
 
     @classmethod
