@@ -52,11 +52,7 @@ class SphericalHarmonicDefinition:
                     "condon_shortley must be a bool or the string 'auto'")
             # If basis_type hasn't been set yet, assume "complex" by default,
             # but in practice __init__ sets basis_type before condon_shortley.
-            if self.basis_type == "complex":
-                resolved = True
-            else:
-                resolved = False
-            value = resolved
+            value = self.basis_type == "complex"
         elif not isinstance(value, bool):
             raise TypeError(
                 "condon_shortley must be a bool or the string 'auto'")
