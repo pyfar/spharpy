@@ -33,8 +33,10 @@ class SphericalHarmonicDefinition:
         self._condon_shortley = None
         self._normalization = None
 
-        self.condon_shortley = condon_shortley
+        # basis_type needs to be initialized first, since the default for the
+        # Condon-Shortley phase depends on the basis type
         self.basis_type = basis_type
+        self.condon_shortley = condon_shortley
         self.channel_convention = channel_convention
         self.normalization = normalization
 
