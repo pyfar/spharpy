@@ -1,6 +1,7 @@
 """spharpy classes."""
 
 from .sh import (
+    SphericalHarmonicDefinition,
     SphericalHarmonics,
 )
 
@@ -13,6 +14,7 @@ from .coordinates import (
 )
 
 __all__ = [
+    'SphericalHarmonicDefinition',
     'SphericalHarmonics',
     'SphericalHarmonicSignal',
     'SamplingSphere',
