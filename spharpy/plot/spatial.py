@@ -360,7 +360,7 @@ def balloon_wireframe(
         cmap=None,
         colorbar=True,
         limits=None,
-        phase=False,
+        cmap_encoding='phase',
         ax=None,
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles
@@ -388,9 +388,9 @@ def balloon_wireframe(
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
-    phase : boolean, optional
-        Encode the phase of the data in the colormap. This option will be
-        activated by default of the data is complex valued.
+    cmap_encoding : str, optional
+        The information encoded in the colormap. Can be either 'phase'
+        (in radians) or 'magnitude'. The default is 'phase'.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
@@ -413,13 +413,14 @@ def balloon_wireframe(
         >>> import numpy as np
         >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
         >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-        >>> spharpy.plot.balloon_wireframe(coords, data, phase=True)
+        >>> spharpy.plot.balloon_wireframe(coords, data, cmap_encoding='phase')
 
     """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
-    if not isinstance(phase, bool):
-        raise ValueError("phase must be a boolean.")
+    if cmap_encoding not in ['phase', 'magnitude']:
+        raise ValueError(
+            "cmap_encoding must be either 'phase' or 'magnitude'.")
 
     if isinstance(cmap, str):
         cmap = plt.get_cmap(cmap)
@@ -433,18 +434,16 @@ def balloon_wireframe(
     elif '3d' not in ax.name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
-    if np.iscomplex(data).any() or phase:
-        itype = 'phase'
+    if cmap_encoding == 'phase':
         if cmap is None:
             cmap = phase_twilight()
         clabel = 'Phase (rad)'
-    else:
-        itype = 'amplitude'
+    elif cmap_encoding == 'magnitude':
         if cmap is None:
             cmap = plt.get_cmap('viridis')
-        clabel = 'Amplitude'
+        clabel = 'Magnitude'
 
-    cdata, vmin, vmax = _balloon_color_data(tri, data, itype)
+    cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
     if limits is not None:
         vmin, vmax = limits
