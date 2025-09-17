@@ -262,7 +262,7 @@ def pcolor_sphere(
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
+    cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
         Colormap for the plot, see matplotlib.cm. By default see Note.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
@@ -380,7 +380,7 @@ def balloon_wireframe(
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
+    cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
         Colormap for the plot, see matplotlib.cm. By default see Note.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
@@ -499,7 +499,6 @@ def balloon(
     The colormap represents either the phase or the magnitude of the
     data array.
 
-
     Note
     ----
     When plotting the phase encoded in the colormap, the function will switch
@@ -512,8 +511,8 @@ def balloon(
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+    cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
+        Colormap for the plot, see matplotlib.cm. Default is see Note.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
@@ -694,7 +693,7 @@ def _combined_contour(x, y, data, limits, cmap, ax):
     limits : tuple, list
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped.
-    cmap : matplotlib.colormap
+    cmap : :py:class:`matplotlib.colors.Colormap`
         Colormap for the plot, see matplotlib.cm.
     ax : matplotlib.axes
         The axes object into which the contour is plotted
@@ -752,7 +751,7 @@ def pcolor_map(
     data : numpy.ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
+    cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
         Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
@@ -869,8 +868,8 @@ def contour_map(
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
-        Colormap for the plot, see matplotlib.cm
+    cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
+        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
@@ -987,7 +986,7 @@ def contour(
     data: ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
+    cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
         Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
@@ -1118,8 +1117,8 @@ def _check_input_parameters(coordinates, data, cmap, colorbar, limits):
     data : ndarray, double
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
-    cmap : matplotlib colormap, optional
-        Colormap for the plot, see matplotlib.cm
+    cmap : str, :py:class:`matplotlib.colors.Colormap`
+        Colormap for the plot, see matplotlib.cm.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
