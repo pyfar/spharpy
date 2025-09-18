@@ -316,7 +316,7 @@ def test_coordinates_plots_projection_input_and_return(function):
 
 
 def test_cmap_phase_twilight():
-    """Test the phase twilight plot with default arguments."""
+    """Test the phase twilight colormap."""
     lut = 512
     # do plotting
     filename = 'cmap_phase_twilight'
