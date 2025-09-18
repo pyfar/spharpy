@@ -191,26 +191,36 @@ def test_spherical_limits(function, limits):
     (sp.plot.balloon),
     (sp.plot.balloon_wireframe),
     (sp.plot.pcolor_sphere)])
-@pytest.mark.parametrize('phase', [True, False])
-def test_spherical_phase(function, phase):
-    """Test spherical plots with custom  phase argument."""
+@pytest.mark.parametrize('cmap_encoding', ['phase', 'magnitude'])
+@pytest.mark.parametrize('cmap', [None, 'magma'])
+def test_balloon_cmap_encoding(function, cmap_encoding, cmap):
+    """Test all balloon like plots with custom arguments."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
-    if phase:
-        # use complex data to test phase plotting
-        data = np.exp(1j * data)
+
+    # use the azimuth angle for a continuous phase change
+    data = np.abs(data) * np.exp(1j * coords.azimuth)
 
     # do plotting
-    filename = f'{function.__name__}_phase_{phase}'
+    filename = f'phase_{function.__name__}_{cmap_encoding}_cm_{cmap}'
     create_figure()
-    function(coords, data, phase=phase)
+    function(coords, data, cmap_encoding=cmap_encoding, cmap=cmap)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
 
+@pytest.mark.parametrize('function', [
+    (sp.plot.balloon),
+    (sp.plot.balloon_wireframe),
+    (sp.plot.pcolor_sphere)])
+def test_balloon_cmap_encoding_error(function):
+    """Test raising errors for invalid cmap_encoding argument."""
     # test error for invalid inputs
-    match = 'phase must be a boolean.'
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
+    match = "cmap_encoding must be either 'phase' or 'magnitude'."
     with pytest.raises(ValueError, match=match):
-        function(coords, data, phase=5)
+        function(coords, data, cmap_encoding='invalid')
 
 
 @pytest.mark.parametrize('function', [
