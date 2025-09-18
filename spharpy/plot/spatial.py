@@ -793,6 +793,8 @@ def pcolor_map(
     """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    if not isinstance(refine, bool):
+        raise ValueError("refine must be a boolean.")
 
     height, latitude, longitude = coordinates2latlon(coordinates)
     tri = mtri.Triangulation(longitude, latitude)

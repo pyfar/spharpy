@@ -18,7 +18,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = False
+create_baseline = True
 
 # file type used for saving the plots
 file_type = "png"
@@ -261,6 +261,30 @@ def test_spherical_levels(function, levels):
     match = 'levels'
     with pytest.raises(ValueError, match=match):
         function(coords, data, levels='levels')
+
+
+@pytest.mark.parametrize('function', [
+    sp.plot.pcolor_map,
+    ])
+@pytest.mark.parametrize('refine', [
+    True, False,
+    ])
+def test_spherical_refine(function, refine):
+    """Test contour plots with custom refine argument."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
+    # do plotting
+    filename = f'{function.__name__}_refine_{refine}'
+    create_figure()
+    function(coords, data, refine=refine)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+
+    # test error for invalid inputs
+    match = 'refine'
+    with pytest.raises(ValueError, match=match):
+        function(coords, data, refine='refine')
 
 
 @pytest.mark.parametrize(("function", "projection"), [
