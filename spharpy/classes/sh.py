@@ -52,26 +52,21 @@ class SphericalHarmonicDefinition:
             if value != 'auto':
                 raise ValueError(
                     "condon_shortley must be a bool or the string 'auto'")
-            # If basis_type hasn't been set yet, assume "complex" by default,
-            # but in practice __init__ sets basis_type before condon_shortley.
+
             value = self.basis_type == "complex"
         elif not isinstance(value, bool):
-            raise TypeError(
+            raise ValueError(
                 "condon_shortley must be a bool or the string 'auto'")
         self._condon_shortley = value
 
     @property
     def basis_type(self):
-        """The type of spherical harmonic basis. Can be ``'complex'`` or
-        ``'real'``.
-        """
+        """Get or set the type of spherical harmonic basis."""
         return self._basis_type
 
     @basis_type.setter
     def basis_type(self, value):
-        """The type of spherical harmonic basis. Can be ``'complex'`` or
-        ``'real'``.
-        """
+        """Get or set the type of spherical harmonic basis."""
         if value not in ["complex", "real"]:
             raise ValueError("Invalid basis type, only "
                              "'complex' and 'real' are supported")
