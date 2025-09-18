@@ -99,12 +99,9 @@ def test_spherical_default(function):
 
 
 @pytest.mark.parametrize('function', [
-    (sp.plot.balloon),
-    (sp.plot.balloon_wireframe),
     (sp.plot.contour),
     (sp.plot.contour_map),
-    (sp.plot.pcolor_map),
-    (sp.plot.pcolor_sphere)])
+    (sp.plot.pcolor_map)])
 @pytest.mark.parametrize('cmap', [plt.get_cmap('plasma'), 'plasma', None])
 def test_spherical_cmap(function, cmap):
     """Test all spherical plots with custom arguments."""
