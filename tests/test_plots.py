@@ -104,7 +104,7 @@ def test_spherical_default(function):
     (sp.plot.pcolor_map)])
 @pytest.mark.parametrize('cmap', [plt.get_cmap('plasma'), 'plasma', None])
 def test_spherical_cmap(function, cmap):
-    """Test all spherical plots with custom arguments."""
+    """Test all spherical plots with custom cmap argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
@@ -136,7 +136,7 @@ def test_spherical_cmap(function, cmap):
     (sp.plot.pcolor_sphere)])
 @pytest.mark.parametrize('colorbar', [True, False])
 def test_spherical_colorbar(function, colorbar):
-    """Test all spherical plots with custom arguments."""
+    """Test all spherical plots with custom colorbar argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
@@ -162,7 +162,7 @@ def test_spherical_colorbar(function, colorbar):
     (sp.plot.pcolor_sphere)])
 @pytest.mark.parametrize('limits', [None, (-1.5, 1.5), [-1.5, 1.5]])
 def test_spherical_limits(function, limits):
-    """Test all spherical plots with custom arguments."""
+    """Test all spherical plots with custom limits argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
@@ -193,7 +193,7 @@ def test_spherical_limits(function, limits):
     (sp.plot.pcolor_sphere)])
 @pytest.mark.parametrize('phase', [True, False])
 def test_spherical_phase(function, phase):
-    """Test all spherical plots with custom arguments."""
+    """Test spherical plots with custom  phase argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     if phase:
@@ -219,7 +219,7 @@ def test_spherical_phase(function, phase):
     ])
 @pytest.mark.parametrize('projection', ['mollweide', 'hammer'])
 def test_spherical_projection(function, projection):
-    """Test all spherical plots with custom arguments."""
+    """Test spherical plots with custom projection argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
@@ -246,7 +246,7 @@ def test_spherical_projection(function, projection):
     np.array((-0.5, .5)),
     ])
 def test_spherical_levels(function, levels):
-    """Test all spherical plots with custom arguments."""
+    """Test contour plots with custom level argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
