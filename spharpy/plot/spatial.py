@@ -736,7 +736,7 @@ def _combined_contour(x, y, data, limits, cmap, levels, ax):
 def pcolor_map(
         coordinates,
         data,
-        cmap=plt.get_cmap('viridis'),
+        cmap='viridis',
         colorbar=True,
         limits=None,
         projection='mollweide',
@@ -854,7 +854,7 @@ def pcolor_map(
 def contour_map(
         coordinates,
         data,
-        cmap=plt.get_cmap('viridis'),
+        cmap='viridis',
         colorbar=True,
         limits=None,
         projection='mollweide',
@@ -977,7 +977,7 @@ def contour_map(
 def contour(
         coordinates,
         data,
-        cmap=plt.get_cmap('viridis'),
+        cmap='viridis',
         colorbar=True,
         limits=None,
         levels=None,
