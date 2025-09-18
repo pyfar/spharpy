@@ -696,11 +696,11 @@ def _combined_contour(x, y, data, limits, cmap, levels, ax):
     cmap : :py:class:`matplotlib.colors.Colormap`
         Colormap for the plot, see matplotlib.cm.
     levels : int or array-like, optional
-        Determines the number and positions of the contour lines / regions.
+        Determines the number and positions of the contours.
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
-        no more than n+1 "nice" contour levels between minimum and maximum
-        numeric values of Z. If array-like, draw contour lines at the
+        no more than n+1 contour levels between minimum and maximum
+        numeric values of the plot data. If array-like, draw contour lines at the
         specified levels. The values must be in increasing order.
     ax : matplotlib.axes
         The axes object into which the contour is plotted
@@ -889,11 +889,11 @@ def contour_map(
         :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
         for more information on available projections in matplotlib.
     levels : int or array-like, optional
-        Determines the number and positions of the contour lines / regions.
+        Determines the number and positions of the contours.
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
-        no more than n+1 "nice" contour levels between minimum and maximum
-        numeric values of Z. If array-like, draw contour lines at the
+        no more than n+1 contour levels between minimum and maximum
+        numeric values of the plot data. If array-like, draw contour lines at the
         specified levels. The values must be in increasing order.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
@@ -1007,11 +1007,11 @@ def contour(
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
     levels : int or array-like, optional
-        Determines the number and positions of the contour lines / regions.
+        Determines the number and positions of the contours.
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
-        no more than n+1 "nice" contour levels between minimum and maximum
-        numeric values of Z. If array-like, draw contour lines at the
+        no more than n+1 contour levels between minimum and maximum
+        numeric values of the plot data. If array-like, draw contour lines at the
         specified levels. The values must be in increasing order.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
