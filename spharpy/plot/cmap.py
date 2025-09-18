@@ -5,8 +5,21 @@ import numpy as np
 
 
 def phase_twilight(lut=512):
-    """Cyclic color map for displaying phase information. This is a modified
-    version of the twilight color map from matplotlib.
+    """
+    Cyclic color map for displaying phase information.
+
+    This is a modified version of the twilight color map from matplotlib.
+
+    Parameters
+    ----------
+    lut : int, optional
+        Number of entries in the lookup table of colors for the colormap.
+        Default is 512.
+
+    Returns
+    -------
+    matplotlib.colors.ListedColormap
+        Colormap instance.
     """
     if not isinstance(lut, int) or lut <= 0:
         raise ValueError('lut must be a positive integer.')
