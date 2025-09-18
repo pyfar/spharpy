@@ -16,6 +16,7 @@ def test_spherical_harmonics_definition_init():
     assert definition.basis_type == 'real'
     assert definition.normalization == 'n3d'
     assert definition.channel_convention == 'acn'
+    assert definition.condon_shortley is False
 
 
 @pytest.mark.parametrize("phase_convention", [True, False])
@@ -50,8 +51,11 @@ def test_setter_phase_convention_auto():
 
 def test_setter_phase_convention_invalid():
     sph_harm = SphericalHarmonicDefinition()
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError, match='must be a bool or the string'):
         sph_harm.condon_shortley = 123  # Invalid type
+
+    with pytest.raises(ValueError, match='must be a bool or the string'):
+        sph_harm.condon_shortley = "invalid"  # Invalid string
 
 
 @pytest.mark.parametrize("channel_convention", ["acn", "fuma"])
@@ -87,6 +91,18 @@ def test_init_normalization_definition(normalization):
     sph_harm = SphericalHarmonicDefinition(
         normalization=normalization)
     assert sph_harm.normalization == normalization
+
+
+def test_setter_basis_type():
+    sph_harm = SphericalHarmonicDefinition()
+    sph_harm.basis_type = "complex"
+    assert sph_harm.basis_type == "complex"
+
+    sph_harm.basis_type = "real"
+    assert sph_harm.basis_type == "real"
+
+    with pytest.raises(ValueError, match='Invalid basis type'):
+        sph_harm.basis_type = "invalid"  # Invalid value
 
 
 def test_setter_normalization_definition_invalid():
