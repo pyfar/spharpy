@@ -202,7 +202,7 @@ def test_balloon_cmap_encoding(function, cmap_encoding, cmap):
     data = np.abs(data) * np.exp(1j * coords.azimuth)
 
     # do plotting
-    filename = f'phase_{function.__name__}_{cmap_encoding}_cm_{cmap}'
+    filename = f'phase_{function.__name__}_{cmap_encoding}_cmap_{cmap}'
     create_figure()
     function(coords, data, cmap_encoding=cmap_encoding, cmap=cmap)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
