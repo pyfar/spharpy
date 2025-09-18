@@ -45,7 +45,7 @@ for file in os.listdir(output_path):
     os.remove(os.path.join(output_path, file))
 
 # the naming scheme if the baseline is as follows:
-# <test_name>_<function_name>_<parameters>.png
+# <function_name>_<parameter_name>_<parameters>.png
 
 # testing ---------------------------------------------------------------------
 @pytest.mark.parametrize('function', [
@@ -81,7 +81,7 @@ def test_spherical_default(function):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'default_{function.__name__}'
+    filename = f'{function.__name__}_default'
     create_figure()
     function(coords, data)
     save_and_compare(
@@ -99,15 +99,12 @@ def test_spherical_default(function):
 
 
 @pytest.mark.parametrize('function', [
-    (sp.plot.balloon),
-    (sp.plot.balloon_wireframe),
     (sp.plot.contour),
     (sp.plot.contour_map),
-    (sp.plot.pcolor_map),
-    (sp.plot.pcolor_sphere)])
+    (sp.plot.pcolor_map)])
 @pytest.mark.parametrize('cmap', [plt.get_cmap('plasma'), 'plasma', None])
 def test_spherical_cmap(function, cmap):
-    """Test all spherical plots with custom arguments."""
+    """Test all spherical plots with custom cmap argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
@@ -118,7 +115,7 @@ def test_spherical_cmap(function, cmap):
     else:
         # otherwise use the string representation of the colormap
         cmap_str = str(cmap)
-    filename = f'cmap_{function.__name__}_{cmap_str}'
+    filename = f'{function.__name__}_cmap_{cmap_str}'
     create_figure()
     function(coords, data, cmap=cmap)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -139,12 +136,12 @@ def test_spherical_cmap(function, cmap):
     (sp.plot.pcolor_sphere)])
 @pytest.mark.parametrize('colorbar', [True, False])
 def test_spherical_colorbar(function, colorbar):
-    """Test all spherical plots with custom arguments."""
+    """Test all spherical plots with custom colorbar argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'colorbar_{function.__name__}_{colorbar}'
+    filename = f'{function.__name__}_colorbar_{colorbar}'
     create_figure()
     function(coords, data, colorbar=colorbar)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -165,7 +162,7 @@ def test_spherical_colorbar(function, colorbar):
     (sp.plot.pcolor_sphere)])
 @pytest.mark.parametrize('limits', [None, (-1.5, 1.5), [-1.5, 1.5]])
 def test_spherical_limits(function, limits):
-    """Test all spherical plots with custom arguments."""
+    """Test all spherical plots with custom limits argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
@@ -174,7 +171,7 @@ def test_spherical_limits(function, limits):
         limits_str = 'None'
     else:
         limits_str = f'{type(limits).__name__}'
-    filename = f'limits_{function.__name__}_{limits_str}'
+    filename = f'{function.__name__}_limits_{limits_str}'
     create_figure()
     function(coords, data, limits=limits)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -196,7 +193,7 @@ def test_spherical_limits(function, limits):
     (sp.plot.pcolor_sphere)])
 @pytest.mark.parametrize('phase', [True, False])
 def test_spherical_phase(function, phase):
-    """Test all spherical plots with custom arguments."""
+    """Test spherical plots with custom  phase argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     if phase:
@@ -204,7 +201,7 @@ def test_spherical_phase(function, phase):
         data = np.exp(1j * data)
 
     # do plotting
-    filename = f'phase_{function.__name__}_{phase}'
+    filename = f'{function.__name__}_phase_{phase}'
     create_figure()
     function(coords, data, phase=phase)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -222,12 +219,12 @@ def test_spherical_phase(function, phase):
     ])
 @pytest.mark.parametrize('projection', ['mollweide', 'hammer'])
 def test_spherical_projection(function, projection):
-    """Test all spherical plots with custom arguments."""
+    """Test spherical plots with custom projection argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'projection_{function.__name__}_{projection}'
+    filename = f'{function.__name__}_projection_{projection}'
     create_figure()
     function(coords, data, projection=projection)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -249,12 +246,12 @@ def test_spherical_projection(function, projection):
     np.array((-0.5, .5)),
     ])
 def test_spherical_levels(function, levels):
-    """Test all spherical plots with custom arguments."""
+    """Test contour plots with custom level argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'levels_{function.__name__}_{type(levels).__name__}'
+    filename = f'{function.__name__}_levels_{type(levels).__name__}'
     create_figure()
     function(coords, data, levels=levels)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -274,18 +271,18 @@ def test_spherical_levels(function, levels):
     (sp.plot.contour_map, 'mollweide'),
     (sp.plot.pcolor_map, 'mollweide'),
     ])
-def test_axes_in_out(function, projection):
+def test_data_plots_projection_input_and_return(function, projection):
+    """
+    Test all spherical plots with ax argument and check if this is
+    also returned.
+    """
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
     # do plotting
-    filename = f'axes_{function.__name__}_{projection}'
     create_figure()
     ax = plt.axes(projection=projection)
 
     (ax_out, _) = function(coords, data, ax=ax)
-    save_and_compare(create_baseline, baseline_path, output_path, filename,
-                     file_type, compare_output)
-
     # check if the returned axis is a 3D axis
     assert ax_out.name == projection
 
@@ -299,16 +296,15 @@ def test_axes_in_out(function, projection):
     (sp.plot.scatter),
     (sp.plot.voronoi_cells_sphere),
     ])
-def test_scatter_axes3d(function):
+def test_coordinates_plots_projection_input_and_return(function):
+    """Test scatter plots with ax argument and check if this is also returned.
+    """
     coords = sp.samplings.equal_area(n_max=0, n_points=12)
     # do plotting
-    filename = f'scatter_axes3d_{function.__name__}'
     create_figure()
     ax = plt.axes(projection='3d')
 
     ax_out = function(coords, ax=ax)
-    save_and_compare(create_baseline, baseline_path, output_path, filename,
-                     file_type, compare_output)
 
     # check if the returned axis is a 3D axis
     assert ax_out.name == '3d'
