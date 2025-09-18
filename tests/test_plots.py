@@ -18,7 +18,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = False
+create_baseline = True
 
 # file type used for saving the plots
 file_type = "png"
@@ -45,7 +45,7 @@ for file in os.listdir(output_path):
     os.remove(os.path.join(output_path, file))
 
 # the naming scheme if the baseline is as follows:
-# <test_name>_<function_name>_<parameters>.png
+# <function_name>_<parameter_name>_<parameters>.png
 
 # testing ---------------------------------------------------------------------
 @pytest.mark.parametrize('function', [
@@ -81,7 +81,7 @@ def test_spherical_default(function):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'default_{function.__name__}'
+    filename = f'{function.__name__}_default'
     create_figure()
     function(coords, data)
     save_and_compare(
@@ -115,7 +115,7 @@ def test_spherical_cmap(function, cmap):
     else:
         # otherwise use the string representation of the colormap
         cmap_str = str(cmap)
-    filename = f'cmap_{function.__name__}_{cmap_str}'
+    filename = f'{function.__name__}_cmap_{cmap_str}'
     create_figure()
     function(coords, data, cmap=cmap)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -141,7 +141,7 @@ def test_spherical_colorbar(function, colorbar):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'colorbar_{function.__name__}_{colorbar}'
+    filename = f'{function.__name__}_colorbar_{colorbar}'
     create_figure()
     function(coords, data, colorbar=colorbar)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -171,7 +171,7 @@ def test_spherical_limits(function, limits):
         limits_str = 'None'
     else:
         limits_str = f'{type(limits).__name__}'
-    filename = f'limits_{function.__name__}_{limits_str}'
+    filename = f'{function.__name__}_limits_{limits_str}'
     create_figure()
     function(coords, data, limits=limits)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -201,7 +201,7 @@ def test_spherical_phase(function, phase):
         data = np.exp(1j * data)
 
     # do plotting
-    filename = f'phase_{function.__name__}_{phase}'
+    filename = f'{function.__name__}_phase_{phase}'
     create_figure()
     function(coords, data, phase=phase)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -224,7 +224,7 @@ def test_spherical_projection(function, projection):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'projection_{function.__name__}_{projection}'
+    filename = f'{function.__name__}_projection_{projection}'
     create_figure()
     function(coords, data, projection=projection)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -251,7 +251,7 @@ def test_spherical_levels(function, levels):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     # do plotting
-    filename = f'levels_{function.__name__}_{type(levels).__name__}'
+    filename = f'{function.__name__}_levels_{type(levels).__name__}'
     create_figure()
     function(coords, data, levels=levels)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
@@ -271,7 +271,7 @@ def test_spherical_levels(function, levels):
     (sp.plot.contour_map, 'mollweide'),
     (sp.plot.pcolor_map, 'mollweide'),
     ])
-def test_axes_input_and_return(function, projection):
+def test_data_plots_projection_input_and_return(function, projection):
     """
     Test all spherical plots with ax argument and check if this is
     also returned.
@@ -296,7 +296,7 @@ def test_axes_input_and_return(function, projection):
     (sp.plot.scatter),
     (sp.plot.voronoi_cells_sphere),
     ])
-def test_scatter_plots_axes_argument(function):
+def test_coordinates_plots_projection_input_and_return(function):
     """Test scatter plots with ax argument and check if this is also returned.
     """
     coords = sp.samplings.equal_area(n_max=0, n_points=12)
