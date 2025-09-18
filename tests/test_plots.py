@@ -313,3 +313,28 @@ def test_coordinates_plots_projection_input_and_return(function):
     match = "The projection of the axis needs to be '3d'"
     with pytest.raises(ValueError, match=match):
         function(coords, ax=plt.axes())
+
+
+def test_cmap_phase_twilight():
+    """Test the phase twilight plot with default arguments."""
+    lut = 512
+    # do plotting
+    filename = 'cmap_phase_twilight'
+    create_figure(6, .5)
+    colormap = sp.plot.phase_twilight(lut)
+    ax = plt.gca()
+    gradient = np.linspace(0, 1, lut)
+    gradient = np.vstack((gradient, gradient))
+
+    ax.imshow(gradient, aspect='auto', cmap=colormap)
+    ax.set_axis_off()
+    save_and_compare(
+        create_baseline, baseline_path, output_path, filename,
+        file_type, compare_output)
+
+    match = 'lut must be a positive integer.'
+    with pytest.raises(ValueError, match=match):
+        sp.plot.phase_twilight('lut')
+
+    with pytest.raises(ValueError, match=match):
+        sp.plot.phase_twilight(0)
