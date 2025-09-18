@@ -318,16 +318,17 @@ def test_coordinates_plots_projection_input_and_return(function):
 def test_cmap_phase_twilight():
     """Test the phase twilight colormap."""
     lut = 512
-    # do plotting
     filename = 'cmap_phase_twilight'
     create_figure(6, .5)
+
+    # do plotting
     colormap = sp.plot.phase_twilight(lut)
     ax = plt.gca()
     gradient = np.linspace(0, 1, lut)
     gradient = np.vstack((gradient, gradient))
-
     ax.imshow(gradient, aspect='auto', cmap=colormap)
     ax.set_axis_off()
+
     save_and_compare(
         create_baseline, baseline_path, output_path, filename,
         file_type, compare_output)
