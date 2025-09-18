@@ -8,6 +8,9 @@ def phase_twilight(lut=512):
     """Cyclic color map for displaying phase information. This is a modified
     version of the twilight color map from matplotlib.
     """
+    if not isinstance(lut, int) or lut <= 0:
+        raise ValueError('lut must be a positive integer.')
+
     lut = int(np.ceil(lut/4)*4)
     twilight = plt.get_cmap('twilight', lut=lut)
 
