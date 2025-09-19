@@ -125,3 +125,6 @@ docs/_static/favicon.ico
 docs/_static/header.rst
 docs/_static/css/custom.css
 docs/resources/logos/pyfar_logos_fixed_size_spharpy.png
+
+# ignore plot output
+tests/test_plot_data/output/
