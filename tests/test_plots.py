@@ -281,7 +281,15 @@ def test_spherical_refine(function, refine):
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
 
-    # test error for invalid inputs
+
+@pytest.mark.parametrize('function', [
+    sp.plot.pcolor_map,
+    ])
+def test_spherical_refine_error(function):
+    """Test contour plots with invalid refine argument."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
     match = 'refine'
     with pytest.raises(ValueError, match=match):
         function(coords, data, refine='refine')
