@@ -257,15 +257,15 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         Channel convention of the data which should be renormalized. Valid
         conventions are `"acn"` or `"fuma"`.
     current_norm : str
-        Current normalization. Valid normalizations are `"n3d"`, `"nm"`,
-        `"maxN"`, `"sn3d"`, or `"snm"`.
+        Current normalization. Valid normalizations are `"N3D"`, `"NM"`,
+        `"maxN"`, `"SN3D"`, or `"SNM"`.
     target_norm : str
-        Desired normalization. Valid normalizations are `"n3d"`, `"nm"`
-        `"maxN"`, `"sn3d"`, or `"snm"`.
+        Desired normalization. Valid normalizations are `"n3d"`, `"NM"`
+        `"maxN"`, `"SN3D"`, or `"SNM"`.
     axis : integer
         Axis along which the renormalization should be applied. The axis
         contains the spherical harmonics coefficients and must hence have
-        :math:Q = (N+1)^2 channels with :math:N being the spherical harmonics
+        :math:`Q = (N+1)^2` channels with :math:`N` being the spherical harmonics
         order of data.
 
     Returns
@@ -282,14 +282,14 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         raise ValueError("Invalid channel convention. Has to be 'acn' "
                          f"or 'fuma', but is {channel_convention}")
 
-    if current_norm not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
+    if current_norm not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
         raise ValueError("Invalid current normalization. Has to be 'n3d', "
-                         "'nm', 'maxN', 'sn3d', or 'snm' "
+                         "'NM', 'maxN', 'SN3D', or 'SNM' "
                          f"but is {current_norm}")
 
-    if target_norm not in ["n3d", "nm", "maxN", "sn3d", "snm"]:
-        raise ValueError("Invalid target normalization. Has to be 'n3d', "
-                         "'nm', 'maxN', 'sn3d', or 'snm' "
+    if target_norm not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
+        raise ValueError("Invalid target normalization. Has to be 'N3D', "
+                         "'NM', 'maxN', 'SN3D', or 'SNM' "
                          f"but is {target_norm}")
     if current_norm == target_norm:
         return data
@@ -309,22 +309,22 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
 
     data_renorm = data.copy()
     # normalize to 'n3d'
-    if current_norm == 'nm':
+    if current_norm == 'NM':
         data_renorm /= np.sqrt(4*np.pi)
-    if current_norm == 'sn3d':
+    if current_norm == 'SN3D':
         data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
-    if current_norm == 'snm':
+    if current_norm == 'SNM':
         data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
         data_renorm /= np.sqrt(4*np.pi)
     if current_norm == 'maxN':
         data_renorm /= n3d_to_maxn(acn).reshape(shape)
 
     # convert to target norm
-    if target_norm == "nm":
+    if target_norm == "NM":
         data_renorm *= np.sqrt(4*np.pi)
-    if target_norm == "sn3d":
+    if target_norm == "SN3D":
         data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-    if target_norm == "snm":
+    if target_norm == "SNM":
         data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
         data_renorm *= np.sqrt(4*np.pi)
     if target_norm == 'maxN':
@@ -375,7 +375,7 @@ def change_channel_convention(data, current, target, axis):
 
 
 def spherical_harmonic_basis(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
+        n_max, coordinates, normalization="N3D", channel_convention="acn",
         condon_shortley='auto'):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
@@ -410,8 +410,8 @@ def spherical_harmonic_basis(
     coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'nm'``, ``'maxN'``,
-        ``'sn3d'``, or ``'snm'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -462,11 +462,11 @@ def spherical_harmonic_basis(
         basis[:, acn] = _special.spherical_harmonic(
             order, degree, coordinates.colatitude, coordinates.azimuth,
         )
-        if normalization == "nm":
+        if normalization == "NM":
             basis[:, acn] *= np.sqrt(4*np.pi)
-        if normalization == "sn3d":
+        if normalization == "SN3D":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
-        if normalization == "snm":
+        if normalization == "SNM":
             basis[:, acn] *= n3d_to_sn3d_norm(order) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
@@ -478,7 +478,7 @@ def spherical_harmonic_basis(
     return basis
 
 
-def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
+def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="N3D",
                                       channel_convention="acn",
                                       condon_shortley='auto'):
     r"""
@@ -516,8 +516,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'nm'``, ``'maxN'``,
-        ``'sn3d'``, or ``'snm'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -578,11 +578,11 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
             n, m, theta, phi)
 
         factor = 1.
-        if normalization == "nm":
+        if normalization == "NM":
             factor = np.sqrt(4*np.pi)
-        if normalization == "sn3d":
+        if normalization == "SN3D":
             factor = n3d_to_sn3d_norm(n)
-        if normalization == "snm":
+        if normalization == "SNM":
             factor = n3d_to_sn3d_norm(n) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
@@ -600,7 +600,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
 
 
 def spherical_harmonic_basis_real(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
+        n_max, coordinates, normalization="N3D", channel_convention="acn",
         condon_shortley='auto'):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
@@ -623,8 +623,8 @@ def spherical_harmonic_basis_real(
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'nm'``, ``'maxN'``,
-        ``'sn3d'``, or ``'snm'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -668,11 +668,11 @@ def spherical_harmonic_basis_real(
         basis[:, acn] = _special.spherical_harmonic_real(
             order, degree, coordinates.colatitude, coordinates.azimuth,
         )
-        if normalization == "nm":
+        if normalization == "NM":
             basis[:, acn] *= np.sqrt(4*np.pi)
-        if normalization == "sn3d":
+        if normalization == "SN3D":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
-        if normalization == "snm":
+        if normalization == "SNM":
             basis[:, acn] *= n3d_to_sn3d_norm(order) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
@@ -685,7 +685,7 @@ def spherical_harmonic_basis_real(
 
 
 def spherical_harmonic_basis_gradient_real(n_max, coordinates,
-                                           normalization="n3d",
+                                           normalization="N3D",
                                            channel_convention="acn",
                                            condon_shortley='auto'):
     r"""
@@ -729,8 +729,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'nm'``,
-        ``'maxN'``, ``'sn3d'``, or ``'snm'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -785,11 +785,11 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                 n, m, theta, phi)
 
         factor = 1.0
-        if normalization == "nm":
+        if normalization == "NM":
             factor = np.sqrt(4*np.pi)
-        if normalization == "sn3d":
+        if normalization == "SN3D":
             factor = n3d_to_sn3d_norm(n)
-        if normalization == "snm":
+        if normalization == "SNM":
             factor = n3d_to_sn3d_norm(n) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)

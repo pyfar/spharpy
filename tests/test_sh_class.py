@@ -14,7 +14,7 @@ def test_sphharm_init():
     assert sph_harm.n_max == 2
     assert np.all(sph_harm.coordinates == coordinates)
     assert sph_harm.basis_type == 'real'
-    assert sph_harm.normalization == 'n3d'
+    assert sph_harm.normalization == 'N3D'
     assert sph_harm.channel_convention == 'acn'
     assert sph_harm.inverse_method == 'quadrature'
     assert not sph_harm.condon_shortley
@@ -116,8 +116,8 @@ def test_setter_channel_convention():
 def test_setter_normalization():
     coordinates = equiangular(n_points=4)
     sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    sph_harm.normalization = "sn3d"
-    assert sph_harm.normalization == "sn3d"
+    sph_harm.normalization = "SN3D"
+    assert sph_harm.normalization == "SN3D"
 
     with pytest.raises(ValueError, match='Invalid normalization'):
         sph_harm.normalization = "invalid"  # Invalid value
