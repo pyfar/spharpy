@@ -44,7 +44,7 @@ if not os.path.isdir(output_path):
 for file in os.listdir(output_path):
     os.remove(os.path.join(output_path, file))
 
-# the naming scheme if the baseline is as follows:
+# the naming scheme of the baseline is as follows:
 # <function_name>_<parameter_name>_<parameters>.png
 
 # testing ---------------------------------------------------------------------
