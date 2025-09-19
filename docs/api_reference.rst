@@ -23,7 +23,6 @@ Modules
 
 .. toctree::
    :maxdepth: 1
-   
    modules/spharpy.beamforming
    modules/spharpy.interpolate
    modules/spharpy.plot
