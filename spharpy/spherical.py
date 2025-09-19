@@ -463,6 +463,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
     r"""
     Calculates the unit sphere gradients of the complex spherical harmonics.
 
+    See [#]_ for details.
 
     The angular parts of the gradient are defined as
 
