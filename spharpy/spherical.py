@@ -476,7 +476,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
 
 
     This implementation avoids singularities at the poles using identities
-    derived in [#]_ and [#]_.
+    derived in [#]_.
 
 
     References
