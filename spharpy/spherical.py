@@ -260,7 +260,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         Current normalization. Valid normalizations are `"N3D"`, `"NM"`,
         `"maxN"`, `"SN3D"`, or `"SNM"`.
     target_norm : str
-        Desired normalization. Valid normalizations are `"n3d"`, `"NM"`
+        Desired normalization. Valid normalizations are `"N3D"`, `"NM"`
         `"maxN"`, `"SN3D"`, or `"SNM"`.
     axis : integer
         Axis along which the renormalization should be applied. The axis
@@ -283,7 +283,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
                          f"or 'fuma', but is {channel_convention}")
 
     if current_norm not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
-        raise ValueError("Invalid current normalization. Has to be 'n3d', "
+        raise ValueError("Invalid current normalization. Has to be 'N3D', "
                          "'NM', 'maxN', 'SN3D', or 'SNM' "
                          f"but is {current_norm}")
 

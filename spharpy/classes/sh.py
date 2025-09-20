@@ -137,7 +137,7 @@ class SphericalHarmonics:
         n_max,
         coordinates,
         basis_type="real",
-        normalization="n3d",
+        normalization="N3D",
         channel_convention="acn",
         inverse_method="auto",
         condon_shortley="auto",
