@@ -696,8 +696,8 @@ def _combined_contour(x, y, data, limits, cmap, levels, ax):
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
         no more than n+1 contour levels between minimum and maximum
-        numeric values of the plot data. If array-like, draw contour lines at the
-        specified levels. The values must be in increasing order.
+        numeric values of the plot data. If array-like, draw contour lines at
+        the specified levels. The values must be in increasing order.
     ax : matplotlib.axes
         The axes object into which the contour is plotted
 
@@ -891,8 +891,8 @@ def contour_map(
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
         no more than n+1 contour levels between minimum and maximum
-        numeric values of the plot data. If array-like, draw contour lines at the
-        specified levels. The values must be in increasing order.
+        numeric values of the plot data. If array-like, draw contour lines at
+        the specified levels. The values must be in increasing order.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
@@ -1009,8 +1009,8 @@ def contour(
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
         no more than n+1 contour levels between minimum and maximum
-        numeric values of the plot data. If array-like, draw contour lines at the
-        specified levels. The values must be in increasing order.
+        numeric values of the plot data. If array-like, draw contour lines at
+        the specified levels. The values must be in increasing order.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
