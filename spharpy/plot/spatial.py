@@ -271,8 +271,8 @@ def pcolor_sphere(
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
     cmap_encoding : str, optional
-        The information encoded in the colormap. Can be either 'phase'
-        (in radians) or 'magnitude'. The default is 'phase'.
+        The information encoded in the colormap. Can be either `'phase'`
+        (in radians) or `'magnitude'`. The default is `'phase'`.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
@@ -387,8 +387,8 @@ def balloon_wireframe(
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
     cmap_encoding : str, optional
-        The information encoded in the colormap. Can be either 'phase'
-        (in radians) or 'magnitude'. The default is 'phase'.
+        The information encoded in the colormap. Can be either `'phase'`
+        (in radians) or `'magnitude'`. The default is `'phase'`.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
@@ -517,8 +517,8 @@ def balloon(
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
     cmap_encoding : str, optional
-        The information encoded in the colormap. Can be either 'phase'
-        (in radians) or 'magnitude'. The default is 'phase'.
+        The information encoded in the colormap. Can be either `'phase'`
+        (in radians) or `'magnitude'`. The default is `'phase'`.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object.
