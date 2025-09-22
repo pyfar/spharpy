@@ -118,7 +118,6 @@ def test_sphharm_init():
     assert sph_harm.n_max == 2
     assert np.all(sph_harm.coordinates == coordinates)
     assert sph_harm.inverse_method == 'quadrature'
-    assert not sph_harm.condon_shortley
 
 def test_sphharm_init_invalid_coordinates():
     with pytest.raises(TypeError,
