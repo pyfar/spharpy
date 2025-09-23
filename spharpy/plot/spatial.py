@@ -695,7 +695,7 @@ def _combined_contour(x, y, data, limits, cmap, levels, ax):
         needs to be clipped.
     cmap : :py:class:`matplotlib.colors.Colormap`
         Colormap for the plot, see matplotlib.cm.
-    levels : int or array-like, optional
+    levels : int or array-like
         Determines the number and positions of the contours.
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
         which tries to automatically choose
@@ -895,6 +895,8 @@ def contour_map(
         no more than n+1 contour levels between minimum and maximum
         numeric values of the plot data. If array-like, draw contour lines at
         the specified levels. The values must be in increasing order.
+        Default is ``None``, the levels are chosen automatically by
+        Matplotlib.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
@@ -1013,6 +1015,8 @@ def contour(
         no more than n+1 contour levels between minimum and maximum
         numeric values of the plot data. If array-like, draw contour lines at
         the specified levels. The values must be in increasing order.
+        Default is ``None``, the levels are chosen automatically by
+        Matplotlib.
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default `None`, which
         will create a new axis object with the specified projection.
