@@ -5,7 +5,7 @@ import numpy as np
 
 
 def phase_twilight(lut=512):
-    """
+    r"""
     Cyclic color map for displaying phase information.
 
     This is a modified version of the twilight color map from matplotlib.
