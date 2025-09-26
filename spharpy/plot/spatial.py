@@ -920,18 +920,9 @@ def contour_map(
     """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    data = data.copy()
 
     fig = plt.gcf()
-
-    res = int(np.ceil(np.sqrt(coordinates.csize)))
-
-    xi, yi = np.meshgrid(
-        np.linspace(-np.pi, np.pi, res*2),
-        np.linspace(-np.pi/2, np.pi/2, res))
-
-    interp = interpolate_data_on_sphere(coordinates, data)
-    zi = interp(xi, yi)
-
     if ax is None:
         ax = plt.gca() if fig.axes else plt.axes(projection=projection)
 
@@ -943,25 +934,8 @@ def contour_map(
     ax.set_xlabel('Longitude [$^\\circ$]')
     ax.set_ylabel('Latitude [$^\\circ$]')
 
-    extend = 'neither'
-    if limits is None:
-        limits = (zi.min(), zi.max())
-    else:
-        mask_min = zi < limits[0]
-        zi[mask_min] = limits[0]
-        mask_max = zi > limits[1]
-        zi[mask_max] = limits[1]
-        if np.any(mask_max) and np.any(mask_min):
-            extend = 'both'
-        elif np.any(mask_max) and not np.any(mask_min):
-            extend = 'max'
-        elif not np.any(mask_max) and np.any(mask_min):
-            extend = 'min'
-
-    ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k',
-               vmin=limits[0], vmax=limits[1], extend=extend)
-    cf = ax.contourf(xi, yi, zi, levels=levels, cmap=cmap, vmin=limits[0],
-                     vmax=limits[1])
+    _, latitude, longitude = coordinates2latlon(coordinates)
+    cf = _combined_contour(longitude, latitude, data, limits, cmap, levels, ax)
 
     if type(levels) is int:
         levels = mpl.ticker.MaxNLocator(levels)
@@ -1042,7 +1016,7 @@ def contour(
     _check_input_parameters(coordinates, data, cmap, colorbar, limits)
     data = data.copy()
 
-    height, latitude, longitude = coordinates2latlon(coordinates)
+    _, latitude, longitude = coordinates2latlon(coordinates)
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
     fig = plt.gcf()
