@@ -10,7 +10,7 @@ def phase_twilight(lut=512):
 
     This is a modified version of the twilight color map from matplotlib.
     The colormap is rotated such that :math:`0` is encoded as red hues, while
-    `:math:\pi` is encoded as blue hues.
+    :math:`\pi` is encoded as blue hues.
 
     Parameters
     ----------
