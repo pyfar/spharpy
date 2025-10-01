@@ -147,9 +147,12 @@ class SamplingSphere(pf.Coordinates):
         Examples
         --------
         Create a SamplingSphere object
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_cartesian(0, 0, 1)
+
         Or the using init
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere(0, 0, 1)
         """
@@ -207,6 +210,7 @@ class SamplingSphere(pf.Coordinates):
         Examples
         --------
         Create a SamplingSphere object
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_spherical_elevation(0, 0, 1)
         """
@@ -267,6 +271,7 @@ class SamplingSphere(pf.Coordinates):
         Examples
         --------
         Create a SamplingSphere object
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_spherical_colatitude(0, 0, 1)
         """
@@ -325,6 +330,7 @@ class SamplingSphere(pf.Coordinates):
         Examples
         --------
         Create a SamplingSphere object
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_spherical_side(0, 0, 1)
         """
@@ -383,6 +389,7 @@ class SamplingSphere(pf.Coordinates):
         Examples
         --------
         Create a SamplingSphere object
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_spherical_front(0, 0, 1)
         """
@@ -440,6 +447,7 @@ class SamplingSphere(pf.Coordinates):
         Examples
         --------
         Create a SamplingSphere object
+
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_cylindrical(0, 0, 1, sh_order=1)
         """
