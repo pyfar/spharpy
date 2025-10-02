@@ -70,12 +70,16 @@ class SphericalHarmonics:
 
     - normalization: Defines the normalization convention:
 
-      - ``'n3d'``: Uses the 3D normalization
+      - ``'N3D'``: Uses the 3D normalization
         (also known as Schmidt semi-normalized).
       - ``'maxN'``: Uses the maximum norm
         (also known as fully normalized).
-      - ``'sn3d'``: Uses the SN3D normalization
+      - ``'SN3D'``: Uses the SN3D normalization
         (also known as Schmidt normalized).
+      - ``'NM'``: Uses the monopole normalization
+        (similar to n3d but normalized to a monopole)
+      - ``'SNM'``: Uses the monopole semi-normalization
+        (similar to sn3d but normalized to a monopole)
 
     - channel_convention: Defines the channel ordering convention.
 
@@ -105,8 +109,9 @@ class SphericalHarmonics:
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``. The default is ``'real'``.
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. The default is ``'n3d'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'``, or ``'SNM'``.
+        The default is ``'N3D'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -132,7 +137,7 @@ class SphericalHarmonics:
         n_max,
         coordinates,
         basis_type="real",
-        normalization="n3d",
+        normalization="N3D",
         channel_convention="acn",
         inverse_method="auto",
         condon_shortley="auto",
@@ -299,14 +304,15 @@ class SphericalHarmonics:
     @normalization.setter
     def normalization(self, value):
         """Get or set the normalization convention."""
-        if value not in ["n3d", "maxN", "sn3d"]:
+        if value not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
             raise ValueError(
                 "Invalid normalization, "
-                "currently only 'n3d', 'maxN', 'sn3d' are "
-                "supported")
+                "currently only 'N3D', 'NM', 'maxN', 'SN3D', 'SNM' are "
+                "supported",
+            )
         if value == "maxN" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with " \
-                            "'maxN' normalization")
+            raise ValueError("n_max > 3 is not allowed with "
+                             "'maxN' normalization")
         if value != self._normalization:
             self._reset_compute_attributes()
             self._normalization = value
@@ -352,7 +358,7 @@ class SphericalHarmonics:
         Compute the gradient of the basis matrix for the SphericalHarmonics
         class.
         """
-        if any((self.normalization in ["maxN", "sn3d"],
+        if any((self.normalization in ["maxN", "SN3D"],
                 self.channel_convention == "fuma")):
             raise ValueError(
             f"Gradient computation not supported for normalization "

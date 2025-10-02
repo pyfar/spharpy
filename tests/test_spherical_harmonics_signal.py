@@ -14,7 +14,7 @@ def test_spherical_harmonic_signal_init():
     signal = SphericalHarmonicSignal(data,
                                      44100, basis_type='real',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=False)
     assert isinstance(signal, SphericalHarmonicSignal)
 
@@ -33,13 +33,13 @@ def test_spherical_harmonic_signal_init_condon_shortley():
                                      44100, basis_type='real',
                                      channel_convention='acn',
                                      condon_shortley=False,
-                                     normalization='n3d')
+                                     normalization='N3D')
     assert not signal.condon_shortley
 
     signal = SphericalHarmonicSignal(data.astype(np.complex128),
                                      44100, basis_type='complex',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=True,
                                      is_complex=True)
     assert signal.condon_shortley
@@ -61,7 +61,7 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                                 44100, basis_type='real',
                                 channel_convention='acn',
                                 condon_shortley=False,
-                                normalization='n3d')
+                                normalization='N3D')
     # test if sh channels are valid
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],
@@ -77,7 +77,7 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                                 44100, basis_type='real',
                                 channel_convention='acn',
                                 condon_shortley=False,
-                                normalization='n3d')
+                                normalization='N3D')
 
 
 def test_spherical_harmonic_signal_init_multichannel():
@@ -86,7 +86,7 @@ def test_spherical_harmonic_signal_init_multichannel():
     signal = SphericalHarmonicSignal(sh_coeffs,
                                      44100, basis_type='real',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=False)
     assert isinstance(signal, SphericalHarmonicSignal)
 
@@ -100,7 +100,7 @@ def test_nmax_getter():
     signal = SphericalHarmonicSignal(data,
                                      44100, basis_type='real',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=False)
     assert signal.n_max == 1
     assert isinstance(signal.n_max, int)
@@ -117,7 +117,7 @@ def test_init_wrong_basis_type():
         SphericalHarmonicSignal(data,
                                 44100, basis_type='invalid_basis_type',
                                 channel_convention='acn',
-                                normalization='n3d',
+                                normalization='N3D',
                                 condon_shortley=False)
 
 
@@ -130,7 +130,7 @@ def test_basis_type_getter():
     signal = SphericalHarmonicSignal(data,
                                      44100, basis_type='real',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=False)
     assert signal.basis_type == 'real'
 
@@ -142,8 +142,9 @@ def test_init_wrong_normalization():
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
     with pytest.raises(ValueError,
-                match="Invalid normalization, has to be 'sn3d', "
-                      "'n3d', or 'maxN', but is invalid_normalization"):
+                       match="Invalid normalization, has to be 'N3D', 'NM', "
+                             "'maxN', 'SN3D', or 'SNM', but is "
+                             "invalid_normalization"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -159,16 +160,22 @@ def test_spherical_harmonic_signal_normalization_setter():
     signal = SphericalHarmonicSignal(data,
                                      44100, basis_type='real',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=False)
-    signal.normalization = 'sn3d'
-    assert signal.normalization == 'sn3d'
+    signal.normalization = 'SN3D'
+    assert signal.normalization == 'SN3D'
+
+    signal.normalization = 'SNM'
+    assert signal.normalization == 'SNM'
 
     signal.normalization = 'maxN'
     assert signal.normalization == 'maxN'
 
-    signal.normalization = 'n3d'
-    assert signal.normalization == 'n3d'
+    signal.normalization = 'N3D'
+    assert signal.normalization == 'N3D'
+
+    signal.normalization = 'NM'
+    assert signal.normalization == 'NM'
 
 
 def test_init_wrong_channel_convention():
@@ -183,7 +190,7 @@ def test_init_wrong_channel_convention():
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='invalid_convention',
-                                normalization='n3d',
+                                normalization='N3D',
                                 condon_shortley=False)
 
 
@@ -195,7 +202,7 @@ def test_spherical_harmonic_signal_channel_convention_setter():
     signal = SphericalHarmonicSignal(data,
                                      44100, basis_type='real',
                                      channel_convention='acn',
-                                     normalization='n3d',
+                                     normalization='N3D',
                                      condon_shortley=False)
     signal.channel_convention = 'fuma'
     assert signal.channel_convention == 'fuma'
