@@ -338,7 +338,10 @@ def pcolor_sphere(
     plot.set_array(cdata)
 
     if colorbar:
-        fig.colorbar(plot, ax=ax, label=clabel)
+        fig.colorbar(
+            plot, ax=ax, label=clabel,
+            orientation='horizontal', shrink=0.5,
+        )
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
@@ -464,7 +467,10 @@ def balloon_wireframe(
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
     if colorbar:
-        fig.colorbar(cmappable, ax=ax, label=clabel)
+        fig.colorbar(
+            cmappable, ax=ax, label=clabel,
+            orientation='horizontal', shrink=0.5,
+        )
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
@@ -589,7 +595,10 @@ def balloon(
         np.ptp(xyz[2])])
 
     if colorbar:
-        fig.colorbar(plot, ax=ax, label=clabel)
+        fig.colorbar(
+            plot, ax=ax, label=clabel,
+            orientation='horizontal', shrink=0.5,
+        )
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
