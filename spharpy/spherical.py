@@ -265,8 +265,8 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     axis : integer
         Axis along which the renormalization should be applied. The axis
         contains the spherical harmonics coefficients and must hence have
-        :math:`Q = (N+1)^2` channels with :math:`N` being the spherical harmonics
-        order of data.
+        :math:`Q = (N+1)^2` channels with :math:`N` being the spherical
+        harmonics order of data.
 
     Returns
     -------
