@@ -25,9 +25,9 @@ def test_spherical_harmonic(make_coordinates, implementation,
     phase_conv_id = 'None' if not condon_shortley else 'Condon-Shortley'
 
     norm_id = normalization
-    if normalization == ('NM' or 'N3D'):
+    if normalization == 'NM' or normalization == 'N3D':
         norm_id = 'n3d'
-    if normalization == ('SNM' or 'SN3D'):
+    if normalization == 'SNM' or normalization == 'SN3D':
         norm_id = 'sn3d'
 
     Y = np.genfromtxt(f'./tests/data/Y_cmplx_{phase_conv_id}_'
@@ -63,9 +63,9 @@ def test_spherical_harmonics_real(make_coordinates, implementation,
     phase_conv_id = 'Condon-Shortley' if condon_shortley is True else 'None'
 
     norm_id = normalization
-    if normalization == ('NM' or 'N3D'):
+    if normalization == 'NM' or normalization == 'N3D':
         norm_id = 'n3d'
-    if normalization == ('SNM' or 'SN3D'):
+    if normalization == 'SNM' or normalization == 'SN3D':
         norm_id = 'sn3d'
 
     Y = np.genfromtxt(f'./tests/data/Y_real_{phase_conv_id}_'
