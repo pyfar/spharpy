@@ -55,8 +55,8 @@ def test_spherical_harmonic_signal_wrong_dimensions():
 
     # test if dimension of data is < 3
     with pytest.raises(ValueError,
-                       match="Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions."):
+                match="Invalid number of dimensions. Data should have "
+                      "at least 3 dimensions."):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -70,9 +70,9 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                      [1., 2., 3.]]).reshape(1, 5, 3)
 
     with pytest.raises(ValueError,
-                       match=re.escape("Invalid number of SH channels: "
-                                       f"{data.shape[-2]}. It must match "
-                                       "(n_max + 1)^2.")):
+                match=re.escape("Invalid number of SH channels: "
+                                f"{data.shape[-2]}. It must match "
+                                "(n_max + 1)^2.")):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -185,8 +185,8 @@ def test_init_wrong_channel_convention():
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
     with pytest.raises(ValueError,
-                       match="Invalid channel convention, has to be 'acn' "
-                             "or 'fuma', but is invalid_convention"):
+                match="Invalid channel convention, has to be 'acn' "
+                      "or 'fuma', but is invalid_convention"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='invalid_convention',
