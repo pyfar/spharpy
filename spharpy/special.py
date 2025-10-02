@@ -59,9 +59,9 @@ def spherical_bessel(n, z, derivative=False):
 
 
 def spherical_bessel_zeros(n_max, n_zeros):
-    """Compute the zeros of the spherical Bessel function.
+    r"""Compute the zeros of the spherical Bessel function.
     This function will always start at order zero which is equal
-    to sin(x)/x and iteratively compute the roots for higher orders.
+    to :math:`\sin(x)/x` and iteratively compute the roots for higher orders.
     The roots are computed using Brents algorithm from the scipy package.
 
     Parameters
@@ -354,8 +354,8 @@ def legendre_function(n, m, z, cs_phase=True):
 
         P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n{z}
 
-    where the Condon-Shotley phase term $(-1)^m$ is dropped when cs_phase=False
-    is used.
+    where the Condon-Shotley phase term :math:`(-1)^m` is dropped when
+    cs_phase=False is used.
 
     Parameters
     ----------
@@ -366,12 +366,13 @@ def legendre_function(n, m, z, cs_phase=True):
     z : ndarray, double
         The argument as an array
     cs_phase : bool, optional
-        Whether to use include the Condon-Shotley phase term (-1)^m or not
+        Whether to use include the Condon-Shotley phase term :math:`(-1)^m`
+        or not
 
     Returns
     -------
     legendre : ndarray, double
-        The Legendre function. This will return zeros if $|m| > n$.
+        The Legendre function. This will return zeros if :math:`|m| > n`.
 
     Note
     ----
@@ -443,7 +444,7 @@ def spherical_harmonic_normalization(n, m, norm='full'):
 
 def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
     r"""The derivative of the real valued spherical harmonics with respect
-    to the elevation angle $\theta$.
+    to the elevation angle :math:`\theta`.
 
     Parameters
     ----------
@@ -494,7 +495,7 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
 
 def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
     r"""The derivative of the real valued spherical harmonics with respect
-    to the azimuth angle $\phi$.
+    to the azimuth angle :math:`\phi`.
 
     Parameters
     ----------
@@ -535,7 +536,7 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
 
 def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
     r"""The gradient of the real valued spherical harmonics with respect
-    to the azimuth angle phi.
+    to the azimuth angle :math:`\phi`.
     The singularities at the poles are avoided using the formulation proposed
     in [#]_.
 

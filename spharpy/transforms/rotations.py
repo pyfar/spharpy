@@ -346,7 +346,7 @@ def rotation_z_axis(n_max, angle):
 
     .. math::
 
-        c_{nm}(\\theta, \\phi + \\xi) = e^{-im\\xi} c_{nm}(\\theta, \\phi)
+        c_{nm}(\theta, \phi + \xi) = e^{-im\xi} c_{nm}(\theta, \phi)
 
     Parameters
     ----------
