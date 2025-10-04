@@ -14,17 +14,16 @@ def make_coordinates():
 
             if implementation == 'pyfar':
                 return pf.Coordinates(
-                    phi, theta, rad, domain='sph', convention='top_colat'
-                )
+                    phi, theta, rad, domain='sph', convention='top_colat')
             elif implementation == 'spharpy':
                 return SamplingSphere.from_spherical_colatitude(
                     phi, theta, rad)
-    yield Factory
+    return Factory
 
 
 @pytest.fixture
 def icosahedron():
-    """Return the coordinate points of an icosahedron in spherical coordinates
+    """Return the coordinate points of an icosahedron in spherical coordinates.
 
     Returns
     -------

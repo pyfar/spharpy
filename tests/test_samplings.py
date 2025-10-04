@@ -5,7 +5,6 @@ import spharpy.samplings as samplings
 from spharpy import SamplingSphere
 from pyfar import Coordinates
 import numpy.testing as npt
-from pytest import raises
 from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
 
@@ -74,11 +73,11 @@ def test_sph_extremal(download_sampling):
     assert not c.quadrature
 
     # test exceptions
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='n_points or n_max must be None'):
         c = samplings.hyperinterpolation(4, 1)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='invalid value for n_points'):
         c = samplings.hyperinterpolation(5)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='n_max must be between 1 and 200'):
         c = samplings.hyperinterpolation(n_max=0)
 
 
@@ -139,13 +138,13 @@ def test_sph_t_design(download_sampling):
     assert not c.quadrature
 
     # test exceptions
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='n_points or n_max must be None'):
         c = samplings.t_design(4, 1)
-    with raises(ValueError):
-        c = samplings.t_design(0)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
+        c = samplings.t_design(degree=0)
+    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
         c = samplings.t_design(n_max=0)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Invalid design criterion'):
         c = samplings.t_design(2, criterion='const_thread')
 
 
@@ -189,7 +188,7 @@ def test_sph_icosahedron():
 
 def test_equiangular():
     # test without parameters
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
         samplings.equiangular()
 
     # test with single number of points
@@ -220,7 +219,7 @@ def test_equiangular_weights_n_points_even(n_points):
     npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
     assert sampling.cshape == sampling.weights.shape
     assert sampling.cshape == n_points*n_points
-    assert sampling.quadrature is True
+    assert sampling.quadrature
 
 
 @pytest.mark.parametrize("n_points", np.arange(1, 40, 2))
@@ -228,7 +227,7 @@ def test_equiangular_weights_n_points_odd(n_points):
     sampling = samplings.equiangular(n_points=n_points)
     assert sampling.weights is None
     assert sampling.cshape == n_points*n_points
-    assert sampling.quadrature is False
+    assert not sampling.quadrature
 
 
 @pytest.mark.parametrize(
@@ -257,9 +256,7 @@ def test_equiangular_weights_n_max(n_max):
 
 
 @pytest.mark.parametrize(
-    'basis_func', [
-        spherical_harmonic_basis, spherical_harmonic_basis_real
-    ])
+    'basis_func', [spherical_harmonic_basis, spherical_harmonic_basis_real])
 def test_equiangular_orthogonality(basis_func):
     n_max = 4
     sampling = samplings.equiangular(n_max=n_max)
@@ -268,8 +265,7 @@ def test_equiangular_orthogonality(basis_func):
     npt.assert_allclose(
         Y.conj().T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max+1)**2),
-        atol=1e-6, rtol=1e-6
-    )
+        atol=1e-6, rtol=1e-6)
 
 
 @pytest.mark.parametrize("n_points", np.arange(1, 40))
@@ -291,9 +287,7 @@ def test_gaussian_weights_n_max(n_max):
 
 
 @pytest.mark.parametrize(
-    'basis_func', [
-        spherical_harmonic_basis, spherical_harmonic_basis_real
-    ])
+    'basis_func', [spherical_harmonic_basis, spherical_harmonic_basis_real])
 def test_gaussian_orthogonality(basis_func):
     n_max = 4
     sampling = samplings.gaussian(n_max=n_max)
@@ -302,21 +296,27 @@ def test_gaussian_orthogonality(basis_func):
     npt.assert_allclose(
         Y.conj().T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max+1)**2),
-        atol=1e-6, rtol=1e-6
-    )
+        atol=1e-6, rtol=1e-6)
+
+
+def test_gaussian_quadrature():
+    n_max = 3
+    sampling = samplings.gaussian(n_max=n_max)
+
+    assert sampling.quadrature
 
 
 def test_gaussian():
     # test without parameters
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
         samplings.gaussian()
 
     # n_points must be a positive natural number
-    with raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2,2))
+    with pytest.raises(ValueError, match='positive natural number'):
+        samplings.gaussian(n_points=(2, 2))
 
     # n_points must be a positive natural number
-    with raises(ValueError, match='positive natural number'):
+    with pytest.raises(ValueError, match='positive natural number'):
         samplings.gaussian(n_points=3.2)
 
     # test with single number of points
@@ -384,9 +384,11 @@ def test_equal_angle():
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
     # test assertions
-    with raises(ValueError):
+    with pytest.raises(ValueError,
+                       match='delta_phi must be an integer divisor'):
         c = samplings.equal_angle((11, 20))
-    with raises(ValueError):
+    with pytest.raises(ValueError,
+                       match='delta_theta must be an integer divisor'):
         c = samplings.equal_angle((20, 11))
 
     # test quadrature
@@ -418,13 +420,13 @@ def test_great_circle():
     assert not c.quadrature
 
     # test assertion: 1 / azimuth_res is not an integer
-    with raises(AssertionError):
+    with pytest.raises(AssertionError):
         samplings.great_circle(azimuth_res=.6)
     # test assertion: 360 / match is not an integer
-    with raises(AssertionError):
+    with pytest.raises(AssertionError):
         samplings.great_circle(match=270)
     # test assertion: match / azimuth_res is not an integer
-    with raises(AssertionError):
+    with pytest.raises(AssertionError):
         samplings.great_circle(azimuth_res=.5, match=11.25)
 
 
@@ -478,9 +480,9 @@ def test_fliege():
     assert not c.quadrature
 
     # test exceptions
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='n_points or n_max must be None'):
         c = samplings.fliege(9, 2)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Invalid number of points n_points'):
         c = samplings.fliege(30)
 
 

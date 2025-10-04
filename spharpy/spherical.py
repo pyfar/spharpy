@@ -1,8 +1,8 @@
+"""Spherical harmonics and Ambisonics functions."""
+
 import numpy as np
 import scipy.special as special
 import spharpy.special as _special
-import pyfar as pf
-import spharpy as sy
 
 
 def acn_to_nm(acn):
@@ -17,6 +17,17 @@ def acn_to_nm(acn):
 
         m = \mathrm{acn} - n^2 -n
 
+    Parameters
+    ----------
+    acn : ndarray, int
+        Linear index
+
+    Returns
+    -------
+    n : ndarray, int
+        Spherical harmonic order
+    m : ndarray, int
+        Spherical harmonic degree
 
     References
     ----------
@@ -24,20 +35,6 @@ def acn_to_nm(acn):
             Suggested Ambisonics Format (revised by F. Zotter),” International
             Symposium on Ambisonics and Spherical Acoustics,
             vol. 3, pp. 1-11, 2011.
-
-
-    Parameters
-    ----------
-    acn : ndarray, int
-        Linear index
-
-    Parameters
-    ----------
-    n : ndarray, int
-        Spherical harmonic order
-    m : ndarray, int
-        Spherical harmonic degree
-
     """
     acn = np.asarray(acn, dtype=int)
 
@@ -52,7 +49,7 @@ def acn_to_nm(acn):
 
 def nm_to_acn(n, m):
     r"""
-    Calculate the linear index coefficient for a order n and degree m,
+    Calculate the linear index coefficient for a order n and degree m.
 
     The linear index corresponds to the Ambisonics Channel Convention [#]_.
 
@@ -96,6 +93,8 @@ def nm_to_fuma(n, m):
     and degree m, according to the FuMa (Furse-Malham)
     Channel Ordering Convention.
 
+    See [#]_ for details.
+
     Parameters
     ----------
     n : integer, ndarray
@@ -126,9 +125,7 @@ def nm_to_fuma(n, m):
     acn = nm_to_acn(n, m)
 
     if np.any(acn < 0) or np.any(acn >= len(fuma_mapping)):
-        raise ValueError(
-            "nm2fuma only supports up to 3rd order"
-        )
+        raise ValueError("nm2fuma only supports up to 3rd order")
 
     acn = np.atleast_2d(acn).T
     fuma = np.array([], dtype=int)
@@ -142,7 +139,9 @@ def fuma_to_nm(fuma):
     r"""
     Calculate the spherical harmonic order n and degree m for a linear
     coefficient index, according to the FuMa (Furse-Malham)
-    Channel Ordering Convention [#]_.
+    Channel Ordering Convention.
+
+    See [#]_ for details.
 
     FuMa = WXYZ | RSTUV | KLMNOPQ
     ACN = WYZX | VTRSU | QOMKLNP
@@ -173,8 +172,7 @@ def fuma_to_nm(fuma):
     if np.any(fuma) < 0 or np.any(fuma >= len(fuma_mapping)):
         raise ValueError(
             "Invalid FuMa channel index, must be between 0 and 15 "
-            "(supported up to 3rd order)"
-        )
+            "(supported up to 3rd order)")
 
     acn = np.array([], dtype=int)
     for f in fuma:
@@ -263,30 +261,43 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         Channel convention of the data which should be renormalized. Valid
         conventions are `"acn"` or `"fuma"`.
     current_norm : str
-        Current normalization. Valid normalizations are `"n3d"`, `"maxN"`, or
-        `"sn3d"`.
+        Current normalization. Valid normalizations are `"N3D"`, `"NM"`,
+        `"maxN"`, `"SN3D"`, or `"SNM"`.
     target_norm : str
-        Desired normalization. Valid normalizations are `"n3d"`,
-        `"maxN"`, or `"sn3d"`.
+        Desired normalization. Valid normalizations are `"N3D"`, `"NM"`
+        `"maxN"`, `"SN3D"`, or `"SNM"`.
     axis : integer
-        Axis along which the renormalization should be applied
+        Axis along which the renormalization should be applied. The axis
+        contains the spherical harmonics coefficients and must hence have
+        :math:`Q = (N+1)^2` channels with :math:`N` being the spherical
+        harmonics order of data.
 
     Returns
     -------
     data : ndarray
         Renormalized data
     """
+    sh_channels = data.shape[axis]
+    if np.sqrt(sh_channels) % 1:
+        raise ValueError("Invalid number of SH channels: "
+                         f"{data.shape[-2]}. It must match (n_max + 1)^2.")
+
     if channel_convention not in ["acn", "fuma"]:
         raise ValueError("Invalid channel convention. Has to be 'acn' "
                          f"or 'fuma', but is {channel_convention}")
 
-    if current_norm not in ["n3d", "maxN", "sn3d"]:
-        raise ValueError("Invalid normalization. Has to be 'sn3d', "
-                         f"'n3d', or 'maxN', but is {current_norm}")
+    if current_norm not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
+        raise ValueError("Invalid current normalization. Has to be 'N3D', "
+                         "'NM', 'maxN', 'SN3D', or 'SNM' "
+                         f"but is {current_norm}")
 
-    if target_norm not in ["n3d", "maxN", "sn3d"]:
-        raise ValueError("Invalid normalization. Has to be 'sn3d', "
-                         f"'n3d', or 'maxN', but is {target_norm}")
+    if target_norm not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
+        raise ValueError("Invalid target normalization. Has to be 'N3D', "
+                         "'NM', 'maxN', 'SN3D', or 'SNM' "
+                         f"but is {target_norm}")
+    if current_norm == target_norm:
+        return data
+
     acn = np.arange(data.shape[axis])
 
     if channel_convention == "fuma":
@@ -294,28 +305,35 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     else:
         orders, _ = acn_to_nm(acn)
 
-    # prepare helper for reshaping
+    # One (re)normalization factor is computed per Ambisonics channel. To make
+    # sure that the factors can be applied, new axes must be added. This is
+    # done by reshaping to the following shape
     shape = [1] * data.ndim
-    shape[axis] = -1
+    shape[axis] = data.shape[axis]
 
     data_renorm = data.copy()
-    if current_norm == 'n3d':
-        if target_norm == "sn3d":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-        elif target_norm == "maxN":
-            data_renorm *= n3d_to_maxn(acn).reshape(shape)
-
-    if current_norm == 'sn3d':
-        # convert to n3d
+    # normalize to 'n3d'
+    if current_norm == 'NM':
+        data_renorm /= np.sqrt(4*np.pi)
+    if current_norm == 'SN3D':
         data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
-        if target_norm == "maxN":
-            data_renorm *= n3d_to_maxn(acn).reshape(shape)
-
+    if current_norm == 'SNM':
+        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
+        data_renorm /= np.sqrt(4*np.pi)
     if current_norm == 'maxN':
-        # convert to n3d
         data_renorm /= n3d_to_maxn(acn).reshape(shape)
-        if target_norm == "sn3d":
-            data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+
+    # convert to target norm
+    if target_norm == "NM":
+        data_renorm *= np.sqrt(4*np.pi)
+    if target_norm == "SN3D":
+        data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+    if target_norm == "SNM":
+        data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+        data_renorm *= np.sqrt(4*np.pi)
+    if target_norm == 'maxN':
+        data_renorm *= n3d_to_maxn(acn).reshape(shape)
+
     return data_renorm
 
 
@@ -361,7 +379,7 @@ def change_channel_convention(data, current, target, axis):
 
 
 def spherical_harmonic_basis(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
+        n_max, coordinates, normalization="N3D", channel_convention="acn",
         condon_shortley='auto'):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
@@ -396,8 +414,8 @@ def spherical_harmonic_basis(
     coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
         objects with sampling points for which the basis matrix is calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -446,10 +464,14 @@ def spherical_harmonic_basis(
         else:
             order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic(
-            order, degree, coordinates.colatitude, coordinates.azimuth
+            order, degree, coordinates.colatitude, coordinates.azimuth,
         )
-        if normalization == "sn3d":
+        if normalization == "NM":
+            basis[:, acn] *= np.sqrt(4*np.pi)
+        if normalization == "SN3D":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
+        if normalization == "SNM":
+            basis[:, acn] *= n3d_to_sn3d_norm(order) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
         if not condon_shortley:
@@ -460,12 +482,14 @@ def spherical_harmonic_basis(
     return basis
 
 
-def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
+def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="N3D",
                                       channel_convention="acn",
                                       condon_shortley='auto'):
     r"""
     Calculates the unit sphere gradients of the complex spherical harmonics.
 
+    This implementation avoids singularities at the poles using identities
+    derived in [#]_.
 
     The angular parts of the gradient are defined as
 
@@ -478,13 +502,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         {\partial \theta} \vec{e}_\theta .
 
 
-    This implementation avoids singularities at the poles using identities
-    derived in [#]_.
-
-
     References
     ----------
-    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
     .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
@@ -498,8 +517,8 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -555,14 +574,17 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
             n, m = acn_to_nm(acn)
 
         grad_theta[:, acn] = _special.spherical_harmonic_derivative_theta(
-            n, m, theta, phi
-        )
+            n, m, theta, phi)
         grad_phi[:, acn] = _special.spherical_harmonic_gradient_phi(
             n, m, theta, phi)
 
-        factor = 1.0
-        if normalization == "sn3d":
+        factor = 1.
+        if normalization == "NM":
+            factor = np.sqrt(4*np.pi)
+        if normalization == "SN3D":
             factor = n3d_to_sn3d_norm(n)
+        if normalization == "SNM":
+            factor = n3d_to_sn3d_norm(n) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
@@ -579,7 +601,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="n3d",
 
 
 def spherical_harmonic_basis_real(
-        n_max, coordinates, normalization="n3d", channel_convention="acn",
+        n_max, coordinates, normalization="N3D", channel_convention="acn",
         condon_shortley='auto'):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
@@ -602,8 +624,8 @@ def spherical_harmonic_basis_real(
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -645,10 +667,14 @@ def spherical_harmonic_basis_real(
         else:
             order, degree = acn_to_nm(acn)
         basis[:, acn] = _special.spherical_harmonic_real(
-            order, degree, coordinates.colatitude, coordinates.azimuth
+            order, degree, coordinates.colatitude, coordinates.azimuth,
         )
-        if normalization == "sn3d":
+        if normalization == "NM":
+            basis[:, acn] *= np.sqrt(4*np.pi)
+        if normalization == "SN3D":
             basis[:, acn] *= n3d_to_sn3d_norm(order)
+        if normalization == "SNM":
+            basis[:, acn] *= n3d_to_sn3d_norm(order) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             basis[:, acn] *= n3d_to_maxn(acn)
         if condon_shortley:
@@ -660,15 +686,15 @@ def spherical_harmonic_basis_real(
 
 
 def spherical_harmonic_basis_gradient_real(n_max, coordinates,
-                                           normalization="n3d",
+                                           normalization="N3D",
                                            channel_convention="acn",
                                            condon_shortley='auto'):
     r"""
     Calculates the unit sphere gradients of the real valued spherical
     harmonics.
 
-    The spherical harmonic functions are fully normalized (N3D) and follow
-    the AmbiX phase convention [#]_.
+    This implementation avoids singularities at the poles using identities
+    derived in [#]_.
 
     The angular parts of the gradient are defined as
 
@@ -681,16 +707,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         {\partial \theta} \vec{e}_\theta .
 
 
-    This implementation avoids singularities at the poles using identities
-    derived in [#]_.
-
-
     References
     ----------
-    .. [#]  C. Nachbar, F. Zotter, E. Deleflie, and A. Sontacchi, “Ambix - A
-            Suggested Ambisonics Format (revised by F. Zotter),” International
-            Symposium on Ambisonics and Spherical Acoustics,
-            vol. 3, pp. 1-11, 2011.
     .. [#]  J. Du, C. Chen, V. Lesur, and L. Wang, “Non-singular spherical
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
@@ -704,8 +722,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         objects with sampling points for which the basis matrix is
         calculated
     normalization : str, optional
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or ``'sn3d'``.
-        The default is ``'n3d'``.
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
@@ -760,8 +778,12 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                 n, m, theta, phi)
 
         factor = 1.0
-        if normalization == "sn3d":
+        if normalization == "NM":
+            factor = np.sqrt(4*np.pi)
+        if normalization == "SN3D":
             factor = n3d_to_sn3d_norm(n)
+        if normalization == "SNM":
+            factor = n3d_to_sn3d_norm(n) * np.sqrt(4*np.pi)
         elif normalization == "maxN":
             factor *= n3d_to_maxn(acn)
 
@@ -835,7 +857,8 @@ def modal_strength(n_max,
 
 def _modal_strength(n, kr, config):
     """Helper function for the calculation of the modal strength for
-    plane waves"""
+    plane waves.
+    """
     if config == 'open':
         ms = 4*np.pi*pow(1.0j, n) * _special.spherical_bessel(n, kr)
     elif config == 'rigid':
@@ -879,9 +902,9 @@ def aperture_vibrating_spherical_cap(
     ----------
     n_max : integer, ndarray
         Maximal spherical harmonic order
-    r_sphere : double, ndarray
+    rad_sphere : double, ndarray
         Radius of the sphere
-    r_cap : double
+    rad_cap : double
         Radius of the vibrating cap
 
     Returns
@@ -935,7 +958,7 @@ def radiation_from_sphere(
     distance from the sphere.
     The sign and phase conventions result in a positive pressure response for
     a positive cap velocity with the intensity vector pointing away from the
-    source. [#]_, [#]_
+    source [#]_, [#]_.
 
     TODO: This function does not have a test yet.
 
@@ -958,7 +981,8 @@ def radiation_from_sphere(
     distance : float
         Radial distance from the center of the sphere
     density_medium : float
-        Density of the medium surrounding the sphere. Default is 1.2 for air.
+        Density of the medium surrounding the sphere. Default is ``1.2```
+        for air.
     speed_of_sound : float
         Speed of sound in m/s
 
@@ -1051,14 +1075,14 @@ def sid_to_acn(n_max):
     return np.argsort(linear_sid)
 
 
-def sph_identity_matrix(n_max, type='n-nm'):
+def sph_identity_matrix(n_max, matrix_type='n-nm'):
     """Calculate a spherical harmonic identity matrix.
 
     Parameters
     ----------
     n_max : int
         The spherical harmonic order.
-    type : str, optional
+    matrix_type : str, optional
         The type of identity matrix. Currently only 'n-nm' is implemented.
 
     Returns
@@ -1068,14 +1092,13 @@ def sph_identity_matrix(n_max, type='n-nm'):
 
     Examples
     --------
-
     The identity matrix can for example be used to decompress from order only
     vectors to a full order and degree representation.
 
     >>> import spharpy
     >>> import matplotlib.pyplot as plt
     >>> n_max = 2
-    >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+    >>> E = spharpy.spherical.sph_identity_matrix(n_max, matrix_type='n-nm')
     >>> a_n = [1, 2, 3]
     >>> a_nm = E.T @ a_n
     >>> a_nm
@@ -1088,14 +1111,14 @@ def sph_identity_matrix(n_max, type='n-nm'):
         >>> import spharpy
         >>> import matplotlib.pyplot as plt
         >>> n_max = 2
-        >>> E = spharpy.spherical.sph_identity_matrix(n_max, type='n-nm')
+        >>> E = spharpy.spherical.sph_identity_matrix(n_max, matrix_type='n-nm')
         >>> plt.matshow(E, cmap=plt.get_cmap('Greys'))
         >>> plt.gca().set_aspect('equal')
 
-    """
+    """  # noqa: E501
     n_sh = (n_max+1)**2
 
-    if type != 'n-nm':
+    if matrix_type != 'n-nm':
         raise NotImplementedError
 
     identity_matrix = np.zeros((n_max+1, n_sh), dtype=int)

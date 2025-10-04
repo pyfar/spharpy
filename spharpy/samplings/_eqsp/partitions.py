@@ -86,12 +86,10 @@ def point_set_polar(dimension, N):
     if dimension == 1:
         points_s = a_cap - np.pi/N
     else:
-        # import ipdb; ipdb.set_trace()
         n_collars = np.size(n_regions) - 2
 
         points_s = np.zeros((dimension, N))
         point_n = 2
-        # points = np.zeros((dimension, N))
 
         offset = 0
 
@@ -105,21 +103,11 @@ def point_set_polar(dimension, N):
             # n_in_collar is the number of regions in the current collar.
             n_in_collar = n_regions[collar_n+1]
 
-            # if use_cache:
-            #     twin_collar_n = n_collars - collar_n
-            #
-            #     # if twin_collar_n <= cache_size && ...
-            #     #     size(cache{twin_collar_n},2) == n_in_collar
-            #     #     points_1 = cache{twin_collar_n};
-            #     # else
-            #     points_l = point_set_polar(dimension - 1, n_in_collar)
-            # else:
             points_l = point_set_polar(dimension - 1, n_in_collar)
 
             a_point = (a_top + a_bot)/2
 
             point_l_n = np.arange(0, np.size(points_l), dtype=int)
-            # points_l = points_l[np.newaxis]
 
             if dimension == 2:
                 points_s[0:dimension-1, point_n+point_l_n-1] = \
@@ -131,10 +119,7 @@ def point_set_polar(dimension, N):
                 points_s[0:dimension-2, point_n+point_l_n-1] = \
                     points_l[:, point_l_n]
 
-            # import ipdb; ipdb.set_trace()
-
             points_s[dimension-1, point_n+point_l_n-1] = a_point
-            # point_n = point_n + points_l.shape[1]
             point_n += np.size(points_l)
 
         points_s[:, -1] = np.zeros(dimension)
@@ -144,7 +129,7 @@ def point_set_polar(dimension, N):
 
 
 def caps(dimension, N):
-    """Partition a sphere into to nested spherical caps
+    """Partition a sphere into two nested spherical caps.
 
     Does the following:
     1)  partitions the unit sphere S^dim into a list of spherical caps of
@@ -157,7 +142,6 @@ def caps(dimension, N):
 
     Examples
     --------
-
     % > [s_cap,n_regions] = eq_caps(2,10)
     % s_cap =
     %     0.6435    1.5708    2.4981    3.1416
@@ -181,6 +165,12 @@ def caps(dimension, N):
 
     Returns
     -------
+    s_cap : array, double
+        The colatitudes of the spherical caps. The dimensions of the array are
+        (1, N_collars+2).
+    n_regions : array, int
+        The number of regions in each collar and the polar caps.
+        The dimensions of the array are (1, N_collars+2).
 
     """
     if dimension == 1:
@@ -193,7 +183,7 @@ def caps(dimension, N):
         c_polar = polar_colat(dimension, N)
         n_collars = num_collars(N, c_polar, ideal_collar_angle(dimension, N))
         r_regions = ideal_region_list(dimension, N, c_polar, n_collars)
-        n_regions = round_to_naturals(N, r_regions)
+        n_regions = round_to_naturals(r_regions)
         s_cap = cap_colats(dimension, N, c_polar, n_regions)
 
     return s_cap, n_regions
@@ -216,8 +206,6 @@ def polar_colat(dimension, N):
     colatitude : double
         The colatitude angle of the top cap.
     """
-    # enough = N > 2
-    # c_polar = np.empty()
     if N == 1:
         c_polar = np.pi
     elif N == 2:
@@ -230,7 +218,7 @@ def polar_colat(dimension, N):
 
 
 def ideal_region_list(dimension, N, c_polar, n_collars):
-    """The ideal real number of regions in each zone
+    """The ideal real number of regions in each zone.
 
     List the ideal real number of regions in each collar, plus the polar caps.
     Given dim, N, c_polar and n_collars, determine r_regions, a list of the
@@ -246,9 +234,15 @@ def ideal_region_list(dimension, N, c_polar, n_collars):
         The dimension
     N : int
         The number of points
-    c_polar :
+    c_polar : float
+        The colatitude angle of the polar caps in radians. This defines the
+        angular boundary between the north/south polar caps and the collar
+        region. The north polar cap extends from 0 to c_polar, the collar
+        region spans from c_polar to (π - c_polar), and the south polar cap
+        extends from (π - c_polar) to π. Must be in the range [0, π/2].
     n_collars : int
         The number of collar elements
+
     Returns
     -------
     ideal_regions : double
@@ -273,7 +267,7 @@ def ideal_region_list(dimension, N, c_polar, n_collars):
     return r_regions
 
 
-def round_to_naturals(N, r_regions):
+def round_to_naturals(r_regions):
     """Round off a given list of numbers of regions
     Given N and r_regions, determine n_regions, a list of the natural number
     of regions in each collar and the polar caps.
@@ -285,10 +279,9 @@ def round_to_naturals(N, r_regions):
 
     Parameters
     ----------
-    N : int
-        The dimension
     r_regions : double
         The ideal number of regions per collar before rounding
+
     Returns
     -------
     n_regions : int
@@ -325,6 +318,7 @@ def cap_colats(dimension, N, c_polar, n_regions):
         Colatitude angles of the spherical caps
     n_regions: int
         Number of regions
+
     Returns
     -------
     c_caps : double
@@ -358,6 +352,7 @@ def num_collars(N, c_polar, a_ideal):
         The colatitude angle of the polar caps
     a_ideal : double
         The ideal collar angles.
+
     Returns
     -------
     n_collars : int
@@ -396,6 +391,7 @@ def circle_offset(n_top, n_bot, extra_twist=False):
         Number of points in the lower circle
     extra_twist : boolean
         Perform an additional rotation (see part 3)
+
     Returns
     -------
     offset : int
@@ -461,6 +457,7 @@ def area_of_sphere(dimension):
     Parameters
     ----------
     dimension : int
+        Dimension of the sphere.
 
     Returns
     -------
@@ -572,7 +569,7 @@ def sradius_of_cap(dimension, area):
 
 
 def polar2cart(points_polar):
-    """Comnversion from the polar angles theta and phi to Cartesian coordinates
+    """Conversion from the polar angles theta and phi to Cartesian coordinates.
 
         x = cos(phi) * sin(theta)
         y = sin(phi) * sin(theta)
@@ -583,7 +580,8 @@ def polar2cart(points_polar):
     points_polar : array, double
         The points in polar coordinates, with shape (2, N)
 
-    Returns:
+    Returns
+    -------
     points_cart : array, double
         The points in Cartesian coordinates with shape (3, N)
 

@@ -1,5 +1,5 @@
 """
-Tests for spherical harmonic basis and related functions
+Tests for spherical harmonic basis and related functions.
 """
 import spharpy.spherical as sh
 import numpy as np
@@ -8,7 +8,7 @@ import pytest
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
-@pytest.mark.parametrize("normalization", ['n3d', 'maxN', 'sn3d'])
+@pytest.mark.parametrize("normalization", ['N3D', 'NM', 'maxN', 'SN3D', 'SNM'])
 @pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
 @pytest.mark.parametrize("condon_shortley", [True, False, 'auto'])
 def test_spherical_harmonic(make_coordinates, implementation,
@@ -23,10 +23,19 @@ def test_spherical_harmonic(make_coordinates, implementation,
         implementation, rad, theta, phi)
 
     phase_conv_id = 'None' if not condon_shortley else 'Condon-Shortley'
+
+    norm_id = normalization
+    if normalization == 'NM' or normalization == 'N3D':
+        norm_id = 'n3d'
+    if normalization == 'SNM' or normalization == 'SN3D':
+        norm_id = 'sn3d'
+
     Y = np.genfromtxt(f'./tests/data/Y_cmplx_{phase_conv_id}_'
-                      f'{normalization}_{channel_convention}.csv',
+                      f'{norm_id}_{channel_convention}.csv',
                       dtype=complex,
                       delimiter=',')
+    if normalization in ('NM', 'SNM'):
+        Y *= np.sqrt(4 * np.pi)
 
     basis = sh.spherical_harmonic_basis(n_max, coords,
                                         normalization=normalization,
@@ -39,7 +48,7 @@ def test_spherical_harmonic(make_coordinates, implementation,
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 @pytest.mark.parametrize("condon_shortley", [True, False, 'auto'])
 @pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
-@pytest.mark.parametrize("normalization", ['n3d', 'sn3d'])
+@pytest.mark.parametrize("normalization", ['N3D', 'SN3D'])
 def test_spherical_harmonics_real(make_coordinates, implementation,
                                   normalization, channel_convention,
                                   condon_shortley):
@@ -52,10 +61,21 @@ def test_spherical_harmonics_real(make_coordinates, implementation,
         implementation, rad, theta, phi)
 
     phase_conv_id = 'Condon-Shortley' if condon_shortley is True else 'None'
+
+    norm_id = normalization
+    if normalization == 'NM' or normalization == 'N3D':
+        norm_id = 'n3d'
+    if normalization == 'SNM' or normalization == 'SN3D':
+        norm_id = 'sn3d'
+
     Y = np.genfromtxt(f'./tests/data/Y_real_{phase_conv_id}_'
-                      f'{normalization}_{channel_convention}.csv',
+                      f'{norm_id}_{channel_convention}.csv',
                       dtype=float,
                       delimiter=',')
+
+    if normalization in ('NM', 'SNM'):
+        Y *= np.sqrt(4 * np.pi)
+
     basis = sh.spherical_harmonic_basis_real(n_max, coords,
                                              normalization,
                                              channel_convention,
@@ -130,9 +150,10 @@ def test_spherical_harmonics_invalid_condon_shortley(make_coordinates,
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_spherical_harmonic_default_n10(make_coordinates, implementation):
-    """test the default parameters of SH basis function generator. This
-       simultaneously tests if the methods still match the implementation
-       up to spharpy 0.6.2."""
+    """Test the default parameters of SH basis function generator. This
+    simultaneously tests if the methods still match the implementation
+    up to spharpy 0.6.2.
+    """
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0], dtype=float)
     phi = np.array([0, np.pi/2, 0], dtype=float)
@@ -153,9 +174,10 @@ def test_spherical_harmonic_default_n10(make_coordinates, implementation):
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 def test_spherical_harmonics_real_n10_default(make_coordinates,
                                               implementation):
-    """test the default parameters of SH basis function generator. This
-       simultaneously tests if the methods still match the implementation
-       up to spharpy 0.6.2."""
+    """Test the default parameters of SH basis function generator. This
+    simultaneously tests if the methods still match the implementation
+    up to spharpy 0.6.2.
+    """
     n_max = 10
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
     phi = np.array([0, np.pi/2, 0, np.pi/4], dtype=float)
@@ -175,7 +197,7 @@ def test_spherical_harmonics_real_n10_default(make_coordinates,
 def test_orthogonality(make_coordinates, implementation):
     """
     Check if the orthonormality condition of the spherical harmonics is
-    fulfilled
+    fulfilled.
     """
     n_max = 82
     theta = np.array([np.pi/2, np.pi/2, 0, np.pi/2], dtype=float)
@@ -197,7 +219,7 @@ def test_orthogonality(make_coordinates, implementation):
 def test_orthogonality_real(make_coordinates, implementation):
     """
     Check if the orthonormality condition of the reavl valued spherical
-    harmonics is fulfilled
+    harmonics is fulfilled.
     """
     n_max = 82
     theta = np.array([np.pi / 2, np.pi / 2, 0, np.pi / 2], dtype='double')

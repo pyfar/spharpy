@@ -26,8 +26,9 @@ class _SphericalHarmonicAudio(_Audio):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. (maxN is only supported up to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
@@ -71,9 +72,9 @@ class _SphericalHarmonicAudio(_Audio):
         self._basis_type = basis_type
 
         # set normalization
-        if normalization not in ["n3d", "maxN", "sn3d"]:
-            raise ValueError("Invalid normalization, has to be 'sn3d', "
-                             f"'n3d', or 'maxN', but is {normalization}")
+        if normalization not in ["N3D", "NM", "maxN", "SN3D"]:
+            raise ValueError("Invalid normalization, has to be 'SN3D', 'SNM'"
+                             f"'N3D', 'NM', or 'maxN', but is {normalization}")
         self._normalization = normalization
 
         # set channel_convention
@@ -165,8 +166,9 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. (maxN is only supported up to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
@@ -214,8 +216,9 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. (maxN is only supported up to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
@@ -264,8 +267,9 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'n3d'``, ``'maxN'`` or
-        ``'sn3d'``. (maxN is only supported up to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
         (FuMa is only supported up to 3rd order)
@@ -281,7 +285,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     fft_norm : str, optional
         The normalization of the Discrete Fourier Transform (DFT). Can be
         ``'none'``, ``'unitary'``, ``'amplitude'``, ``'rms'``, ``'power'``,
-        or ``'psd'``. See :py:func:`~pyfar.dsp.fft.normalization` and [#]_
+        or ``'psd'``. See :py:func:`~pyfar.dsp.fft.normalization`
         for more information. The default is ``'none'``, which is typically
         used for energy signals, such as impulse responses.
     comment : str

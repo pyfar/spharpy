@@ -1,3 +1,5 @@
+"""Rotations for spherical harmonics."""
+
 from .rotations import (
     rotation_z_axis,
     rotation_z_axis_real,

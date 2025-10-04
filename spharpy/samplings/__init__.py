@@ -1,3 +1,5 @@
+"""Spherical samplings."""
+
 from .samplings import (
     cube_equidistant,
     hyperinterpolation,
@@ -19,7 +21,7 @@ from .samplings import (
 
 from .helpers import (
     spherical_voronoi,
-    calculate_sampling_weights
+    calculate_sampling_weights,
 )
 
 from .interior import interior_stabilization_points
