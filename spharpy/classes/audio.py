@@ -62,7 +62,8 @@ class _SphericalHarmonicAudio(_Audio):
         n_max = np.sqrt(self._data.shape[-2])-1
         if n_max - int(n_max) != 0:
             raise ValueError("Invalid number of SH channels: "
-                             f"{self._data.shape[-2]}. It must match (n_max + 1)^2.")
+                             f"{self._data.shape[-2]}. It must match "
+                             "(n_max + 1)^2.")
         self._n_max = int(n_max)
 
         # set basis_type
@@ -73,8 +74,9 @@ class _SphericalHarmonicAudio(_Audio):
 
         # set normalization
         if normalization not in ["N3D", "NM", "maxN", "SN3D"]:
-            raise ValueError("Invalid normalization, has to be 'SN3D', 'SNM'"
-                             f"'N3D', 'NM', or 'maxN', but is {normalization}")
+            raise ValueError("Invalid normalization, has to be 'N3D', 'NM', "
+                             "'maxN', 'SN3D', or 'SNM', but is "
+                             f"{normalization}")
         self._normalization = normalization
 
         # set channel_convention
