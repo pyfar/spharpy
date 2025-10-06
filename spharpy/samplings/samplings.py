@@ -599,17 +599,16 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 def eigenmike_em32():
     """Microphone positions of the Eigenmike em32 by mhacoustics.
 
-    The data are according to the Eigenstudio user manual on the homepage [#]_.
-
-    References
-    ----------
-    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
-
+    The data are according to the Eigenmike user manual on the homepage [#]_.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
+
+    References
+    ----------
+    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
 
     Examples
     --------
@@ -640,17 +639,16 @@ def eigenmike_em32():
 def eigenmike_em64():
     """Microphone positions of the Eigenmike em64 by mhacoustics.
 
-    according to
-    the Eigenmuke user manual on the homepage [#]_.
-
-    References
-    ----------
-    .. [#]  Eigenmike em64 User Manual, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
+    The data are according to the Eigenmike user manual on the homepage [#]_.
 
     Returns
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
+
+    References
+    ----------
+    .. [#]  Eigenmike em64 User Manual, https://eigenmike.com/sites/default/files/documentation-2024-12/em64%20Eigenbeam%20Datasheet_R01B.pdf
 
     """  # noqa: E501
 
