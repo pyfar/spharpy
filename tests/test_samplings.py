@@ -9,23 +9,25 @@ from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
 
 
-def test_cube_equidistant_int():
+def test_uniform_cubic_sampling_int():
     n_points = 3
-    coords = samplings.cube_equidistant(n_points)
-    x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3)
-    y = np.hstack((np.ones(9) * -1, np.zeros(9), np.ones(9)))
-    z = np.tile(np.array([-1, 0, 1]), 9)
+    coords = samplings.uniform_cubic_sampling(n_points)
+    x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3).reshape((3, 3, 3))
+    y = np.hstack((np.ones(9) * -1, np.zeros(9), np.ones(9))).reshape((3, 3, 3))
+    z = np.tile(np.array([-1, 0, 1]), 9).reshape((3, 3, 3))
     np.testing.assert_allclose(x, coords.x)
     np.testing.assert_allclose(y, coords.y)
     np.testing.assert_allclose(z, coords.z)
     assert type(coords) is Coordinates
     assert coords.csize == 3**3
+    assert coords.cshape == (3, 3, 3)
 
 
-def test_cube_equidistant_tuple():
+def test_uniform_cubic_sampling_tuple():
     # test with tuple
-    c = samplings.cube_equidistant((3, 2, 4))
+    c = samplings.uniform_cubic_sampling((3, 2, 4))
     assert c.csize == 3*2*4
+    assert c.cshape == (3, 2, 4)
 
 
 def test_hyperinterpolation(download_sampling):

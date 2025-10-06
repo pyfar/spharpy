@@ -15,12 +15,11 @@ from ._eqsp import point_set as eq_point_set
 from ._eqsp import lebedev_sphere
 
 
-def cube_equidistant(n_points):
+def uniform_cubic_sampling(n_points):
     """
-    Create a cuboid sampling with equidistant spacings in x, y, and z.
+    Create a uniform cubic sampling with equidistant spacings in x, y, and z.
 
-    The cube spans from -1 to 1 along each axis (size 2 x 2 x 2).
-    The cube is centered at the origin.
+    The cube spans from -1 to 1 along each axis and centered at the origin.
 
     Parameters
     ----------
@@ -33,8 +32,8 @@ def cube_equidistant(n_points):
     Returns
     -------
     sampling : :py:class:`pyfar.Coordinates`
-        Sampling positions as Coordinate object.
-        Does not contain sampling weights.
+        Sampling positions as Coordinate object with cshape
+        ``(n_x, n_y, n_z)``. Does not contain sampling weights.
 
     Examples
     --------
@@ -42,7 +41,7 @@ def cube_equidistant(n_points):
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.cube_equidistant(3)
+        >>> coords = sp.samplings.uniform_cubic_sampling(3)
         >>> sp.plot.scatter(coords)
     """
     if np.size(n_points) == 1:
@@ -63,7 +62,7 @@ def cube_equidistant(n_points):
 
     x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
 
-    return Coordinates(x_grid.flatten(), y_grid.flatten(), z_grid.flatten())
+    return Coordinates(x_grid, y_grid, z_grid)
 
 
 def hyperinterpolation(n_points=None, n_max=None, radius=1.):
