@@ -19,7 +19,8 @@ def cube_equidistant(n_points):
     """
     Create a cuboid sampling with equidistant spacings in x, y, and z.
 
-    The cube will have dimensions 1 x 1 x 1.
+    The cube spans from -1 to 1 along each axis (size 2 x 2 x 2).
+    The cube is centered at the origin.
 
     Parameters
     ----------
