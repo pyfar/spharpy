@@ -15,7 +15,7 @@ from ._eqsp import point_set as eq_point_set
 from ._eqsp import lebedev_sphere
 
 
-def uniform_cubic_sampling(n_points):
+def equidistant_cuboid(n_points):
     """
     Create a uniform cubic sampling with equidistant spacings in x, y, and z.
 
