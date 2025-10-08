@@ -1,7 +1,7 @@
 """Spherical samplings."""
 
 from .samplings import (
-    uniform_cubic_sampling,
+    equidistant_cuboid,
     hyperinterpolation,
     t_design,
     dodecahedron,
@@ -28,7 +28,7 @@ from .interior import interior_stabilization_points
 
 
 __all__ = [
-    'uniform_cubic_sampling',
+    'equidistant_cuboid',
     'hyperinterpolation',
     't_design',
     'dodecahedron',

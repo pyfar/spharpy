@@ -11,7 +11,7 @@ from spharpy.spherical import (
 
 def test_uniform_cubic_sampling_int():
     n_points = 3
-    coords = samplings.uniform_cubic_sampling(n_points)
+    coords = samplings.equidistant_cuboid(n_points)
     x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3).reshape((3, 3, 3))
     y = np.hstack((np.ones(9) * -1, np.zeros(9), np.ones(9))).reshape((3, 3, 3))
     z = np.tile(np.array([-1, 0, 1]), 9).reshape((3, 3, 3))
@@ -25,7 +25,7 @@ def test_uniform_cubic_sampling_int():
 
 def test_uniform_cubic_sampling_tuple():
     # test with tuple
-    c = samplings.uniform_cubic_sampling((2, 3, 4))
+    c = samplings.equidistant_cuboid((2, 3, 4))
     assert c.csize == 2*3*4
     assert c.cshape == (2, 3, 4)
     npt.assert_allclose(c.x[0], c.x[0, 0, 0])
