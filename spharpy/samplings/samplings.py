@@ -652,6 +652,14 @@ def eigenmike_em64():
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.eigenmike_em64()
+        >>> sp.plot.scatter(coords)
     """  # noqa: E501
 
     rad = np.ones(64)*0.042
