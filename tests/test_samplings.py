@@ -23,7 +23,7 @@ def test_uniform_cubic_sampling_int():
     assert coords.cshape == (3, 3, 3)
 
 
-def test_uniform_cubic_sampling_tuple():
+def test_equidistant_cuboid_sampling_tuple():
     c = samplings.equidistant_cuboid((2, 3, 4))
     assert c.csize == 2*3*4
     assert c.cshape == (2, 3, 4)
