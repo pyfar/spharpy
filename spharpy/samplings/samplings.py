@@ -60,7 +60,7 @@ def uniform_cubic_sampling(n_points):
     y = np.linspace(-1, 1, n_y)
     z = np.linspace(-1, 1, n_z)
 
-    x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
+    x_grid, y_grid, z_grid = np.meshgrid(x, y, z, indexing='ij')
 
     return Coordinates(x_grid, y_grid, z_grid)
 
