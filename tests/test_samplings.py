@@ -24,7 +24,6 @@ def test_uniform_cubic_sampling_int():
 
 
 def test_uniform_cubic_sampling_tuple():
-    # test with tuple
     c = samplings.equidistant_cuboid((2, 3, 4))
     assert c.csize == 2*3*4
     assert c.cshape == (2, 3, 4)
