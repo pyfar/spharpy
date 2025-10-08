@@ -25,9 +25,12 @@ def test_uniform_cubic_sampling_int():
 
 def test_uniform_cubic_sampling_tuple():
     # test with tuple
-    c = samplings.uniform_cubic_sampling((3, 2, 4))
-    assert c.csize == 3*2*4
-    assert c.cshape == (3, 2, 4)
+    c = samplings.uniform_cubic_sampling((2, 3, 4))
+    assert c.csize == 2*3*4
+    assert c.cshape == (2, 3, 4)
+    npt.assert_allclose(c.x[0], c.x[0, 0, 0])
+    npt.assert_allclose(c.y[:, 0], c.y[0, 0, 0])
+    npt.assert_allclose(c.z[:, :, 0], c.z[0, 0, 0])
 
 
 def test_hyperinterpolation(download_sampling):
