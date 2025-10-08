@@ -19,7 +19,7 @@ def uniform_cubic_sampling(n_points):
     """
     Create a uniform cubic sampling with equidistant spacings in x, y, and z.
 
-    The cube spans from -1 to 1 along each axis and centered at the origin.
+    The cube spans from -1 to 1 along each axis and is centered at the origin.
 
     Parameters
     ----------
