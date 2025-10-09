@@ -23,6 +23,7 @@ class SphericalHarmonicDefinition:
 
     def __init__(
             self,
+            n_max=0,
             basis_type="real",
             channel_convention="acn",
             normalization="N3D",
@@ -32,13 +33,36 @@ class SphericalHarmonicDefinition:
         self._channel_convention = None
         self._condon_shortley = None
         self._normalization = None
+        self._n_max = 0
 
         # basis_type needs to be initialized first, since the default for the
         # Condon-Shortley phase depends on the basis type
         self.basis_type = basis_type
         self.condon_shortley = condon_shortley
+        # n_max needs to be initialized before channel_convention and
+        # normalization, since both have restrictions on n_max
+        self.n_max = n_max
         self.channel_convention = channel_convention
         self.normalization = normalization
+
+    @property
+    def n_max(self):
+        """Get or set the spherical harmonic order."""
+        return self._n_max
+
+    @n_max.setter
+    def n_max(self, value : int):
+        """Get or set the spherical harmonic order."""
+        if value < 0 or value % 1 != 0:
+            raise ValueError("n_max must be a positive integer")
+        if self.channel_convention == "fuma" and value > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'fuma' channel convention")
+        if self.normalization == "maxN" and value > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'maxN' normalization")
+
+        self._n_max = value
 
     @property
     def condon_shortley(self):
@@ -84,6 +108,11 @@ class SphericalHarmonicDefinition:
             raise ValueError("Invalid channel convention, "
                              "currently only 'acn' "
                              "and 'fuma' are supported")
+
+        if value == "fuma" and self.n_max > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'fuma' channel convention")
+
         self._channel_convention = value
 
     @property
@@ -100,6 +129,11 @@ class SphericalHarmonicDefinition:
                 "currently only 'N3D', 'NM', 'maxN', 'SN3D', 'SNM' are "
                 "supported",
             )
+
+        if value == "maxN" and self.n_max > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'maxN' normalization")
+
         self._normalization = value
 
 
@@ -240,7 +274,7 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         condon_shortley="auto",
     ):
         # initialize private attributes
-        self._n_max = None
+        self._n_max = 0
         self._coordinates = pf.Coordinates()
         self._basis_type = None
         self._inverse_method = None
@@ -266,27 +300,13 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         if value != self._condon_shortley:
             self._reset_compute_attributes()
 
-    @property
-    def n_max(self):
-        """Get or set the spherical harmonic order."""
-        return self._n_max
-
-    @n_max.setter
+    @SphericalHarmonicDefinition.n_max.setter
     def n_max(self, value):
         """Get or set the spherical harmonic order."""
-        if value < 0:
-            raise ValueError("n_max must be a positive integer")
-        if value % 1 != 0:
-            raise ValueError("n_max must be an integer value")
-        if self.channel_convention == "fuma" and value > 3:
-            raise ValueError("n_max > 3 is not allowed with 'fuma' "
-                             "channel convention")
-        if self.normalization == "maxN" and value > 3:
-            raise ValueError("n_max > 3 is not allowed with 'maxN' "
-                             "normalization")
-        if int(value) != self._n_max:
+        cache_n_max = self._n_max
+        super(__class__, SphericalHarmonics).n_max.fset(self, value)
+        if value != cache_n_max:
             self._reset_compute_attributes()
-            self._n_max = int(value)  # Cast to int for safety
 
     @property
     def coordinates(self):
