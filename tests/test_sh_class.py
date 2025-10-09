@@ -14,7 +14,7 @@ def test_spherical_harmonics_definition_init():
     """
     definition = SphericalHarmonicDefinition()
     assert definition.basis_type == 'real'
-    assert definition.normalization == 'n3d'
+    assert definition.normalization == 'N3D'
     assert definition.channel_convention == 'acn'
     assert definition.condon_shortley is False
 
@@ -79,14 +79,14 @@ def test_setter_channel_convention_definition_invalid():
         sph_harm.channel_convention = "invalid"  # Invalid value
 
 
-@pytest.mark.parametrize("normalization", ["n3d", "sn3d", "maxN"])
+@pytest.mark.parametrize("normalization", ["N3D", "SN3D", "maxN", "NM", "SNM"])
 def test_setter_normalization_definition(normalization):
     sph_harm = SphericalHarmonicDefinition()
     sph_harm.normalization = normalization
     assert sph_harm.normalization == normalization
 
 
-@pytest.mark.parametrize("normalization", ["n3d", "sn3d", "maxN"])
+@pytest.mark.parametrize("normalization", ["N3D", "SN3D", "maxN", "NM", "SNM"])
 def test_init_normalization_definition(normalization):
     sph_harm = SphericalHarmonicDefinition(
         normalization=normalization)
