@@ -100,8 +100,8 @@ class SphericalHarmonicDefinition:
     def basis_type(self, value):
         """Get or set the type of spherical harmonic basis."""
         if value not in ["complex", "real"]:
-            raise ValueError("Invalid basis type, only "
-                             "'complex' and 'real' are supported")
+            raise ValueError(
+                "Invalid basis type, only 'complex' and 'real' are supported")
         self._basis_type = value
 
     @property
