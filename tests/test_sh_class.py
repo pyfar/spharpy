@@ -72,6 +72,12 @@ def test_init_channel_convention_definition(channel_convention):
     assert sph_harm.channel_convention == channel_convention
 
 
+def test_setter_channel_convention_fuma_error():
+    sph_harm = SphericalHarmonicDefinition(n_max=4)
+
+    with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
+        sph_harm.channel_convention = "fuma"
+
 
 def test_setter_channel_convention_definition_invalid():
     sph_harm = SphericalHarmonicDefinition()
@@ -109,6 +115,33 @@ def test_setter_normalization_definition_invalid():
     sph_harm = SphericalHarmonicDefinition()
     with pytest.raises(ValueError, match='Invalid normalization'):
         sph_harm.normalization = "invalid"  # Invalid value
+
+
+def test_setter_normalization():
+    sph_harm = SphericalHarmonicDefinition(n_max=4)
+
+    with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
+        sph_harm.normalization = "maxN"  # Invalid with n_max > 3
+
+
+def test_sh_definition_setter_n_max():
+    sph_harm = SphericalHarmonicDefinition(n_max=2)
+    sph_harm.n_max = 3
+    assert sph_harm.n_max == 3
+
+    with pytest.raises(ValueError, match='n_max must be a positive integer'):
+        sph_harm.n_max = -1  # Invalid value
+
+
+@pytest.mark.parametrize(
+        ('norm', 'convention'), [('maxN', 'acn'), ('N3D', 'fuma')])
+def test_sh_definition_setter_n_max_invalid_combinations(norm, convention):
+    sph_harm = SphericalHarmonicDefinition(n_max=2)
+
+    sph_harm.channel_convention = convention
+    sph_harm.normalization = norm
+    with pytest.raises(ValueError, match='n_max > 3 is not allowed'):
+        sph_harm.n_max = 4
 
 
 def test_sphharm_init():
@@ -170,42 +203,6 @@ def test_compute_basis_caching():
     # Call the method again and check that the result is different (cache miss)
     assert new_result is not initial_result
 
-def test_setter_n_max():
-    coordinates = equiangular(n_points=4)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-    sph_harm.n_max = 3
-    assert sph_harm.n_max == 3
-
-    with pytest.raises(ValueError, match='n_max must be a positive integer'):
-        sph_harm.n_max = -1  # Invalid value
-
-    # set sph_harm to use 'fuma' channel convention
-    sph_harm.n_max = 2  # Invalid with default 'acn' and 'maxN'
-    sph_harm.channel_convention = "fuma"
-    with pytest.raises(ValueError, match='n_max > 3 is not allowed'):
-        sph_harm.n_max = 4  # Invalid with default 'acn' and 'maxN'
-
-    sph_harm.channel_convention = "acn"
-    sph_harm.n_max = 4
-    with pytest.raises(ValueError, match='n_max > 3 is not allowed'):
-        # set maxN normalization
-        sph_harm.normalization = "maxN"  # Invalid with n_max > 3
-
-
-def test_setter_channel_convention():
-    coordinates = equiangular(n_points=4)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
-
-    sph_harm.channel_convention = "fuma"  # Invalid with n_max > 3
-    with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
-        sph_harm.n_max = 4
-
-def test_setter_normalization():
-    coordinates = equiangular(n_points=4)
-    sph_harm = SphericalHarmonics(n_max=4, coordinates=coordinates)
-
-    with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
-        sph_harm.normalization = "maxN"  # Invalid with n_max > 3
 
 def test_setter_inverse_method():
     coordinates = equiangular(n_points=4)
