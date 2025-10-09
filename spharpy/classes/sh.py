@@ -18,14 +18,14 @@ class SphericalHarmonicDefinition:
     channel_convention : str
         Channel ordering convention, either 'acn' or 'fuma'.
     normalization : str
-        Normalization convention, either 'n3d', 'maxN', or 'sn3d'.
+        Normalization convention, either 'N3D', 'NM', 'maxN', 'SN3D', 'SNM'.
     """
 
     def __init__(
             self,
             basis_type="real",
             channel_convention="acn",
-            normalization="n3d",
+            normalization="N3D",
             condon_shortley="auto",
         ):
         self._basis_type = None
@@ -94,11 +94,12 @@ class SphericalHarmonicDefinition:
     @normalization.setter
     def normalization(self, value):
         """Get or set the normalization convention."""
-        if value not in ["n3d", "maxN", "sn3d"]:
+        if value not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
             raise ValueError(
                 "Invalid normalization, "
-                "currently only 'n3d', 'maxN', 'sn3d' are "
-                "supported")
+                "currently only 'N3D', 'NM', 'maxN', 'SN3D', 'SNM' are "
+                "supported",
+            )
         self._normalization = value
 
 
