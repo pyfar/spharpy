@@ -28,7 +28,7 @@ def dolph_chebyshev_weights(
         the main-lobe in radians.
     design_criterion : 'sidelobe', 'mainlobe'
         Whether the design parameter argument is the desired side-lobe
-        attenuation or the desired main-lobe width.
+        attenuation or the desired main-lobe width. Default is ``'sidelobe'``.
 
     Returns
     -------
@@ -112,8 +112,8 @@ def rE_max_weights(n_max, normalize=True):
     n_max : int
         Spherical harmonic order
     normalize : bool
-        If `True`, the weights will be normalized such that the complex
-        amplitude of a plane wave is not distorted.
+        If ``True``, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted. Default is ``True``.
 
     Returns
     -------
@@ -180,8 +180,8 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     n_max : int
         The spherical harmonic order
     normalize : bool
-        If `True`, the weights will be normalized such that the complex
-        amplitude of a plane wave is not distorted.
+        If ``True``, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted. Default is ``True``.
 
     Returns
     -------

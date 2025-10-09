@@ -753,10 +753,11 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
     n_max : int
         Spherical harmonic order
     condition_num : double
-        Desired maximum condition number of the spherical harmonic basis matrix
+        Desired maximum condition number of the spherical harmonic basis
+        matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        None n_points will be (n_max+1)**2
+        ``None`` (default) n_points will be (n_max+1)**2.
 
     Returns
     -------
@@ -809,10 +810,11 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     n_max : int
         Spherical harmonic order
     condition_num : double
-        Desired maximum condition number of the spherical harmonic basis matrix
+        Desired maximum condition number of the spherical harmonic basis
+        matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        None n_points will be (n_max+1)**2
+        ``None`` n_points will be (n_max+1)**2. Default is ``None``.
 
     Returns
     -------

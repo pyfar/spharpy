@@ -16,7 +16,7 @@ def phase_twilight(lut=512):
     ----------
     lut : int, optional
         Number of entries in the lookup table of colors for the colormap.
-        Default is 512.
+        Default is ``512``.
 
     Returns
     -------

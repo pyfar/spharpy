@@ -20,7 +20,7 @@ def interior_stabilization_points(kr_max, resolution_factor=1):
         the upper frequency limit of the array.
     resolution_factor : int
         Factor to increase the spatial resolution of the grid
-        used to estimate the stabilization points.
+        used to estimate the stabilization points. Default is ``1``.
 
     Returns
     -------
