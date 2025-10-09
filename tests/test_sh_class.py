@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 import pyfar as pf
 from spharpy import SphericalHarmonics
-from spharpy.samplings import gaussian, calculate_sampling_weights, equiangular
+from spharpy.samplings import gaussian, equiangular
 from spharpy.classes.sh import SphericalHarmonicDefinition
 
 
