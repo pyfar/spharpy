@@ -11,14 +11,22 @@ class SphericalHarmonicDefinition:
 
     Attributes
     ----------
-    condon_shortley : bool
-        Condon-Shortley phase term.
+    n_max : int, optional
+        Maximum spherical harmonic order. The default is ``0``.
     basis_type : str
-        Type of spherical harmonic basis, either 'real' or 'complex'.
-    channel_convention : str
-        Channel ordering convention, either 'acn' or 'fuma'.
-    normalization : str
-        Normalization convention, either 'N3D', 'NM', 'maxN', 'SN3D', 'SNM'.
+        Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
+        The default is ``'real'``.
+    channel_convention : str, optional
+        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        The default is ``'acn'``.
+    normalization : str, optional
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``.
+    condon_shortley : bool, optional
+        Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
+        if ``False`` it is not included. The default is ``'auto'``, which
+        corresponds to ``True`` for type ``complex`` and ``False`` for type
+        ``real``.
     """
 
     def __init__(
