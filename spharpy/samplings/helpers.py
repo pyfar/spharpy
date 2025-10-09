@@ -58,9 +58,9 @@ def spherical_voronoi(sampling, round_decimals=13, center=0.0):
     sampling : SamplingSphere
         Sampling points on a sphere
     round_decimals : int
-        Number of decimals to be rounded to.
+        Number of decimals to be rounded to. Default is ``13``.
     center : double
-        Center point of the voronoi diagram.
+        Center point of the voronoi diagram. Default is ``0.0``.
 
     Returns
     -------

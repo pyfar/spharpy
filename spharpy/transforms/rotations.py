@@ -23,7 +23,7 @@ class RotationSH(Rotation):
             (x, y, z, w) format. Each quaternion will be normalized to unit
             norm.
         n_max : int
-            The spherical harmonic order
+            The spherical harmonic order. Default is ``0``.
         *args : optional
             Arguments are passed to
             :py:class:`~scipy.spatial.transform.Rotation`
@@ -62,7 +62,7 @@ class RotationSH(Rotation):
             ith rotation vector.
         degrees : bool, optional
             Specify if rotation angles are defined in degrees instead of
-            radians, by default False.
+            radians, by default ``False``.
         *args : optional
             Arguments are passed to
             :py:meth:`Rotation.from_rotvec
@@ -320,8 +320,8 @@ class RotationSH(Rotation):
             L sets of spherical harmonic coefficients with a respective order
             :math:`((n_max+1)^2`
         basis_type : string, optional
-            Spherical harmonic definition. Can either be 'complex' or 'real',
-            by default 'real' is used.
+            Spherical harmonic definition. Can either be ``'complex'`` or
+            ``'real'``, by default ``'real'`` is used.
 
         Returns
         -------

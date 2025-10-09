@@ -832,8 +832,9 @@ def modal_strength(n_max,
     kr : ndarray, float
         Wave number * radius
     arraytype : string
-        Array configuration. Can be a microphones mounted on a rigid sphere,
-        on a virtual open sphere or cardioid microphones on an open sphere.
+        Array configuration. Can be a microphones mounted on a ``'rigid'``
+        sphere, on a virtual ``'open'`` sphere or ``'cardioid'`` microphones
+        on an open sphere. Default is ``'rigid'``.
 
     Returns
     -------
@@ -981,10 +982,10 @@ def radiation_from_sphere(
     distance : float
         Radial distance from the center of the sphere
     density_medium : float
-        Density of the medium surrounding the sphere. Default is ``1.2```
+        Density of the medium surrounding the sphere. Default is ``1.2``
         for air.
     speed_of_sound : float
-        Speed of sound in m/s
+        Speed of sound in m/s. Default is ``343.0``.
 
     Returns
     -------
@@ -1083,7 +1084,7 @@ def sph_identity_matrix(n_max, matrix_type='n-nm'):
     n_max : int
         The spherical harmonic order.
     matrix_type : str, optional
-        The type of identity matrix. Currently only 'n-nm' is implemented.
+        The type of identity matrix. Currently only ``'n-nm'`` is implemented.
 
     Returns
     -------

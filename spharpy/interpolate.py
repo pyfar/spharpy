@@ -17,7 +17,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
         Array containing the data at the sampling positions. Has to be
         real-valued.
     w : array, float
-        Weighting coefficients
+        Weighting coefficients. Default is ``None``.
     s : float, 1e-4
         Smoothing factor > 0
         Positive smoothing factor defined for estimation condition:
@@ -28,7 +28,7 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
     eps : float, 1e-16
         The eps valued to be considered for interpolator estimation.
         Depends on the used data type and numerical precision. The default
-        is ```1e-16``.
+        is ``1e-16``.
 
     Note
     ----
@@ -76,9 +76,9 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
             Coordinates object containing a new set of points for which data
             is to be interpolated.
         dtheta : int, optional
-            Order of theta derivative
+            Order of theta derivative. Default is ``0``.
         dphi : int, optional
-            Order of phi derivative
+            Order of phi derivative. Default is ``0``.
 
         """ # noqa: 501
         theta = interp_grid.colatitude

@@ -24,7 +24,8 @@ def spherical_bessel(n, z, derivative=False):
     z : double, ndarray
         Argument of the spherical bessel function. Has to be real valued.
     derivative : bool
-        Return the derivative of the spherical Bessel function
+        Return the derivative of the spherical Bessel function. Default is
+        ``False``.
 
 
     Returns
@@ -367,7 +368,7 @@ def legendre_function(n, m, z, cs_phase=True):
         The argument as an array
     cs_phase : bool, optional
         Whether to use include the Condon-Shotley phase term :math:`(-1)^m`
-        or not
+        or not. Default is ``True``.
 
     Returns
     -------
@@ -412,7 +413,7 @@ def spherical_harmonic_normalization(n, m, norm='full'):
         The spherical harmonic degree.
     norm : 'full', 'semi', optional
         Normalization to use. Can be either fully normalized on the sphere or
-        semi-normalized.
+        semi-normalized. Default is ``'full'``.
 
     Returns
     -------
