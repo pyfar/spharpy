@@ -832,9 +832,9 @@ def modal_strength(n_max,
     kr : ndarray, float
         Wave number * radius
     arraytype : string
-        Array configuration. Can be a microphones mounted on a ``'rigid'``
-        sphere, on a virtual ``'open'`` sphere or ``'cardioid'`` microphones
-        on an open sphere. Default is ``'rigid'``.
+        Array configuration. Can be omnidirectional microphones mounted on a
+        ``'rigid'`` sphere or on a virtual ``'open'`` sphere, or ``'cardioid'``
+        microphones on an open sphere. Default is ``'rigid'``.
 
     Returns
     -------
