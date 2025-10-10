@@ -281,25 +281,21 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         inverse_method="auto",
         condon_shortley="auto",
     ):
+        super().__init__(
+            n_max=n_max,
+            basis_type=basis_type,
+            channel_convention=channel_convention,
+            normalization=normalization,
+            condon_shortley=condon_shortley,
+        )
+
         # initialize private attributes
-        self._n_max = 0
         self._coordinates = pf.Coordinates()
-        self._basis_type = None
         self._inverse_method = None
-        self._channel_convention = None
-        self._condon_shortley = None
-        self._normalization = None
         self._reset_compute_attributes()
 
-        self.n_max = n_max
         self.coordinates = coordinates
-        self.basis_type = basis_type
         self.inverse_method = inverse_method
-        self.channel_convention = channel_convention
-        self.normalization = normalization
-        self.condon_shortley = condon_shortley
-
-    # Properties
 
     @SphericalHarmonicDefinition.condon_shortley.setter
     def condon_shortley(self, value):
