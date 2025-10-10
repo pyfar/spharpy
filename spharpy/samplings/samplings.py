@@ -599,7 +599,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 def eigenmike_em32():
     """Microphone positions of the Eigenmike em32 by mhacoustics.
 
-    The data are according to the Eigenmike user manual on the homepage [#]_.
+    The data are according to the Eigenstudio user manual on the homepage [#]_.
 
     Returns
     -------
@@ -608,7 +608,7 @@ def eigenmike_em32():
 
     References
     ----------
-    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
+    .. [#]  Eigenstudio User Manual, https://eigenmike.com/sites/default/files/documentation-2023-10/EigenStudio%20User%20Manual%20R02D.pdf
 
     Examples
     --------
@@ -648,7 +648,7 @@ def eigenmike_em64():
 
     References
     ----------
-    .. [#]  Eigenmike em64 User Manual, https://eigenmike.com/sites/default/files/documentation-2024-12/em64%20Eigenbeam%20Datasheet_R01B.pdf
+    .. [#]  Eigenmike em64 Getting Started Guide, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
 
     """  # noqa: E501
 
