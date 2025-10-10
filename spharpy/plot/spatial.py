@@ -258,7 +258,10 @@ def pcolor_sphere(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default is is `None`,
+        Colormap for the plot, see matplotlib.cm. By default is is ``None``,
+        were the colormap is chosen according to the `cmap_encoding`
+        :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
+        ``'viridis'`` for ``'magnitude'``.
         were the colormap is chosen according to the ``cmap_encoding``
         :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
         'viridis' for ``'magnitude'``.
@@ -372,10 +375,10 @@ def balloon_wireframe(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default is is `None`,
-        were the colormap is chosen according to the ``cmap_encoding``
+        Colormap for the plot, see matplotlib.cm. By default is is ``None``,
+        were the colormap is chosen according to the `cmap_encoding`
         :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
-        'viridis' for ``'magnitude'``.
+        ``'viridis'`` for ``'magnitude'``.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
@@ -500,10 +503,10 @@ def balloon(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default is is `None`,
-        were the colormap is chosen according to the ``cmap_encoding``
+        Colormap for the plot, see matplotlib.cm. By default is is ``None``,
+        were the colormap is chosen according to the `cmap_encoding`
         :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
-        'viridis' for ``'magnitude'``.
+        ``'viridis'`` for ``'magnitude'``.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
