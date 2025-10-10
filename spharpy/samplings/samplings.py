@@ -19,7 +19,8 @@ def equidistant_cuboid(n_points, flatten_output=False):
     """
     Create a uniform cubic sampling with equidistant spacings in x, y, and z.
 
-    The cube spans from -1 m to 1 m along each axis and is centered at the origin.
+    The cube spans from -1 m to 1 m along each axis and is centered at
+    the origin.
 
     Parameters
     ----------
@@ -46,7 +47,7 @@ def equidistant_cuboid(n_points, flatten_output=False):
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.cube_equidistant(3)
+        >>> coords = sp.samplings.equidistant_cuboid(3)
         >>> sp.plot.scatter(coords)
     """
     if not isinstance(flatten_output, bool):
