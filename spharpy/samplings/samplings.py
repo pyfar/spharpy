@@ -52,7 +52,10 @@ def equidistant_cuboid(n_points, flatten_output=False):
     if not isinstance(flatten_output, bool):
         raise ValueError("flatten_output must be a boolean.")
     try:
-        n_points = np.asarray(n_points, dtype=int)
+        n_points = np.asarray(n_points)
+        assert (n_points > 0).all()
+        assert (n_points % 1 == 0).all()
+        n_points = n_points.astype(int)
     except Exception as e:
         raise ValueError(
             "The number of points needs to be either an integer "
