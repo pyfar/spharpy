@@ -49,13 +49,13 @@ def test_equidistant_cuboid_sampling_tuple_flatten():
 def test_equidistant_cuboid_sampling_invalid():
     with pytest.raises(ValueError, match='flatten_output must be a boolean.'):
         samplings.equidistant_cuboid(3, flatten_output='bla')
-    with pytest.raises(ValueError, match='positive natural number'):
+    with pytest.raises(ValueError, match='The number of points needs to be'):
         samplings.equidistant_cuboid(-3)
-    with pytest.raises(ValueError, match='positive natural number'):
+    with pytest.raises(ValueError, match='The number of points needs to be'):
         samplings.equidistant_cuboid((3, -3, 3))
-    with pytest.raises(ValueError, match='positive natural number'):
+    with pytest.raises(ValueError, match='The number of points needs to be'):
         samplings.equidistant_cuboid((3, 3, 3.2))
-    with pytest.raises(ValueError, match='positive natural number'):
+    with pytest.raises(ValueError, match='The number of points needs to be'):
         samplings.equidistant_cuboid((3, 3, -3))
 
 
