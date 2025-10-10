@@ -250,11 +250,6 @@ def pcolor_sphere(
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi. The data array will be mapped onto the surface of a sphere.
 
-    Note
-    ----
-    When plotting the phase encoded in the colormap, the function will switch
-    to the HSV colormap and ignore the user input for the cmap input variable.
-
     Parameters
     ----------
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
@@ -263,7 +258,10 @@ def pcolor_sphere(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default see Note.
+        Colormap for the plot, see matplotlib.cm. By default is is `None`,
+        were the colormap is chosen according to the ``cmap_encoding``
+        :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
+        'viridis' for ``'magnitude'``.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
@@ -366,11 +364,6 @@ def balloon_wireframe(
     sphere. The colormap represents either the phase or the magnitude of the
     data array.
 
-    Note
-    ----
-    When plotting the phase encoded in the colormap, the function will switch
-    to the HSV colormap and ignore the user input for the cmap input variable.
-
     Parameters
     ----------
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
@@ -379,7 +372,10 @@ def balloon_wireframe(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default see Note.
+        Colormap for the plot, see matplotlib.cm. By default is is `None`,
+        were the colormap is chosen according to the ``cmap_encoding``
+        :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
+        'viridis' for ``'magnitude'``.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
@@ -496,11 +492,6 @@ def balloon(
     The colormap represents either the phase or the magnitude of the
     data array.
 
-    Note
-    ----
-    When plotting the phase encoded in the colormap, the function will switch
-    to the HSV colormap and ignore the user input for the cmap input variable.
-
     Parameters
     ----------
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
@@ -509,7 +500,10 @@ def balloon(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. Default is see Note.
+        Colormap for the plot, see matplotlib.cm. By default is is `None`,
+        were the colormap is chosen according to the ``cmap_encoding``
+        :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
+        'viridis' for ``'magnitude'``.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
