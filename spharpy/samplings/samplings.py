@@ -618,7 +618,7 @@ def eigenmike_em32():
         >>> import spharpy as sp
         >>> coords = sp.samplings.eigenmike_em32()
         >>> sp.plot.scatter(coords)
-    """
+    """  # noqa: E501
     rad = np.ones(32)
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
                       90.0, 125.0, 148.0, 125.0, 90.0, 55.0,
@@ -650,6 +650,14 @@ def eigenmike_em64():
     ----------
     .. [#]  Eigenmike em64 Getting Started Guide, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
 
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.eigenmike_em64()
+        >>> sp.plot.scatter(coords)
     """  # noqa: E501
 
     rad = np.ones(64)*0.042
