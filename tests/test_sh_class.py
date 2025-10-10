@@ -99,18 +99,6 @@ def test_init_normalization_definition(normalization):
     assert sph_harm.normalization == normalization
 
 
-def test_setter_basis_type():
-    sph_harm = SphericalHarmonicDefinition()
-    sph_harm.basis_type = "complex"
-    assert sph_harm.basis_type == "complex"
-
-    sph_harm.basis_type = "real"
-    assert sph_harm.basis_type == "real"
-
-    with pytest.raises(ValueError, match='Invalid basis type'):
-        sph_harm.basis_type = "invalid"  # Invalid value
-
-
 def test_setter_normalization_definition_invalid():
     sph_harm = SphericalHarmonicDefinition()
     with pytest.raises(ValueError, match='Invalid normalization'):
@@ -142,6 +130,18 @@ def test_sh_definition_setter_n_max_invalid_combinations(norm, convention):
     sph_harm.normalization = norm
     with pytest.raises(ValueError, match='n_max > 3 is not allowed'):
         sph_harm.n_max = 4
+
+
+def test_setter_basis_type():
+    sph_harm = SphericalHarmonicDefinition()
+    sph_harm.basis_type = "complex"
+    assert sph_harm.basis_type == "complex"
+
+    sph_harm.basis_type = "real"
+    assert sph_harm.basis_type == "real"
+
+    with pytest.raises(ValueError, match='Invalid basis type'):
+        sph_harm.basis_type = "invalid"  # Invalid value
 
 
 def test_sphharm_init():
