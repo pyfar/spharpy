@@ -304,8 +304,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @SphericalHarmonicDefinition.condon_shortley.setter
     def condon_shortley(self, value):
         """Get or set the Condon-Shortley phase term."""
+        cache_condon_shortley = self._condon_shortley
         super(__class__, SphericalHarmonics).condon_shortley.fset(self, value)
-        if value != self._condon_shortley:
+        if value != cache_condon_shortley:
             self._reset_compute_attributes()
 
     @SphericalHarmonicDefinition.n_max.setter
@@ -338,8 +339,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @SphericalHarmonicDefinition.basis_type.setter
     def basis_type(self, value):
         """Get or set the type of spherical harmonic basis."""
+        cache_basis_type = self._basis_type
         super(__class__, SphericalHarmonics).basis_type.fset(self, value)
-        if value != self._basis_type:
+        if value != cache_basis_type:
             self._reset_compute_attributes()
 
     @property
@@ -379,24 +381,18 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @SphericalHarmonicDefinition.channel_convention.setter
     def channel_convention(self, value):
         """Get or set the channel order convention."""
-        if value == "fuma" and self.n_max > 3:
-            raise ValueError("n_max > 3 is not allowed with 'fuma' " \
-                            "channel convention")
-
+        cache_channel_convention = self._channel_convention
         super(__class__, SphericalHarmonics).channel_convention.fset(
             self, value)
-        if value != self._channel_convention:
+        if value != cache_channel_convention:
             self._reset_compute_attributes()
 
     @SphericalHarmonicDefinition.normalization.setter
     def normalization(self, value):
         """Get or set the normalization convention."""
-        if value == "maxN" and self.n_max > 3:
-            raise ValueError(
-                "n_max > 3 is not allowed with 'maxN' normalization")
-
+        cache_normalization = self._normalization
         super(__class__, SphericalHarmonics).normalization.fset(self, value)
-        if value != self._normalization:
+        if value != cache_normalization:
             self._reset_compute_attributes()
 
     @property
