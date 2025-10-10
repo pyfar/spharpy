@@ -763,7 +763,8 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
         matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        ``None`` (default) n_points will be (n_max+1)**2.
+        ``None`` the value ``(n_max+1)**2`` will be used as start.
+        Default is ``None``.
 
     Returns
     -------
@@ -820,7 +821,8 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
         matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        ``None`` n_points will be (n_max+1)**2. Default is ``None``.
+        ``None`` the value ``(n_max+1)**2`` will be used as start.
+        Default is ``None``.
 
     Returns
     -------
