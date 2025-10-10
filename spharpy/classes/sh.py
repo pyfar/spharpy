@@ -18,10 +18,12 @@ class SphericalHarmonicDefinition:
         The default is ``'real'``.
     channel_convention : str, optional
         Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``.
+        The default is ``'acn'``. Note that ``'fuma'`` is only supported up to
+        3rd order.
     normalization : str, optional
         Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
-        ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``.
+        ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``. Note that
+        ``'maxN'`` is only supported up to 3rd order.
     condon_shortley : bool, optional
         Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
         if ``False`` it is not included. The default is ``'auto'``, which
