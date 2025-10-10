@@ -15,7 +15,7 @@ from ._eqsp import point_set as eq_point_set
 from ._eqsp import lebedev_sphere
 
 
-def equidistant_cuboid(n_points):
+def equidistant_cuboid(n_points, flatten_output=False):
     """
     Create a uniform cubic sampling with equidistant spacings in x, y, and z.
 
@@ -28,12 +28,17 @@ def equidistant_cuboid(n_points):
         number of sampling positions will be the same in every axis. If a
         tuple is given, the number of points will be set as
         ``(n_x, n_y, n_z)``.
+    flatten_output : bool, optional
+        Whether to flatten the output Coordinates object or not.
+        The default is ``False``.
 
     Returns
     -------
     sampling : :py:class:`pyfar.Coordinates`
         Sampling positions as Coordinate object with cshape
-        ``(n_x, n_y, n_z)``. Does not contain sampling weights.
+        ``(n_x, n_y, n_z)`` if `flatten_output` is ``False``, otherwise
+        with cshape ``(n_x*n_y*n_z, )``.
+        Does not contain sampling weights.
 
     Examples
     --------
@@ -44,6 +49,14 @@ def equidistant_cuboid(n_points):
         >>> coords = sp.samplings.uniform_cubic_sampling(3)
         >>> sp.plot.scatter(coords)
     """
+    if not isinstance(flatten_output, bool):
+        raise ValueError("flatten_output must be a boolean.")
+    try:
+        n_points = np.asarray(n_points, dtype=int)
+    except Exception as e:
+        raise ValueError(
+            "The number of points needs to be either an integer "
+            "or a tuple with 3 elements.") from e
     if np.size(n_points) == 1:
         n_x = n_points
         n_y = n_points
@@ -61,6 +74,11 @@ def equidistant_cuboid(n_points):
     z = np.linspace(-1, 1, n_z)
 
     x_grid, y_grid, z_grid = np.meshgrid(x, y, z, indexing='ij')
+
+    if flatten_output:
+        x_grid = x_grid.flatten()
+        y_grid = y_grid.flatten()
+        z_grid = z_grid.flatten()
 
     return Coordinates(x_grid, y_grid, z_grid)
 
