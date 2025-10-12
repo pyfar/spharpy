@@ -262,9 +262,6 @@ def pcolor_sphere(
         were the colormap is chosen according to the `cmap_encoding`
         :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
         ``'viridis'`` for ``'magnitude'``.
-        were the colormap is chosen according to the ``cmap_encoding``
-        :py:func:`spharpy.plot.phase_twilight` for ``'phase'`` and
-        'viridis' for ``'magnitude'``.
     colorbar : bool, optional
         Whether to show a colorbar or not. Default is `True`.
     limits : tuple, list, optional
