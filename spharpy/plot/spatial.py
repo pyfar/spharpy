@@ -258,8 +258,8 @@ def pcolor_sphere(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap used for the plot. If ``None`` (default), the colormap is automatically 
-        selected based on the value of `cmap_encoding`: 
+        Colormap used for the plot. If ``None`` (default), the colormap 
+        is automatically selected based on the value of `cmap_encoding`: 
         ``'phase'`` uses :py:func:`spharpy.plot.phase_twilight`, and 
         ``'magnitude'`` uses the ``'viridis'`` colormap.
     colorbar : bool, optional
@@ -372,8 +372,8 @@ def balloon_wireframe(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap used for the plot. If ``None`` (default), the colormap is automatically 
-        selected based on the value of `cmap_encoding`: 
+        Colormap used for the plot. If ``None`` (default), the colormap 
+        is automatically selected based on the value of `cmap_encoding`: 
         ``'phase'`` uses :py:func:`spharpy.plot.phase_twilight`, and 
         ``'magnitude'`` uses the ``'viridis'`` colormap.
     colorbar : bool, optional
@@ -500,8 +500,8 @@ def balloon(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap used for the plot. If ``None`` (default), the colormap is automatically 
-        selected based on the value of `cmap_encoding`: 
+        Colormap used for the plot. If ``None`` (default), the colormap 
+        is automatically selected based on the value of `cmap_encoding`: 
         ``'phase'`` uses :py:func:`spharpy.plot.phase_twilight`, and 
         ``'magnitude'`` uses the ``'viridis'`` colormap.
     colorbar : bool, optional
