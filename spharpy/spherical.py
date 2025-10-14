@@ -831,7 +831,7 @@ def modal_strength(n_max,
         The spherical harmonic order
     kr : ndarray, float
         Wave number * radius
-    arraytype : string
+    arraytype : str
         Array configuration. Can be omnidirectional microphones mounted on a
         ``'rigid'`` sphere or on a virtual ``'open'`` sphere, or ``'cardioid'``
         microphones on an open sphere. Default is ``'rigid'``.
@@ -982,7 +982,7 @@ def radiation_from_sphere(
     distance : float
         Radial distance from the center of the sphere
     density_medium : float
-        Density of the medium surrounding the sphere. Default is ``1.2``
+        Density of the medium surrounding the sphere. Default is ``1.2``.
         for air.
     speed_of_sound : float
         Speed of sound in m/s. Default is ``343.0``.
