@@ -26,9 +26,11 @@ def dolph_chebyshev_weights(
     design_parameter : float
         This can either be the desired side-lobe attenuation or the width of
         the main-lobe in radians.
-    design_criterion : 'sidelobe', 'mainlobe'
-        Whether the design parameter argument is the desired side-lobe
-        attenuation or the desired main-lobe width. Default is ``'sidelobe'``.
+    design_criterion : str
+        Can be either ``'sidelobe'``or ``'mainlobe'``.
+        Determines whether the design parameter argument is the desired
+        side-lobe attenuation or the desired main-lobe width.
+        Default is ``'sidelobe'``.
 
     Returns
     -------

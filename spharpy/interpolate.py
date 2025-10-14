@@ -17,7 +17,8 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
         Array containing the data at the sampling positions. Has to be
         real-valued.
     w : array, float
-        Weighting coefficients. Default is ``None``.
+        Weighting coefficients. The default is ``None``, which sets the
+        weighting coefficients to ``1``.
     s : float, 1e-4
         Smoothing factor > 0
         Positive smoothing factor defined for estimation condition:
@@ -26,7 +27,9 @@ class SmoothSphereBivariateSpline(spinterpolate.SmoothSphereBivariateSpline):
         an estimate of the standard deviation of ``r[i]``. The default
         value is ``1e-4``
     eps : float, 1e-16
-        The eps valued to be considered for interpolator estimation.
+        Sets the threshold used to determine the effective rank of the
+        underlying linear system of equations. Values smaller than this
+        threshold are treated as zero during the fitting process.
         Depends on the used data type and numerical precision. The default
         is ``1e-16``.
 
