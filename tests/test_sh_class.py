@@ -8,8 +8,7 @@ from spharpy.classes.sh import SphericalHarmonicDefinition
 
 
 def test_spherical_harmonics_definition_init():
-    """Test default behavior.
-    """
+    """Test default behavior."""
     definition = SphericalHarmonicDefinition()
     assert definition.basis_type == 'real'
     assert definition.normalization == 'N3D'
@@ -19,12 +18,14 @@ def test_spherical_harmonics_definition_init():
 
 @pytest.mark.parametrize("phase_convention", [True, False])
 def test_setter_phase_convention(phase_convention):
+    """Test setting Condon-Shortley phase convention with boolean values."""
     sph_harm = SphericalHarmonicDefinition()
     sph_harm.condon_shortley = phase_convention
     assert sph_harm.condon_shortley == phase_convention
 
 
 def test_init_phase_convention_auto():
+    """Test initialization with auto Condon-Shortley phase convention."""
     sph_harm = SphericalHarmonicDefinition(
         basis_type="complex",
         condon_shortley="auto")
@@ -36,6 +37,7 @@ def test_init_phase_convention_auto():
     assert sph_harm.condon_shortley is False
 
 def test_setter_phase_convention_auto():
+    """Test setting Condon-Shortley phase convention to auto."""
     sph_harm = SphericalHarmonicDefinition()
     sph_harm.basis_type = "complex"
     sph_harm.condon_shortley = "auto"
@@ -48,6 +50,7 @@ def test_setter_phase_convention_auto():
 
 
 def test_setter_phase_convention_invalid():
+    """Test error handling for invalid Condon-Shortley phase values."""
     sph_harm = SphericalHarmonicDefinition()
     with pytest.raises(ValueError, match='must be a bool or the string'):
         sph_harm.condon_shortley = 123  # Invalid type
@@ -58,6 +61,7 @@ def test_setter_phase_convention_invalid():
 
 @pytest.mark.parametrize("channel_convention", ["acn", "fuma"])
 def test_setter_channel_convention_definition(channel_convention):
+    """Test setting channel convention for spherical harmonic definition."""
     sph_harm = SphericalHarmonicDefinition()
     sph_harm.channel_convention = channel_convention
     assert sph_harm.channel_convention == channel_convention
@@ -65,12 +69,14 @@ def test_setter_channel_convention_definition(channel_convention):
 
 @pytest.mark.parametrize("channel_convention", ["acn", "fuma"])
 def test_init_channel_convention_definition(channel_convention):
+    """Test initialization with different channel conventions."""
     sph_harm = SphericalHarmonicDefinition(
         channel_convention=channel_convention)
     assert sph_harm.channel_convention == channel_convention
 
 
 def test_setter_channel_convention_fuma_error():
+    """Test error when setting FUMA channel convention with n_max > 3."""
     sph_harm = SphericalHarmonicDefinition(n_max=4)
 
     with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
@@ -78,6 +84,7 @@ def test_setter_channel_convention_fuma_error():
 
 
 def test_setter_channel_convention_definition_invalid():
+    """Test error handling for invalid channel convention values."""
     sph_harm = SphericalHarmonicDefinition()
     with pytest.raises(ValueError, match='Invalid channel convention'):
         sph_harm.channel_convention = "invalid"  # Invalid value
@@ -85,6 +92,7 @@ def test_setter_channel_convention_definition_invalid():
 
 @pytest.mark.parametrize("normalization", ["N3D", "SN3D", "maxN", "NM", "SNM"])
 def test_setter_normalization_definition(normalization):
+    """Test setting different normalization conventions."""
     sph_harm = SphericalHarmonicDefinition()
     sph_harm.normalization = normalization
     assert sph_harm.normalization == normalization
@@ -92,18 +100,21 @@ def test_setter_normalization_definition(normalization):
 
 @pytest.mark.parametrize("normalization", ["N3D", "SN3D", "maxN", "NM", "SNM"])
 def test_init_normalization_definition(normalization):
+    """Test initialization with different normalization conventions."""
     sph_harm = SphericalHarmonicDefinition(
         normalization=normalization)
     assert sph_harm.normalization == normalization
 
 
 def test_setter_normalization_definition_invalid():
+    """Test error handling for invalid normalization values."""
     sph_harm = SphericalHarmonicDefinition()
     with pytest.raises(ValueError, match='Invalid normalization'):
         sph_harm.normalization = "invalid"  # Invalid value
 
 
 def test_setter_normalization():
+    """Test error when setting maxN normalization with n_max > 3."""
     sph_harm = SphericalHarmonicDefinition(n_max=4)
 
     with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
@@ -111,6 +122,7 @@ def test_setter_normalization():
 
 
 def test_sh_definition_setter_n_max():
+    """Test setting n_max property and error handling for invalid values."""
     sph_harm = SphericalHarmonicDefinition(n_max=2)
     sph_harm.n_max = 3
     assert sph_harm.n_max == 3
@@ -122,6 +134,7 @@ def test_sh_definition_setter_n_max():
 @pytest.mark.parametrize(
         ('norm', 'convention'), [('maxN', 'acn'), ('N3D', 'fuma')])
 def test_sh_definition_setter_n_max_invalid_combinations(norm, convention):
+    """Test error when setting n_max > 3 with incompatible combinations."""
     sph_harm = SphericalHarmonicDefinition(n_max=2)
 
     sph_harm.channel_convention = convention
@@ -131,6 +144,7 @@ def test_sh_definition_setter_n_max_invalid_combinations(norm, convention):
 
 
 def test_setter_basis_type():
+    """Test setting basis type and error handling for invalid values."""
     sph_harm = SphericalHarmonicDefinition()
     sph_harm.basis_type = "complex"
     assert sph_harm.basis_type == "complex"
@@ -150,35 +164,42 @@ def test_sphharm_init(icosahedron_sampling):
     assert sph_harm.inverse_method == 'quadrature'
 
 def test_sphharm_init_invalid_coordinates():
+    """Test error handling for invalid coordinate types."""
     with pytest.raises(TypeError,
                        match="coordinates must be a pyfar.Coordinates " \
                        "object or spharpy.SamplingSphere object"):
         SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
 
 def test_sphharm_init_invalid_n_max(icosahedron_sampling):
+    """Test error handling for invalid n_max values."""
     with pytest.raises(ValueError, match='n_max must be a positive integer'):
         SphericalHarmonics(n_max=-1, coordinates=icosahedron_sampling)
 
 def test_sphharm_compute_basis(icosahedron_sampling):
+    """Test spherical harmonic basis computation."""
     sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     assert sph_harm.basis is not None
 
 def test_sphharm_compute_basis_gradient(icosahedron_sampling):
+    """Test spherical harmonic basis gradient computation."""
     sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     assert sph_harm.basis_gradient_theta is not None
     assert sph_harm.basis_gradient_phi is not None
 
 def test_sphharm_compute_inverse_quad(icosahedron_sampling):
+    """Test spherical harmonic inverse computation using quadrature method."""
     sh = SphericalHarmonics(
         1, coordinates=icosahedron_sampling, inverse_method='quadrature')
     assert sh.basis_inv is not None
 
 def test_sphharm_compute_inverse_pseudo_inv(icosahedron_sampling):
+    """Test spherical harmonic inverse using pseudo-inverse method."""
     sh = SphericalHarmonics(2, coordinates=icosahedron_sampling,
                             inverse_method='pseudo_inverse')
     assert sh.basis_inv is not None
 
 def test_compute_basis_caching(icosahedron_sampling):
+    """Test that basis computation results are cached and invalidated."""
     n_max = 1
     sh = SphericalHarmonics(
         n_max, icosahedron_sampling,
@@ -225,6 +246,7 @@ def test_compute_basis_caching(icosahedron_sampling):
 
 
 def test_setter_inverse_method(icosahedron_sampling):
+    """Test setting inverse method and error handling for invalid values."""
     sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     sph_harm.inverse_method = "quadrature"
     assert sph_harm.inverse_method == "quadrature"
