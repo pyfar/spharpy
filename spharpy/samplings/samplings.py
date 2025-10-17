@@ -15,11 +15,11 @@ from ._eqsp import point_set as eq_point_set
 from ._eqsp import lebedev_sphere
 
 
-def equidistant_cuboid(n_points, flatten_output=False):
+def equidistant_cuboid(n_points, flatten_output=True):
     """
-    Create a uniform cubic sampling with equidistant spacings in x, y, and z.
+    Create a cubic sampling with equidistant spacings in x, y, and z.
 
-    The cube spans from -1 m to 1 m along each axis and is centered at
+    The cuboid spans from -1 m to 1 m along each axis and is centered at
     the origin.
 
     Parameters
