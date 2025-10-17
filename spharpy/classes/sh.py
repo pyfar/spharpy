@@ -17,8 +17,8 @@ class SphericalHarmonicDefinition:
         Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
         The default is ``'real'``.
     channel_convention : str, optional
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``. Note that ``'fuma'`` is only supported up to
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``. Note that ``'FuMa'`` is only supported up to
         3rd order.
     normalization : str, optional
         Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
@@ -35,7 +35,7 @@ class SphericalHarmonicDefinition:
             self,
             n_max=0,
             basis_type="real",
-            channel_convention="acn",
+            channel_convention="ACN",
             normalization="N3D",
             condon_shortley="auto",
         ):
@@ -65,9 +65,9 @@ class SphericalHarmonicDefinition:
         """Get or set the spherical harmonic order."""
         if value < 0 or value % 1 != 0:
             raise ValueError("n_max must be a positive integer")
-        if self.channel_convention == "fuma" and value > 3:
+        if self.channel_convention == "FuMa" and value > 3:
             raise ValueError(
-                "n_max > 3 is not allowed with 'fuma' channel convention")
+                "n_max > 3 is not allowed with 'FuMa' channel convention")
         if self.normalization == "maxN" and value > 3:
             raise ValueError(
                 "n_max > 3 is not allowed with 'maxN' normalization")
@@ -122,14 +122,14 @@ class SphericalHarmonicDefinition:
     @channel_convention.setter
     def channel_convention(self, value):
         """Get or set the channel order convention."""
-        if value not in ["acn", "fuma"]:
+        if value not in ["ACN", "FuMa"]:
             raise ValueError("Invalid channel convention, "
-                             "currently only 'acn' "
-                             "and 'fuma' are supported")
+                             "currently only 'ACN' "
+                             "and 'FuMa' are supported")
 
-        if value == "fuma" and self.n_max > 3:
+        if value == "FuMa" and self.n_max > 3:
             raise ValueError(
-                "n_max > 3 is not allowed with 'fuma' channel convention")
+                "n_max > 3 is not allowed with 'FuMa' channel convention")
 
         if self._channel_convention != value:
             self._channel_convention = value
@@ -243,8 +243,8 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
 
     - channel_convention: Defines the channel ordering convention.
 
-        - ``'acn'``: Follows the Ambisonic Channel Number (ACN) convention.
-        - ``'fuma'``: Follows the Furse-Malham (FuMa) convention.
+        - ``'ACN'``: Follows the Ambisonic Channel Number (ACN) convention.
+        - ``'FuMa'``: Follows the Furse-Malham (FuMa) convention.
         (FuMa is only supported up to 3rd order)
 
     - inverse_method: Defines the type of inverse transform.
@@ -274,8 +274,8 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         The default is ``'N3D'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``.
         (FuMa is only supported up to 3rd order)
     inverse_method : {'auto', 'quadrature', 'pseudo_inverse'}, default='auto'
         Method for computing the inverse transform:
@@ -298,7 +298,7 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         coordinates,
         basis_type="real",
         normalization="N3D",
-        channel_convention="acn",
+        channel_convention="ACN",
         inverse_method="auto",
         condon_shortley="auto",
     ):
