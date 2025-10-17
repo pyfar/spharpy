@@ -9,7 +9,7 @@ import pytest
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 @pytest.mark.parametrize("normalization", ['N3D', 'NM', 'maxN', 'SN3D', 'SNM'])
-@pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
+@pytest.mark.parametrize("channel_convention", ['ACN', 'FuMa'])
 @pytest.mark.parametrize("condon_shortley", [True, False, 'auto'])
 def test_spherical_harmonic(make_coordinates, implementation,
                             normalization, channel_convention,
@@ -31,7 +31,7 @@ def test_spherical_harmonic(make_coordinates, implementation,
         norm_id = 'sn3d'
 
     Y = np.genfromtxt(f'./tests/data/Y_cmplx_{phase_conv_id}_'
-                      f'{norm_id}_{channel_convention}.csv',
+                      f'{norm_id}_{channel_convention.lower()}.csv',
                       dtype=complex,
                       delimiter=',')
     if normalization in ('NM', 'SNM'):
@@ -47,7 +47,7 @@ def test_spherical_harmonic(make_coordinates, implementation,
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
 @pytest.mark.parametrize("condon_shortley", [True, False, 'auto'])
-@pytest.mark.parametrize("channel_convention", ['acn', 'fuma'])
+@pytest.mark.parametrize("channel_convention", ['ACN', 'FuMa'])
 @pytest.mark.parametrize("normalization", ['N3D', 'SN3D'])
 def test_spherical_harmonics_real(make_coordinates, implementation,
                                   normalization, channel_convention,
@@ -69,7 +69,7 @@ def test_spherical_harmonics_real(make_coordinates, implementation,
         norm_id = 'sn3d'
 
     Y = np.genfromtxt(f'./tests/data/Y_real_{phase_conv_id}_'
-                      f'{norm_id}_{channel_convention}.csv',
+                      f'{norm_id}_{channel_convention.lower()}.csv',
                       dtype=float,
                       delimiter=',')
 
@@ -119,12 +119,12 @@ def test_spherical_harmonics_invalid_fuma(make_coordinates, implementation):
                        match='FuMa channel convention is only'
                              ' supported up to 3rd order.'):
         sh.spherical_harmonic_basis(n_max, coords,
-                                    channel_convention='fuma')
+                                    channel_convention='FuMa')
     with pytest.raises(ValueError,
                        match='FuMa channel convention is only'
                              ' supported up to 3rd order.'):
         sh.spherical_harmonic_basis_real(n_max, coords,
-                                         channel_convention='fuma')
+                                         channel_convention='FuMa')
 
 
 @pytest.mark.parametrize("implementation", ['spharpy', 'pyfar'])
@@ -324,9 +324,9 @@ def test_spherical_harmonics_gradient_invalid_fuma(make_coordinates,
                        match='FuMa channel convention is only'
                              ' supported up to 3rd order.'):
         sh.spherical_harmonic_basis_gradient(n_max, coords,
-                                             channel_convention='fuma')
+                                             channel_convention='FuMa')
     with pytest.raises(ValueError,
                        match='FuMa channel convention is only'
                              ' supported up to 3rd order.'):
         sh.spherical_harmonic_basis_gradient_real(n_max, coords,
-                                                  channel_convention='fuma')
+                                                  channel_convention='FuMa')
