@@ -24,7 +24,7 @@ class SphericalHarmonicDefinition:
         Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
         ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``. Note that
         ``'maxN'`` is only supported up to 3rd order.
-    condon_shortley : bool, optional
+    condon_shortley : bool, str, optional
         Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
         if ``False`` it is not included. The default is ``'auto'``, which
         corresponds to ``True`` for type ``complex`` and ``False`` for type
