@@ -12,7 +12,7 @@ def test_spherical_harmonics_definition_init():
     definition = SphericalHarmonicDefinition()
     assert definition.basis_type == 'real'
     assert definition.normalization == 'N3D'
-    assert definition.channel_convention == 'acn'
+    assert definition.channel_convention == 'ACN'
     assert definition.condon_shortley is False
 
 
@@ -59,7 +59,7 @@ def test_setter_phase_convention_invalid():
         sph_harm.condon_shortley = "invalid"  # Invalid string
 
 
-@pytest.mark.parametrize("channel_convention", ["acn", "fuma"])
+@pytest.mark.parametrize("channel_convention", ["ACN", "FuMa"])
 def test_setter_channel_convention_definition(channel_convention):
     """Test setting channel convention for spherical harmonic definition."""
     sph_harm = SphericalHarmonicDefinition()
@@ -67,7 +67,7 @@ def test_setter_channel_convention_definition(channel_convention):
     assert sph_harm.channel_convention == channel_convention
 
 
-@pytest.mark.parametrize("channel_convention", ["acn", "fuma"])
+@pytest.mark.parametrize("channel_convention", ["ACN", "FuMa"])
 def test_init_channel_convention_definition(channel_convention):
     """Test initialization with different channel conventions."""
     sph_harm = SphericalHarmonicDefinition(
@@ -80,7 +80,7 @@ def test_setter_channel_convention_fuma_error():
     sph_harm = SphericalHarmonicDefinition(n_max=4)
 
     with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
-        sph_harm.channel_convention = "fuma"
+        sph_harm.channel_convention = "FuMa"
 
 
 def test_setter_channel_convention_definition_invalid():
@@ -132,7 +132,7 @@ def test_sh_definition_setter_n_max():
 
 
 @pytest.mark.parametrize(
-        ('norm', 'convention'), [('maxN', 'acn'), ('N3D', 'fuma')])
+        ('norm', 'convention'), [('maxN', 'ACN'), ('N3D', 'FuMa')])
 def test_sh_definition_setter_n_max_invalid_combinations(norm, convention):
     """Test error when setting n_max > 3 with incompatible combinations."""
     sph_harm = SphericalHarmonicDefinition(n_max=2)
@@ -205,7 +205,7 @@ def test_compute_basis_caching(icosahedron_sampling):
         n_max, icosahedron_sampling,
         basis_type='real',
         normalization='N3D',
-        channel_convention='acn',
+        channel_convention='ACN',
         condon_shortley=False,
     )
 
@@ -230,7 +230,7 @@ def test_compute_basis_caching(icosahedron_sampling):
     assert new_result is not last_result
     last_result = new_result
 
-    sh.channel_convention = 'fuma'
+    sh.channel_convention = 'FuMa'
     new_result = sh.basis
     assert new_result is not last_result
     last_result = new_result
