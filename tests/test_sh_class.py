@@ -3,9 +3,7 @@ Tests for spherical harmonic class.
 """
 import pytest
 import numpy as np
-import pyfar as pf
 from spharpy import SphericalHarmonics
-from spharpy.samplings import gaussian, equiangular
 from spharpy.classes.sh import SphericalHarmonicDefinition
 
 
@@ -144,12 +142,11 @@ def test_setter_basis_type():
         sph_harm.basis_type = "invalid"  # Invalid value
 
 
-def test_sphharm_init():
+def test_sphharm_init(icosahedron_sampling):
     """Test default behaviour after initialization."""
-    coordinates = equiangular(n_points=8)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     assert sph_harm.n_max == 2
-    assert np.all(sph_harm.coordinates == coordinates)
+    assert np.all(sph_harm.coordinates == icosahedron_sampling)
     assert sph_harm.inverse_method == 'quadrature'
 
 def test_sphharm_init_invalid_coordinates():
@@ -158,30 +155,26 @@ def test_sphharm_init_invalid_coordinates():
                        "object or spharpy.SamplingSphere object"):
         SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
 
-def test_sphharm_init_invalid_n_max():
-    coordinates = pf.Coordinates(1, 0, 0)
+def test_sphharm_init_invalid_n_max(icosahedron_sampling):
     with pytest.raises(ValueError, match='n_max must be a positive integer'):
-        SphericalHarmonics(n_max=-1, coordinates=coordinates)
+        SphericalHarmonics(n_max=-1, coordinates=icosahedron_sampling)
 
-def test_sphharm_compute_basis():
-    coordinates = gaussian(n_points=8)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
+def test_sphharm_compute_basis(icosahedron_sampling):
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     assert sph_harm.basis is not None
 
-def test_sphharm_compute_basis_gradient():
-    coordinates = equiangular(n_points=8)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
+def test_sphharm_compute_basis_gradient(icosahedron_sampling):
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     assert sph_harm.basis_gradient_theta is not None
     assert sph_harm.basis_gradient_phi is not None
 
-def test_sphharm_compute_inverse_quad():
-    coordinates = gaussian(n_points=4)
-    sh = SphericalHarmonics(2, coordinates, inverse_method='quadrature')
+def test_sphharm_compute_inverse_quad(icosahedron_sampling):
+    sh = SphericalHarmonics(
+        1, coordinates=icosahedron_sampling, inverse_method='quadrature')
     assert sh.basis_inv is not None
 
-def test_sphharm_compute_inverse_pseudo_inv():
-    coordinates = gaussian(n_points= 5)
-    sh = SphericalHarmonics(2, coordinates,
+def test_sphharm_compute_inverse_pseudo_inv(icosahedron_sampling):
+    sh = SphericalHarmonics(2, coordinates=icosahedron_sampling,
                             inverse_method='pseudo_inverse')
     assert sh.basis_inv is not None
 
@@ -231,6 +224,8 @@ def test_compute_basis_caching(icosahedron_sampling):
     assert new_result is not last_result
 
 
+def test_setter_inverse_method(icosahedron_sampling):
+    sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
     sph_harm.inverse_method = "quadrature"
     assert sph_harm.inverse_method == "quadrature"
 
