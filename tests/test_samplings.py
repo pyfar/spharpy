@@ -32,7 +32,7 @@ def test_equidistant_cuboid_sampling_int(flatten_output):
 
 
 def test_equidistant_cuboid_sampling_tuple():
-    c = samplings.equidistant_cuboid((2, 3, 4))
+    c = samplings.equidistant_cuboid((2, 3, 4), flatten_output=False)
     assert c.csize == 2*3*4
     assert c.cshape == (2, 3, 4)
     npt.assert_allclose(c.x[0], c.x[0, 0, 0])
