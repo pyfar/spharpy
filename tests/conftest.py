@@ -21,8 +21,7 @@ def make_coordinates():
     return Factory
 
 
-@pytest.fixture
-def icosahedron():
+def icosahedron_points():
     """Return the coordinate points of an icosahedron in spherical coordinates.
 
     Returns
@@ -48,6 +47,42 @@ def icosahedron():
     rad = np.ones(20)
 
     return rad, theta, phi
+
+
+@pytest.fixture
+def icosahedron():
+    """Return the coordinate points of an icosahedron in spherical coordinates.
+
+    Returns
+    -------
+    rad : float, ndarray
+        The radius in meters.
+    theta : float, ndarray
+        The colatitude angle in radians.
+    phi : float, ndarray
+        The azimuth angle in radians.
+    """
+    rad, theta, phi = icosahedron_points()
+    return rad, theta, phi
+
+
+@pytest.fixture
+def icosahedron_sampling():
+    """Return the coordinate points of an icosahedron in spherical coordinates.
+
+    Returns
+    -------
+    rad : float, ndarray
+        The radius in meters.
+    theta : float, ndarray
+        The colatitude angle in radians.
+    phi : float, ndarray
+        The azimuth angle in radians.
+    """
+    rad, theta, phi = icosahedron_points()
+    weights = np.ones_like(rad) * 4 * np.pi / len(rad)
+    return SamplingSphere.from_spherical_colatitude(
+        phi, theta, rad, weights=weights, n_max=2)
 
 
 @pytest.fixture
