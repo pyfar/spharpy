@@ -72,7 +72,9 @@ class SphericalHarmonicDefinition:
             raise ValueError(
                 "n_max > 3 is not allowed with 'maxN' normalization")
 
-        self._n_max = value
+        if self._n_max != value:
+            self._n_max = value
+            self._on_property_change()
 
     @property
     def condon_shortley(self):
@@ -91,7 +93,10 @@ class SphericalHarmonicDefinition:
         elif not isinstance(value, bool):
             raise ValueError(
                 "condon_shortley must be a bool or the string 'auto'")
-        self._condon_shortley = value
+
+        if self._condon_shortley != value:
+            self._condon_shortley = value
+            self._on_property_change()
 
     @property
     def basis_type(self):
@@ -104,7 +109,10 @@ class SphericalHarmonicDefinition:
         if value not in ["complex", "real"]:
             raise ValueError(
                 "Invalid basis type, only 'complex' and 'real' are supported")
-        self._basis_type = value
+
+        if self._basis_type != value:
+            self._basis_type = value
+            self._on_property_change()
 
     @property
     def channel_convention(self):
@@ -123,7 +131,9 @@ class SphericalHarmonicDefinition:
             raise ValueError(
                 "n_max > 3 is not allowed with 'fuma' channel convention")
 
-        self._channel_convention = value
+        if self._channel_convention != value:
+            self._channel_convention = value
+            self._on_property_change()
 
     @property
     def normalization(self):
@@ -144,7 +154,16 @@ class SphericalHarmonicDefinition:
             raise ValueError(
                 "n_max > 3 is not allowed with 'maxN' normalization")
 
-        self._normalization = value
+        if self._normalization != value:
+            self._normalization = value
+            self._on_property_change()
+
+    def _on_property_change(self):
+        """Method called when a class property changes.
+        This method can be overridden in child classes to re-compute dependent
+        properties.
+        """
+        pass
 
 
 class SphericalHarmonics(SphericalHarmonicDefinition):
@@ -299,22 +318,6 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         self.coordinates = coordinates
         self.inverse_method = inverse_method
 
-    @SphericalHarmonicDefinition.condon_shortley.setter
-    def condon_shortley(self, value):
-        """Get or set the Condon-Shortley phase term."""
-        cache_condon_shortley = self._condon_shortley
-        super(__class__, SphericalHarmonics).condon_shortley.fset(self, value)
-        if value != cache_condon_shortley:
-            self._reset_compute_attributes()
-
-    @SphericalHarmonicDefinition.n_max.setter
-    def n_max(self, value):
-        """Get or set the spherical harmonic order."""
-        cache_n_max = self._n_max
-        super(__class__, SphericalHarmonics).n_max.fset(self, value)
-        if value != cache_n_max:
-            self._reset_compute_attributes()
-
     @property
     def coordinates(self):
         """Get or set the coordinates object."""
@@ -333,14 +336,6 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         if value != self._coordinates:
             self._reset_compute_attributes()
             self._coordinates = value
-
-    @SphericalHarmonicDefinition.basis_type.setter
-    def basis_type(self, value):
-        """Get or set the type of spherical harmonic basis."""
-        cache_basis_type = self._basis_type
-        super(__class__, SphericalHarmonics).basis_type.fset(self, value)
-        if value != cache_basis_type:
-            self._reset_compute_attributes()
 
     @property
     def inverse_method(self):
@@ -375,23 +370,6 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         if value != self._inverse_method:
             self._reset_compute_attributes()
             self._inverse_method = value
-
-    @SphericalHarmonicDefinition.channel_convention.setter
-    def channel_convention(self, value):
-        """Get or set the channel order convention."""
-        cache_channel_convention = self._channel_convention
-        super(__class__, SphericalHarmonics).channel_convention.fset(
-            self, value)
-        if value != cache_channel_convention:
-            self._reset_compute_attributes()
-
-    @SphericalHarmonicDefinition.normalization.setter
-    def normalization(self, value):
-        """Get or set the normalization convention."""
-        cache_normalization = self._normalization
-        super(__class__, SphericalHarmonics).normalization.fset(self, value)
-        if value != cache_normalization:
-            self._reset_compute_attributes()
 
     @property
     def basis(self):
@@ -482,3 +460,6 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         self._basis_gradient_phi = None
         self._basis_inv = None
 
+    def _on_property_change(self):
+        """Reset computed attributes on property changes."""
+        self._reset_compute_attributes()
