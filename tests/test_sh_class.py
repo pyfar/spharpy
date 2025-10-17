@@ -185,15 +185,22 @@ def test_sphharm_compute_inverse_pseudo_inv():
                             inverse_method='pseudo_inverse')
     assert sh.basis_inv is not None
 
-def test_compute_basis_caching():
-    n_max = 2
-    rng = np.random.default_rng()
-    points = rng.integers(4, 10)
-    coordinates = equiangular(n_points=points)
-    sh = SphericalHarmonics(n_max, coordinates)
+def test_compute_basis_caching(icosahedron_sampling):
+    n_max = 1
+    sh = SphericalHarmonics(
+        n_max, icosahedron_sampling,
+        basis_type='real',
+        normalization='N3D',
+        channel_convention='acn',
+        condon_shortley=False,
+    )
 
     # Call the method once and store the result
-    initial_result = sh.basis
+    last_result = sh.basis
+
+    sh.n_max = n_max  # Setting to the same value should not reset cache
+    # Call the method again and check that the result is the same (cache hit)
+    assert sh.basis is last_result
 
     # Change a property that affects the output of _compute_basis()
     sh.n_max = 3
@@ -201,12 +208,29 @@ def test_compute_basis_caching():
     new_result = sh.basis
 
     # Call the method again and check that the result is different (cache miss)
-    assert new_result is not initial_result
+    assert new_result is not last_result
+    last_result = new_result
+
+    sh.normalization = 'SN3D'
+    new_result = sh.basis
+    assert new_result is not last_result
+    last_result = new_result
+
+    sh.channel_convention = 'fuma'
+    new_result = sh.basis
+    assert new_result is not last_result
+    last_result = new_result
+
+    sh.basis_type = 'complex'
+    new_result = sh.basis
+    assert new_result is not last_result
+    last_result = new_result
+
+    sh.condon_shortley = True
+    new_result = sh.basis
+    assert new_result is not last_result
 
 
-def test_setter_inverse_method():
-    coordinates = equiangular(n_points=4)
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=coordinates)
     sph_harm.inverse_method = "quadrature"
     assert sph_harm.inverse_method == "quadrature"
 
