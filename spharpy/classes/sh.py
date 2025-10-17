@@ -347,21 +347,22 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         """Get or set the inverse transform type."""
         # If the user passes "auto", require SamplingSphere and resolve it
         if isinstance(value, str) and value == "auto":
-            if not isinstance(self.coordinates,sy.SamplingSphere):
+            if not isinstance(self.coordinates, sy.SamplingSphere):
                 raise ValueError(
                     "'auto' is only valid if `coordinates` is "
                     "a SamplingSphere.")
-            if isinstance(
-                    self.coordinates, sy.SamplingSphere) and \
-                        self.coordinates.quadrature:
-                value = "quadrature"
-            else:
-                value = "pseudo_inverse"
+            value = (
+                "quadrature"
+                if self.coordinates.quadrature
+                else "pseudo_inverse"
+            )
+
         elif value == "quadrature":
             if not isinstance(self.coordinates, sy.SamplingSphere) or \
-            not self.coordinates.quadrature:
+                not self.coordinates.quadrature:
                 raise ValueError("'quadrature' requires `coordinates` to be " \
-                "a SamplingSphere and coordinates.quadrature to be True.")
+                    "a SamplingSphere and coordinates.quadrature to be True.")
+
         elif value != "pseudo_inverse":
             raise ValueError(
                 "Invalid inverse_method. Allowed: 'pseudo_inverse', "
@@ -418,16 +419,16 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
             f"Gradient computation not supported for normalization "
             f"'{self.normalization}' and "
             f"channel convention '{self.channel_convention}'.")
+
+        if self.basis_type == "complex":
+            function = sy.spherical.spherical_harmonic_basis_gradient
+        elif self.basis_type == "real":
+            function = sy.spherical.spherical_harmonic_basis_gradient_real
         else:
-            if self.basis_type == "complex":
-                function = sy.spherical.spherical_harmonic_basis_gradient
-            elif self.basis_type == "real":
-                function = sy.spherical.spherical_harmonic_basis_gradient_real
-            else:
-                raise ValueError(
-                    "Invalid basis type, should be either 'complex' or 'real'")
-            self._basis_gradient_theta, self._basis_gradient_phi = function(
-                self.n_max, self.coordinates)
+            raise ValueError(
+                "Invalid basis type, should be either 'complex' or 'real'")
+        self._basis_gradient_theta, self._basis_gradient_phi = function(
+            self.n_max, self.coordinates)
 
     @property
     def basis_inv(self):
