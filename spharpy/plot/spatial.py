@@ -51,8 +51,8 @@ def scatter(coordinates, ax=None, **kwargs):
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
         The coordinates to be plotted
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
-        will create a new axis object.
+        The matplotlib axis object used for plotting. By default ``None``,
+        which will create a new axis object.
     **kwargs : optional
         Additional keyword arguments passed to the scatter function.
 
@@ -250,11 +250,6 @@ def pcolor_sphere(
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi. The data array will be mapped onto the surface of a sphere.
 
-    Note
-    ----
-    When plotting the phase encoded in the colormap, the function will switch
-    to the HSV colormap and ignore the user input for the cmap input variable.
-
     Parameters
     ----------
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
@@ -263,19 +258,22 @@ def pcolor_sphere(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default see Note.
+        Colormap used for the plot. If ``None`` (default), the colormap
+        is automatically selected based on the value of `cmap_encoding`:
+        ``'phase'`` uses :py:func:`spharpy.plot.phase_twilight`, and
+        ``'magnitude'`` uses the ``'viridis'`` colormap.
     colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+        Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
-        needs to be clipped. If `None`, the limits are set to the minimum and
-        maximum of the data.
+        needs to be clipped. If ``None``, the limits are set to the minimum and
+        maximum of the data. Default is ``None``.
     cmap_encoding : str, optional
-        The information encoded in the colormap. Can be either `'phase'`
-        (in radians) or `'magnitude'`. The default is `'phase'`.
+        The information encoded in the colormap. Can be either ``'phase'``
+        (in radians) or ``'magnitude'``. The default is ``'phase'``.
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
-        will create a new axis object.
+        The matplotlib axis object used for plotting. By default ``None``,
+        which will create a new axis object.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
@@ -366,11 +364,6 @@ def balloon_wireframe(
     sphere. The colormap represents either the phase or the magnitude of the
     data array.
 
-    Note
-    ----
-    When plotting the phase encoded in the colormap, the function will switch
-    to the HSV colormap and ignore the user input for the cmap input variable.
-
     Parameters
     ----------
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
@@ -379,19 +372,22 @@ def balloon_wireframe(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. By default see Note.
+        Colormap used for the plot. If ``None`` (default), the colormap
+        is automatically selected based on the value of `cmap_encoding`:
+        ``'phase'`` uses :py:func:`spharpy.plot.phase_twilight`, and
+        ``'magnitude'`` uses the ``'viridis'`` colormap.
     colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+        Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
-        needs to be clipped. If `None`, the limits are set to the minimum and
-        maximum of the data.
+        needs to be clipped. If ``None``, the limits are set to the minimum and
+        maximum of the data. Default is ``None``.
     cmap_encoding : str, optional
-        The information encoded in the colormap. Can be either `'phase'`
-        (in radians) or `'magnitude'`. The default is `'phase'`.
+        The information encoded in the colormap. Can be either ``'phase'``
+        (in radians) or ``'magnitude'``. The default is ``'phase'``.
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
-        will create a new axis object.
+        The matplotlib axis object used for plotting. By default ``None``,
+        which will create a new axis object.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
@@ -496,11 +492,6 @@ def balloon(
     The colormap represents either the phase or the magnitude of the
     data array.
 
-    Note
-    ----
-    When plotting the phase encoded in the colormap, the function will switch
-    to the HSV colormap and ignore the user input for the cmap input variable.
-
     Parameters
     ----------
     coordinates : pyfar.Coordinates, spharpy.SamplingSphere
@@ -509,18 +500,22 @@ def balloon(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. Default is see Note.
+        Colormap used for the plot. If ``None`` (default), the colormap
+        is automatically selected based on the value of `cmap_encoding`:
+        ``'phase'`` uses :py:func:`spharpy.plot.phase_twilight`, and
+        ``'magnitude'`` uses the ``'viridis'`` colormap.
     colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+        Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
-        needs to be clipped. If `None`, the limits are set to the minimum and
-        maximum of the data.
+        needs to be clipped. If ``None``, the limits are set to the minimum and
+        maximum of the data. Default is ``None``.
     cmap_encoding : str, optional
-        The information encoded in the colormap. Can be either `'phase'`
-        (in radians) or `'magnitude'`. The default is `'phase'`.
+        The information encoded in the colormap. Can be either ``'phase'``
+        (in radians) or ``'magnitude'``. The default is ``'phase'``.
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
+        The matplotlib axis object used for plotting. By default ``None``,
+        which
         will create a new axis object.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
@@ -607,10 +602,10 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
         Sampling as SamplingSphere object
     round_decimals : int
         Decimals to be rounded to for eliminating duplicate points in
-        the voronoi diagram
+        the voronoi diagram. Default is ``13``.
     ax : AxesSubplot, None, optional
         The subplot axes to use for plotting. The used projection needs to be
-        '3d'.
+        ``'3d'``.
 
     Returns
     -------
@@ -756,23 +751,23 @@ def pcolor_map(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+        Colormap for the plot, see matplotlib.cm. Default is ``'viridis'``.
     colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+        Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
-        needs to be clipped. If `None`, the limits are set to the minimum and
-        maximum of the data.
+        needs to be clipped. If ``None``, the limits are set to the minimum and
+        maximum of the data. Default is ``None``.
     projection : str, optional
-        The projection of the map. Default is 'mollweide'. See
+        The projection of the map. Default is ``'mollweide'``. See
         :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
         for more information on available projections in matplotlib.
     refine : bool, optional
         Whether to refine the triangulation before plotting.
-        Default is `False`.
+        Default is ``False``.
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
-        will create a new axis object with the specified projection.
+        The matplotlib axis object used for plotting. By default ``None``,
+        which will create a new axis object with the specified projection.
     **kwargs : optional
         Additional arguments passed to the tripcolor function.
 
@@ -875,15 +870,15 @@ def contour_map(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+        Colormap for the plot, see matplotlib.cm. Default is ``'viridis'``.
     colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+        Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
-        needs to be clipped. If `None`, the limits are set to the minimum and
-        maximum of the data.
+        needs to be clipped. If ``None``, the limits are set to the minimum and
+        maximum of the data. Default is ``None``.
     projection : str, optional
-        The projection of the map. Default is 'mollweide'. See
+        The projection of the map. Default is ``'mollweide'``. See
         :py:doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`
         for more information on available projections in matplotlib.
     levels : int or array-like, optional
@@ -896,8 +891,8 @@ def contour_map(
         Default is ``None``, the levels are chosen automatically by
         Matplotlib.
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
-        will create a new axis object with the specified projection.
+        The matplotlib axis object used for plotting. By default ``None``,
+        which will create a new axis object with the specified projection.
 
     Returns
     -------
@@ -973,13 +968,13 @@ def contour(
         Data for each angle, must have size corresponding to the number of
         points given in coordinates.
     cmap : str, :py:class:`matplotlib.colors.Colormap`, optional
-        Colormap for the plot, see matplotlib.cm. Default is 'viridis'.
+        Colormap for the plot, see matplotlib.cm. Default is ``'viridis'``.
     colorbar : bool, optional
-        Whether to show a colorbar or not. Default is `True`.
+        Whether to show a colorbar or not. Default is ``True``.
     limits : tuple, list, optional
         Tuple or list containing the maximum and minimum to which the colormap
-        needs to be clipped. If `None`, the limits are set to the minimum and
-        maximum of the data.
+        needs to be clipped. If ``None``, the limits are set to the minimum and
+        maximum of the data. Default is ``None``.
     levels : int or array-like, optional
         Determines the number and positions of the contours.
         If an int n, use :py:class:`matplotlib.ticker.MaxNLocator`,
@@ -990,8 +985,8 @@ def contour(
         Default is ``None``, the levels are chosen automatically by
         Matplotlib.
     ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default `None`, which
-        will create a new axis object with the specified projection.
+        The matplotlib axis object used for plotting. By default ``None``,
+        which will create a new axis object with the specified projection.
 
     Returns
     -------

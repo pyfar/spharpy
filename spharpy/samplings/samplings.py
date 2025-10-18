@@ -601,15 +601,14 @@ def eigenmike_em32():
 
     The data are according to the Eigenstudio user manual on the homepage [#]_.
 
-    References
-    ----------
-    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
-
-
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
+
+    References
+    ----------
+    .. [#]  Eigenstudio User Manual, https://eigenmike.com/sites/default/files/documentation-2023-10/EigenStudio%20User%20Manual%20R02D.pdf
 
     Examples
     --------
@@ -619,7 +618,7 @@ def eigenmike_em32():
         >>> import spharpy as sp
         >>> coords = sp.samplings.eigenmike_em32()
         >>> sp.plot.scatter(coords)
-    """
+    """  # noqa: E501
     rad = np.ones(32)
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
                       90.0, 125.0, 148.0, 125.0, 90.0, 55.0,
@@ -640,18 +639,25 @@ def eigenmike_em32():
 def eigenmike_em64():
     """Microphone positions of the Eigenmike em64 by mhacoustics.
 
-    according to
-    the Eigenmuke user manual on the homepage [#]_.
-
-    References
-    ----------
-    .. [#]  Eigenmike em64 User Manual, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
+    The data are according to the Eigenmike user manual on the homepage [#]_.
 
     Returns
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
+    References
+    ----------
+    .. [#]  Eigenmike em64 Getting Started Guide, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.eigenmike_em64()
+        >>> sp.plot.scatter(coords)
     """  # noqa: E501
 
     rad = np.ones(64)*0.042
@@ -753,10 +759,12 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
     n_max : int
         Spherical harmonic order
     condition_num : double
-        Desired maximum condition number of the spherical harmonic basis matrix
+        Desired maximum condition number of the spherical harmonic basis
+        matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        None n_points will be (n_max+1)**2
+        ``None`` the value ``(n_max+1)**2`` will be used as start.
+        Default is ``None``.
 
     Returns
     -------
@@ -809,10 +817,12 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     n_max : int
         Spherical harmonic order
     condition_num : double
-        Desired maximum condition number of the spherical harmonic basis matrix
+        Desired maximum condition number of the spherical harmonic basis
+        matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        None n_points will be (n_max+1)**2
+        ``None`` the value ``(n_max+1)**2`` will be used as start.
+        Default is ``None``.
 
     Returns
     -------

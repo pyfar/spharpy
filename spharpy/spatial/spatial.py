@@ -30,7 +30,8 @@ def greens_function_plane_wave(
         The wave number. A complex wave number can be used for evanescent
         waves.
     gradient : bool
-        If True, the gradient will be returned as well
+        If ``True``, the gradient will be returned as well.
+        Default is ``False``.
 
 
     Returns
