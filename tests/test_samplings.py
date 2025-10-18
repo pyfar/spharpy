@@ -504,10 +504,15 @@ def test_hyperinterpolation_radius(download_sampling, radius):
     npt.assert_allclose(sampling.radius, radius, atol=1e-15)
 
 
-def test_hyperinterpolation_errors():
+@pytest.mark.parametrize("n_max", [-1, 'one'])
+def test_hyperinterpolation_errors_n_max(n_max):
     with pytest.raises(
             ValueError, match='n_max must be an integer between 1 and 200'):
-        samplings.hyperinterpolation(-1)
+        samplings.hyperinterpolation(n_max)
+
+
+@pytest.mark.parametrize("radius", [-1, 'one'])
+def test_hyperinterpolation_errors_radius(radius):
     with pytest.raises(
             ValueError, match='radius must be a single positive value'):
-        samplings.hyperinterpolation(1, -1)
+        samplings.hyperinterpolation(1, radius)
