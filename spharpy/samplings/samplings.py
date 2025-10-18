@@ -65,30 +65,26 @@ def cube_equidistant(n_points):
     return Coordinates(x_grid.flatten(), y_grid.flatten(), z_grid.flatten())
 
 
-def hyperinterpolation(n_points=None, n_max=None, radius=1.):
+def hyperinterpolation(n_max, radius=1.):
     r"""
     Return a Hyperinterpolation sampling grid.
 
     After Sloan and Womersley [#]_. The samplings are available for
-    1 <= `n_max` <= 200 (``n_points = (n_max + 1)^2``).
+    1 <= ``n_max`` <= 200.
 
     Parameters
     ----------
-    n_points : int
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
-        `n_max` must be provided. The default is ``None``.
+        Maximum applicable spherical harmonic order. It must be
+        between ``1`` and ``200``.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
+        Sampling positions including sampling weights, with
+        ``(n_max + 1)**2`` points.
 
     Notes
     -----
@@ -113,24 +109,15 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
         >>> sp.plot.scatter(coords)
 
     """
-    if (n_points is None) and (n_max is None):
-        for o in range(1, 100):
-            print(f"SH order {o}, number of points {(o + 1)**2}")
-        return None
+    # check inputs
+    if not isinstance(n_max, int) or n_max < 1 or n_max > 200:
+        raise ValueError('n_max must be an integer between 1 and 200')
+    if not isinstance(
+            radius, (int, float)) or np.size(radius) > 1 or (radius <= 0):
+        raise ValueError('radius must be a single positive value')
 
-    # check input
-    if n_points is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
-
-    # get number of points or spherical harmonic order
-    if n_max is not None:
-        if n_max < 1 or n_max > 200:
-            raise ValueError('n_max must be between 1 and 200')
-        n_points = (n_max + 1)**2
-    else:
-        if n_points not in [(n + 1)**2 for n in range(1, 200)]:
-            raise ValueError('invalid value for n_points')
-        n_max = int(np.sqrt(n_points) - 1)
+    # calculate number of points
+    n_points = (n_max + 1)**2
 
     # download data if necessary
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)
