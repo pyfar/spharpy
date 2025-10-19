@@ -6,10 +6,11 @@ import numpy as np
 
 
 class _SphericalHarmonicAudio(_Audio, SphericalHarmonicDefinition):
-    """Base class for spherical harmonics audio objects.
+    """
+    Base class for spherical harmonics audio objects.
 
     This class extends the pyfar Audio class with all methods and
-    properties required for spherical harmonics data and are common to the 
+    properties required for spherical harmonics data and are common to the
     three sub-classes :py:func:`SphericalHarmonicsTimeData`,
     :py:func:`SphericalHarmonicsFrequencyData`, and
     :py:func:`SphericalHarmonicsSignal`.
@@ -189,7 +190,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     comment : str
         A comment related to `data`. The default is ``None``.
     """
- 
+
     def __init__(self, data, frequencies, basis_type, normalization,
                  channel_convention, condon_shortley, comment=""):
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
@@ -200,7 +201,8 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
 
 
 class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
-    """Create audio object with spherical harmonics coefficients in time or
+    """
+    Create audio object with spherical harmonics coefficients in time or
     frequency domain.
 
     Objects of this class contain spherical harmonics coefficients which are
