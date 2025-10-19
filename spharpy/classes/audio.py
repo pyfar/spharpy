@@ -1,10 +1,11 @@
 from pyfar import Signal, TimeData, FrequencyData
 from pyfar.classes.audio import _Audio
 from spharpy.spherical import renormalize, change_channel_convention
+from spharpy.classes import SphericalHarmonicDefinition
 import numpy as np
 
 
-class _SphericalHarmonicAudio(_Audio):
+class _SphericalHarmonicAudio(_Audio, SphericalHarmonicDefinition):
     """Base class for spherical harmonics audio objects.
 
     This class extends the pyfar Audio class with all methods and
@@ -58,91 +59,48 @@ class _SphericalHarmonicAudio(_Audio):
             raise ValueError("Invalid number of dimensions. Data should have "
                              "at least 3 dimensions.")
 
-        # set n_max
+        # calculate n_max
         n_max = np.sqrt(self._data.shape[-2])-1
         if n_max - int(n_max) != 0:
             raise ValueError("Invalid number of SH channels: "
                              f"{self._data.shape[-2]}. It must match "
                              "(n_max + 1)^2.")
-        self._n_max = int(n_max)
+        n_max = int(n_max)
 
-        # set basis_type
-        if basis_type not in ["complex", "real"]:
-            raise ValueError("Invalid basis type, only "
-                             "'complex' and 'real' are supported")
-        self._basis_type = basis_type
+        # helpers for setting normalization and channel convention
+        self._current_normalization = None
+        self._current_channel_convention = None
 
-        # set normalization
-        if normalization not in ["N3D", "NM", "maxN", "SN3D"]:
-            raise ValueError("Invalid normalization, has to be 'N3D', 'NM', "
-                             "'maxN', 'SN3D', or 'SNM', but is "
-                             f"{normalization}")
-        self._normalization = normalization
+        SphericalHarmonicDefinition.__init__(
+            self,
+            n_max,
+            basis_type,
+            channel_convention,
+            normalization,
+            condon_shortley,
+        )
 
-        # set channel_convention
-        if channel_convention not in ["acn", "fuma"]:
-            raise ValueError("Invalid channel convention, has to be 'acn' "
-                             f"or 'fuma', but is {channel_convention}")
-        self._channel_convention = channel_convention
+    def _on_property_change(self):
+        # check if normalization has changed and recompute accordingly
+        if (self._current_normalization is not None and
+                self._current_normalization != self.normalization):
+            self._data = renormalize(
+                self._data,
+                self.channel_convention,
+                self._current_normalization,
+                self.normalization,
+                axis=-2)
+        self._current_normalization = self.normalization
 
-        # set Condon Shortley
-        if not isinstance(condon_shortley, bool):
-            raise ValueError("Condon_shortley has to be a bool.")
-        self._condon_shortley = condon_shortley
-
-    @property
-    def n_max(self):
-        """Get the maximum spherical harmonic order."""
-        return self._n_max
-
-    @property
-    def basis_type(self):
-        """Get the type of the spherical harmonic basis."""
-        return self._basis_type
-
-    @property
-    def normalization(self):
-        """
-        Get or set and apply the normalization of the spherical harmonic
-        coefficients.
-        """
-        return self._normalization
-
-    @normalization.setter
-    def normalization(self, value):
-        """
-        Get or set and apply the normalization of the spherical harmonic
-        coefficients.
-        """
-        if self.normalization is not value:
-            self._data = renormalize(self._data, self.channel_convention,
-                                     self.normalization, value, axis=-2)
-            self._normalization = value
-
-    @property
-    def condon_shortley(self):
-        """Get info whether to include the Condon-Shortley phase term."""
-        return self._condon_shortley
-
-    @property
-    def channel_convention(self):
-        """
-        Get or set and apply the channel convention of the spherical harmonic
-        coefficients.
-        """
-        return self._channel_convention
-
-    @channel_convention.setter
-    def channel_convention(self, value):
-        """
-        Get or set and apply the channel convention of the spherical harmonic
-        coefficients.
-        """
-        if self.channel_convention is not value:
-            self._data = change_channel_convention(self._data,
-                                                   self.channel_convention,
-                                                   value, axis=-2)
-            self._channel_convention = value
+        # check if channel convention has changed and recompute accordingly
+        if (self._current_channel_convention is not None and
+                self._current_channel_convention != self.channel_convention):
+            self._data = change_channel_convention(
+                self._data,
+                self._current_channel_convention,
+                self.channel_convention,
+                axis=-2)
+        self._current_channel_convention = self.channel_convention
 
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
@@ -186,6 +144,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     def __init__(self, data, times, basis_type, normalization,
                  channel_convention, condon_shortley, comment="",
                  is_complex=False):
+
         TimeData.__init__(self, data=data, times=times, comment=comment,
                           is_complex=is_complex)
         _SphericalHarmonicAudio.__init__(
@@ -230,6 +189,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     comment : str
         A comment related to `data`. The default is ``None``.
     """
+ 
     def __init__(self, data, frequencies, basis_type, normalization,
                  channel_convention, condon_shortley, comment=""):
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
@@ -319,6 +279,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                  fft_norm='none',
                  comment="",
                  is_complex=False):
+
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)

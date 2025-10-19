@@ -142,9 +142,8 @@ def test_init_wrong_normalization():
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
     with pytest.raises(ValueError,
-                       match="Invalid normalization, has to be 'N3D', 'NM', "
-                             "'maxN', 'SN3D', or 'SNM', but is "
-                             "invalid_normalization"):
+                       match="Invalid normalization, currently only 'N3D', "
+                             "'NM', 'maxN', 'SN3D', 'SNM' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='acn',
@@ -184,9 +183,10 @@ def test_init_wrong_channel_convention():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
-    with pytest.raises(ValueError,
-                match="Invalid channel convention, has to be 'acn' "
-                      "or 'fuma', but is invalid_convention"):
+    with pytest.raises(
+        ValueError,
+        match="Invalid channel convention, currently only 'acn' "
+              "and 'fuma' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='invalid_convention',
