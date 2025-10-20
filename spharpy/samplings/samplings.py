@@ -92,7 +92,8 @@ def hyperinterpolation(n_max, radius=1.):
     Return a Hyperinterpolation sampling grid.
 
     After Sloan and Womersley [#]_. The samplings are available for
-    1 <= ``n_max`` <= 200.
+    spherical harmonics orders :math:`1 \leq n_\text{max} \leq 200` and the number
+    of points in the sampling grird equals :math:`(n_\text{max} + 1)^2`.
 
     Parameters
     ----------
