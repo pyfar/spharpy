@@ -12,6 +12,10 @@ from .spatial import (
     MidpointNormalize,
 )
 
+from ._utils import (
+    _prepare_plot,
+)
+
 from .cmap import phase_twilight
 
 
@@ -26,4 +30,5 @@ __all__ = [
     'contour_map',
     'MidpointNormalize',
     'phase_twilight',
+    '_prepare_plot'
 ]
