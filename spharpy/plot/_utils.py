@@ -24,7 +24,8 @@ def _add_colorbar(colorbar, fig, ax, mappable, label):
 
     Returns
     -------
-    cb : matplotlib colorbar object
+    cb : matplotlib.colorbar.Colorbar
+        Returns matplotlib colorbar object.
     """
     if colorbar:
         if ax[1] is None:
