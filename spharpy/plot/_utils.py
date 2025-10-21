@@ -6,11 +6,10 @@ import matplotlib.pyplot as plt
 
 def _add_colorbar(colorbar, fig, ax, mappable, label):
     """
-    Add colorbar to plot
+    Add colorbar to plot.
 
     Parameters
     ----------
-
     colorbar : bool
         Flag indicating if a colobar should be added to the plot
     fig : matplotlib.figure.Figure

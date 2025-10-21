@@ -7,13 +7,13 @@ import matplotlib as mpl
 @pytest.mark.parametrize(
     ("input_ax", "output_type", "projection"),
     [(None, plt.Axes, '3d'), (plt.gca(), plt.Axes, None),
-     ([plt.gca(), plt.gca()], list, None)]
+     ([plt.gca(), plt.gca()], list, None)],
 )
 def test_prepare_plot(input_ax, output_type, projection):
     """
     Test output of :py:func:`~spharpy.plot._utils._prepare_plot`.
     """
-    fig, ax = sp.plot._prepare_plot(input_ax, projection)
+    fig, ax = sp.plot._utils._prepare_plot(input_ax, projection)
 
     assert isinstance(fig, plt.Figure)
     assert isinstance(ax, output_type)
@@ -29,7 +29,7 @@ def test_prepare_plot(input_ax, output_type, projection):
         ("colorbar", "ax", "return_type"),
         [(True, [plt.axes(), None], mpl.colorbar.Colorbar),
          (True, [plt.axes(), plt.axes()], mpl.colorbar.Colorbar),
-         (False, [plt.axes(), None], None)]
+         (False, [plt.axes(), None], None)],
 )
 def test_add_colorbar(colorbar, ax, return_type):
     norm = mpl.colors.Normalize(vmin=0, vmax=10)
