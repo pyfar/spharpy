@@ -29,7 +29,7 @@ def test_prepare_plot(ax_case, output_type, projection):
     if isinstance(ax, list):
         assert all(isinstance(ax_, plt.Axes) for ax_ in ax)
 
-    if ax is None:
+    if ax is None and projection is not None:
         assert ax.name == projection
 
 
