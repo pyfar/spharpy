@@ -2,6 +2,7 @@ import pytest
 import spharpy as sp
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from spharpy.plot._utils import _prepare_plot, _add_colorbar
 
 
 @pytest.mark.parametrize(
@@ -13,7 +14,7 @@ def test_prepare_plot(input_ax, output_type, projection):
     """
     Test output of :py:func:`~spharpy.plot._utils._prepare_plot`.
     """
-    fig, ax = sp.plot._utils._prepare_plot(input_ax, projection)
+    fig, ax = _prepare_plot(input_ax, projection)
 
     assert isinstance(fig, plt.Figure)
     assert isinstance(ax, output_type)
@@ -38,7 +39,7 @@ def test_add_colorbar(colorbar, ax, return_type):
     mappable = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
 
     fig = plt.gcf()
-    cb = sp.plot._utils._add_colorbar(colorbar, fig, ax, mappable, None)
+    cb = _add_colorbar(colorbar, fig, ax, mappable, None)
 
     if return_type is None:
         assert cb is None
