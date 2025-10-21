@@ -26,5 +26,4 @@ __all__ = [
     'contour_map',
     'MidpointNormalize',
     'phase_twilight',
-
 ]
