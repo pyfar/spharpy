@@ -32,6 +32,7 @@ def test_prepare_plot(input_ax, output_type, projection):
          (False, [plt.axes(), None], None)],
 )
 def test_add_colorbar(colorbar, ax, return_type):
+    """Test return type of :py:func:`~spharpy.plot._utils._add_colorbar`"""
     norm = mpl.colors.Normalize(vmin=0, vmax=10)
     cmap = plt.get_cmap('viridis')
     mappable = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
