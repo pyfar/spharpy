@@ -4,42 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def _add_colorbar(colorbar, fig, ax, mappable, label):
-    """
-    Add colorbar to plot.
-
-    Parameters
-    ----------
-    colorbar : bool
-        Flag indicating if a colobar should be added to the plot
-    fig : matplotlib.figure.Figure
-        Figure to plot on.
-    ax : list[matplotlib.axes.Axes]
-        Either a list of two axes objects or a list with one axis and None
-        object.
-    mappable : matplotlib.cm.ScalarMappable
-        The matplotlib.cm.ScalarMappable described by the colorbar.
-    label : string
-        colorbar label
-
-    Returns
-    -------
-    cb : matplotlib.colorbar.Colorbar
-        Returns matplotlib colorbar object.
-    """
-    if colorbar:
-        if ax[1] is None:
-            cb = fig.colorbar(mappable, ax=ax[0])
-        else:
-            cb = fig.colorbar(mappable, ax=ax[1])
-        cb.set_label(label)
-    else:
-        cb = None
-
-    return cb
-
-
-def _prepare_plot(ax, projection=None):
+def _prepare_plot(ax=None, projection=None):
     """
     Returns a figure to plot on.
 
@@ -51,7 +16,9 @@ def _prepare_plot(ax, projection=None):
         not exist.
     projection : str, optional
         Type of projection for the axes. This is only applied if new axes are
-        created. Default is ``None`` (2D projection).
+        created. Default is ``None`` (2D projection). See
+        `matplotlib.projections <https://matplotlib.org/stable/api/projections_api.html>`_
+        for more information on projections.
 
     Returns
     -------
@@ -59,7 +26,7 @@ def _prepare_plot(ax, projection=None):
         Returns the active figure.
     ax : maptlotlib.axes.Axes
         Returns the current axes.
-    """
+    """  # noqa: E501
     if ax is None:
         # get current figure or create a new one
         fig = plt.gcf()
