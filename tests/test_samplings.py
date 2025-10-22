@@ -9,23 +9,54 @@ from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
 
 
-def test_cube_equidistant_int():
+@pytest.mark.parametrize("flatten_output", [True, False])
+def test_equidistant_cuboid_sampling_int(flatten_output):
     n_points = 3
-    coords = samplings.cube_equidistant(n_points)
-    x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3)
-    y = np.hstack((np.ones(9) * -1, np.zeros(9), np.ones(9)))
-    z = np.tile(np.array([-1, 0, 1]), 9)
+    coords = samplings.equidistant_cuboid(
+        n_points, flatten_output=flatten_output)
+    data = np.linspace(-1, 1, 3)
+    x, y, z = np.meshgrid(data, data, data, indexing='ij')
+    if flatten_output:
+        x = x.flatten()
+        y = y.flatten()
+        z = z.flatten()
     np.testing.assert_allclose(x, coords.x)
     np.testing.assert_allclose(y, coords.y)
     np.testing.assert_allclose(z, coords.z)
     assert type(coords) is Coordinates
     assert coords.csize == 3**3
+    if flatten_output:
+        assert coords.cshape == (3*3*3,)
+    else:
+        assert coords.cshape == (3, 3, 3)
 
 
-def test_cube_equidistant_tuple():
-    # test with tuple
-    c = samplings.cube_equidistant((3, 2, 4))
-    assert c.csize == 3*2*4
+def test_equidistant_cuboid_sampling_tuple():
+    c = samplings.equidistant_cuboid((2, 3, 4), flatten_output=False)
+    assert c.csize == 2*3*4
+    assert c.cshape == (2, 3, 4)
+    npt.assert_allclose(c.x[0], c.x[0, 0, 0])
+    npt.assert_allclose(c.y[:, 0], c.y[0, 0, 0])
+    npt.assert_allclose(c.z[:, :, 0], c.z[0, 0, 0])
+
+
+def test_equidistant_cuboid_sampling_tuple_flatten():
+    c = samplings.equidistant_cuboid((2, 3, 4), flatten_output=True)
+    assert c.csize == 2*3*4
+    assert c.cshape == (2*3*4,)
+
+
+def test_equidistant_cuboid_sampling_invalid():
+    with pytest.raises(ValueError, match='flatten_output must be a boolean.'):
+        samplings.equidistant_cuboid(3, flatten_output='bla')
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid(-3)
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid((3, -3, 3))
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid((3, 3, 3.2))
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid((3, 3, -3))
 
 
 def test_hyperinterpolation(download_sampling):

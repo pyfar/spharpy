@@ -15,11 +15,12 @@ from ._eqsp import point_set as eq_point_set
 from ._eqsp import lebedev_sphere
 
 
-def cube_equidistant(n_points):
+def equidistant_cuboid(n_points, flatten_output=True):
     """
-    Create a cuboid sampling with equidistant spacings in x, y, and z.
+    Create a cubic sampling with equidistant spacings in x, y, and z.
 
-    The cube will have dimensions 1 x 1 x 1.
+    The cuboid spans from -1 m to 1 m along each axis and is centered at
+    the origin.
 
     Parameters
     ----------
@@ -28,11 +29,16 @@ def cube_equidistant(n_points):
         number of sampling positions will be the same in every axis. If a
         tuple is given, the number of points will be set as
         ``(n_x, n_y, n_z)``.
+    flatten_output : bool, optional
+        Whether to flatten the output Coordinates object or not.
+        The default is ``False``.
 
     Returns
     -------
     sampling : :py:class:`pyfar.Coordinates`
-        Sampling positions as Coordinate object.
+        Sampling positions as Coordinate object with cshape
+        ``(n_x, n_y, n_z)`` if `flatten_output` is ``False``, otherwise
+        with cshape ``(n_x*n_y*n_z, )``.
         Does not contain sampling weights.
 
     Examples
@@ -41,9 +47,20 @@ def cube_equidistant(n_points):
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.cube_equidistant(3)
+        >>> coords = sp.samplings.equidistant_cuboid(3)
         >>> sp.plot.scatter(coords)
     """
+    if not isinstance(flatten_output, bool):
+        raise ValueError("flatten_output must be a boolean.")
+    try:
+        n_points = np.asarray(n_points)
+        assert (n_points > 0).all()
+        assert (n_points % 1 == 0).all()
+        n_points = n_points.astype(int)
+    except Exception as e:
+        raise ValueError(
+            "The number of points needs to be either an integer "
+            "or a tuple with 3 elements.") from e
     if np.size(n_points) == 1:
         n_x = n_points
         n_y = n_points
@@ -60,9 +77,14 @@ def cube_equidistant(n_points):
     y = np.linspace(-1, 1, n_y)
     z = np.linspace(-1, 1, n_z)
 
-    x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
+    x_grid, y_grid, z_grid = np.meshgrid(x, y, z, indexing='ij')
 
-    return Coordinates(x_grid.flatten(), y_grid.flatten(), z_grid.flatten())
+    if flatten_output:
+        x_grid = x_grid.flatten()
+        y_grid = y_grid.flatten()
+        z_grid = z_grid.flatten()
+
+    return Coordinates(x_grid, y_grid, z_grid)
 
 
 def hyperinterpolation(n_points=None, n_max=None, radius=1.):

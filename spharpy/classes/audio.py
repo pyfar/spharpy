@@ -208,7 +208,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
 
     Objects of this class contain spherical harmonics coefficients which are
     directly convertible between time and frequency domain (equally spaced
-    samples and frequency bins), the channel conventions ACN and FUMA, as
+    samples and frequency bins), the channel conventions ACN and FuMa, as
     well as the normalizations N3D, SN3D, or MaxN, see [#]_. The definition of
     the spherical harmonics basis functions is based on the scipy convention
     which includes the Condon-Shortley phase, [#]_, [#]_.
@@ -236,7 +236,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
         to 3rd order)
     channel_convention : str
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool
         Flag to indicate if the Condon-Shortley phase term is included

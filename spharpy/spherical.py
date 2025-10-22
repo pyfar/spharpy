@@ -13,9 +13,9 @@ def acn_to_nm(acn):
 
     .. math::
 
-        n = \lfloor \sqrt{\mathrm{acn} + 1} \rfloor - 1
+        n = \lfloor \sqrt{\mathrm{ACN} + 1} \rfloor - 1
 
-        m = \mathrm{acn} - n^2 -n
+        m = \mathrm{ACN} - n^2 -n
 
     Parameters
     ----------
@@ -51,11 +51,12 @@ def nm_to_acn(n, m):
     r"""
     Calculate the linear index coefficient for a order n and degree m.
 
-    The linear index corresponds to the Ambisonics Channel Convention [#]_.
+    The linear index corresponds to the Ambisonics Channel Convention (ACN)
+    [#]_.
 
     .. math::
 
-        \mathrm{acn} = n^2 + n + m
+        \mathrm{ACN} = n^2 + n + m
 
     References
     ----------
@@ -259,7 +260,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         coefficients or basis functions.
     channel_convention : str
         Channel convention of the data which should be renormalized. Valid
-        conventions are `"acn"` or `"fuma"`.
+        conventions are `"ACN"` or `"FuMa"`.
     current_norm : str
         Current normalization. Valid normalizations are `"N3D"`, `"NM"`,
         `"maxN"`, `"SN3D"`, or `"SNM"`.
@@ -282,9 +283,9 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
         raise ValueError("Invalid number of SH channels: "
                          f"{data.shape[-2]}. It must match (n_max + 1)^2.")
 
-    if channel_convention not in ["acn", "fuma"]:
-        raise ValueError("Invalid channel convention. Has to be 'acn' "
-                         f"or 'fuma', but is {channel_convention}")
+    if channel_convention not in ["ACN", "FuMa"]:
+        raise ValueError("Invalid channel convention. Has to be 'ACN' "
+                         f"or 'FuMa', but is {channel_convention}")
 
     if current_norm not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
         raise ValueError("Invalid current normalization. Has to be 'N3D', "
@@ -300,7 +301,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
 
     acn = np.arange(data.shape[axis])
 
-    if channel_convention == "fuma":
+    if channel_convention == "FuMa":
         orders, _ = fuma_to_nm(acn)
     else:
         orders, _ = acn_to_nm(acn)
@@ -348,9 +349,9 @@ def change_channel_convention(data, current, target, axis):
         Data of which channel convention should be changed. Either spherical
         harmonics coefficients or bases functions.
     current : str
-        Current channel convention. Valid conventions are `"acn"` or `"fuma"`.
+        Current channel convention. Valid conventions are `"ACN"` or `"FuMa"`.
     target : str
-        Desired channel convention. Valid conventions are `"acn"` or `"fuma"`.
+        Desired channel convention. Valid conventions are `"ACN"` or `"FuMa"`.
     axis : integer
         Axis along which the channel convention should be changed
 
@@ -359,19 +360,19 @@ def change_channel_convention(data, current, target, axis):
     data : ndarray
         Data with changed channel convention
     """
-    if current not in ["acn", "fuma"]:
+    if current not in ["ACN", "FuMa"]:
         raise ValueError("Invalid current channel convention. Has to be "
-                         f"'acn' or 'fuma', but is {current}")
+                         f"'ACN' or 'FuMa', but is {current}")
 
-    if target not in ["acn", "fuma"]:
-        raise ValueError("Invalid target channel convention. Has to be 'acn' "
-                         f"or 'fuma', but is {target}")
+    if target not in ["ACN", "FuMa"]:
+        raise ValueError("Invalid target channel convention. Has to be 'ACN' "
+                         f"or 'FuMa', but is {target}")
 
     acn = np.arange(data.shape[axis])
-    if current == 'acn':
+    if current == 'ACN':
         n, m = acn_to_nm(acn)
         idx = nm_to_fuma(n, m)
-    elif current == 'fuma':
+    elif current == 'FuMa':
         n, m = fuma_to_nm(acn)
         idx = nm_to_acn(n, m)
 
@@ -379,7 +380,7 @@ def change_channel_convention(data, current, target, axis):
 
 
 def spherical_harmonic_basis(
-        n_max, coordinates, normalization="N3D", channel_convention="acn",
+        n_max, coordinates, normalization="N3D", channel_convention="ACN",
         condon_shortley='auto'):
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
@@ -418,8 +419,8 @@ def spherical_harmonic_basis(
         ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True`` or
@@ -439,7 +440,7 @@ def spherical_harmonic_basis(
     >>> Y = spharpy.spherical.spherical_harmonic_basis(n_max, coordinates)
 
     """  # noqa: E501
-    if channel_convention == "fuma" and n_max > 3:
+    if channel_convention == "FuMa" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
 
@@ -459,7 +460,7 @@ def spherical_harmonic_basis(
     basis = np.zeros((coordinates.csize, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        if channel_convention == "fuma":
+        if channel_convention == "FuMa":
             order, degree = fuma_to_nm(acn)
         else:
             order, degree = acn_to_nm(acn)
@@ -483,7 +484,7 @@ def spherical_harmonic_basis(
 
 
 def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="N3D",
-                                      channel_convention="acn",
+                                      channel_convention="ACN",
                                       condon_shortley='auto'):
     r"""
     Calculates the unit sphere gradients of the complex spherical harmonics.
@@ -545,7 +546,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="N3D",
         spharpy.spherical.spherical_harmonic_basis_gradient(n_max, coordinates)
 
     """  # noqa: E501
-    if channel_convention == "fuma" and n_max > 3:
+    if channel_convention == "FuMa" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
 
@@ -568,7 +569,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="N3D",
     grad_phi = np.zeros((n_points, n_coeff), dtype=complex)
 
     for acn in range(n_coeff):
-        if channel_convention == "fuma":
+        if channel_convention == "FuMa":
             n, m = fuma_to_nm(acn)
         else:
             n, m = acn_to_nm(acn)
@@ -601,7 +602,7 @@ def spherical_harmonic_basis_gradient(n_max, coordinates, normalization="N3D",
 
 
 def spherical_harmonic_basis_real(
-        n_max, coordinates, normalization="N3D", channel_convention="acn",
+        n_max, coordinates, normalization="N3D", channel_convention="ACN",
         condon_shortley='auto'):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
@@ -628,8 +629,8 @@ def spherical_harmonic_basis_real(
         ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
@@ -642,7 +643,7 @@ def spherical_harmonic_basis_real(
         Real valued spherical harmonic basis matrix.
 
     """  # noqa: E501
-    if channel_convention == "fuma" and n_max > 3:
+    if channel_convention == "FuMa" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
 
@@ -662,7 +663,7 @@ def spherical_harmonic_basis_real(
     basis = np.zeros((coordinates.csize, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        if channel_convention == "fuma":
+        if channel_convention == "FuMa":
             order, degree = fuma_to_nm(acn)
         else:
             order, degree = acn_to_nm(acn)
@@ -687,7 +688,7 @@ def spherical_harmonic_basis_real(
 
 def spherical_harmonic_basis_gradient_real(n_max, coordinates,
                                            normalization="N3D",
-                                           channel_convention="acn",
+                                           channel_convention="ACN",
                                            condon_shortley='auto'):
     r"""
     Calculates the unit sphere gradients of the real valued spherical
@@ -726,8 +727,8 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         ``'maxN'``, ``'SN3D'``, or ``'SNM'``.
         (maxN is only supported up to 3rd order)
     channel_convention : str, optional
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
-        The default is ``'acn'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
@@ -742,7 +743,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
         Gradient with respect to the azimuth angle.
 
     """  # noqa: E501
-    if channel_convention == "fuma" and n_max > 3:
+    if channel_convention == "FuMa" and n_max > 3:
         raise ValueError(
             "FuMa channel convention is only supported up to 3rd order.")
 
@@ -765,7 +766,7 @@ def spherical_harmonic_basis_gradient_real(n_max, coordinates,
     grad_phi = np.zeros((n_points, n_coeff), dtype=float)
 
     for acn in range(n_coeff):
-        if channel_convention == "fuma":
+        if channel_convention == "FuMa":
             n, m = fuma_to_nm(acn)
         else:
             n, m = acn_to_nm(acn)
@@ -1059,7 +1060,7 @@ def sid(n_max):
 
 def sid_to_acn(n_max):
     """Convert from SID channel indexing to ACN indeces.
-    Returns the indices to achieve a corresponding linear acn indexing.
+    Returns the indices to achieve a corresponding linear ACN indexing.
 
     Parameters
     ----------
