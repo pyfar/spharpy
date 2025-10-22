@@ -441,21 +441,18 @@ def test_em64():
         np.sum(sampling.weights), 4*np.pi, atol=1e-6, rtol=1e-6)
 
 
-def test_hyperinterpolation(download_sampling):
-    n_max = 1
-    download_sampling('hyperinterpolation', n_max)
-    sampling = samplings.hyperinterpolation(n_max=n_max)
-    assert sampling.radius.size == (n_max+1)**2
-
-
 def test_hyperinterpolation_default(download_sampling):
-    # test default behavior
-    download_sampling('hyperinterpolation', [1])
+    n_max = 1
+    # download just required sampling for testing
+    download_sampling('hyperinterpolation', [n_max])
 
-    # test with n_max 1
     c = samplings.hyperinterpolation(1)
+
+    # test sampling properties
     assert type(c) is SamplingSphere
-    assert c.csize == 4
+    assert c.n_max == n_max
+    assert c.csize == (n_max+1)**2
+    assert c.radius.size == (n_max+1)**2
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -465,11 +462,8 @@ def test_hyperinterpolation_default(download_sampling):
 @pytest.mark.parametrize("radius", [1, 5])
 def test_hyperinterpolation_radius(download_sampling, radius):
     download_sampling('hyperinterpolation', [1])
-    # check if n_max is set properly
     sampling = samplings.hyperinterpolation(1, radius=radius)
     assert type(sampling) is SamplingSphere
-    assert sampling.n_max == 1
-    assert isinstance(sampling.n_max, int)
     npt.assert_allclose(sampling.radius, radius, atol=1e-15)
 
 
