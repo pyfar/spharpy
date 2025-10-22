@@ -53,7 +53,7 @@ class _SphericalHarmonicAudio(_Audio, SphericalHarmonicDefinition):
 
     """
     def __init__(self, basis_type, normalization, channel_convention,
-                 condon_shortley, domain, comment=""):
+                 condon_shortley):
 
         # check dimensions
         if len(self._data.shape) < 3:
@@ -110,7 +110,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     harmonic coefficients and times.
 
     Objects of this class contain time data which is not directly convertible
-    to frequency domain, i.e., non-equidistant samples.
+    to the frequency domain, i.e., non-equidistant samples.
 
     Parameters
     ----------
@@ -118,11 +118,12 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         Raw data in the time domain. The data should have at least 3
         dimensions, according to the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples each. The data can be ``int`` or
-        ``float`` and is converted to ``float`` in any case.
+        coefficients with 1024 samples each. The data can be ``int``,
+        ``float`` or ``complex``. Data of type ``int`` is converted to
+        ``float``.
     times : array, double
         Times in seconds at which the data is sampled. The number of times
-        must match the `size` of the last dimension of `data`.
+        must match the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
@@ -131,7 +132,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
         to 3rd order)
     channel_convention : str
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool
         Flag to indicate if the Condon-Shortley phase term is included
@@ -287,4 +288,4 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                         comment=comment, is_complex=is_complex)
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley, domain=domain, comment=comment)
+            condon_shortley)
