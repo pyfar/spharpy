@@ -185,8 +185,8 @@ def test_init_wrong_channel_convention():
 
     with pytest.raises(
         ValueError,
-        match="Invalid channel convention, currently only 'acn' "
-              "and 'fuma' are supported"):
+        match="Invalid channel convention, currently only 'ACN' "
+              "and 'FuMa' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='invalid_convention',

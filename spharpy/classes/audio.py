@@ -32,7 +32,7 @@ class _SphericalHarmonicAudio(_Audio, SphericalHarmonicDefinition):
         ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
         to 3rd order)
     channel_convention : str
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool
         Flag to indicate if the Condon-Shortley phase term is included
@@ -151,7 +151,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
                           is_complex=is_complex)
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley, domain="time", comment=comment)
+            condon_shortley)
 
 
 class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
@@ -198,7 +198,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
                                comment=comment)
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley, domain="freq", comment=comment)
+            condon_shortley)
 
 
 class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
