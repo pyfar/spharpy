@@ -1,7 +1,7 @@
 from pytest import raises
-from spharpy.classes.audio import _SphericalHarmonicAudio
-from spharpy.classes.audio import SphericalHarmonicTimeData
-from spharpy.classes.audio import SphericalHarmonicFrequencyData
+from spharpy.classes.sh_audio import _SphericalHarmonicAudio
+from spharpy.classes.sh_audio import SphericalHarmonicTimeData
+from spharpy.classes.sh_audio import SphericalHarmonicFrequencyData
 import numpy as np
 
 
@@ -12,7 +12,7 @@ def test_init_sh_time_data():
         data, times,  basis_type='real', normalization='SN3D',
         channel_convention="acn", condon_shortley=False,
         comment="")
-    assert isinstance(sh_time_data, SphericalHarmonicTimeData)
+    assert type(sh_time_data) == SphericalHarmonicTimeData
 
 
 def test_init_sh_frequency_data():
@@ -22,4 +22,4 @@ def test_init_sh_frequency_data():
         data, frequencies, basis_type='real', normalization='SN3D',
         channel_convention="acn", condon_shortley=False,
         comment="")
-    assert isinstance(sh_freq_data, SphericalHarmonicFrequencyData)
+    assert type(sh_freq_data) == SphericalHarmonicFrequencyData
