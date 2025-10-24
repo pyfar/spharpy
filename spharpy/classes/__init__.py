@@ -5,7 +5,7 @@ from .sh import (
     SphericalHarmonics,
 )
 
-from .sh_audio import (
+from .audio import (
     SphericalHarmonicSignal,
     SphericalHarmonicTimeData,
     SphericalHarmonicFrequencyData
