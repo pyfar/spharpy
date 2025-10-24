@@ -4,15 +4,14 @@ Documentation for the SphericalHarmonics class, will be added in an other PR.
 import numpy as np
 import pyfar as pf
 import spharpy as sy
+from abc import ABC, abstractmethod
 
 
-class SphericalHarmonicDefinition:
-    """Class storing the definition of spherical harmonics.
+class _SphericalHarmonicBase(ABC):
+    """Base class related to spherical harmonics.
 
     Attributes
     ----------
-    n_max : int, optional
-        Maximum spherical harmonic order. The default is ``0``.
     basis_type : str
         Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
         The default is ``'real'``.
@@ -33,7 +32,6 @@ class SphericalHarmonicDefinition:
 
     def __init__(
             self,
-            n_max=0,
             basis_type="real",
             channel_convention="ACN",
             normalization="N3D",
@@ -43,7 +41,6 @@ class SphericalHarmonicDefinition:
         self._channel_convention = None
         self._condon_shortley = None
         self._normalization = None
-        self._n_max = 0
 
         # basis_type needs to be initialized first, since the default for the
         # Condon-Shortley phase depends on the basis type
@@ -51,30 +48,13 @@ class SphericalHarmonicDefinition:
         self.condon_shortley = condon_shortley
         # n_max needs to be initialized before channel_convention and
         # normalization, since both have restrictions on n_max
-        self.n_max = n_max
         self.channel_convention = channel_convention
         self.normalization = normalization
 
     @property
+    @abstractmethod
     def n_max(self):
         """Get or set the spherical harmonic order."""
-        return self._n_max
-
-    @n_max.setter
-    def n_max(self, value : int):
-        """Get or set the spherical harmonic order."""
-        if value < 0 or value % 1 != 0:
-            raise ValueError("n_max must be a positive integer")
-        if self.channel_convention == "FuMa" and value > 3:
-            raise ValueError(
-                "n_max > 3 is not allowed with 'FuMa' channel convention")
-        if self.normalization == "maxN" and value > 3:
-            raise ValueError(
-                "n_max > 3 is not allowed with 'maxN' normalization")
-
-        if self._n_max != value:
-            self._n_max = value
-            self._on_property_change()
 
     @property
     def condon_shortley(self):
@@ -158,12 +138,83 @@ class SphericalHarmonicDefinition:
             self._normalization = value
             self._on_property_change()
 
-    def _on_property_change(self):
+    def _on_property_change(self):  # noqa: B027
         """Method called when a class property changes.
         This method can be overridden in child classes to re-compute dependent
         properties.
         """
         pass
+
+
+class SphericalHarmonicDefinition(_SphericalHarmonicBase):
+    """Class storing the definition of spherical harmonics.
+
+    Attributes
+    ----------
+    n_max : int, optional
+        Maximum spherical harmonic order. The default is ``0``.
+    basis_type : str
+        Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
+        The default is ``'real'``.
+    channel_convention : str, optional
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``. Note that ``'FuMa'`` is only supported up to
+        3rd order.
+    normalization : str, optional
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
+        ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``. Note that
+        ``'maxN'`` is only supported up to 3rd order.
+    condon_shortley : bool, str, optional
+        Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
+        if ``False`` it is not included. The default is ``'auto'``, which
+        corresponds to ``True`` for type ``complex`` and ``False`` for type
+        ``real``.
+    """
+
+    def __init__(
+            self,
+            n_max=0,
+            basis_type="real",
+            channel_convention="ACN",
+            normalization="N3D",
+            condon_shortley="auto",
+        ):
+        self._basis_type = None
+        self._channel_convention = None
+        self._condon_shortley = None
+        self._normalization = None
+        self._n_max = 0
+
+        # basis_type needs to be initialized first, since the default for the
+        # Condon-Shortley phase depends on the basis type
+        self.basis_type = basis_type
+        self.condon_shortley = condon_shortley
+        # n_max needs to be initialized before channel_convention and
+        # normalization, since both have restrictions on n_max
+        self.n_max = n_max
+        self.channel_convention = channel_convention
+        self.normalization = normalization
+
+    @property
+    def n_max(self):
+        """Get or set the spherical harmonic order."""
+        return self._n_max
+
+    @n_max.setter
+    def n_max(self, value : int):
+        """Get or set the spherical harmonic order."""
+        if value < 0 or value % 1 != 0:
+            raise ValueError("n_max must be a positive integer")
+        if self.channel_convention == "FuMa" and value > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'FuMa' channel convention")
+        if self.normalization == "maxN" and value > 3:
+            raise ValueError(
+                "n_max > 3 is not allowed with 'maxN' normalization")
+
+        if self._n_max != value:
+            self._n_max = value
+            self._on_property_change()
 
 
 class SphericalHarmonics(SphericalHarmonicDefinition):
