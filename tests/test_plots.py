@@ -5,6 +5,7 @@ from pyfar.testing.plot_utils import create_figure, save_and_compare
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import re
 
 """
 For general information on testing plot functions see
@@ -48,6 +49,16 @@ for file in os.listdir(output_path):
 # <function_name>_<parameter_name>_<parameters>.png
 
 # testing ---------------------------------------------------------------------
+@pytest.fixture(autouse=True)
+def _close_all_figures():
+    """
+    Close all matplotlib figures after each test to prevent test
+    pollution.
+    """
+    yield
+    plt.close('all')
+
+
 @pytest.mark.parametrize('function', [
     (sp.plot.scatter),
     (sp.plot.voronoi_cells_sphere)])
@@ -139,6 +150,13 @@ def test_spherical_colorbar(function, colorbar):
     """Test all spherical plots with custom colorbar argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
+    if function.__name__ in ["balloon"]:
+        cb = function(coords, data, colorbar=colorbar)[2]
+        if colorbar:
+            assert isinstance(cb, mpl.colorbar.Colorbar)
+        if not colorbar:
+            assert cb is None
 
     # do plotting
     filename = f'{function.__name__}_colorbar_{colorbar}'
@@ -325,8 +343,10 @@ def test_data_plots_projection_input_and_return(function, projection):
     create_figure()
     ax = plt.axes(projection=projection)
 
-    (ax_out, _) = function(coords, data, ax=ax)
-    # check if the returned axis is a 3D axis
+    ax_out = function(coords, data, ax=ax)[0]
+    if function.__name__ in ['balloon']:
+        ax_out = ax_out[0]
+    # check if the returned axis has the correct projection
     assert ax_out.name == projection
 
     # test error for invalid inputs
@@ -334,6 +354,13 @@ def test_data_plots_projection_input_and_return(function, projection):
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=plt.axes(projection='polar'))
 
+    if function.__name__ in ['balloon']:
+        match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
+                          " 'rectilinear' projection")
+        with pytest.raises(ValueError, match=match):
+            function(coords, data, ax=[
+                plt.axes(projection=projection),
+                plt.axes(projection='3d')])
 
 @pytest.mark.parametrize('function', [
     (sp.plot.scatter),
@@ -382,3 +409,66 @@ def test_cmap_phase_twilight():
 
     with pytest.raises(ValueError, match=match):
         sp.plot.phase_twilight(0)
+
+
+@pytest.mark.parametrize(
+        ("function"), [(sp.plot.balloon)],
+)
+@pytest.mark.parametrize(
+    ("ax"), [(1), ([1, 2, 3]), np.array([1, 2, 3])],
+)
+def test_ax_parameter_errors(function, ax, equal_area_sampling):
+    """Test all warnings related to `ax` parameter."""
+    coords, data = equal_area_sampling
+    # Test case when `ax`` is wrong type
+    match = "ax can be ``None``, a single maplotlib.axes.Axes object or a " \
+            "list, tuple or array of two axes"
+    with pytest.raises(ValueError, match=match):
+        function(coords, data, ax=ax)
+
+
+@pytest.mark.parametrize(
+        ("function"),
+        ([sp.plot.balloon]),
+)
+def test_colorbar_ax_error(function, equal_area_sampling):
+    """Test error raised by false colorbar / ax parameter combination."""
+    coords, data = equal_area_sampling
+    match = "A list of axes can not be used if colorbar is False"
+    with pytest.raises(
+        ValueError, match=match,
+    ):
+        function(coords, data, colorbar=False, ax=[plt.gca(), plt.gca()])
+
+
+@pytest.mark.parametrize(
+        ('function', 'projection'),
+        [(sp.plot.balloon, '3d')],
+)
+@pytest.mark.parametrize(
+    ('ax_option'),
+    [('none'), ('single'), ('two')],
+)
+def test_ax_input(function, projection, ax_option, equal_area_sampling):
+    """Test ax input for None, single axis and list of two axes."""
+    coords, data = equal_area_sampling
+
+    if ax_option == 'none':
+        function(coords, data)
+    if ax_option == 'single':
+        ax1 = plt.subplot(121, projection=projection)
+        function(coords, data, ax=ax1)
+    if ax_option == 'two':
+        filename = f'{function.__name__}_ax_list'
+
+        ax1 = plt.subplot(121, projection=projection)
+        ax2 = plt.subplot(122, projection='rectilinear')
+
+        pos1 = ax1.get_position()
+        pos2 = ax2.get_position()
+        ax1.set_position([pos1.x0, pos1.y0, pos1.width*1.4, pos1.height*1.4])
+        ax2.set_position([pos2.x0*1.3, pos2.y0, pos2.width * 0.1, pos2.height])
+
+        function(coords, data, ax=[ax1, ax2])
+        save_and_compare(create_baseline, baseline_path, output_path, filename,
+                         file_type, compare_output)
