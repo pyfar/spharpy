@@ -515,7 +515,7 @@ def balloon(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
-    ax : matplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
