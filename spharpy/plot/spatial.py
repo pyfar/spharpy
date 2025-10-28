@@ -16,7 +16,9 @@ from scipy.stats import circmean
 
 from .cmap import phase_twilight
 
+from pyfar.plot._utils import _add_colorbar
 from spharpy.samplings import spherical_voronoi
+from spharpy.plot._utils import _prepare_plot
 from pyfar.classes.coordinates import sph2cart
 
 
@@ -513,10 +515,23 @@ def balloon(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
-    ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default ``None``,
-        which
-        will create a new axis object.
+    ax : matplotlib.axes.Axes
+        Axes to plot on.
+
+        ``None``
+            Use the current axis, or create a new axis (and figure) if there is
+            none.
+        ``ax``
+            If a single axis is passed, this is used for plotting. If
+            `colorbar` is ``True`` the space for the colorbar is taken from
+            this axis. The projection must be ``'3d'``.
+        ``[ax, ax]``
+            If a list, tuple or array of two axes is passed, the first is used
+            to plot the data and the second to plot the colorbar. In this case
+            `colorbar` must be ``True`` and the projection of the second axis
+            ``'rectilinear'``.
+
+        The default is ``None``.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
@@ -526,6 +541,10 @@ def balloon(
         The axis object used for plotting.
     plot : matplotlib.trisurf
         The trisurf object created by the function.
+    cb : matplotlib.colorbar.Colorbar
+        The Matplotlib colorbar object if `colorbar` is ``True`` and ``None``
+        otherwise. This can be used to control the appearance of the colorbar,
+        e.g., the label can be set by ``colorbar.set_label()``.
 
     Examples
     --------
@@ -540,18 +559,18 @@ def balloon(
 
     """
     # input checks
-    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     if cmap_encoding not in ['phase', 'magnitude']:
         raise ValueError(
             "cmap_encoding must be either 'phase' or 'magnitude'.")
 
     tri, xyz = _triangulation_sphere(coordinates, data)
-    fig = plt.gcf()
 
-    if ax is None:
-        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+    fig, ax = _prepare_plot(ax, '3d')
+    if not isinstance(ax, (list, tuple, np.ndarray)):
+        ax = [ax, None]
 
-    elif '3d' not in ax.name:
+    if '3d' not in ax[0].name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
     if cmap_encoding == 'phase':
@@ -568,29 +587,31 @@ def balloon(
     if limits is not None:
         vmin, vmax = limits
 
-    plot = ax.plot_trisurf(tri,
-                           xyz[2],
-                           cmap=cmap,
-                           antialiased=True,
-                           vmin=vmin,
-                           vmax=vmax,
-                           **kwargs)
+    plot = ax[0].plot_trisurf(tri,
+                              xyz[2],
+                              cmap=cmap,
+                              antialiased=True,
+                              vmin=vmin,
+                              vmax=vmax,
+                              **kwargs)
 
     plot.set_array(cdata)
 
-    ax.set_box_aspect([
+    ax[0].set_box_aspect([
         np.ptp(xyz[0]),
         np.ptp(xyz[1]),
         np.ptp(xyz[2])])
 
+    cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+
     if colorbar:
-        fig.colorbar(plot, ax=ax, label=clabel)
+        ax = [ax[0], cb.ax]
 
-    ax.set_xlabel('x[m]')
-    ax.set_ylabel('y[m]')
-    ax.set_zlabel('z[m]')
+    ax[0].set_xlabel('x[m]')
+    ax[0].set_ylabel('y[m]')
+    ax[0].set_zlabel('z[m]')
 
-    return (ax, plot)
+    return (ax, plot, cb)
 
 
 def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
@@ -1099,7 +1120,8 @@ def coordinates2latlon(coords: pf.Coordinates):
     return height, latitude, longitude
 
 
-def _check_input_parameters(coordinates, data, cmap, colorbar, limits):
+def _check_input_parameters(coordinates, data, cmap, colorbar, limits,
+                            ax=None):
     """Check the input parameters for the plotting functions.
 
     The function raises ValueError if the input parameters are not valid.
@@ -1119,6 +1141,8 @@ def _check_input_parameters(coordinates, data, cmap, colorbar, limits):
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+        Axes to plot on.
     """
     if not isinstance(colorbar, bool):
         raise ValueError("colorbar must be a boolean.")
@@ -1141,3 +1165,19 @@ def _check_input_parameters(coordinates, data, cmap, colorbar, limits):
         raise ValueError(
             "limits must be a tuple or list containing the minimum and "
             "maximum values for the colormap or None.")
+    if not colorbar and isinstance(ax, (tuple, list, np.ndarray)):
+        raise ValueError(
+            "A list of axes can not be used if colorbar is False")
+    if not (ax is None or isinstance(ax, (list, tuple, np.ndarray, plt.Axes)))\
+        or (isinstance(ax, (list, tuple, np.ndarray))
+            and np.asarray(ax).shape != (2,)):
+        raise ValueError(
+            "ax can be ``None``, a single maplotlib.axes.Axes object or a "
+            "list, tuple or array of two axes",
+        )
+    if isinstance(ax, (tuple, list, np.ndarray)) \
+            and (ax[1].name != 'rectilinear'):
+        raise ValueError(
+            "If [ax1, ax2] is passed ax2 needs to be of 'rectilinear' "
+            "projection",
+        )
