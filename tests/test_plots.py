@@ -152,11 +152,13 @@ def test_spherical_colorbar(function, colorbar):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     if function.__name__ in ["balloon"]:
-        cb = function(coords, data, colorbar=colorbar)[2]
+        out = function(coords, data, colorbar=colorbar)
         if colorbar:
-            assert isinstance(cb, mpl.colorbar.Colorbar)
+            assert isinstance(out[2], mpl.colorbar.Colorbar)
+            assert isinstance(out[0], list)
         if not colorbar:
-            assert cb is None
+            assert out[2] is None
+            assert isinstance(out[0], plt.Axes)
 
     # do plotting
     filename = f'{function.__name__}_colorbar_{colorbar}'
