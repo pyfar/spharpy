@@ -537,8 +537,11 @@ def balloon(
 
     Returns
     -------
-    ax : matplotlib.axis
-        The axis object used for plotting.
+    ax : matplotlib.axes.Axes
+        If `colorbar` is ``True`` a list of two axes is returned. The first
+        one is the axis on which the data is plotted, the second one is the
+        axis of the colorbar. If `colorbar` is ``False``, only the axis on
+        which the data is plotted is returned.
     plot : matplotlib.trisurf
         The trisurf object created by the function.
     cb : matplotlib.colorbar.Colorbar
@@ -567,6 +570,8 @@ def balloon(
     tri, xyz = _triangulation_sphere(coordinates, data)
 
     fig, ax = _prepare_plot(ax, '3d')
+
+    # _add_colorbar expects a list of axes
     if not isinstance(ax, (list, tuple, np.ndarray)):
         ax = [ax, None]
 
@@ -604,12 +609,15 @@ def balloon(
 
     cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
 
-    if colorbar:
-        ax = [ax[0], cb.ax]
+    # reduce to plot-axis, colorbar-axis will be returned as cb.ax
+    ax = ax[0]
 
-    ax[0].set_xlabel('x[m]')
-    ax[0].set_ylabel('y[m]')
-    ax[0].set_zlabel('z[m]')
+    ax.set_xlabel('x[m]')
+    ax.set_ylabel('y[m]')
+    ax.set_zlabel('z[m]')
+
+    if colorbar:
+        ax = [ax, cb.ax]
 
     return (ax, plot, cb)
 
