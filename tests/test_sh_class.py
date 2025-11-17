@@ -79,8 +79,16 @@ def test_setter_channel_convention_fuma_error():
     """Test error when setting FUMA channel convention with n_max > 3."""
     sph_harm = SphericalHarmonicDefinition(n_max=4)
 
-    with pytest.raises(ValueError, match='n_max > 3 is not allowed with'):
+    message = 'n_max > 3 is not allowed with'
+
+    with pytest.raises(ValueError, match=message):
         sph_harm.channel_convention = "FuMa"
+
+    with pytest.raises(ValueError, match=message):
+        SphericalHarmonicDefinition(
+            n_max=4,
+            channel_convention="FuMa",
+        )
 
 
 def test_setter_channel_convention_definition_invalid():
