@@ -179,21 +179,14 @@ class SphericalHarmonicDefinition(_SphericalHarmonicBase):
             normalization="N3D",
             condon_shortley="auto",
         ):
-        self._basis_type = None
-        self._channel_convention = None
-        self._condon_shortley = None
-        self._normalization = None
         self._n_max = 0
-
-        # basis_type needs to be initialized first, since the default for the
-        # Condon-Shortley phase depends on the basis type
-        self.basis_type = basis_type
-        self.condon_shortley = condon_shortley
-        # n_max needs to be initialized before channel_convention and
-        # normalization, since both have restrictions on n_max
+        super().__init__(
+            basis_type=basis_type,
+            channel_convention=channel_convention,
+            normalization=normalization,
+            condon_shortley=condon_shortley,
+        )
         self.n_max = n_max
-        self.channel_convention = channel_convention
-        self.normalization = normalization
 
     @property
     def n_max(self):
