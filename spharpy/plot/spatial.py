@@ -1107,7 +1107,7 @@ def contour(
         ``ax``
             If a single axis is passed, this is used for plotting. If
             `colorbar` is ``True`` the space for the colorbar is taken from
-            this axis. The projection must be ``'3d'``.
+            this axis. The projection must be ``'rectilinear'``.
         ``[ax, ax]``
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
