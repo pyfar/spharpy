@@ -413,18 +413,39 @@ def balloon_wireframe(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
-    ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default ``None``,
-        which will create a new axis object.
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+        Axes to plot on.
+
+        ``None``
+            Use the current axis, or create a new axis (and figure) if there is
+            none.
+        ``ax``
+            If a single axis is passed, this is used for plotting. If
+            `colorbar` is ``True`` the space for the colorbar is taken from
+            this axis. The projection must be ``'3d'``.
+        ``[ax, ax]``
+            If a list, tuple or array of two axes is passed, the first is used
+            to plot the data and the second to plot the colorbar. In this case
+            `colorbar` must be ``True`` and the projection of the second axis
+            ``'rectilinear'``.
+
+        The default is ``None``.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
     Returns
     -------
-    ax : matplotlib.axis
-        The axis object used for plotting.
+    ax : matplotlib.axes.Axes
+        If `colorbar` is ``True`` a list of two axes is returned. The first
+        one is the axis on which the data is plotted, the second one is the
+        axis of the colorbar. If `colorbar` is ``False``, only the axis on
+        which the data is plotted is returned.
     plot : matplotlib.trisurf
         The trisurf object created by the function.
+    cb : matplotlib.colorbar.Colorbar
+        The Matplotlib colorbar object if `colorbar` is ``True`` and ``None``
+        otherwise. This can be used to control the appearance of the colorbar,
+        e.g., the label can be set by ``colorbar.set_label()``.
 
     Examples
     --------
@@ -439,7 +460,7 @@ def balloon_wireframe(
 
     """
     # input checks
-    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     if cmap_encoding not in ['phase', 'magnitude']:
         raise ValueError(
             "cmap_encoding must be either 'phase' or 'magnitude'.")
@@ -448,12 +469,13 @@ def balloon_wireframe(
         cmap = plt.get_cmap(cmap)
 
     tri, xyz = _triangulation_sphere(coordinates, data)
-    fig = plt.gcf()
 
-    if ax is None:
-        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+    fig, ax = _prepare_plot(ax, '3d')
 
-    elif '3d' not in ax.name:
+    if not isinstance(ax, (list, tuple, np.ndarray)):
+        ax = [ax, None]
+
+    if '3d' not in ax[0].name:
         raise ValueError("The projection of the axis needs to be '3d'")
 
     if cmap_encoding == 'phase':
@@ -470,15 +492,21 @@ def balloon_wireframe(
     if limits is not None:
         vmin, vmax = limits
 
-    plot = ax.plot_trisurf(tri,
-                           xyz[2],
-                           antialiased=True,
-                           vmin=vmin,
-                           vmax=vmax,
-                           **kwargs)
+    plot = ax[0].plot_trisurf(tri,
+                              xyz[2],
+                              cmap=cmap,
+                              antialiased=True,
+                              vmin=vmin,
+                              vmax=vmax,
+                              **kwargs)
+
+    # Set values to `None`. Otherwise theses values will always overwrite what
+    # is set using plot.set_facecolors.
+    plot.set_array(None)
 
     cnorm = plt.Normalize(vmin, vmax)
 
+    # Get colors from cdata for plot.set_edgecolors
     cmap_colors = cmap(cnorm(cdata))
 
     cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
@@ -487,23 +515,24 @@ def balloon_wireframe(
     plot.set_edgecolors(cmap_colors)
     plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
-    if colorbar:
-        fig.colorbar(cmappable, ax=ax, label=clabel)
+    cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+
+    # reduce to plot-axis, colorbar-axis will be returned as cb.ax
+    ax = ax[0]
 
     ax.set_xlabel('x[m]')
     ax.set_ylabel('y[m]')
     ax.set_zlabel('z[m]')
-
-    plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
     ax.set_box_aspect([
         np.ptp(xyz[0]),
         np.ptp(xyz[1]),
         np.ptp(xyz[2])])
 
-    plot.set_facecolor([0.9, 0.9, 0.9, 0.9])
+    if colorbar:
+        ax = [ax, cb.ax]
 
-    return (ax, plot)
+    return (ax, plot, cb)
 
 
 def balloon(
