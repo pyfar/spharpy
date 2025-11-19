@@ -8,7 +8,13 @@ from abc import ABC, abstractmethod
 
 
 class _SphericalHarmonicBase(ABC):
-    """Base class related to spherical harmonics.
+    """Base class defining properties to parametrize spherical harmonics.
+
+    This base class serves as a base for all classes requiring a definition of
+    the spherical harmonics without explicitly setting a spherical harmonic
+    order. This class is intended for cases where the spherical harmonic order
+    is implemented as a read-only property in child classes, for example when
+    the order is implicitly defined by other parameters or inferred from data.
 
     Attributes
     ----------
@@ -147,7 +153,11 @@ class _SphericalHarmonicBase(ABC):
 
 
 class SphericalHarmonicDefinition(_SphericalHarmonicBase):
-    """Class storing the definition of spherical harmonics.
+    """Class storing the (discrete) definition of spherical harmonics.
+
+    This class can serve as a container to create related objects, e.g.,
+    spherical harmonic basis matrices for given sampling points, transforms,
+    or other spherical harmonic related data and computations.
 
     Attributes
     ----------
