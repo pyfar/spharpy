@@ -5,15 +5,20 @@ Rotation/Translation operations for data in the spherical harmonic domains.
 import numpy as np
 import spharpy
 from scipy.special import eval_jacobi, factorial
-from scipy.spatial.transform import Rotation
+from scipy.spatial.transform import Rotation as ScipyRotation
+from spharpy.classes.sh import SphericalHarmonicDefinition
 
 
-class RotationSH(Rotation):
+class SphericalHarmonicRotation(ScipyRotation):
     """Class for rotations of coordinates and data.
 
     """
 
-    def __init__(self, quat, n_max=0, *args, **kwargs):
+    def __init__(
+            self,
+            quat,
+            spherical_harmonic_definition,
+            *args, **kwargs):
         """Initialize.
 
         Parameters
@@ -22,8 +27,8 @@ class RotationSH(Rotation):
             Each row is a (possibly non-unit norm) quaternion in scalar-last
             (x, y, z, w) format. Each quaternion will be normalized to unit
             norm.
-        n_max : int
-            The spherical harmonic order. Default is ``0``.
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
         *args : optional
             Arguments are passed to
             :py:class:`~scipy.spatial.transform.Rotation`
@@ -33,7 +38,7 @@ class RotationSH(Rotation):
 
         Returns
         -------
-        RotationSH
+        SphericalHarmonicRotation
             The rotation object with spherical harmonic order n_max.
 
         Note
@@ -43,20 +48,23 @@ class RotationSH(Rotation):
 
         """
         super().__init__(quat, *args, **kwargs)
-        if n_max < 0:
-            raise ValueError("The order needs to be a positive value.")
-        self._n_max = int(n_max)
+        self._spherical_harmonic_definition = spherical_harmonic_definition
 
     @classmethod
-    def from_rotvec(cls, n_max, rotvec, degrees=False, *args, **kwargs):
+    def from_rotvec(
+            cls,
+            spherical_harmonic_definition,
+            rotvec,
+            degrees=False,
+            *args, **kwargs):
         """Initialize from rotation vectors.
         A rotation vector is a 3 dimensional vector which is co-directional to
         the axis of rotation and whose norm gives the angle of rotation [#]_.
 
         Parameters
         ----------
-        n_max : int
-            Spherical harmonic order
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
         rotvec : array_like, float, shape (L, 3) or (3,)
             A single vector or a stack of vectors, where rot_vec[i] gives the
             ith rotation vector.
@@ -74,31 +82,37 @@ class RotationSH(Rotation):
 
         Returns
         -------
-        RotationSH
+        SphericalHarmonicRotation
             Object containing the rotations represented by input rotation
             vectors.
 
         References
         ----------
-        .. [#] https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation\
-#Rotation_vector
+        .. [#] https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Rotation_vector
 
         Examples
         --------
         >>> from spharpy.transforms import Rotation as R
         >>> rot = R.from_rotvec(np.pi/2 * np.array([0, 0, 1]))
-        >>> rot.as_spherical_harmonic()
+        >>> rot.as_spherical_harmonic_matrix()
 
         """
         if degrees:
             rotvec = np.deg2rad(rotvec)
 
-        cls = super(RotationSH, cls).from_rotvec(rotvec, *args, **kwargs)
-        cls.n_max = n_max
+        cls = super(SphericalHarmonicRotation, cls).from_rotvec(
+            rotvec, *args, **kwargs)
+        cls.spherical_harmonic_definition = spherical_harmonic_definition
         return cls
 
     @classmethod
-    def from_euler(cls, n_max, seq, angles, degrees=False, **kwargs):
+    def from_euler(
+            cls,
+            spherical_harmonic_definition,
+            seq,
+            angles,
+            degrees=False,
+            **kwargs):
         """Initialize from Euler angles.
 
         Rotations in 3-D can be represented by a sequence of 3 rotations
@@ -111,8 +125,8 @@ class RotationSH(Rotation):
 
         Parameters
         ----------
-        n_max : int
-            Spherical harmonic order.
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
         seq : str
             Specifies sequence of axes for rotations. Up to 3 characters
             belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic rotations,
@@ -146,7 +160,7 @@ class RotationSH(Rotation):
 
         Returns
         -------
-        RotationSH
+        SphericalHarmonicRotation
             Object containing the rotation represented by the sequence of
             rotations around given axes with given angles.
 
@@ -156,26 +170,27 @@ class RotationSH(Rotation):
 
         Examples
         --------
-        >>> from spharpy.transforms import Rotation as R
-        >>> rot = R.from_euler('z', 90, degrees=True)
-        >>> rot.as_spherical_harmonic()
+        >>> from spharpy.transforms import SphericalHarmonicRotation as R
+        >>> rot = R.from_euler(
+        ...     'z', 90, SphericalHarmonicDefinition(n_max=2), degrees=True)
+        >>> rot.as_spherical_harmonic_matrix()
 
 
         """
-        cls = super(RotationSH, cls).from_euler(
+        cls = super(SphericalHarmonicRotation, cls).from_euler(
             seq, angles, degrees=degrees, **kwargs)
-        cls.n_max = n_max
+        cls.spherical_harmonic_definition = spherical_harmonic_definition
         return cls
 
     @classmethod
-    def from_quat(cls, n_max, quat, **kwargs):
+    def from_quat(cls, spherical_harmonic_definition, quat, **kwargs):
         """Initialize from quaternions.
         3D rotations can be represented using unit-norm quaternions [#]_.
 
         Parameters
         ----------
-        n_max : int
-            Spherical harmonic order
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
         quat : (array_like, shape (N, 4) or (4,))
             Each row is a (possibly non-unit norm) quaternion in scalar-last
             (x, y, z, w) format. Each quaternion will be normalized to unit
@@ -187,7 +202,7 @@ class RotationSH(Rotation):
 
         Returns
         -------
-        RotationSH
+        SphericalHarmonicRotation
             Object containing the rotations represented by input quaternions.
 
         References
@@ -196,26 +211,27 @@ class RotationSH(Rotation):
 
         Examples
         --------
-        >>> from spharpy.transforms import Rotation as R
-        >>> rot = R.from_quat([1, 0, 0, 0])
-        >>> rot.as_spherical_harmonic()
+        >>> from spharpy.transforms import SphericalHarmonicRotation as R
+        >>> rot = R.from_quat(
+        ...     [1, 0, 0, 0], SphericalHarmonicDefinition(n_max=2))
+        >>> rot.as_spherical_harmonic_matrix()
 
         """
-        cls = super(RotationSH, cls).from_quat(quat, **kwargs)
-        cls.n_max = n_max
+        cls = super(SphericalHarmonicRotation, cls).from_quat(quat, **kwargs)
+        cls.spherical_harmonic_definition = spherical_harmonic_definition
         return cls
 
     @classmethod
-    def from_matrix(cls, n_max, matrix, **kwargs):
+    def from_matrix(cls, spherical_harmonic_definition, matrix, **kwargs):
         """Initialize from rotation matrix.
         Rotations in 3 dimensions can be represented with 3 x 3 proper
-        orthogonal matrices [1]_. If the input is not proper orthogonal,
-        an approximation is created using the method described in [2]_.
+        orthogonal matrices [#]_. If the input is not proper orthogonal,
+        an approximation is created using the method described in [#]_.
 
         Parameters
         ----------
-        n_max : int
-            Spherical harmonic order
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
         matrix : (array_like, shape (N, 3, 3) or (3, 3))
             A single matrix or a stack of matrices, where ``matrix[i]`` is
             the i-th matrix.
@@ -226,92 +242,78 @@ class RotationSH(Rotation):
 
         Returns
         -------
-        RotationSH
+        SphericalHarmonicRotation
             Object containing the rotations represented by the rotation
             matrices.
 
         References
         ----------
-        .. [1] https://en.wikipedia.org/wiki/Rotation_matrix
-        .. [2] F. Landis Markley, “Unit Quaternion from Rotation Matrix”,
+        .. [#] https://en.wikipedia.org/wiki/Rotation_matrix
+        .. [#] F. Landis Markley, “Unit Quaternion from Rotation Matrix”,
                Journal of guidance, control, and dynamics vol. 31.2,
                pp. 440-442, 2008.
 
         Examples
         --------
-        >>> from spharpy.transforms import Rotation as R
+        >>> from spharpy.transforms import SphericalHarmonicRotation as R
         >>> rot = R.from_matrix([
-        ...     [0, -1, 0],
-        ...     [1,  0, 0],
-        ...     [0,  0, 1]])
-        >>> rot.as_spherical_harmonic()
+        ...         [0, -1, 0],
+        ...         [1,  0, 0],
+        ...         [0,  0, 1]
+        ...     ],
+        ...     SphericalHarmonicDefinition(n_max=2),
+        >>> rot.as_spherical_harmonic_matrix()
         """
-        cls = super(RotationSH, cls).from_matrix(matrix, **kwargs)
-        cls.n_max = n_max
+        cls = super(SphericalHarmonicRotation, cls).from_matrix(matrix, **kwargs)
+        cls.spherical_harmonic_definition = spherical_harmonic_definition
         return cls
 
     @property
-    def n_max(self):
-        """The spherical harmonic order used for spherical harmonic rotation
-        matrices.
+    def spherical_harmonic_definition(self):
+        """The spherical harmonic definition used for rotation matrices.
         """
-        return self._n_max
+        return self._spherical_harmonic_definition
 
-    @n_max.setter
-    def n_max(self, value):
-        """Set the spherical harmonic order.
-
-        Parameters
-        ----------
-        value : int
-            The spherical harmonic order used for spherical harmonic rotation
-        matrices.
+    @spherical_harmonic_definition.setter
+    def spherical_harmonic_definition(self, value):
+        """The spherical harmonic definition used for rotation matrices.
         """
-        if value < 0:
-            raise ValueError("The order needs to be a positive value.")
-        self._n_max = value
+        if not isinstance(value, SphericalHarmonicDefinition):
+            raise TypeError(
+                "spherical_harmonic_definition must be of type "
+                "SphericalHarmonicDefinition or its child classes.")
+        self._spherical_harmonic_definition = value
 
-    def as_spherical_harmonic(self, basis_type='real'):
+    def as_spherical_harmonic_matrix(self):
         """Export the rotation operations as a spherical harmonic rotation
         matrices. Supports complex and real-valued spherical harmonics.
 
-        Parameters
-        ----------
-        basis_type : string, optional
-            Spherical harmonic definition. Can either be 'complex' or 'real',
-            by default 'real' is used.
-        type : str, optional
-            Type of spherical harmonic basis, either ``'complex'`` or
-            ``'real'``. The default is ``'real'``.
-
         Returns
         -------
-        array, complex or float
+        np.ndarray, complex or float
             Stack of block-diagonal rotation matrices.
         """
         euler_angles = np.atleast_2d(self.as_euler('zyz'))
         n_matrices = euler_angles.shape[0]
 
-        n_sh = (self.n_max+1)**2
-        if basis_type == 'real':
+        n_sh = (self.spherical_harmonic_definition.n_max + 1)**2
+        if self.spherical_harmonic_definition.basis_type == 'real':
             dtype = float
-            rot_func = wigner_d_rotation_real
-        elif basis_type == 'complex':
+            rotation_function = wigner_d_rotation_real
+        elif self.spherical_harmonic_definition.basis_type == 'complex':
             dtype = complex
-            rot_func = wigner_d_rotation
-        else:
-            raise ValueError(
-                "Invalid spherical harmonic type {}".format(basis_type))
+            rotation_function = wigner_d_rotation
 
         D = np.zeros((n_matrices, n_sh, n_sh), dtype=dtype)
 
         for idx, angles in enumerate(euler_angles):
-            D[idx, :, :] = rot_func(
-                self.n_max, angles[0], angles[1], angles[2])
+            D[idx, :, :] = rotation_function(
+                self.spherical_harmonic_definition.n_max,
+                angles[0], angles[1], angles[2])
 
         return np.squeeze(D)
 
-    def apply(self, coefficients, basis_type='real'):
+    def apply(self, coefficients):
         """Apply the rotation to L sets of spherical harmonic coefficients.
 
         Parameters
@@ -319,23 +321,14 @@ class RotationSH(Rotation):
         coefficients : array, complex, shape :math:`((n_max+1)^2, L)`
             L sets of spherical harmonic coefficients with a respective order
             :math:`((n_max+1)^2`
-        basis_type : string, optional
-            Spherical harmonic definition. Can either be ``'complex'`` or
-            ``'real'``, by default ``'real'`` is used.
 
         Returns
         -------
         array, complex
             The rotated data
         """
-        D = self.as_spherical_harmonic(basis_type=basis_type)
-        if D.ndim > 2:
-            M = np.diag(np.ones((self.n_max+1)**2))
-            for d in D:
-                M = M @ d
-        else:
-            M = D
-
+        D = self.as_spherical_harmonic_matrix()
+        M = np.linalg.multi_dot(D) if D.ndim > 2 else D
         return M @ coefficients
 
 
