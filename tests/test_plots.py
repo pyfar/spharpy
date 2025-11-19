@@ -152,7 +152,7 @@ def test_spherical_colorbar(function, colorbar):
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
     if function.__name__ in ["balloon", "contour_map", "pcolor_sphere",
-                             "balloon_wireframe"]:
+                             "balloon_wireframe", "contour"]:
         out = function(coords, data, colorbar=colorbar)
         if colorbar:
             assert isinstance(out[2], mpl.colorbar.Colorbar)
@@ -348,7 +348,7 @@ def test_data_plots_projection_input_and_return(function, projection):
 
     ax_out = function(coords, data, ax=ax)[0]
     if function.__name__ in ['balloon', 'contour_map', 'pcolor_sphere',
-                             'balloon_wireframe']:
+                             'balloon_wireframe', 'contour']:
         ax_out = ax_out[0]
     # check if the returned axis has the correct projection
     assert ax_out.name == projection
@@ -359,7 +359,7 @@ def test_data_plots_projection_input_and_return(function, projection):
         function(coords, data, ax=plt.axes(projection='polar'))
 
     if function.__name__ in ['balloon', 'contour_map', 'pcolor_sphere',
-                             'balloon_wireframe']:
+                             'balloon_wireframe', 'contour']:
         match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
                           " 'rectilinear' projection")
         with pytest.raises(ValueError, match=match):
@@ -421,7 +421,8 @@ def test_cmap_phase_twilight():
         [(sp.plot.balloon),
          (sp.plot.contour_map),
          (sp.plot.pcolor_sphere),
-         (sp.plot.balloon_wireframe)],
+         (sp.plot.balloon_wireframe),
+         (sp.plot.contour)],
 )
 @pytest.mark.parametrize(
     ("ax"), [(1), ([1, 2, 3]), np.array([1, 2, 3])],
@@ -441,7 +442,8 @@ def test_ax_parameter_errors(function, ax, equal_area_sampling):
         [(sp.plot.balloon),
          (sp.plot.contour_map),
          (sp.plot.pcolor_sphere),
-         (sp.plot.balloon_wireframe)],
+         (sp.plot.balloon_wireframe),
+         (sp.plot.contour)],
 )
 def test_colorbar_ax_error(function, equal_area_sampling):
     """Test error raised by false colorbar / ax parameter combination."""
@@ -458,7 +460,8 @@ def test_colorbar_ax_error(function, equal_area_sampling):
         [(sp.plot.balloon, '3d'),
          (sp.plot.contour_map, 'mollweide'),
          (sp.plot.pcolor_sphere, '3d'),
-         (sp.plot.balloon_wireframe, '3d')],
+         (sp.plot.balloon_wireframe, '3d'),
+         (sp.plot.contour, 'rectilinear')],
 )
 @pytest.mark.parametrize(
     ('ax_option'),
