@@ -59,59 +59,6 @@ def test_equidistant_cuboid_sampling_invalid():
         samplings.equidistant_cuboid((3, 3, -3))
 
 
-def test_hyperinterpolation(download_sampling):
-    n_max = 1
-    download_sampling('hyperinterpolation', n_max)
-    sampling = samplings.hyperinterpolation(n_max=n_max)
-    assert sampling.radius.size == (n_max+1)**2
-
-
-def test_hyperinterpolation_default_n_max():
-    # check if n_max is set properly
-    sampling = samplings.hyperinterpolation(n_points=4)
-    assert sampling.n_max == 1
-    assert isinstance(sampling.n_max, int)
-
-
-def test_sph_extremal(download_sampling):
-    # load test data
-    download_sampling('hyperinterpolation', [1, 10])
-
-    # test without parameters
-    assert samplings.hyperinterpolation() is None
-
-    # test with n_points
-    c = samplings.hyperinterpolation(4)
-    assert type(c) is SamplingSphere
-    assert c.csize == 4
-
-    # test with spherical harmonic order
-    c = samplings.hyperinterpolation(n_max=1)
-    assert c.csize == 4
-
-    # test default radius
-    npt.assert_allclose(c.radius, 1, atol=1e-15)
-
-    # test user radius
-    c = samplings.hyperinterpolation(4, radius=1.5)
-    npt.assert_allclose(c.radius, 1.5, atol=1e-15)
-
-    # test loading SH order > 9
-    c = samplings.hyperinterpolation(n_max=10)
-
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert not c.quadrature
-
-    # test exceptions
-    with pytest.raises(ValueError, match='n_points or n_max must be None'):
-        c = samplings.hyperinterpolation(4, 1)
-    with pytest.raises(ValueError, match='invalid value for n_points'):
-        c = samplings.hyperinterpolation(5)
-    with pytest.raises(ValueError, match='n_max must be between 1 and 200'):
-        c = samplings.hyperinterpolation(n_max=0)
-
-
 def test_t_design_const_e(download_sampling):
     order = 2
     download_sampling('t-design', np.arange(1, 11))
@@ -523,3 +470,43 @@ def test_em64():
 
     npt.assert_allclose(
         np.sum(sampling.weights), 4*np.pi, atol=1e-6, rtol=1e-6)
+
+
+def test_hyperinterpolation_default(download_sampling):
+    n_max = 1
+    # download just required sampling for testing
+    download_sampling('hyperinterpolation', [n_max])
+
+    c = samplings.hyperinterpolation(1)
+
+    # test sampling properties
+    assert type(c) is SamplingSphere
+    assert c.n_max == n_max
+    assert c.csize == (n_max+1)**2
+    assert c.radius.size == (n_max+1)**2
+
+    # test default radius
+    npt.assert_allclose(c.radius, 1, atol=1e-15)
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+
+
+@pytest.mark.parametrize("radius", [1, 5])
+def test_hyperinterpolation_radius(download_sampling, radius):
+    download_sampling('hyperinterpolation', [1])
+    sampling = samplings.hyperinterpolation(1, radius=radius)
+    assert type(sampling) is SamplingSphere
+    npt.assert_allclose(sampling.radius, radius, atol=1e-15)
+
+
+@pytest.mark.parametrize("n_max", [-1, 'one'])
+def test_hyperinterpolation_errors_n_max(n_max):
+    with pytest.raises(
+            ValueError, match='n_max must be an integer between 1 and 200'):
+        samplings.hyperinterpolation(n_max)
+
+
+@pytest.mark.parametrize("radius", [-1, 'one'])
+def test_hyperinterpolation_errors_radius(radius):
+    with pytest.raises(
+            ValueError, match='radius must be a single positive value'):
+        samplings.hyperinterpolation(1, radius)
