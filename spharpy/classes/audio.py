@@ -1,11 +1,11 @@
 from pyfar import Signal, TimeData, FrequencyData
 from pyfar.classes.audio import _Audio
 from spharpy.spherical import renormalize, change_channel_convention
-from spharpy.classes import SphericalHarmonicDefinition
+from spharpy.classes.sh import _SphericalHarmonicBase
 import numpy as np
 
 
-class _SphericalHarmonicAudio(_Audio, SphericalHarmonicDefinition):
+class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase):
     """
     Base class for spherical harmonics audio objects.
 
@@ -66,20 +66,24 @@ class _SphericalHarmonicAudio(_Audio, SphericalHarmonicDefinition):
             raise ValueError("Invalid number of SH channels: "
                              f"{self._data.shape[-2]}. It must match "
                              "(n_max + 1)^2.")
-        n_max = int(n_max)
+        self._n_max = int(n_max)
 
         # helpers for setting normalization and channel convention
         self._current_normalization = None
         self._current_channel_convention = None
 
-        SphericalHarmonicDefinition.__init__(
+        _SphericalHarmonicBase.__init__(
             self,
-            n_max,
             basis_type,
             channel_convention,
             normalization,
-            condon_shortley,
+            condon_shortley
         )
+
+    @property
+    def n_max(self):
+        """Get or set the spherical harmonic order."""
+        return self._n_max
 
     def _on_property_change(self):
         # check if normalization has changed and recompute accordingly
@@ -183,7 +187,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
         to 3rd order)
     channel_convention : str
-        Channel ordering convention, either ``'acn'`` or ``'fuma'``.
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
     condon_shortley : bool
         Flag to indicate if the Condon-Shortley phase term is included
