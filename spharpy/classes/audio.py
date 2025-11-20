@@ -127,7 +127,8 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         ``float``.
     times : array, double
         Times in seconds at which the data is sampled. The number of times
-        must match the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
+        must match the size of the last dimension of `data`, i.e., 
+        ``data.shape[-1]``.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
@@ -142,7 +143,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         Flag to indicate if the Condon-Shortley phase term is included
         (``True``) or not (``False``).
     comment : str
-        A comment related to `data`. The default is ``None``.
+        A comment related to `data`. The default is ``""``.
     is_complex : bool, optional
         A flag which indicates if the time data are real or complex-valued.
         The default is ``False``.
@@ -156,6 +157,35 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley)
+
+    @property
+    def time(self):
+        """Return or set the time data."""
+        data = TimeData.time.fget(self)
+        # renormalize according to desired normalization
+        if not self.normalization == "N3D":
+            data = renormalize(data,
+                               "ACN",
+                               "N3D",
+                               self.normalization,
+                               axis=-2)
+        # change channel convention according to desired convention
+        if not self.channel_convention == "ACN":
+            data = change_channel_convention(
+                        data,
+                        "ACN",
+                        self.channel_convention,
+                        axis=-2)
+        return data
+
+    @time.setter
+    def time(self, value):
+        """Return or set the time data."""
+        # check dimensions
+        if len(value.shape) < 3:
+            raise ValueError("Invalid number of dimensions. Data should have "
+                             "at least 3 dimensions.")
+        TimeData.time.fset(self, value)
 
 
 class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
@@ -178,7 +208,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         ``float``.
     frequencies : array, double
         Frequencies of the data in Hz. The number of frequencies must match
-        the size of the last dimension of data.
+        the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
@@ -193,7 +223,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         Flag to indicate if the Condon-Shortley phase term is included
         (``True``) or not (``False``).
     comment : str
-        A comment related to `data`. The default is ``None``.
+        A comment related to `data`. The default is ``""``.
     """
 
     def __init__(self, data, frequencies, basis_type, normalization,
@@ -203,6 +233,20 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley)
+
+    @property
+    def freq(self):
+        """Return or set the data in the frequency domain."""
+        data = FrequencyData.freq.fget(self)
+        return data
+
+    @freq.setter
+    def freq(self, value):
+        """Return or set the data in the frequency domain."""
+        if len(value.shape) < 3:
+            raise ValueError("Invalid number of dimensions. Data should have "
+                             "at least 3 dimensions.")
+        FrequencyData.freq.fset(self, value)
 
 
 class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
