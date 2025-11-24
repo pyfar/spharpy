@@ -919,16 +919,37 @@ def contour_map(
         the specified levels. The values must be in increasing order.
         Default is ``None``, the levels are chosen automatically by
         Matplotlib.
-    ax : matplotlib.axis, None, optional
-        The matplotlib axis object used for plotting. By default ``None``,
-        which will create a new axis object with the specified projection.
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+        Axes to plot on.
+
+        ``None``
+            Use the current axis, or create a new axis (and figure) if there is
+            none.
+        ``ax``
+            If a single axis is passed, this is used for plotting. If
+            `colorbar` is ``True`` the space for the colorbar is taken from
+            this axis. Projection should be a `geographic <https://matplotlib.org/stable/gallery/subplots_axes_and_figures/geo_demo.html>`_ one.
+        ``[ax, ax]``
+            If a list, tuple or array of two axes is passed, the first is used
+            to plot the data and the second to plot the colorbar. In this case
+            `colorbar` must be ``True`` and the projection of the second axis
+            ``'rectilinear'``.
+
+        The default is ``None``.
 
     Returns
     -------
-    ax : matplotlib.axis
-        The axis object used for plotting.
+    ax : matplotlib.axes.Axes
+        If `colorbar` is ``True`` a list of two axes is returned. The first
+        one is the axis on which the data is plotted, the second one is the
+        axis of the colorbar. If `colorbar` is ``False``, only the axis on
+        which the data is plotted is returned.
     cf : matplotlib.contour.QuadContourSet
         The contour plot object.
+    cb : matplotlib.colorbar.Colorbar
+        The Matplotlib colorbar object if `colorbar` is ``True`` and ``None``
+        otherwise. This can be used to control the appearance of the colorbar,
+        e.g., the label can be set by ``colorbar.set_label()``.
 
     Examples
     --------
@@ -941,35 +962,43 @@ def contour_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour_map(coords, data)
 
-    """
+    """  # noqa: E501
     # input checks
-    _check_input_parameters(coordinates, data, cmap, colorbar, limits)
+    _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     data = data.copy()
 
-    fig = plt.gcf()
-    if ax is None:
-        ax = plt.gca() if fig.axes else plt.axes(projection=projection)
+    fig, ax = _prepare_plot(ax, projection)
 
-    if ax.name != projection:
+    if not isinstance(ax, (list, tuple, np.ndarray)):
+        ax = [ax, None]
+
+    if ax[0].name != projection:
         raise ValueError(
             f"The projection of the axis needs to be '{projection}'"
-            f", but is '{ax.name}'")
+            f", but is '{ax[0].name}'")
 
-    ax.set_xlabel('Longitude [$^\\circ$]')
-    ax.set_ylabel('Latitude [$^\\circ$]')
+    ax[0].set_xlabel('Longitude [$^\\circ$]')
+    ax[0].set_ylabel('Latitude [$^\\circ$]')
 
     _, latitude, longitude = coordinates2latlon(coordinates)
-    cf = _combined_contour(longitude, latitude, data, limits, cmap, levels, ax)
+    cf = _combined_contour(longitude, latitude, data, limits, cmap, levels,
+                           ax[0])
 
     if type(levels) is int:
         levels = mpl.ticker.MaxNLocator(levels)
 
     plt.grid(True)
-    if colorbar:
-        cb = fig.colorbar(cf, ax=ax, ticks=levels)
-        cb.set_label('Amplitude')
 
-    return ax, cf
+    cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
+    if colorbar and levels is not None:
+        cb.set_ticks(levels)
+
+    ax = ax[0]
+
+    if colorbar:
+        ax = [ax, cb.ax]
+
+    return (ax, cf, cb)
 
 
 def contour(

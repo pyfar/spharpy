@@ -151,7 +151,7 @@ def test_spherical_colorbar(function, colorbar):
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
-    if function.__name__ in ["balloon"]:
+    if function.__name__ in ["balloon", "contour_map"]:
         out = function(coords, data, colorbar=colorbar)
         if colorbar:
             assert isinstance(out[2], mpl.colorbar.Colorbar)
@@ -346,7 +346,7 @@ def test_data_plots_projection_input_and_return(function, projection):
     ax = plt.axes(projection=projection)
 
     ax_out = function(coords, data, ax=ax)[0]
-    if function.__name__ in ['balloon']:
+    if function.__name__ in ['balloon', 'contour_map']:
         ax_out = ax_out[0]
     # check if the returned axis has the correct projection
     assert ax_out.name == projection
@@ -356,7 +356,7 @@ def test_data_plots_projection_input_and_return(function, projection):
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=plt.axes(projection='polar'))
 
-    if function.__name__ in ['balloon']:
+    if function.__name__ in ['balloon', 'contour_map']:
         match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
                           " 'rectilinear' projection")
         with pytest.raises(ValueError, match=match):
@@ -414,7 +414,9 @@ def test_cmap_phase_twilight():
 
 
 @pytest.mark.parametrize(
-        ("function"), [(sp.plot.balloon)],
+        ("function"),
+        [(sp.plot.balloon),
+         (sp.plot.contour_map)],
 )
 @pytest.mark.parametrize(
     ("ax"), [(1), ([1, 2, 3]), np.array([1, 2, 3])],
@@ -431,7 +433,8 @@ def test_ax_parameter_errors(function, ax, equal_area_sampling):
 
 @pytest.mark.parametrize(
         ("function"),
-        ([sp.plot.balloon]),
+        [(sp.plot.balloon),
+         (sp.plot.contour_map)],
 )
 def test_colorbar_ax_error(function, equal_area_sampling):
     """Test error raised by false colorbar / ax parameter combination."""
@@ -445,7 +448,8 @@ def test_colorbar_ax_error(function, equal_area_sampling):
 
 @pytest.mark.parametrize(
         ('function', 'projection'),
-        [(sp.plot.balloon, '3d')],
+        [(sp.plot.balloon, '3d'),
+         (sp.plot.contour_map, 'mollweide')],
 )
 @pytest.mark.parametrize(
     ('ax_option'),
@@ -454,6 +458,8 @@ def test_colorbar_ax_error(function, equal_area_sampling):
 def test_ax_input(function, projection, ax_option, equal_area_sampling):
     """Test ax input for None, single axis and list of two axes."""
     coords, data = equal_area_sampling
+
+    create_baseline = True
 
     if ax_option == 'none':
         function(coords, data)
@@ -466,11 +472,10 @@ def test_ax_input(function, projection, ax_option, equal_area_sampling):
         ax1 = plt.subplot(121, projection=projection)
         ax2 = plt.subplot(122, projection='rectilinear')
 
-        pos1 = ax1.get_position()
-        pos2 = ax2.get_position()
-        ax1.set_position([pos1.x0, pos1.y0, pos1.width*1.4, pos1.height*1.4])
-        ax2.set_position([pos2.x0*1.3, pos2.y0, pos2.width * 0.1, pos2.height])
-
         function(coords, data, ax=[ax1, ax2])
+
+        plt.tight_layout()
+        plt.subplots_adjust(wspace=0.2)
+
         save_and_compare(create_baseline, baseline_path, output_path, filename,
                          file_type, compare_output)
