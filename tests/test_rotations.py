@@ -4,7 +4,7 @@ import numpy as np
 import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
 import spharpy
-from spharpy.transforms import RotationSH
+from spharpy.transforms import SphericalHarmonicRotation
 import pytest
 from pyfar import Coordinates
 
@@ -135,7 +135,7 @@ def test_RotationSH():
     n_max = 4
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    rot = RotationSH.from_rotvec(n_max, rot_vec)
+    rot = SphericalHarmonicRotation.from_rotvec(n_max, rot_vec)
 
     assert rot._n_max == n_max
 
@@ -162,17 +162,17 @@ def test_RotationSH():
 
     np.testing.assert_allclose(D_Rot, reference, atol=1e-10)
 
-    rot = RotationSH.from_rotvec(n_max, [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_rotvec(n_max, [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
         rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-10)
 
-    rot = RotationSH.from_euler(n_max, 'zyz', [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_euler(n_max, 'zyz', [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
         rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-10)
 
-    rot = RotationSH.from_quat(n_max, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
+    rot = SphericalHarmonicRotation.from_quat(n_max, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
     np.testing.assert_allclose(
         rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-10)
@@ -181,7 +181,7 @@ def test_RotationSH():
         [0, -1, 0],
         [1, 0, 0],
         [0, 0, 1]])
-    rot = RotationSH.from_matrix(n_max, rot_mat_z_spat)
+    rot = SphericalHarmonicRotation.from_matrix(n_max, rot_mat_z_spat)
     np.testing.assert_allclose(
         rot.as_spherical_harmonic(basis_type='real'),
         reference, atol=1e-7)
