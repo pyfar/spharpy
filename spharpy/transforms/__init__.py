@@ -6,7 +6,8 @@ from .rotations import (
     wigner_d_function,
     wigner_d_rotation,
     wigner_d_rotation_real,
-    RotationSH)
+    SphericalHarmonicRotation,
+)
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     'wigner_d_rotation',
     'wigner_d_rotation_real',
     'wigner_d_function',
-    'RotationSH']
+    'SphericalHarmonicRotation',
+]
