@@ -17,7 +17,7 @@ class SphericalHarmonicRotation(ScipyRotation):
     def __init__(
             self,
             quat,
-            spherical_harmonic_definition,
+            spherical_harmonic_definition=SphericalHarmonicDefinition(),
             *args, **kwargs):
         """Initialize.
 
@@ -27,8 +27,10 @@ class SphericalHarmonicRotation(ScipyRotation):
             Each row is a (possibly non-unit norm) quaternion in scalar-last
             (x, y, z, w) format. Each quaternion will be normalized to unit
             norm.
-        spherical_harmonic_definition : SphericalHarmonicDefinition
-            The spherical harmonic definition.
+        spherical_harmonic_definition : SphericalHarmonicDefinition, optional
+            The spherical harmonic definition. Default is
+            :py:class:`~spharpy.classes.sh.SphericalHarmonicDefinition()` which
+            will use spharpy's default definition.
         *args : optional
             Arguments are passed to
             :py:class:`~scipy.spatial.transform.Rotation`
