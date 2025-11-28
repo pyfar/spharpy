@@ -48,9 +48,9 @@ class SphericalHarmonicRotation(ScipyRotation):
         super().__init__(quat, *args, **kwargs)
 
     def as_spherical_harmonic_matrix(
-                self,
-                spherical_harmonic_definition : SphericalHarmonicDefinition
-            ) -> np.ndarray:
+            self,
+            spherical_harmonic_definition : SphericalHarmonicDefinition
+        ) -> np.ndarray:
         """Express the rotation as as spherical harmonic rotation matrices.
 
         Supports complex and real-valued spherical harmonics.
@@ -81,9 +81,9 @@ class SphericalHarmonicRotation(ScipyRotation):
         return np.squeeze(D)
 
     def apply(
-                self,
-                target : SphericalHarmonicSignal
-            ) -> SphericalHarmonicSignal:
+            self,
+            target : SphericalHarmonicSignal
+        ) -> SphericalHarmonicSignal:
         """Apply the rotation to a signal.
 
         Note that the spherical harmonic definition of the target signal is
