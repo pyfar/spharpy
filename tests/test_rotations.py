@@ -131,23 +131,16 @@ def test_wigner_d_rot():
     np.testing.assert_allclose(D, rot_mat, atol=1e-7)
 
 
-def test_RotationSH():
-    n_max = 4
+def test_SphericalHarmonicRotation():
+    n_max = 2
+    definition = SphericalHarmonicDefinition(n_max=n_max)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    rot = SphericalHarmonicRotation.from_rotvec(n_max, rot_vec)
+    rot = SphericalHarmonicRotation.from_rotvec(definition, rot_vec)
 
-    assert rot._n_max == n_max
+    assert rot._spherical_harmonic_definition == definition
 
-    n_max = 2
-    rot.n_max = n_max
-    assert rot._n_max == n_max
-    assert rot.n_max == n_max
-
-    with pytest.raises(ValueError, match='order needs to be a positive value'):
-        rot.n_max = -1
-
-    D_Rot = rot.as_spherical_harmonic(basis_type='real')
+    D_Rot = rot.as_spherical_harmonic_matrix()
 
     reference = np.array([
         [1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -162,26 +155,29 @@ def test_RotationSH():
 
     np.testing.assert_allclose(D_Rot, reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_rotvec(n_max, [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_rotvec(
+        definition, [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(),
         reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_euler(n_max, 'zyz', [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_euler(
+        definition, 'zyz', [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(),
         reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_quat(n_max, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
+    rot = SphericalHarmonicRotation.from_quat(
+        definition, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(),
         reference, atol=1e-10)
 
     rot_mat_z_spat = np.array([
         [0, -1, 0],
         [1, 0, 0],
         [0, 0, 1]])
-    rot = SphericalHarmonicRotation.from_matrix(n_max, rot_mat_z_spat)
+    rot = SphericalHarmonicRotation.from_matrix(definition, rot_mat_z_spat)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(),
         reference, atol=1e-7)
