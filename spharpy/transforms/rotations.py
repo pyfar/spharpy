@@ -105,7 +105,7 @@ class SphericalHarmonicRotation(ScipyRotation):
             The rotated signal.
         """
         D = self.as_spherical_harmonic_matrix(target)
-        M = np.linalg.multi_dot(D) if D.ndim > 2 else D
+        M = np.linalg.multi_dot(list(D)) if D.ndim > 2 else D
 
         rotated_data = np.einsum('ij, ljt -> lit', M, target._data)
         rotated = target.copy()
