@@ -5,8 +5,12 @@ import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
 import spharpy
 from spharpy.transforms import SphericalHarmonicRotation
+from spharpy.classes.sh import (
+    SphericalHarmonicDefinition, SphericalHarmonics)
 import pytest
 from pyfar import Coordinates
+from spharpy.classes.audio import SphericalHarmonicSignal
+import pyfar
 
 
 def test_rotation_matrix_z_axis_complex():
@@ -177,3 +181,57 @@ def test_SphericalHarmonicRotation():
     np.testing.assert_allclose(
         rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-7)
+
+
+def test_SphericalHarmonicRotation_apply():
+    n_max = 2
+    spherical_harmonics = SphericalHarmonics(
+        n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+
+    noise = pyfar.signals.noise(512)
+
+    sh_signal = SphericalHarmonicSignal(
+        np.atleast_3d(spherical_harmonics.basis.T * noise.time).transpose(1, 0, 2),
+        noise.sampling_rate,
+        basis_type=spherical_harmonics.basis_type,
+        normalization=spherical_harmonics.normalization,
+        channel_convention=spherical_harmonics.channel_convention,
+        condon_shortley=spherical_harmonics.condon_shortley,
+    )
+
+    sh_signal_rotated = rot.apply(sh_signal)
+
+    rot_mat = rot.as_spherical_harmonic_matrix(sh_signal)
+
+    sh_data_rotated = rot_mat @ sh_signal._data
+
+    np.testing.assert_allclose(
+        sh_signal_rotated._data,
+        sh_data_rotated,
+        atol=1e-10)
+
+    sh_signal_rot_operator = rot * sh_signal
+
+    np.testing.assert_allclose(
+        sh_signal_rotated._data,
+        sh_signal_rot_operator._data,
+        atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_mul_rotations():
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+
+    result = rot * rot
+    result_matrix = result.as_matrix()
+
+    ref = rot.as_matrix() @ rot.as_matrix()
+
+    np.testing.assert_allclose(
+        result_matrix,
+        ref,
+        atol=1e-10)
