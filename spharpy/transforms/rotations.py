@@ -51,9 +51,14 @@ class SphericalHarmonicRotation(ScipyRotation):
             self,
             spherical_harmonic_definition : SphericalHarmonicDefinition
         ) -> np.ndarray:
-        """Express the rotation as as spherical harmonic rotation matrices.
+        """Express the rotation as spherical harmonic rotation matrices.
 
         Supports complex and real-valued spherical harmonics.
+
+        Parameters
+        ----------
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            Definition of the spherical harmonics.
 
         Returns
         -------
@@ -96,8 +101,8 @@ class SphericalHarmonicRotation(ScipyRotation):
 
         Returns
         -------
-        array, complex
-            The rotated data
+        SphericalHarmonicSignal
+            The rotated signal.
         """
         D = self.as_spherical_harmonic_matrix(target)
         M = np.linalg.multi_dot(D) if D.ndim > 2 else D
