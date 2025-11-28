@@ -7,6 +7,7 @@ import spharpy
 from scipy.special import eval_jacobi, factorial
 from scipy.spatial.transform import Rotation as ScipyRotation
 from spharpy.classes.sh import SphericalHarmonicDefinition
+from spharpy.classes.audio import SphericalHarmonicSignal
 
 
 class SphericalHarmonicRotation(ScipyRotation):
@@ -79,23 +80,40 @@ class SphericalHarmonicRotation(ScipyRotation):
 
         return np.squeeze(D)
 
-    def apply(self, coefficients):
-        """Apply the rotation to L sets of spherical harmonic coefficients.
+    def apply(
+                self,
+                target : SphericalHarmonicSignal
+            ) -> SphericalHarmonicSignal:
+        """Apply the rotation to a signal.
+
+        Note that the spherical harmonic definition of the target signal is
+        used for the creation of the rotation matrix.
 
         Parameters
         ----------
-        coefficients : array, complex, shape :math:`((n_max+1)^2, L)`
-            L sets of spherical harmonic coefficients with a respective order
-            :math:`((n_max+1)^2`
+        target : SphericalHarmonicSignal
+            Spherical harmonic series expansion to be rotated.
 
         Returns
         -------
         array, complex
             The rotated data
         """
-        D = self.as_spherical_harmonic_matrix()
+        D = self.as_spherical_harmonic_matrix(target)
         M = np.linalg.multi_dot(D) if D.ndim > 2 else D
-        return M @ coefficients
+
+        rotated_data = np.einsum('ij, ljt -> lit', M, target._data)
+        rotated = target.copy()
+        rotated._data = rotated_data
+        return rotated
+
+    def __mul__(self, other):
+        """Multiplication with rotations or application to signals."""
+        if isinstance(other, ScipyRotation):
+            result = super().__mul__(other)
+            return SphericalHarmonicRotation.from_quat(result.as_quat())
+        elif isinstance(other, SphericalHarmonicSignal):
+            return self.apply(other)
 
 
 def rotation_z_axis(n_max, angle):
