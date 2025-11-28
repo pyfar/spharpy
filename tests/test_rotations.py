@@ -235,3 +235,10 @@ def test_SphericalHarmonicRotation_mul_rotations():
         result_matrix,
         ref,
         atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_mul_invalid():
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
+
+    with pytest.raises(ValueError, match="Multiplication is only supported"):
+        result = rot * 42

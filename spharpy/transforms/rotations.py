@@ -119,6 +119,10 @@ class SphericalHarmonicRotation(ScipyRotation):
             return SphericalHarmonicRotation.from_quat(result.as_quat())
         elif isinstance(other, SphericalHarmonicSignal):
             return self.apply(other)
+        else:
+            raise ValueError(
+                "Multiplication is only supported for "
+                "SphericalHarmonicRotation and SphericalHarmonicSignal.")
 
 
 def rotation_z_axis(n_max, angle):
