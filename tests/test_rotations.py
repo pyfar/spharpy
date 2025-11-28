@@ -136,11 +136,9 @@ def test_SphericalHarmonicRotation():
     definition = SphericalHarmonicDefinition(n_max=n_max)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    rot = SphericalHarmonicRotation.from_rotvec(definition, rot_vec)
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
 
-    assert rot._spherical_harmonic_definition == definition
-
-    D_Rot = rot.as_spherical_harmonic_matrix()
+    D_Rot = rot.as_spherical_harmonic_matrix(definition)
 
     reference = np.array([
         [1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -155,29 +153,27 @@ def test_SphericalHarmonicRotation():
 
     np.testing.assert_allclose(D_Rot, reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_rotvec(
-        definition, [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, 90], degrees=True)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic_matrix(),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_euler(
-        definition, 'zyz', [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_euler('zyz', [0, 0, 90], degrees=True)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic_matrix(),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
     rot = SphericalHarmonicRotation.from_quat(
-        definition, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
+        [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic_matrix(),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
     rot_mat_z_spat = np.array([
         [0, -1, 0],
         [1, 0, 0],
         [0, 0, 1]])
-    rot = SphericalHarmonicRotation.from_matrix(definition, rot_mat_z_spat)
+    rot = SphericalHarmonicRotation.from_matrix(rot_mat_z_spat)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic_matrix(),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-7)
