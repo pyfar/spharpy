@@ -459,14 +459,14 @@ def test_ax_input(function, projection, ax_option, equal_area_sampling):
     """Test ax input for None, single axis and list of two axes."""
     coords, data = equal_area_sampling
 
+    filename = f'{function.__name__}_ax_{ax_option}'
+
     if ax_option == 'none':
         function(coords, data)
     if ax_option == 'single':
-        ax1 = plt.subplot(121, projection=projection)
+        ax1 = plt.subplot(111, projection=projection)
         function(coords, data, ax=ax1)
     if ax_option == 'two':
-        filename = f'{function.__name__}_ax_list'
-
         ax1 = plt.subplot(121, projection=projection)
         ax2 = plt.subplot(122, projection='rectilinear')
 
@@ -475,5 +475,5 @@ def test_ax_input(function, projection, ax_option, equal_area_sampling):
         plt.tight_layout()
         plt.subplots_adjust(wspace=0.2)
 
-        save_and_compare(create_baseline, baseline_path, output_path, filename,
-                         file_type, compare_output)
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
