@@ -459,8 +459,6 @@ def test_ax_input(function, projection, ax_option, equal_area_sampling):
     """Test ax input for None, single axis and list of two axes."""
     coords, data = equal_area_sampling
 
-    create_baseline = True
-
     if ax_option == 'none':
         function(coords, data)
     if ax_option == 'single':
