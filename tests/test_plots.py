@@ -469,7 +469,6 @@ def test_ax_input(function, projection, ax_option, equal_area_sampling):
     coords, data = equal_area_sampling
 
     filename = f'{function.__name__}_ax_{ax_option}'
-    create_baseline = True
 
     if ax_option == 'none':
         function(coords, data)
