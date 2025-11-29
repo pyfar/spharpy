@@ -435,14 +435,14 @@ def balloon_wireframe(
 
     Returns
     -------
-    ax : matplotlib.axes.Axes
+    ax : matplotlib.axes.Axes, list[matplotlib.axes.Axes]
         If `colorbar` is ``True`` a list of two axes is returned. The first
         one is the axis on which the data is plotted, the second one is the
         axis of the colorbar. If `colorbar` is ``False``, only the axis on
         which the data is plotted is returned.
     plot : matplotlib.trisurf
         The trisurf object created by the function.
-    cb : matplotlib.colorbar.Colorbar
+    cb : matplotlib.colorbar.Colorbar, None
         The Matplotlib colorbar object if `colorbar` is ``True`` and ``None``
         otherwise. This can be used to control the appearance of the colorbar,
         e.g., the label can be set by ``colorbar.set_label()``.
