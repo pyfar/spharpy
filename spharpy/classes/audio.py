@@ -35,6 +35,74 @@ def _assert_valid_number_of_sh_channels(shape):
             f"{sh_channels}. It must match (n_max + 1)^2.")
 
 
+def _convert_to_standard_definition(
+        data,
+        normalization,
+        channel_convention,
+    ):
+    """Convert data to the standard spherical harmonic definition.
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Spherical harmonic data.
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+
+    Returns
+    -------
+    numpy.ndarray
+        Spherical harmonic data following the standard definition (N3D, ACN).
+    """
+
+    data = renormalize(
+        data, channel_convention, normalization,
+        "N3D", axis=-2)
+
+    data = change_channel_convention(
+        data, channel_convention, "ACN", axis=-2)
+
+    return data
+
+
+def _convert_from_standard_definition(
+        data,
+        normalization,
+        channel_convention,
+    ):
+    """Convert data from standard definition to the desired one.
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Spherical harmonic data using the standard definition (N3D, ACN).
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+
+    Returns
+    -------
+    numpy.ndarray
+        Spherical harmonic data according to the desired definition.
+    """
+    data = renormalize(
+        data, "ACN", "N3D", normalization, axis=-2)
+
+    data = change_channel_convention(
+        data, "ACN", channel_convention, axis=-2)
+
+    return data
+
+
 class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     """
     Base class for spherical harmonics audio objects.
@@ -153,17 +221,10 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     @property
     def time(self):
         """Return or set the time data."""
-        data = TimeData.time.fget(self)
-
-        # renormalize according to desired normalization
-        data = renormalize(
-            data, "ACN", "N3D", self.normalization, axis=-2)
-
-        # change channel convention according to desired convention
-        data = change_channel_convention(
-            data, "ACN", self.channel_convention, axis=-2)
-
-        return data
+        return _convert_from_standard_definition(
+            TimeData.time.fget(self),
+            self.normalization, self.channel_convention,
+        )
 
     @time.setter
     def time(self, value):
@@ -172,13 +233,9 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
 
         _assert_valid_number_of_sh_channels(value.shape)
 
-        # convert to N3D and ACN if necessary
-        value = renormalize(
-            value, self.channel_convention, self.normalization,
-            "N3D", axis=-2)
-
-        value = change_channel_convention(
-            value, self.channel_convention, "ACN", axis=-2)
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention,
+        )
 
         TimeData.time.fset(self, value)
 
