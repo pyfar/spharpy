@@ -6,6 +6,35 @@ import numpy as np
 from abc import ABC
 
 
+def _atleast_3d_first_dimension(data):
+    """Ensure that data has at least 3 dimensions.
+    Adds a singleton dimensions at the front if necessary.
+    """
+    return data[np.newaxis, ...] if data.ndim < 3 else data
+
+
+def _assert_valid_number_of_sh_channels(shape):
+    """Check if the channel shape matches an integer spherical harmonic order.
+
+    Parameters
+    ----------
+    shape : tuple, int
+        Shape of the data array.
+
+    Raises
+    ------
+    ValueError
+        Raised if the number of spherical harmonic channels does not match
+        (n_max + 1)^2 for an integer n_max.
+    """
+    sh_channels = shape[-2]
+    n_max = np.sqrt(sh_channels)-1
+    if n_max - int(n_max) != 0:
+        raise ValueError(
+            "Invalid number of spherical harmonic channels: "
+            f"{sh_channels}. It must match (n_max + 1)^2.")
+
+
 class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     """
     Base class for spherical harmonics audio objects.
@@ -47,19 +76,6 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     def __init__(self, basis_type, normalization, channel_convention,
                  condon_shortley):
 
-        # check dimensions
-        if len(self.cshape) < 2:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
-
-        # calculate n_max
-        n_max = np.sqrt(self.cshape[-1])-1
-        if n_max - int(n_max) != 0:
-            raise ValueError("Invalid number of SH channels: "
-                             f"{self._data.shape[-2]}. It must match "
-                             "(n_max + 1)^2.")
-        self._n_max = int(n_max)
-
         _SphericalHarmonicBase.__init__(
             self,
             basis_type,
@@ -71,7 +87,7 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     @property
     def n_max(self):
         """Get or set the spherical harmonic order."""
-        return int(np.sqrt(self._data.cshape[-1])-1)
+        return int(np.sqrt(self.cshape[-1])-1)
 
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
@@ -93,7 +109,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         ``float``.
     times : array, double
         Times in seconds at which the data is sampled. The number of times
-        must match the size of the last dimension of `data`, i.e., 
+        must match the size of the last dimension of `data`, i.e.,
         ``data.shape[-1]``.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
@@ -118,6 +134,15 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
                  channel_convention, condon_shortley, comment="",
                  is_complex=False):
 
+        if not is_complex and basis_type == 'complex':
+            raise ValueError(
+                "Complex spherical harmonic basis requires "
+                "complex time data. Set is_complex=True.")
+
+        data = _atleast_3d_first_dimension(data)
+
+        _assert_valid_number_of_sh_channels(data.shape)
+
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley)
@@ -131,46 +156,34 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         data = TimeData.time.fget(self)
 
         # renormalize according to desired normalization
-        if not self.normalization == "N3D":
-            data = renormalize(data,
-                               "ACN",
-                               "N3D",
-                               self.normalization,
-                               axis=-2)
+        data = renormalize(
+            data, "ACN", "N3D", self.normalization, axis=-2)
+
         # change channel convention according to desired convention
-        if not self.channel_convention == "ACN":
-            data = change_channel_convention(
-                        data,
-                        "ACN",
-                        self.channel_convention,
-                        axis=-2)
+        data = change_channel_convention(
+            data, "ACN", self.channel_convention, axis=-2)
+
         return data
 
     @time.setter
     def time(self, value):
         """Return or set the time data."""
-        # check dimensions
-        if len(value.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
+        value = _atleast_3d_first_dimension(value)
+
+        _assert_valid_number_of_sh_channels(value.shape)
 
         # convert to N3D and ACN if necessary
-        if not self.normalization == "N3D":
-            value = renormalize(value,
-                                self.channel_convention,
-                                self.normalization,
-                                "N3D",
-                                axis=-2)
-        if not self.channel_convention == "ACN":
-            value = change_channel_convention(
-                        value,
-                        self.channel_convention,
-                        "ACN",
-                        axis=-2)
+        value = renormalize(
+            value, self.channel_convention, self.normalization,
+            "N3D", axis=-2)
+
+        value = change_channel_convention(
+            value, self.channel_convention, "ACN", axis=-2)
+
         TimeData.time.fset(self, value)
 
 
-class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, Signal):
+class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     """
     Create spherical harmonic audio object with frequency domain spherical
     harmonic coefficients and frequencies.
@@ -211,6 +224,9 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, Signal):
     def __init__(self, data, frequencies, basis_type, normalization,
                  channel_convention, condon_shortley, comment=""):
 
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape)
+
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley)
@@ -224,46 +240,28 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, Signal):
         data = FrequencyData.freq.fget(self)
 
         # renormalize according to desired normalization
-        if not self.normalization == "N3D":
-            data = renormalize(data,
-                               "ACN",
-                               "N3D",
-                               self.normalization,
-                               axis=-2)
+        data = renormalize(
+            data, "ACN", "N3D", self.normalization, axis=-2)
+
         # change channel convention according to desired convention
-        if not self.channel_convention == "ACN":
-            data = change_channel_convention(
-                        data,
-                        "ACN",
-                        self.channel_convention,
-                        axis=-2)
+        data = change_channel_convention(
+            data, "ACN", self.channel_convention, axis=-2)
+
         return data
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
-        if len(value.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
-
-        # check dimensions
-        if len(value.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
 
         # convert to N3D and ACN if necessary
-        if not self.normalization == "N3D":
-            value = renormalize(value,
-                                self.channel_convention,
-                                self.normalization,
-                                "N3D",
-                                axis=-2)
-        if not self.channel_convention == "ACN":
-            value = change_channel_convention(
-                        value,
-                        self.channel_convention,
-                        "ACN",
-                        axis=-2)
+        value = renormalize(
+            value, self.channel_convention, self.normalization,
+            "N3D", axis=-2)
+
+        value = change_channel_convention(
+            value, self.channel_convention, "ACN", axis=-2)
 
         FrequencyData.freq.fset(self, value)
 
@@ -350,6 +348,9 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                  comment="",
                  is_complex=False):
 
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape)
+
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley)
@@ -364,46 +365,28 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             data = Signal.time.fget(self)
 
             # renormalize according to desired normalization
-            if not self.normalization == "N3D":
-                data = renormalize(data,
-                                   "ACN",
-                                   "N3D",
-                                   self.normalization,
-                                   axis=-2)
+            data = renormalize(data,
+                "ACN", "N3D", self.normalization, axis=-2)
+
             # change channel convention according to desired convention
-            if not self.channel_convention == "ACN":
-                data = change_channel_convention(
-                            data,
-                            "ACN",
-                            self.channel_convention,
-                            axis=-2)
+            data = change_channel_convention(
+                data, "ACN", self.channel_convention, axis=-2)
+
             return data
 
         @time.setter
         def time(self, value):
             """Return or set the data in the time domain."""
-            if len(value.shape) < 3:
-                raise ValueError("Invalid number of dimensions. Data should have "
-                                 "at least 3 dimensions.")
-
-            # check dimensions
-            if len(value.shape) < 3:
-                raise ValueError("Invalid number of dimensions. Data should have "
-                                 "at least 3 dimensions.")
+            value = _atleast_3d_first_dimension(value)
+            _assert_valid_number_of_sh_channels(value.shape)
 
             # convert to N3D and ACN if necessary
-            if not self.normalization == "N3D":
-                value = renormalize(value,
-                                    self.channel_convention,
-                                    self.normalization,
-                                    "N3D",
-                                    axis=-2)
-            if not self.channel_convention == "ACN":
-                value = change_channel_convention(
-                            value,
-                            self.channel_convention,
-                            "ACN",
-                            axis=-2)
+            value = renormalize(
+                value, self.channel_convention, self.normalization,
+                "N3D", axis=-2)
+
+            value = change_channel_convention(
+                value, self.channel_convention, "ACN", axis=-2)
 
             Signal.time.fset(self, value)
 
@@ -413,45 +396,26 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             data = Signal.freq.fget(self)
 
             # renormalize according to desired normalization
-            if not self.normalization == "N3D":
-                data = renormalize(data,
-                                   "ACN",
-                                   "N3D",
-                                   self.normalization,
-                                   axis=-2)
+            data = renormalize(
+                data, "ACN", "N3D", self.normalization, axis=-2)
+
             # change channel convention according to desired convention
-            if not self.channel_convention == "ACN":
-                data = change_channel_convention(
-                            data,
-                            "ACN",
-                            self.channel_convention,
-                            axis=-2)
+            data = change_channel_convention(
+                data, "ACN", self.channel_convention, axis=-2)
             return data
 
         @freq.setter
         def freq(self, value):
             """Return or set the data in the frequency domain."""
-            if len(value.shape) < 3:
-                raise ValueError("Invalid number of dimensions. Data should have "
-                                 "at least 3 dimensions.")
-
-            # check dimensions
-            if len(value.shape) < 3:
-                raise ValueError("Invalid number of dimensions. Data should have "
-                                 "at least 3 dimensions.")
+            value = _atleast_3d_first_dimension(value)
+            _assert_valid_number_of_sh_channels(value.shape)
 
             # convert to N3D and ACN if necessary
-            if not self.normalization == "N3D":
-                value = renormalize(value,
-                                    self.channel_convention,
-                                    self.normalization,
-                                    "N3D",
-                                    axis=-2)
-            if not self.channel_convention == "ACN":
-                value = change_channel_convention(
-                            value,
-                            self.channel_convention,
-                            "ACN",
-                            axis=-2)
+            value = renormalize(
+                value, self.channel_convention, self.normalization,
+                "N3D", axis=-2)
+
+            value = change_channel_convention(
+                value, self.channel_convention, "ACN", axis=-2)
 
             Signal.freq.fset(self, value)
