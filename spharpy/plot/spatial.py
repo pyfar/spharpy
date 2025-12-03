@@ -858,7 +858,8 @@ def pcolor_map(
         ``ax``
             If a single axis is passed, this is used for plotting. If
             `colorbar` is ``True`` the space for the colorbar is taken from
-            this axis. Projection should be a `geographic <https://matplotlib.org/stable/gallery/subplots_axes_and_figures/geo_demo.html>`_ one.
+            this axis. Projection should be one of the
+            :doc:`matplotlib:gallery/subplots_axes_and_figures/geo_demo`.
         ``[ax, ax]``
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
@@ -894,7 +895,7 @@ def pcolor_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.pcolor_map(coords, data)
 
-    """  # noqa: E501
+    """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     if not isinstance(refine, bool):
