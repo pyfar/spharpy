@@ -10,6 +10,7 @@ def _atleast_3d_first_dimension(data):
     """Ensure that data has at least 3 dimensions.
     Adds a singleton dimensions at the front if necessary.
     """
+
     return data[np.newaxis, ...] if data.ndim < 3 else data
 
 
@@ -25,6 +26,7 @@ def _assert_valid_number_of_sh_channels(shape):
         Raised if the number of spherical harmonic channels does not match
         (n_max + 1)^2 for an integer n_max.
     """
+
     sh_channels = shape[-2]
     n_max = np.sqrt(sh_channels)-1
     if n_max - int(n_max) != 0:
@@ -86,6 +88,7 @@ def _convert_from_standard_definition(
     numpy.ndarray
         Spherical harmonic data according to the desired definition.
     """
+
     data = renormalize(
         data, "ACN", "N3D", normalization, axis=-2)
 
@@ -133,6 +136,7 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         A comment related to `data`. The default is ``None``.
 
     """
+
     def __init__(self, basis_type, normalization, channel_convention,
                  condon_shortley):
 
@@ -190,6 +194,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         A flag which indicates if the time data are real or complex-valued.
         The default is ``False``.
     """
+
     def __init__(self, data, times, basis_type, normalization,
                  channel_convention, condon_shortley, comment="",
                  is_complex=False):
@@ -379,6 +384,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     .. [#] E.G. Williams, "Fourier Acoustics", (1999), Academic Press
 
     """
+
     def __init__(self,
                  data,
                  sampling_rate,

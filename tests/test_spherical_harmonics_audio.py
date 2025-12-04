@@ -26,7 +26,7 @@ def test_init_sh_time_data():
         data, times,  basis_type='real', normalization='SN3D',
         channel_convention="ACN", condon_shortley=False,
         comment="")
-    assert type(sh_time_data) == SphericalHarmonicTimeData
+    assert isinstance(sh_time_data, SphericalHarmonicTimeData)
     np.testing.assert_allclose(sh_time_data.time, data)
 
 
@@ -37,5 +37,5 @@ def test_init_sh_frequency_data():
         data, frequencies, basis_type='real', normalization='SN3D',
         channel_convention="ACN", condon_shortley=False,
         comment="")
-    assert type(sh_freq_data) == SphericalHarmonicFrequencyData
+    assert isinstance(sh_freq_data, SphericalHarmonicFrequencyData)
     np.testing.assert_allclose(sh_freq_data.freq, data)
