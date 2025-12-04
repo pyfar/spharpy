@@ -17,6 +17,10 @@ def test_atleast_3d_data():
     assert data_3d.ndim == 3
     assert data_3d.shape == (2, 4, 4)
 
+    data_3d = _atleast_3d_first_dimension(np.array(1))
+    assert data_3d.ndim == 3
+    assert data_3d.shape == (1, 1, 1)
+
 
 def test_init_sh_time_data():
     data = np.ones((1, 4, 4))
