@@ -16,6 +16,7 @@ def _atleast_3d_first_dimension(data):
 
 def _assert_valid_number_of_sh_channels(shape):
     """Check if the channel shape matches an integer spherical harmonic order.
+
     Parameters
     ----------
     shape : tuple, int
@@ -40,6 +41,7 @@ def _convert_to_standard_definition(
         normalization,
         channel_convention):
     """Convert data to the standard spherical harmonic definition.
+
     Parameters
     ----------
     data : numpy.ndarray
@@ -51,6 +53,7 @@ def _convert_to_standard_definition(
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
+
     Returns
     -------
     numpy.ndarray
@@ -72,6 +75,7 @@ def _convert_from_standard_definition(
         normalization,
         channel_convention):
     """Convert data from standard definition to the desired one.
+
     Parameters
     ----------
     data : numpy.ndarray
@@ -83,6 +87,7 @@ def _convert_from_standard_definition(
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
+
     Returns
     -------
     numpy.ndarray
@@ -145,8 +150,7 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
             basis_type,
             channel_convention,
             normalization,
-            condon_shortley
-        )
+            condon_shortley)
 
     @property
     def n_max(self):
@@ -173,7 +177,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         ``float``.
     times : array, double
         Times in seconds at which the data is sampled. The number of times
-        must match the size of the last dimension of `data`, i.e., 
+        must match the size of the last dimension of `data`, i.e.,
         ``data.shape[-1]``.
     basis_type : str
         Type of spherical harmonic basis, either ``'complex'`` or
@@ -286,17 +290,9 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
-        data = FrequencyData.freq.fget(self)
-
-        # renormalize according to desired normalization
-        data = renormalize(
-            data, "ACN", "N3D", self.normalization, axis=-2)
-
-        # change channel convention according to desired convention
-        data = change_channel_convention(
-            data, "ACN", self.channel_convention, axis=-2)
-
-        return data
+        return _convert_from_standard_definition(FrequencyData.freq.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
 
     @freq.setter
     def freq(self, value):
@@ -304,13 +300,8 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         value = _atleast_3d_first_dimension(value)
         _assert_valid_number_of_sh_channels(value.shape)
 
-        # convert to N3D and ACN if necessary
-        value = renormalize(
-            value, self.channel_convention, self.normalization,
-            "N3D", axis=-2)
-
-        value = change_channel_convention(
-            value, self.channel_convention, "ACN", axis=-2)
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
 
         FrequencyData.freq.fset(self, value)
 
@@ -412,17 +403,9 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
-        data = Signal.freq.fget(self)
-
-        # renormalize according to desired normalization
-        data = renormalize(
-            data, "ACN", "N3D", self.normalization, axis=-2)
-
-        # change channel convention according to desired convention
-        data = change_channel_convention(
-            data, "ACN", self.channel_convention, axis=-2)
-
-        return data
+        return _convert_from_standard_definition(Signal.freq.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
 
     @freq.setter
     def freq(self, value):
@@ -430,13 +413,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         value = _atleast_3d_first_dimension(value)
         _assert_valid_number_of_sh_channels(value.shape)
 
-        # convert to N3D and ACN if necessary
-        value = renormalize(
-            value, self.channel_convention, self.normalization,
-            "N3D", axis=-2)
-
-        value = change_channel_convention(
-            value, self.channel_convention, "ACN", axis=-2)
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
 
         Signal.freq.fset(self, value)
 

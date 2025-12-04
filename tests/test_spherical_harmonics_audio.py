@@ -1,6 +1,5 @@
-from pytest import raises
+import pytest
 from spharpy.classes.audio import (
-    _SphericalHarmonicAudio,
     SphericalHarmonicTimeData,
     SphericalHarmonicFrequencyData,
     _atleast_3d_first_dimension)
