@@ -1,5 +1,7 @@
 from spharpy import SamplingSphere
+from pyfar import Coordinates
 import numpy as np
+import numpy.testing as npt
 import pytest
 from spharpy.samplings import gaussian
 
@@ -12,6 +14,36 @@ def test_sampling_sphere_init():
 def test_sampling_sphere_init_value():
     sampling = SamplingSphere(1, 0, 0, 0)
     assert isinstance(sampling, SamplingSphere)
+
+
+def test_sampling_sphere_from_coordinates():
+    """Test converting Coordinates to SamplingSphere"""
+
+    coordinates = Coordinates([1, 0, -1, 0], [0, 1, 0, -1], 0,
+                              weights=[np.pi, np.pi, np.pi, np.pi])
+    sampling_sphere = SamplingSphere.from_coordinates(coordinates)
+
+    # check data in sampling_sphere
+    assert type(sampling_sphere) == SamplingSphere
+    npt.assert_equal(sampling_sphere.cartesian, coordinates.cartesian)
+    npt.assert_equal(sampling_sphere.weights, coordinates.weights)
+    assert sampling_sphere.n_max is None
+    assert sampling_sphere.radius_tolerance == 1e-6
+    assert sampling_sphere.quadrature_tolerance == 1e-10
+    assert sampling_sphere.comment == coordinates.comment
+
+    # make sure mutable arrays are copied from coordinates
+    coordinates.weights = None
+    assert sampling_sphere.weights is not None
+
+    coordinates.x = [1, 1, 1, 1]
+    npt.assert_equal(sampling_sphere.x, [1, 0, -1, 0])
+
+    coordinates.y = [1, 1, 1, 1]
+    npt.assert_equal(sampling_sphere.y, [0, 1, 0, -1])
+
+    coordinates.z = [1, 1, 1, 1]
+    npt.assert_equal(sampling_sphere.z, [0, 0, 0, 0])
 
 
 def sampling_cube():
