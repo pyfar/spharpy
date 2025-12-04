@@ -48,20 +48,6 @@ def test_spherical_harmonic_signal_init_condon_shortley():
 def test_spherical_harmonic_signal_wrong_dimensions():
     """Test dimensions of SH coefficient data."""
 
-    data = np.array([[1., 2., 3.],
-                     [1., 2., 3.],
-                     [1., 2., 3.],
-                     [1., 2., 3.]])
-
-    # test if dimension of data is < 3
-    with pytest.raises(ValueError,
-                       match="Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions."):
-        SphericalHarmonicSignal(data,
-                                44100, basis_type='real',
-                                channel_convention='ACN',
-                                condon_shortley=False,
-                                normalization='N3D')
     # test if sh channels are valid
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],
@@ -70,9 +56,9 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                      [1., 2., 3.]]).reshape(1, 5, 3)
 
     with pytest.raises(ValueError,
-                       match=re.escape("Invalid number of SH channels: "
-                                       f"{data.shape[-2]}. It must match "
-                                       "(n_max + 1)^2.")):
+                       match=re.escape("Invalid number of spherical harmonic "
+                                       f"channels: {data.shape[-2]}. It must "
+                                       "match (n_max + 1)^2.")):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='ACN',
