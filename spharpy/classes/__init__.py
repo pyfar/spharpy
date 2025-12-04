@@ -8,7 +8,7 @@ from .sh import (
 from .audio import (
     SphericalHarmonicSignal,
     SphericalHarmonicTimeData,
-    SphericalHarmonicFrequencyData
+    SphericalHarmonicFrequencyData,
 )
 
 from .coordinates import (

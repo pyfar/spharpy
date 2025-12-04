@@ -11,7 +11,7 @@ def _atleast_3d_first_dimension(data):
     Adds a singleton dimensions at the front if necessary.
     """
 
-    return data[np.newaxis, ...] if data.ndim < 3 else data
+    return np.atleast_2d(data)[np.newaxis, ...] if data.ndim < 3 else data
 
 
 def _assert_valid_number_of_sh_channels(shape):
