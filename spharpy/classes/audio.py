@@ -157,6 +157,20 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         """Get or set the spherical harmonic order."""
         return int(np.sqrt(self.cshape[-1])-1)
 
+    @property
+    def basis_type(self):
+        """Get or set the type of spherical harmonic basis."""
+        return _SphericalHarmonicBase.basis_type.fget(self)
+
+    @basis_type.setter
+    def basis_type(self, value):
+        """Get or set the type of spherical harmonic basis."""
+        if self._basis_type is not None:
+            raise AttributeError("Changing the basis_type is not yet "
+                                 "supported.")
+        else:
+            _SphericalHarmonicBase.basis_type.fset(self, value)
+
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     """
@@ -417,6 +431,24 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             value, self.normalization, self.channel_convention)
 
         Signal.freq.fset(self, value)
+
+    @property
+    def freq_raw(self):
+        """Return or set the frequency domain data without normalization."""
+        return _convert_from_standard_definition(Signal.freq_raw.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
+
+    @freq_raw.setter
+    def freq_raw(self, value, raw):
+        """Return or set the frequency domain data without normalization."""
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
+
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
+
+        Signal.freq_raw.fset(self, value)
 
     @property
     def time(self):
