@@ -963,7 +963,7 @@ def contour_map(
         >>> data = np.sin(2*coords.colatitude) * np.cos(2*coords.azimuth)
         >>> spharpy.plot.contour_map(coords, data)
 
-    """  # noqa: E501
+    """
     # input checks
     _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     data = data.copy()
