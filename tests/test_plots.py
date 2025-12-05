@@ -345,10 +345,9 @@ def test_data_plots_projection_input_and_return(function, projection):
     ax = plt.axes(projection=projection)
 
     ax_out = function(coords, data, ax=ax)[0]
-    ax_out = ax_out[0]
 
     # check if the returned axis has the correct projection
-    assert ax_out.name == projection
+    assert ax_out[0].name == projection
 
     # test error for invalid inputs
     match = f"The projection of the axis needs to be '{projection}'"
@@ -356,7 +355,7 @@ def test_data_plots_projection_input_and_return(function, projection):
         function(coords, data, ax=plt.axes(projection='polar'))
 
     match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
-                        " 'rectilinear' projection")
+                      " 'rectilinear' projection")
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=[
             plt.axes(projection=projection),
