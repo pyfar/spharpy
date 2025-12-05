@@ -1,7 +1,10 @@
 import numpy as np
 from pyfar import Signal
-from . import SphericalHarmonicSignal
 from . import SphericalHarmonics
+from audio import (
+    SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData)
 
 
 def sht(signal, spherical_harmonics, axis='auto'):
@@ -37,8 +40,11 @@ def sht(signal, spherical_harmonics, axis='auto'):
         data = signal.time
     elif isinstance(signal, 'TimeData'):
         data = signal.time
-    else:
+    elif isinstance(signal, 'FrequencyData'):
         data = signal.freq
+    else:
+        raise ValueError("Input signal has to be Signal, TimeData, or "
+                         f"FrequencyData but is {type(signal)}")
 
     if axis == 'auto':
         axis = np.where(np.array(signal.cshape) == Y_inv.shape[1])[0]
@@ -76,16 +82,38 @@ def sht(signal, spherical_harmonics, axis='auto'):
 
     data_nm = data_nm.transpose(*new_axes)
 
-    return SphericalHarmonicSignal(
-        data=data_nm,
-        basis_type=spherical_harmonics.basis_type,
-        normalization=spherical_harmonics.normalization,
-        channel_convention=spherical_harmonics.channel_convention,
-        condon_shortley=spherical_harmonics.condon_shortley,
-        sampling_rate=signal.sampling_rate,
-        fft_norm=signal.fft_norm,
-        is_complex=signal.complex,
-        comment=signal.comment)
+    if isinstance(signal, 'Signal'):
+        sh_signal = SphericalHarmonicSignal(
+                    data=data_nm,
+                    basis_type=spherical_harmonics.basis_type,
+                    normalization=spherical_harmonics.normalization,
+                    channel_convention=spherical_harmonics.channel_convention,
+                    condon_shortley=spherical_harmonics.condon_shortley,
+                    sampling_rate=signal.sampling_rate,
+                    fft_norm=signal.fft_norm,
+                    is_complex=signal.complex,
+                    comment=signal.comment)
+    elif isinstance(signal, 'TimeData'):
+        sh_signal = SphericalHarmonicTimeData(
+                    data=data_nm,
+                    times=signal.times,
+                    basis_type=spherical_harmonics.basis_type,
+                    normalization=spherical_harmonics.normalization,
+                    channel_convention=spherical_harmonics.channel_convention,
+                    condon_shortley=spherical_harmonics.condon_shortley,
+                    comment=signal.complex,
+                    is_complex=False)
+    elif isinstance(signal, 'FrequencyData'):
+        sh_signal = SphericalHarmonicFrequencyData(
+                    data=data_nm,
+                    frequencies=signal.frequencies,
+                    basis_type=spherical_harmonics.basis_type,
+                    normalization=spherical_harmonics.normalization,
+                    channel_convention=spherical_harmonics.channel_convention,
+                    condon_shortley=spherical_harmonics.condon_shortley,
+                    comment=signal.comment)
+
+    return sh_signal
 
 
 def isht(sh_signal, coordinates):
