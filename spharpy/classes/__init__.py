@@ -1,9 +1,14 @@
+"""spharpy classes."""
+
 from .sh import (
-    SphericalHarmonics
+    SphericalHarmonicDefinition,
+    SphericalHarmonics,
 )
 
 from .audio import (
     SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData,
 )
 
 from .coordinates import (
@@ -11,7 +16,10 @@ from .coordinates import (
 )
 
 __all__ = [
-    'SphericalHarmonics'
+    'SphericalHarmonicDefinition',
+    'SphericalHarmonics',
     'SphericalHarmonicSignal',
+    'SphericalHarmonicTimeData',
+    'SphericalHarmonicFrequencyData',
     'SamplingSphere',
 ]

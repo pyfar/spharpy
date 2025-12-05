@@ -1,6 +1,7 @@
 from spharpy import SamplingSphere
 import numpy as np
 import pytest
+from spharpy.samplings import gaussian
 
 
 def test_sampling_sphere_init():
@@ -12,8 +13,9 @@ def test_sampling_sphere_init_value():
     sampling = SamplingSphere(1, 0, 0, 0)
     assert isinstance(sampling, SamplingSphere)
 
+
 def sampling_cube():
-    """Helper function returning a cube sampling"""
+    """Helper function returning a cube sampling."""
     x = [1, -1, 0, 0, 0, 0]
     y = [0, 0, 1, -1, 0, 0]
     z = [0, 0, 0, 0, 1, -1]
@@ -62,14 +64,14 @@ def test_error_multiple_radius_setter():
         sampling_sphere.x = [1, 0]
 
 
-@pytest.mark.parametrize(['sampling'], [
-    (SamplingSphere([1, 1], 0, 0), ),
-    (SamplingSphere.from_cartesian([1, 1], 0, 0), ),
-    (SamplingSphere.from_spherical_elevation([0, 0], 0, 1), ),
-    (SamplingSphere.from_spherical_colatitude([0, 0], 0, 1), ),
-    (SamplingSphere.from_spherical_side([0, 0], 0, 1), ),
-    (SamplingSphere.from_spherical_front([0, 0], 0, 1), ),
-    (SamplingSphere.from_cylindrical([0, 0], 0, 1), ),
+@pytest.mark.parametrize('sampling', [
+    SamplingSphere([1, 1], 0, 0),
+    SamplingSphere.from_cartesian([1, 1], 0, 0),
+    SamplingSphere.from_spherical_elevation([0, 0], 0, 1),
+    SamplingSphere.from_spherical_colatitude([0, 0], 0, 1),
+    SamplingSphere.from_spherical_side([0, 0], 0, 1),
+    SamplingSphere.from_spherical_front([0, 0], 0, 1),
+    SamplingSphere.from_cylindrical([0, 0], 0, 1),
 ])
 def test_radius_tolerance(sampling):
     """
@@ -98,15 +100,17 @@ def test_radius_tolerance_error():
         sampling.radius_tolerance = .01
 
 
-@pytest.mark.parametrize(['tolerance'], [
-    (None, ), ([0, 1], ), (np.array([0, 1]), ), (-.1, )
+@pytest.mark.parametrize('tolerance', [
+    None, [0, 1], np.array([0, 1]), -.1,
 ])
 def test_radius_tolerance_input(tolerance):
-    """Test if passing wrong values raises the expected error"""
+    """Test if passing wrong values raises the expected error."""
 
     match = 'The radius tolerance must be a number greater than zero'
     with pytest.raises(ValueError, match=match):
         SamplingSphere([1, 1], 0, 0, radius_tolerance=tolerance)
+
+
 def test_weights_getter():
     x, y, z = sampling_cube()
     n_max = 1
@@ -127,6 +131,7 @@ def test_setting_weights():
     np.testing.assert_array_equal(sampling._weights, weights)
     assert sampling._weights.shape == (6,)
 
+
 def test_setting_weights_invalid():
     x, y, z = sampling_cube()
     n_max = 1
@@ -140,40 +145,37 @@ def test_setting_weights_invalid():
         sampling._set_weights(np.ones(6)/6)
 
     message = "All weights must be positive."
+    weights_invalid = np.ones(6)*4*np.pi/6
+    weights_invalid[0] = np.nan
     with pytest.raises(ValueError, match=message):
-        weights_invalid = np.ones(6)*4*np.pi/6
-        weights_invalid[0] = np.nan
         sampling.weights = weights_invalid
 
+    weights_invalid = np.ones(6)*4*np.pi/6 * -1
+    weights_invalid[0] = -1
     with pytest.raises(ValueError, match=message):
-        weights_invalid = np.ones(6)*4*np.pi/6 * -1
-        weights_invalid[0] = -1
         sampling.weights = weights_invalid
 
 
-def test_quadrature_default_setter_getter():
-    """Test the default value, setter, and getter for quadrature."""
-
-    weights = [2 * np.pi, 2 * np.pi]
-    sampling = SamplingSphere([1, 1], 0, 0, weights=weights)
-
-    # test default value and getter
-    assert sampling.quadrature == False
-
-    # test setter and getter
-    sampling.quadrature = True
-    assert sampling.quadrature == True
+def test_quadrature_getter_changing_weights():
+    # create a quadrature grid (gaussian)
+    sampling = gaussian(n_max=3)
+    # check if quadrature is set properly
+    assert sampling.quadrature
+    # update weights such that quadrature requirement is not valid anymore
+    weights = 4 * np.pi * np.ones(sampling.cshape) / sampling.cshape
+    sampling.weights = weights
+    assert not sampling.quadrature
 
 
-def test_quadrature_setter_errors():
-    """Test errors in the quadrature setter for wrong input data."""
-
-    sampling = SamplingSphere([1, 1], 0, 0)
-
-    # input type
-    with pytest.raises(TypeError, match="True or False but is None"):
-        sampling.quadrature = None
-
-    # weights are None
-    with pytest.raises(ValueError, match="quadrature can not be True"):
-        sampling.quadrature = True
+def test_quadrature_getter_changing_points():
+    # create a quadrature grid (gaussian)
+    sampling = gaussian(n_max=3)
+    # check if quadrature is set properly
+    assert sampling.quadrature
+    # update points such that quadrature is not valid anymore
+    rng = np.random.default_rng()
+    sampling.spherical_colatitude = np.concatenate([
+        rng.random((sampling.csize, 1)),
+        np.ones((sampling.csize, 1)),
+        np.ones((sampling.csize, 1))], axis=1)
+    assert not sampling.quadrature

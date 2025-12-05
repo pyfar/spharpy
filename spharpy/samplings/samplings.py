@@ -1,5 +1,5 @@
 """
-Collection of sampling schemes for the sphere
+Collection of sampling schemes for the sphere.
 """
 import os
 from urllib3.exceptions import InsecureRequestWarning
@@ -15,11 +15,12 @@ from ._eqsp import point_set as eq_point_set
 from ._eqsp import lebedev_sphere
 
 
-def cube_equidistant(n_points):
+def equidistant_cuboid(n_points, flatten_output=True):
     """
-    Create a cuboid sampling with equidistant spacings in x, y, and z.
+    Create a cubic sampling with equidistant spacings in x, y, and z.
 
-    The cube will have dimensions 1 x 1 x 1.
+    The cuboid spans from -1 m to 1 m along each axis and is centered at
+    the origin.
 
     Parameters
     ----------
@@ -28,11 +29,16 @@ def cube_equidistant(n_points):
         number of sampling positions will be the same in every axis. If a
         tuple is given, the number of points will be set as
         ``(n_x, n_y, n_z)``.
+    flatten_output : bool, optional
+        Whether to flatten the output Coordinates object or not.
+        The default is ``False``.
 
     Returns
     -------
     sampling : :py:class:`pyfar.Coordinates`
-        Sampling positions as Coordinate object.
+        Sampling positions as Coordinate object with cshape
+        ``(n_x, n_y, n_z)`` if `flatten_output` is ``False``, otherwise
+        with cshape ``(n_x*n_y*n_z, )``.
         Does not contain sampling weights.
 
     Examples
@@ -41,9 +47,20 @@ def cube_equidistant(n_points):
     .. plot::
 
         >>> import spharpy as sp
-        >>> coords = sp.samplings.cube_equidistant(3)
+        >>> coords = sp.samplings.equidistant_cuboid(3)
         >>> sp.plot.scatter(coords)
     """
+    if not isinstance(flatten_output, bool):
+        raise ValueError("flatten_output must be a boolean.")
+    try:
+        n_points = np.asarray(n_points)
+        assert (n_points > 0).all()
+        assert (n_points % 1 == 0).all()
+        n_points = n_points.astype(int)
+    except Exception as e:
+        raise ValueError(
+            "The number of points needs to be either an integer "
+            "or a tuple with 3 elements.") from e
     if np.size(n_points) == 1:
         n_x = n_points
         n_y = n_points
@@ -60,35 +77,37 @@ def cube_equidistant(n_points):
     y = np.linspace(-1, 1, n_y)
     z = np.linspace(-1, 1, n_z)
 
-    x_grid, y_grid, z_grid = np.meshgrid(x, y, z)
+    x_grid, y_grid, z_grid = np.meshgrid(x, y, z, indexing='ij')
 
-    return Coordinates(x_grid.flatten(), y_grid.flatten(), z_grid.flatten())
+    if flatten_output:
+        x_grid = x_grid.flatten()
+        y_grid = y_grid.flatten()
+        z_grid = z_grid.flatten()
+
+    return Coordinates(x_grid, y_grid, z_grid)
 
 
-def hyperinterpolation(n_points=None, n_max=None, radius=1.):
+def hyperinterpolation(n_max, radius=1.):
     r"""
     Return a Hyperinterpolation sampling grid.
 
     After Sloan and Womersley [#]_. The samplings are available for
-    1 <= `n_max` <= 200 (``n_points = (n_max + 1)^2``).
+    spherical harmonics orders :math:`1 \leq n_\text{max} \leq 200`. The number
+    of points in the sampling grid equals :math:`(n_\text{max} + 1)^2`.
 
     Parameters
     ----------
-    n_points : int
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
-        `n_max` must be provided. The default is ``None``.
+        Maximum applicable spherical harmonic order. It must be
+        between ``1`` and ``200``.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
+        Sampling positions including sampling weights, with
+        ``(n_max + 1)**2`` points.
 
     Notes
     -----
@@ -113,24 +132,15 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
         >>> sp.plot.scatter(coords)
 
     """
-    if (n_points is None) and (n_max is None):
-        for o in range(1, 100):
-            print(f"SH order {o}, number of points {(o + 1)**2}")
-        return None
+    # check inputs
+    if not isinstance(n_max, int) or n_max < 1 or n_max > 200:
+        raise ValueError('n_max must be an integer between 1 and 200')
+    if not isinstance(
+            radius, (int, float)) or np.size(radius) > 1 or (radius <= 0):
+        raise ValueError('radius must be a single positive value')
 
-    # check input
-    if n_points is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
-
-    # get number of points or spherical harmonic order
-    if n_max is not None:
-        if n_max < 1 or n_max > 200:
-            raise ValueError('n_max must be between 1 and 200')
-        n_points = (n_max + 1)**2
-    else:
-        if n_points not in [(n + 1)**2 for n in range(1, 200)]:
-            raise ValueError('invalid value for n_points')
-        n_max = int(np.sqrt(n_points) - 1)
+    # calculate number of points
+    n_points = (n_max + 1)**2
 
     # download data if necessary
     filename = "samplings_extremal_md%03d.%05d" % (n_max, n_points)
@@ -160,7 +170,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
         file_data[:, 0] * radius,
         file_data[:, 1] * radius,
         file_data[:, 2] * radius,
-        n_max=n_max, weights=weights, quadrature=False,
+        n_max=n_max, weights=weights,
         comment='extremal spherical sampling grid')
 
     return sampling
@@ -168,7 +178,7 @@ def hyperinterpolation(n_points=None, n_max=None, radius=1.):
 
 def t_design(degree=None, n_max=None, criterion='const_energy',
              radius=1.):
-    """
+    r"""
     Return spherical t-design sampling grid.
 
     For detailed information, see [#]_.
@@ -179,12 +189,12 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
 
     .. math::
 
-        L = \\lceil \\frac{(t+1)^2}{2} \\rceil+1,
+        L = \lceil \frac{(t+1)^2}{2} \rceil+1,
 
     points will be generated, except for t = 3, 5, 7, 9, 11, 13, and 15.
     T-designs allow for an inverse spherical harmonic transform matrix
-    calculated as :math:`D = \\frac{4\\pi}{L} \\mathbf{Y}^\\mathrm{H}` with
-    :math:`\\mathbf{Y}^\\mathrm{H}` being the hermitian transpose of the
+    calculated as :math:`D = \frac{4\pi}{L} \mathbf{Y}^\mathrm{H}` with
+    :math:`\mathbf{Y}^\mathrm{H}` being the hermitian transpose of the
     spherical harmonics matrix.
 
     Parameters
@@ -300,7 +310,7 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
         points[..., 0] * radius,
         points[..., 1] * radius,
         points[..., 2] * radius,
-        n_max=n_max, quadrature=False)
+        n_max=n_max)
 
     return sampling
 
@@ -364,7 +374,7 @@ def dodecahedron(radius=1.):
     rad = radius * np.ones(np.size(theta))
 
     return spharpy.SamplingSphere.from_spherical_colatitude(
-        phi, theta, rad, quadrature=False)
+        phi, theta, rad)
 
 
 def icosahedron(radius=1.):
@@ -404,7 +414,7 @@ def icosahedron(radius=1.):
     phi = np.concatenate((np.tile(phi, 2), np.tile(phi + np.pi / 5, 2)))
 
     return spharpy.SamplingSphere.from_spherical_colatitude(
-        phi, theta, radius, quadrature=False)
+        phi, theta, radius)
 
 
 def equiangular(n_points=None, n_max=None, radius=1.):
@@ -489,19 +499,17 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     # and the number of points in azimuth and elevation are equal
     if (n_theta != n_phi) or np.any(np.mod(n_points, 2) > 0):
         weights = None
-        quadrature = False
     else:
         q = 2 * np.arange(0, n_max + 1) + 1
         weights_theta = np.sin(theta_angles) * (
             1/q @ np.sin(q[np.newaxis].T @ theta_angles[np.newaxis]))
 
         weights = np.tile(weights_theta*2*np.pi / (n_max+1)**2, n_phi)
-        quadrature = True
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), rad,
-        weights=weights, n_max=n_max, quadrature=quadrature)
+        weights=weights, n_max=n_max)
 
     return sampling
 
@@ -593,7 +601,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         phi.reshape(-1), theta.reshape(-1), radius,
-        weights=weights, n_max=n_max, quadrature=True)
+        weights=weights, n_max=n_max)
 
     return sampling
 
@@ -603,15 +611,14 @@ def eigenmike_em32():
 
     The data are according to the Eigenstudio user manual on the homepage [#]_.
 
-    References
-    ----------
-    .. [#]  Eigenstudio User Manual, https://mhacoustics.com/download
-
-
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         SamplingSphere object containing all sampling points
+
+    References
+    ----------
+    .. [#]  Eigenstudio User Manual, https://eigenmike.com/sites/default/files/documentation-2023-10/EigenStudio%20User%20Manual%20R02D.pdf
 
     Examples
     --------
@@ -621,7 +628,7 @@ def eigenmike_em32():
         >>> import spharpy as sp
         >>> coords = sp.samplings.eigenmike_em32()
         >>> sp.plot.scatter(coords)
-    """
+    """  # noqa: E501
     rad = np.ones(32)
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
                       90.0, 125.0, 148.0, 125.0, 90.0, 55.0,
@@ -642,18 +649,25 @@ def eigenmike_em32():
 def eigenmike_em64():
     """Microphone positions of the Eigenmike em64 by mhacoustics.
 
-    according to
-    the Eigenmuke user manual on the homepage [#]_.
-
-    References
-    ----------
-    .. [#]  Eigenmike em64 User Manual, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
+    The data are according to the Eigenmike user manual on the homepage [#]_.
 
     Returns
     -------
     sampling : SamplingSphere
         SamplingSphere object containing all sampling points
 
+    References
+    ----------
+    .. [#]  Eigenmike em64 Getting Started Guide, https://eigenmike.com/sites/default/files/documentation-2024-09/getting%20started%20Guide%20to%20em64%20and%20ES3%20R01H.pdf
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> import spharpy as sp
+        >>> coords = sp.samplings.eigenmike_em64()
+        >>> sp.plot.scatter(coords)
     """  # noqa: E501
 
     rad = np.ones(64)*0.042
@@ -742,7 +756,7 @@ def icosahedron_ke4():
     rad = np.ones(20) * 0.065
 
     return spharpy.SamplingSphere.from_spherical_colatitude(
-        phi, theta, rad, quadrature=False)
+        phi, theta, rad)
 
 
 def equal_area(n_max, condition_num=2.5, n_points=None):
@@ -755,10 +769,12 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
     n_max : int
         Spherical harmonic order
     condition_num : double
-        Desired maximum condition number of the spherical harmonic basis matrix
+        Desired maximum condition number of the spherical harmonic basis
+        matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        None n_points will be (n_max+1)**2
+        ``None`` the value ``(n_max+1)**2`` will be used as start.
+        Default is ``None``.
 
     Returns
     -------
@@ -787,7 +803,7 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
     while True:
         point_data = eq_point_set(2, n_points)
         sampling = spharpy.SamplingSphere(
-            point_data[0], point_data[1], point_data[2], quadrature=False)
+            point_data[0], point_data[1], point_data[2])
 
         if condition_num == np.inf:
             break
@@ -811,10 +827,12 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     n_max : int
         Spherical harmonic order
     condition_num : double
-        Desired maximum condition number of the spherical harmonic basis matrix
+        Desired maximum condition number of the spherical harmonic basis
+        matrix. Default is ``2.5``.
     n_points : int, optional
         Number of points to start the condition number optimization. If set to
-        None n_points will be (n_max+1)**2
+        ``None`` the value ``(n_max+1)**2`` will be used as start.
+        Default is ``None``.
 
     Returns
     -------
@@ -842,7 +860,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
         n_points = (n_max+1)**2
 
     def _spiral_points(n_points):
-        """Helper function doing the actual calculation of the points"""
+        """Helper function doing the actual calculation of the points."""
         r = np.zeros(n_points)
         h = np.zeros(n_points)
         theta = np.zeros(n_points)
@@ -871,7 +889,7 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
     while True:
         theta, phi = _spiral_points(n_points)
         sampling = spharpy.SamplingSphere.from_spherical_colatitude(
-            phi, theta, np.ones(n_points), quadrature=False)
+            phi, theta, np.ones(n_points))
         if condition_num == np.inf:
             break
         Y = spharpy.spherical.spherical_harmonic_basis(n_max, sampling)
@@ -951,7 +969,7 @@ def equal_angle(delta_angles, radius=1.):
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
-        phi/180*np.pi, theta/180*np.pi, radius, quadrature=False,
+        phi/180*np.pi, theta/180*np.pi, radius,
         comment='equal angle spherical sampling grid')
 
     return sampling
@@ -960,7 +978,7 @@ def equal_angle(delta_angles, radius=1.):
 def great_circle(
         elevation=np.linspace(-90, 90, 19), gcd=10, radius=1,
         azimuth_res=1, match=360):
-    """
+    r"""
     Spherical sampling grid according to the great circle distance criterion.
 
     Sampling grid where neighboring points of the same elevation have approx.
@@ -970,8 +988,8 @@ def great_circle(
     ----------
     elevation : array like, optional
         Contains the elevation from wich the sampling grid is generated, with
-        :math:`-90^\\circ\\leq elevation \\leq 90^\\circ` (:math:`90^\\circ`:
-        North Pole, :math:`-90^\\circ`: South Pole). The default is
+        :math:`-90^\circ\leq elevation \leq 90^\circ` (:math:`90^\circ`:
+        North Pole, :math:`-90^\circ`: South Pole). The default is
         ``np.linspace(-90, 90, 19)``.
     gcd : number, optional
         Desired great circle distance (GCD). Note that the actual GCD of the
@@ -1050,7 +1068,7 @@ def great_circle(
 
     # make Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_elevation(
-        azim/180*np.pi, elev/180*np.pi, radius, quadrature=False,
+        azim/180*np.pi, elev/180*np.pi, radius,
         comment='spherical great circle sampling grid')
 
     return sampling
@@ -1119,7 +1137,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     # list possible sh orders and degrees
     if n_points is None and n_max is None:
         print('Possible input values:')
-        for o, d in zip(orders, degrees):
+        for o, d in zip(orders, degrees, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
@@ -1158,7 +1176,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
-        n_max=n_max, weights=weights, quadrature=True,
+        n_max=n_max, weights=weights,
         comment='spherical Lebedev sampling grid')
 
     return sampling
@@ -1286,7 +1304,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     # list possible sh orders and number of points
     if n_points is None and n_max is None:
-        for o, d in zip(orders, points):
+        for o, d in zip(orders, points, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
@@ -1329,7 +1347,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights, quadrature=False)
+        n_max=n_max, weights=weights)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]

@@ -5,81 +5,58 @@ import spharpy.samplings as samplings
 from spharpy import SamplingSphere
 from pyfar import Coordinates
 import numpy.testing as npt
-from pytest import raises
 from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
 
 
-def test_cube_equidistant_int():
+@pytest.mark.parametrize("flatten_output", [True, False])
+def test_equidistant_cuboid_sampling_int(flatten_output):
     n_points = 3
-    coords = samplings.cube_equidistant(n_points)
-    x = np.tile(np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1]), 3)
-    y = np.hstack((np.ones(9) * -1, np.zeros(9), np.ones(9)))
-    z = np.tile(np.array([-1, 0, 1]), 9)
+    coords = samplings.equidistant_cuboid(
+        n_points, flatten_output=flatten_output)
+    data = np.linspace(-1, 1, 3)
+    x, y, z = np.meshgrid(data, data, data, indexing='ij')
+    if flatten_output:
+        x = x.flatten()
+        y = y.flatten()
+        z = z.flatten()
     np.testing.assert_allclose(x, coords.x)
     np.testing.assert_allclose(y, coords.y)
     np.testing.assert_allclose(z, coords.z)
     assert type(coords) is Coordinates
     assert coords.csize == 3**3
+    if flatten_output:
+        assert coords.cshape == (3*3*3,)
+    else:
+        assert coords.cshape == (3, 3, 3)
 
 
-def test_cube_equidistant_tuple():
-    # test with tuple
-    c = samplings.cube_equidistant((3, 2, 4))
-    assert c.csize == 3*2*4
+def test_equidistant_cuboid_sampling_tuple():
+    c = samplings.equidistant_cuboid((2, 3, 4), flatten_output=False)
+    assert c.csize == 2*3*4
+    assert c.cshape == (2, 3, 4)
+    npt.assert_allclose(c.x[0], c.x[0, 0, 0])
+    npt.assert_allclose(c.y[:, 0], c.y[0, 0, 0])
+    npt.assert_allclose(c.z[:, :, 0], c.z[0, 0, 0])
 
 
-def test_hyperinterpolation(download_sampling):
-    n_max = 1
-    download_sampling('hyperinterpolation', n_max)
-    sampling = samplings.hyperinterpolation(n_max=n_max)
-    assert sampling.radius.size == (n_max+1)**2
+def test_equidistant_cuboid_sampling_tuple_flatten():
+    c = samplings.equidistant_cuboid((2, 3, 4), flatten_output=True)
+    assert c.csize == 2*3*4
+    assert c.cshape == (2*3*4,)
 
 
-def test_hyperinterpolation_default_n_max():
-    # check if n_max is set properly
-    sampling = samplings.hyperinterpolation(n_points=4)
-    assert sampling.n_max == 1
-    assert isinstance(sampling.n_max, int)
-
-
-def test_sph_extremal(download_sampling):
-    # load test data
-    download_sampling('hyperinterpolation', [1, 10])
-
-    # test without parameters
-    assert samplings.hyperinterpolation() is None
-
-    # test with n_points
-    c = samplings.hyperinterpolation(4)
-    assert type(c) is SamplingSphere
-    assert c.csize == 4
-
-    # test with spherical harmonic order
-    c = samplings.hyperinterpolation(n_max=1)
-    assert c.csize == 4
-
-    # test default radius
-    npt.assert_allclose(c.radius, 1, atol=1e-15)
-
-    # test user radius
-    c = samplings.hyperinterpolation(4, radius=1.5)
-    npt.assert_allclose(c.radius, 1.5, atol=1e-15)
-
-    # test loading SH order > 9
-    c = samplings.hyperinterpolation(n_max=10)
-
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert not c.quadrature
-
-    # test exceptions
-    with raises(ValueError):
-        c = samplings.hyperinterpolation(4, 1)
-    with raises(ValueError):
-        c = samplings.hyperinterpolation(5)
-    with raises(ValueError):
-        c = samplings.hyperinterpolation(n_max=0)
+def test_equidistant_cuboid_sampling_invalid():
+    with pytest.raises(ValueError, match='flatten_output must be a boolean.'):
+        samplings.equidistant_cuboid(3, flatten_output='bla')
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid(-3)
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid((3, -3, 3))
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid((3, 3, 3.2))
+    with pytest.raises(ValueError, match='The number of points needs to be'):
+        samplings.equidistant_cuboid((3, 3, -3))
 
 
 def test_t_design_const_e(download_sampling):
@@ -139,13 +116,13 @@ def test_sph_t_design(download_sampling):
     assert not c.quadrature
 
     # test exceptions
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='n_points or n_max must be None'):
         c = samplings.t_design(4, 1)
-    with raises(ValueError):
-        c = samplings.t_design(0)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
+        c = samplings.t_design(degree=0)
+    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
         c = samplings.t_design(n_max=0)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Invalid design criterion'):
         c = samplings.t_design(2, criterion='const_thread')
 
 
@@ -189,7 +166,7 @@ def test_sph_icosahedron():
 
 def test_equiangular():
     # test without parameters
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
         samplings.equiangular()
 
     # test with single number of points
@@ -220,7 +197,7 @@ def test_equiangular_weights_n_points_even(n_points):
     npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
     assert sampling.cshape == sampling.weights.shape
     assert sampling.cshape == n_points*n_points
-    assert sampling.quadrature is True
+    assert sampling.quadrature
 
 
 @pytest.mark.parametrize("n_points", np.arange(1, 40, 2))
@@ -228,7 +205,7 @@ def test_equiangular_weights_n_points_odd(n_points):
     sampling = samplings.equiangular(n_points=n_points)
     assert sampling.weights is None
     assert sampling.cshape == n_points*n_points
-    assert sampling.quadrature is False
+    assert not sampling.quadrature
 
 
 @pytest.mark.parametrize(
@@ -257,9 +234,7 @@ def test_equiangular_weights_n_max(n_max):
 
 
 @pytest.mark.parametrize(
-    'basis_func', [
-        spherical_harmonic_basis, spherical_harmonic_basis_real
-    ])
+    'basis_func', [spherical_harmonic_basis, spherical_harmonic_basis_real])
 def test_equiangular_orthogonality(basis_func):
     n_max = 4
     sampling = samplings.equiangular(n_max=n_max)
@@ -268,8 +243,7 @@ def test_equiangular_orthogonality(basis_func):
     npt.assert_allclose(
         Y.conj().T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max+1)**2),
-        atol=1e-6, rtol=1e-6
-    )
+        atol=1e-6, rtol=1e-6)
 
 
 @pytest.mark.parametrize("n_points", np.arange(1, 40))
@@ -291,9 +265,7 @@ def test_gaussian_weights_n_max(n_max):
 
 
 @pytest.mark.parametrize(
-    'basis_func', [
-        spherical_harmonic_basis, spherical_harmonic_basis_real
-    ])
+    'basis_func', [spherical_harmonic_basis, spherical_harmonic_basis_real])
 def test_gaussian_orthogonality(basis_func):
     n_max = 4
     sampling = samplings.gaussian(n_max=n_max)
@@ -302,21 +274,27 @@ def test_gaussian_orthogonality(basis_func):
     npt.assert_allclose(
         Y.conj().T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max+1)**2),
-        atol=1e-6, rtol=1e-6
-    )
+        atol=1e-6, rtol=1e-6)
+
+
+def test_gaussian_quadrature():
+    n_max = 3
+    sampling = samplings.gaussian(n_max=n_max)
+
+    assert sampling.quadrature
 
 
 def test_gaussian():
     # test without parameters
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
         samplings.gaussian()
 
     # n_points must be a positive natural number
-    with raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2,2))
+    with pytest.raises(ValueError, match='positive natural number'):
+        samplings.gaussian(n_points=(2, 2))
 
     # n_points must be a positive natural number
-    with raises(ValueError, match='positive natural number'):
+    with pytest.raises(ValueError, match='positive natural number'):
         samplings.gaussian(n_points=3.2)
 
     # test with single number of points
@@ -384,9 +362,11 @@ def test_equal_angle():
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
     # test assertions
-    with raises(ValueError):
+    with pytest.raises(ValueError,
+                       match='delta_phi must be an integer divisor'):
         c = samplings.equal_angle((11, 20))
-    with raises(ValueError):
+    with pytest.raises(ValueError,
+                       match='delta_theta must be an integer divisor'):
         c = samplings.equal_angle((20, 11))
 
     # test quadrature
@@ -418,13 +398,13 @@ def test_great_circle():
     assert not c.quadrature
 
     # test assertion: 1 / azimuth_res is not an integer
-    with raises(AssertionError):
+    with pytest.raises(AssertionError):
         samplings.great_circle(azimuth_res=.6)
     # test assertion: 360 / match is not an integer
-    with raises(AssertionError):
+    with pytest.raises(AssertionError):
         samplings.great_circle(match=270)
     # test assertion: match / azimuth_res is not an integer
-    with raises(AssertionError):
+    with pytest.raises(AssertionError):
         samplings.great_circle(azimuth_res=.5, match=11.25)
 
 
@@ -478,9 +458,9 @@ def test_fliege():
     assert not c.quadrature
 
     # test exceptions
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='n_points or n_max must be None'):
         c = samplings.fliege(9, 2)
-    with raises(ValueError):
+    with pytest.raises(ValueError, match='Invalid number of points n_points'):
         c = samplings.fliege(30)
 
 
@@ -490,3 +470,43 @@ def test_em64():
 
     npt.assert_allclose(
         np.sum(sampling.weights), 4*np.pi, atol=1e-6, rtol=1e-6)
+
+
+def test_hyperinterpolation_default(download_sampling):
+    n_max = 1
+    # download just required sampling for testing
+    download_sampling('hyperinterpolation', [n_max])
+
+    c = samplings.hyperinterpolation(1)
+
+    # test sampling properties
+    assert type(c) is SamplingSphere
+    assert c.n_max == n_max
+    assert c.csize == (n_max+1)**2
+    assert c.radius.size == (n_max+1)**2
+
+    # test default radius
+    npt.assert_allclose(c.radius, 1, atol=1e-15)
+    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
+
+
+@pytest.mark.parametrize("radius", [1, 5])
+def test_hyperinterpolation_radius(download_sampling, radius):
+    download_sampling('hyperinterpolation', [1])
+    sampling = samplings.hyperinterpolation(1, radius=radius)
+    assert type(sampling) is SamplingSphere
+    npt.assert_allclose(sampling.radius, radius, atol=1e-15)
+
+
+@pytest.mark.parametrize("n_max", [-1, 'one'])
+def test_hyperinterpolation_errors_n_max(n_max):
+    with pytest.raises(
+            ValueError, match='n_max must be an integer between 1 and 200'):
+        samplings.hyperinterpolation(n_max)
+
+
+@pytest.mark.parametrize("radius", [-1, 'one'])
+def test_hyperinterpolation_errors_radius(radius):
+    with pytest.raises(
+            ValueError, match='radius must be a single positive value'):
+        samplings.hyperinterpolation(1, radius)

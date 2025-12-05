@@ -45,7 +45,6 @@ def test_polar_colat():
 
 
 def test_num_collars():
-    dim = 2
     N = 10
     c_polar = 0.643501108793284
     angle = 1.120998243279586

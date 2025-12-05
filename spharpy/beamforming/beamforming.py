@@ -1,3 +1,5 @@
+"""Beamforming methods for spherical harmonic signals."""
+
 import itertools
 import numpy as np
 import numpy.polynomial as poly
@@ -15,7 +17,7 @@ def dolph_chebyshev_weights(
     """Calculate the weights for a spherical Dolph-Chebyshev beamformer.
     The design criterion can either be a desired side-lobe attenuation or a
     desired main-lobe width. Once one criterion is chosen, the other will
-    become a dependent property which will be chosen accordingly. [#]_
+    become a dependent property which will be chosen accordingly [#]_.
 
     Parameters
     ----------
@@ -24,9 +26,11 @@ def dolph_chebyshev_weights(
     design_parameter : float
         This can either be the desired side-lobe attenuation or the width of
         the main-lobe in radians.
-    design_criterion : 'sidelobe', 'mainlobe'
-        Whether the design parameter argument is the desired side-lobe
-        attenuation or the desired main-lobe width.
+    design_criterion : str
+        Can be either ``'sidelobe'``or ``'mainlobe'``.
+        Determines whether the design parameter argument is the desired
+        side-lobe attenuation or the desired main-lobe width.
+        Default is ``'sidelobe'``.
 
     Returns
     -------
@@ -98,20 +102,20 @@ def dolph_chebyshev_weights(
                         (1/2**j)*t_2N[2*j]*P_N[i, n]*x0**(2*j)
         d_n[n] = (2*np.pi/R)*temp
 
-    return sph_identity_matrix(n_max, type='n-nm').T @ d_n
+    return sph_identity_matrix(n_max, matrix_type='n-nm').T @ d_n
 
 
 def rE_max_weights(n_max, normalize=True):
     """Weights that maximize the length of the energy vector.
-    This is most often used in Ambisonics decoding. [#]_
+    This is most often used in Ambisonics decoding [#]_.
 
     Parameters
     ----------
     n_max : int
         Spherical harmonic order
     normalize : bool
-        If `True`, the weights will be normalized such that the complex
-        amplitude of a plane wave is not distorted.
+        If ``True``, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted. Default is ``True``.
 
     Returns
     -------
@@ -178,8 +182,8 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     n_max : int
         The spherical harmonic order
     normalize : bool
-        If `True`, the weights will be normalized such that the complex
-        amplitude of a plane wave is not distorted.
+        If ``True``, the weights will be normalized such that the complex
+        amplitude of a plane wave is not distorted. Default is ``True``.
 
     Returns
     -------
@@ -271,7 +275,6 @@ def normalize_beamforming_weights(weights, n_max):
 
     Examples
     --------
-
     Calculate hann window function based tapering weights for a plane wave
     decomposition beamformer and normalize.
 

@@ -1,5 +1,5 @@
 """
-Helper functions for coordinate operations
+Helper functions for coordinate operations.
 """
 
 import numpy as np
@@ -7,22 +7,22 @@ from scipy.spatial import cKDTree, SphericalVoronoi
 
 
 def coordinates2latlon(coordinates):
-    """Transforms from Cartesian coordinates to Geocentric coordinates
+    r"""Transforms from Cartesian coordinates to Geocentric coordinates.
 
     .. math::
 
-        h = \\sqrt{x^2 + y^2 + z^2},
+        h = \sqrt{x^2 + y^2 + z^2},
 
-        \\theta = \\pi/2 - \\arccos(\\frac{z}{r}),
+        \theta = \pi/2 - \arccos(\frac{z}{r}),
 
-        \\phi = \\arctan(\\frac{y}{x})
+        \phi = \arctan(\frac{y}{x})
 
-        -\\pi/2 < \\theta < \\pi/2,
+        -\pi/2 < \theta < \pi/2,
 
-        -\\pi < \\phi < \\pi
+        -\pi < \phi < \pi
 
-    where :math:`h` is the heigth, :math:`\\theta` is the latitude angle
-    and :math:`\\phi` is the longitude angle
+    where :math:`h` is the height, :math:`\theta` is the latitude angle
+    and :math:`\phi` is the longitude angle
 
     Parameters
     ----------
@@ -58,9 +58,9 @@ def spherical_voronoi(sampling, round_decimals=13, center=0.0):
     sampling : SamplingSphere
         Sampling points on a sphere
     round_decimals : int
-        Number of decimals to be rounded to.
+        Number of decimals to be rounded to. Default is ``13``.
     center : double
-        Center point of the voronoi diagram.
+        Center point of the voronoi diagram. Default is ``0.0``.
 
     Returns
     -------
@@ -87,9 +87,9 @@ def calculate_sampling_weights(sampling, round_decimals=12):
     sampling : SamplingSphere
         Sampling points on a sphere
     round_decimals : int, optional
-
-    apply : boolean, optional
-        Whether or not to store the weights into the class object
+        Decimal precision used for ``sampling.radius``. All radii must be
+        identical to compute the sampling weights. This can be used to ignore
+        numerical noise on the radii. The default is ``12``.
 
     Returns
     -------
