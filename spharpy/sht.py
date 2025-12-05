@@ -33,6 +33,12 @@ def sht(signal, spherical_harmonics, axis='auto'):
             Canada, May 2004, p. 45-48, doi: 10.1109/ICASSP.2004.1326759.
     """
     Y_inv = spherical_harmonics.basis_inv
+    if isinstance(signal, 'Signal'):
+        data = signal.time
+    elif isinstance(signal, 'TimeData'):
+        data = signal.time
+    else:
+        data = signal.freq
 
     if axis == 'auto':
         axis = np.where(np.array(signal.cshape) == Y_inv.shape[1])[0]
@@ -49,7 +55,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
                          "the number of spherical harmonics basis functions.")
 
     # get data from Signal, TimeData or FrequencyData
-    data_nm = np.tensordot(Y_inv, signal.time, [1, axis])
+    data_nm = np.tensordot(Y_inv, data, [1, axis])
 
     if len(data_nm.shape) < 3:
         data_nm = data_nm[np.newaxis, ...]
