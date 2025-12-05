@@ -151,15 +151,13 @@ def test_spherical_colorbar(function, colorbar):
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
 
-    if function.__name__ in ["balloon", "contour_map", "pcolor_sphere",
-                             "balloon_wireframe", "contour", "pcolor_map"]:
-        out = function(coords, data, colorbar=colorbar)
-        if colorbar:
-            assert isinstance(out[2], mpl.colorbar.Colorbar)
-            assert isinstance(out[0], list)
-        if not colorbar:
-            assert out[2] is None
-            assert isinstance(out[0], plt.Axes)
+    out = function(coords, data, colorbar=colorbar)
+    if colorbar:
+        assert isinstance(out[2], mpl.colorbar.Colorbar)
+        assert isinstance(out[0], list)
+    if not colorbar:
+        assert out[2] is None
+        assert isinstance(out[0], plt.Axes)
 
     # do plotting
     filename = f'{function.__name__}_colorbar_{colorbar}'
@@ -347,9 +345,8 @@ def test_data_plots_projection_input_and_return(function, projection):
     ax = plt.axes(projection=projection)
 
     ax_out = function(coords, data, ax=ax)[0]
-    if function.__name__ in ['balloon', 'contour_map', 'pcolor_sphere',
-                             'balloon_wireframe', 'contour', 'pcolor_map']:
-        ax_out = ax_out[0]
+    ax_out = ax_out[0]
+
     # check if the returned axis has the correct projection
     assert ax_out.name == projection
 
@@ -358,14 +355,12 @@ def test_data_plots_projection_input_and_return(function, projection):
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=plt.axes(projection='polar'))
 
-    if function.__name__ in ['balloon', 'contour_map', 'pcolor_sphere',
-                             'balloon_wireframe', 'contour']:
-        match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
-                          " 'rectilinear' projection")
-        with pytest.raises(ValueError, match=match):
-            function(coords, data, ax=[
-                plt.axes(projection=projection),
-                plt.axes(projection='3d')])
+    match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
+                        " 'rectilinear' projection")
+    with pytest.raises(ValueError, match=match):
+        function(coords, data, ax=[
+            plt.axes(projection=projection),
+            plt.axes(projection='3d')])
 
 @pytest.mark.parametrize('function', [
     (sp.plot.scatter),
@@ -419,10 +414,10 @@ def test_cmap_phase_twilight():
 @pytest.mark.parametrize(
         ("function"),
         [(sp.plot.balloon),
-         (sp.plot.contour_map),
-         (sp.plot.pcolor_sphere),
          (sp.plot.balloon_wireframe),
          (sp.plot.contour),
+         (sp.plot.contour_map),
+         (sp.plot.pcolor_sphere),
          (sp.plot.pcolor_map)],
 )
 @pytest.mark.parametrize(
@@ -441,10 +436,10 @@ def test_ax_parameter_errors(function, ax, equal_area_sampling):
 @pytest.mark.parametrize(
         ("function"),
         [(sp.plot.balloon),
-         (sp.plot.contour_map),
-         (sp.plot.pcolor_sphere),
          (sp.plot.balloon_wireframe),
          (sp.plot.contour),
+         (sp.plot.contour_map),
+         (sp.plot.pcolor_sphere),
          (sp.plot.pcolor_map)],
 )
 def test_colorbar_ax_error(function, equal_area_sampling):
@@ -460,10 +455,10 @@ def test_colorbar_ax_error(function, equal_area_sampling):
 @pytest.mark.parametrize(
         ('function', 'projection'),
         [(sp.plot.balloon, '3d'),
-         (sp.plot.contour_map, 'mollweide'),
-         (sp.plot.pcolor_sphere, '3d'),
          (sp.plot.balloon_wireframe, '3d'),
          (sp.plot.contour, 'rectilinear'),
+         (sp.plot.contour_map, 'mollweide'),
+         (sp.plot.pcolor_sphere, '3d'),
          (sp.plot.pcolor_map, 'mollweide')],
 )
 @pytest.mark.parametrize(
