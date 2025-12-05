@@ -148,13 +148,13 @@ class SamplingSphere(pf.Coordinates):
         --------
         Create a SamplingSphere object
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_cartesian(0, 0, 1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere.from_cartesian(0, 0, 1)
 
         or the same using
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere(0, 0, 1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere(0, 0, 1)
         """
         return cls(
             x, y, z, weights=weights, comment=comment, n_max=n_max,
@@ -212,8 +212,8 @@ class SamplingSphere(pf.Coordinates):
         --------
         Create a SamplingSphere object
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_elevation(0, 0, 1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere.from_spherical_elevation(0, 0, 1)
         """
 
         x, y, z = sph2cart(
@@ -274,8 +274,8 @@ class SamplingSphere(pf.Coordinates):
         --------
         Create a SamplingSphere object
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_colatitude(0, 0, 1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere.from_spherical_colatitude(0, 0, 1)
         """
 
         x, y, z = sph2cart(azimuth, colatitude, radius)
@@ -334,8 +334,8 @@ class SamplingSphere(pf.Coordinates):
         --------
         Create a SamplingSphere object
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_side(0, 0, 1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere.from_spherical_side(0, 0, 1)
         """
 
         x, z, y = sph2cart(
@@ -394,8 +394,8 @@ class SamplingSphere(pf.Coordinates):
         --------
         Create a SamplingSphere object
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_spherical_front(0, 0, 1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere.from_spherical_front(0, 0, 1)
         """
 
         y, z, x = sph2cart(frontal, upper, radius)
@@ -453,8 +453,8 @@ class SamplingSphere(pf.Coordinates):
         --------
         Create a SamplingSphere object
 
-        >>> import pyfar as pf
-        >>> sampling = pf.SamplingSphere.from_cylindrical(0, 0, 1, sh_order=1)
+        >>> import spharpy as sy
+        >>> sampling = sy.SamplingSphere.from_cylindrical(0, 0, 1, sh_order=1)
         """
 
         x, y, z = cyl2cart(azimuth, z, rho)
