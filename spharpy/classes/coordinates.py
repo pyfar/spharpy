@@ -126,7 +126,7 @@ class SamplingSphere(pf.Coordinates):
             smaller than the specified tolerance. The default is ``1e-10``.
         """
 
-        if type(coordinates) != pf.Coordinates:
+        if type(coordinates) is not pf.Coordinates:
             raise TypeError('coordinates must be a pyfar Coordinates object')
 
         # make sure mutable data is copied

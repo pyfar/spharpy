@@ -17,14 +17,14 @@ def test_sampling_sphere_init_value():
 
 
 def test_sampling_sphere_from_coordinates():
-    """Test converting Coordinates to SamplingSphere"""
+    """Test converting Coordinates to SamplingSphere."""
 
     coordinates = Coordinates([1, 0, -1, 0], [0, 1, 0, -1], 0,
                               weights=[np.pi, np.pi, np.pi, np.pi])
     sampling_sphere = SamplingSphere.from_coordinates(coordinates)
 
     # check data in sampling_sphere
-    assert type(sampling_sphere) == SamplingSphere
+    assert type(sampling_sphere) is SamplingSphere
     npt.assert_equal(sampling_sphere.cartesian, coordinates.cartesian)
     npt.assert_equal(sampling_sphere.weights, coordinates.weights)
     assert sampling_sphere.n_max is None
