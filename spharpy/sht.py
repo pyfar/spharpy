@@ -1,10 +1,9 @@
 import numpy as np
 from pyfar import Signal
 from . import SphericalHarmonics
-from audio import (
-    SphericalHarmonicSignal,
-    SphericalHarmonicTimeData,
-    SphericalHarmonicFrequencyData)
+from . import SphericalHarmonicSignal
+from . import SphericalHarmonicTimeData
+from . import SphericalHarmonicFrequencyData
 
 
 def sht(signal, spherical_harmonics, axis='auto'):
