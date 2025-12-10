@@ -10,6 +10,19 @@ from spharpy import SphericalHarmonicFrequencyData
 from spharpy import samplings
 
 
+def test_sht_wrong_input_signal():
+    input_signal = np.zeros((3, 12, 2))
+    n_max = 2
+    coords = pf.Coordinates.from_spherical_elevation(np.zeros((8)),
+                                                     np.zeros((8)),
+                                                     np.ones((8)))
+    sh = SphericalHarmonics(n_max=n_max, coordinates=coords)
+    with raises(ValueError, match="Input signal must be a "
+                "SphericalHarmonicSignal, SphericalHarmonicTimeData, or "
+                f"SphericalHarmonicFrequencyData but is {type(input_signal)}"):
+        _ = sht(signal=input_signal, spherical_harmonics=sh)
+
+
 def test_sht_assert_num_channels():
     "test assert match of number of channels and number of sampling positions"
     n_max = 3

@@ -1,5 +1,5 @@
 import numpy as np
-from pyfar import Signal
+from pyfar import Signal, TimeData, FrequencyData
 from . import SphericalHarmonics
 from . import SphericalHarmonicSignal
 from . import SphericalHarmonicTimeData
@@ -34,7 +34,6 @@ def sht(signal, spherical_harmonics, axis='auto'):
             Acoustics, Speech, and Signal Processing (ICASSP), Montreal,
             Canada, May 2004, p. 45-48, doi: 10.1109/ICASSP.2004.1326759.
     """
-    Y_inv = spherical_harmonics.basis_inv
     if isinstance(signal, 'Signal'):
         data = signal.time
     elif isinstance(signal, 'TimeData'):
@@ -42,8 +41,13 @@ def sht(signal, spherical_harmonics, axis='auto'):
     elif isinstance(signal, 'FrequencyData'):
         data = signal.freq
     else:
-        raise ValueError("Input signal has to be Signal, TimeData, or "
+        raise ValueError("Input signal must be a Signal, TimeData, or "
                          f"FrequencyData but is {type(signal)}")
+
+    if not isinstance(spherical_harmonics, "SphericalHarmonics"):
+        raise ValueError("spherical_harmonics must be SphericalHarmonics "
+                         f"but is {type(spherical_harmonics)}")
+    Y_inv = spherical_harmonics.basis_inv
 
     if axis == 'auto':
         axis = np.where(np.array(signal.cshape) == Y_inv.shape[1])[0]
@@ -143,9 +147,35 @@ def isht(sh_signal, coordinates):
         inverse_method="pseudo_inverse",
         condon_shortley=sh_signal.condon_shortley)
 
+    if isinstance(sh_signal, 'SphericalHarmonicSignal'):
+        data = sh_signal.time
+    elif isinstance(sh_signal, 'SphericalHarmonicTimeData'):
+        data = sh_signal.time
+    elif isinstance(sh_signal, 'SphericalHarmonicFrequencyData'):
+        data = sh_signal.freq
+    else:
+        raise ValueError("Input signal has to be SphericalHarmonicSignal, "
+                         "SphericalHarmonicTimeData, or "
+                         "SphericalHarmonicFrequencyData "
+                         f"but is {type(sh_signal)}")
+
     # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
 
+    if isinstance(sh_signal, 'SphericalHarmonicSignal'):
+        signal = Signal(data, sh_signal.sampling_rate,
+                        fft_norm=sh_signal.fft_norm,
+                        comment=sh_signal.comment,
+                        is_complex=sh_signal.complex)
+    elif isinstance(sh_signal, 'SphericalHarmonicTimeData'):
+        signal = TimeData(data=data, times=sh_signal.times,
+                          comment=sh_signal.comment,
+                          is_complex=sh_signal.complex)
+    elif isinstance(sh_signal, 'SphericalHarmonicFrequencyData'):
+        signal = sh_signal.freq
+    else:
+        raise ValueError("Input signal has to be Signal, TimeData, or "
+                         f"FrequencyData but is {type(signal)}")
     return Signal(data, sh_signal.sampling_rate,
                   fft_norm=sh_signal.fft_norm,
                   comment=sh_signal.comment,
