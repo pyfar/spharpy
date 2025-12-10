@@ -100,12 +100,54 @@ class SamplingSphere(pf.Coordinates):
         self._quadrature = None
 
     @classmethod
+    def from_coordinates(
+            cls, coordinates, n_max=None, radius_tolerance: float = 1e-6,
+            quadrature_tolerance: float = 1e-10):
+        r"""
+        Convert Coordinates class object to SamplingSphere class object.
+
+        Parameters
+        ----------
+        coordinates : pyfar.Coordinates
+            Coordinates to be converted.
+        n_max : int, optional
+            Maximum spherical harmonic order of the sampling grid.
+            The default is ``None``.
+        radius_tolerance : float, optional
+            All points that are stored in a SamplingSphere must have the same
+            radius and an error is raised if the maximum deviation from the
+            mean radius exceeds this tolerance. The default of ``1e-6`` meter
+            is intended to allow for some numerical inaccuracy.
+        quadrature_tolerance : float, optional
+            Tolerance for testing whether the provided sampling grid is
+            a valid quadrature. The sampling is considered a valid quadrature
+            if the maximum absolute deviation of the inner product of the
+            weighted spherical harmonics matrix from the identity matrix is
+            smaller than the specified tolerance. The default is ``1e-10``.
+        """
+
+        if type(coordinates) is not pf.Coordinates:
+            raise TypeError('coordinates must be a pyfar Coordinates object')
+
+        # make sure mutable data is copied
+        if coordinates.weights is None:
+            weights = None
+        else:
+            weights = coordinates.weights.copy()
+
+        return cls(
+            coordinates.x, coordinates.y, coordinates.z,
+            weights=weights, comment=coordinates.comment,
+            n_max=n_max, radius_tolerance=radius_tolerance,
+            quadrature_tolerance=quadrature_tolerance)
+
+    @classmethod
     def from_cartesian(
             cls, x, y, z, n_max=None, weights: np.array = None,
             comment: str = "", radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
         r"""
-        Create a Coordinates class object from a set of points on a sphere.
+        Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
@@ -151,7 +193,7 @@ class SamplingSphere(pf.Coordinates):
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere.from_cartesian(0, 0, 1)
 
-        Or the using init
+        or the same using
 
         >>> import pyfar as pf
         >>> sampling = pf.SamplingSphere(0, 0, 1)
@@ -167,7 +209,8 @@ class SamplingSphere(pf.Coordinates):
             weights: np.array = None, comment: str = "",
             radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
-        r"""Create a Coordinates class object from a set of points on a sphere.
+        r"""
+        Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
@@ -228,7 +271,8 @@ class SamplingSphere(pf.Coordinates):
             weights: np.array = None, comment: str = "",
             radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
-        r"""Create a Coordinates class object from a set of points on a sphere.
+        r"""
+        Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
@@ -288,7 +332,8 @@ class SamplingSphere(pf.Coordinates):
             weights: np.array = None, comment: str = "",
             radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
-        r"""Create a Coordinates class object from a set of points on a sphere.
+        r"""
+        Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
@@ -347,7 +392,8 @@ class SamplingSphere(pf.Coordinates):
             cls, frontal, upper, radius, n_max=None, weights: np.array = None,
             comment: str = "", radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
-        r"""Create a Coordinates class object from a set of points on a sphere.
+        r"""
+        Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
@@ -405,7 +451,8 @@ class SamplingSphere(pf.Coordinates):
             cls, azimuth, z, rho, n_max=None, weights: np.array = None,
             comment: str = "", radius_tolerance: float = 1e-6,
             quadrature_tolerance: float = 1e-10):
-        r"""Create a Coordinates class object from a set of points on a sphere.
+        r"""
+        Create a SamplingSphere class object from a set of points on a sphere.
 
         See :py:mod:`pyfar.classes.coordinates` for  more information.
 
