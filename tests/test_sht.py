@@ -24,23 +24,23 @@ def test_sht_input_parameter():
 
 def test_sht_output_parameter():
     n_max = 1
-    sampling = samplings.equiangular(n_max=n_max)                                            
+    sampling = samplings.equiangular(n_max=n_max)                        
     sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
 
-    # test signal
-    signal = pf.Signal(data=np.zeros((4, 512)), sampling_rate=48000)
+    # test Signal
+    signal = pf.Signal(data=np.zeros((1, 16, 4)), sampling_rate=48000)
     test = sht(signal=signal, spherical_harmonics=sh)
     assert isinstance(test, SphericalHarmonicSignal)
 
     # test TimeData
-    signal = pf.TimeData(data=np.zeros(1, 4, 8),
-                         times=[1, 2, 3, 4, 5, 6, 7, 8])
+    signal = pf.TimeData(data=np.zeros((1, 16, 4)),
+                         times=[1, 2, 3, 4])
     test = sht(signal=signal, spherical_harmonics=sh)
-    
     assert isinstance(test, SphericalHarmonicTimeData)
 
     # test FrequencyData
-    signal = pf.FrequencyData(data=np.zeros(4, 512), frequencies=np.range(512))
+    signal = pf.FrequencyData(data=np.zeros((1, 16, 4)),
+                              frequencies=[1, 2, 3, 4])
     test = sht(signal=signal, spherical_harmonics=sh)
     assert isinstance(test, SphericalHarmonicFrequencyData)
 
@@ -69,7 +69,7 @@ def test_sht_auto_axis():
                                   "harmonics basis functions"):
         _ = sht(signal, sh, axis='auto')
 
-    signal = pf.Signal(data=np.zeros((8, 8, 32)), sampling_rate=48000)
+    signal = pf.Signal(data=np.zeros((64, 64, 64)), sampling_rate=48000)
     with raises(ValueError, match="To many axis match the number of spherical "
                                   "harmonics basis functions"):
         _ = sht(signal, sh, axis='auto')

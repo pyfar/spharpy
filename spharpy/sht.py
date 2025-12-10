@@ -36,10 +36,13 @@ def sht(signal, spherical_harmonics, axis='auto'):
     """
     if isinstance(signal, Signal):
         data = signal.time
+        target_n = signal.n_samples
     elif isinstance(signal, TimeData):
         data = signal.time
+        target_n = signal.n_samples
     elif isinstance(signal, FrequencyData):
         data = signal.freq
+        target_n = signal.n_bins
     else:
         raise ValueError("Input signal must be a Signal, TimeData, or "
                          f"FrequencyData but is {type(signal)}")
@@ -71,7 +74,6 @@ def sht(signal, spherical_harmonics, axis='auto'):
 
     # ensure that number of SH channels is at -2
     target_m = (spherical_harmonics.n_max+1)**2
-    target_n = signal.n_samples
 
     # find corresponding axes
     axis_m = next(i for i, dim in enumerate(data_nm.shape) if dim == target_m)
@@ -104,7 +106,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
                     normalization=spherical_harmonics.normalization,
                     channel_convention=spherical_harmonics.channel_convention,
                     condon_shortley=spherical_harmonics.condon_shortley,
-                    comment=signal.complex,
+                    comment=signal.comment,
                     is_complex=False)
     elif isinstance(signal, FrequencyData):
         sh_signal = SphericalHarmonicFrequencyData(
@@ -163,20 +165,21 @@ def isht(sh_signal, coordinates):
     data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
 
     if isinstance(sh_signal, SphericalHarmonicSignal):
-        signal = Signal(data, sh_signal.sampling_rate,
+        signal = Signal(data,
+                        sh_signal.sampling_rate,
                         fft_norm=sh_signal.fft_norm,
                         comment=sh_signal.comment,
                         is_complex=sh_signal.complex)
     elif isinstance(sh_signal, SphericalHarmonicTimeData):
-        signal = TimeData(data=data, times=sh_signal.times,
+        signal = TimeData(data=data,
+                          times=sh_signal.times,
                           comment=sh_signal.comment,
                           is_complex=sh_signal.complex)
     elif isinstance(sh_signal, SphericalHarmonicFrequencyData):
-        signal = sh_signal.freq
+        signal = FrequencyData(data=data,
+                               frequencies=sh_signal.frequencies,
+                               comment=sh_signal.comment)
     else:
         raise ValueError("Input signal has to be Signal, TimeData, or "
                          f"FrequencyData but is {type(signal)}")
-    return Signal(data, sh_signal.sampling_rate,
-                  fft_norm=sh_signal.fft_norm,
-                  comment=sh_signal.comment,
-                  is_complex=sh_signal.complex)
+    return signal
