@@ -24,7 +24,7 @@ def test_sht_input_parameter():
 
 def test_sht_output_parameter():
     n_max = 1
-    sampling = samplings.equiangular(n_max=n_max)                        
+    sampling = samplings.equiangular(n_max=n_max)             
     sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
 
     # test Signal
@@ -75,17 +75,21 @@ def test_sht_auto_axis():
         _ = sht(signal, sh, axis='auto')
 
 
-@mark.parametrize("n_max", [3, 12, 20])
+@mark.parametrize("n_max", [1, 3, 12, 20])
 @mark.parametrize("basis_type", ["real", "complex"])
 @mark.parametrize("normalization", ["N3D", "SN3D"])
 @mark.parametrize("condon_shortley", [True, False])
 def test_back_and_forth(n_max, basis_type, normalization, condon_shortley):
 
-    sampling = samplings.equiangular(n_max=n_max)
+    sampling = samplings.gaussian(n_max=n_max)
+    # create unit amplitude SH coefficients
+    data = np.zeros((1, (n_max+1) ** 2, 16), dtype=complex)
+    if normalization == 'N3D':
+        data[0, 0, :] = np.sqrt(4 * np.pi)
+    else:
+        data[0, 0, :] = 1.0
 
-    data = np.ones((1, (n_max+1) ** 2, 16), dtype=complex)
     is_complex = True
-
     if basis_type == 'real':
         data = np.real(data)
         is_complex = False
@@ -98,7 +102,6 @@ def test_back_and_forth(n_max, basis_type, normalization, condon_shortley):
                                    normalization=normalization,
                                    sampling_rate=48000,
                                    is_complex=is_complex)
-
     a = isht(a_nm, sampling)
     sh = SphericalHarmonics(n_max=n_max,
                             coordinates=sampling,
@@ -106,5 +109,4 @@ def test_back_and_forth(n_max, basis_type, normalization, condon_shortley):
                             normalization=normalization,
                             condon_shortley=condon_shortley)
     a_eval_nm = sht(a, sh)
-
-    npt.assert_allclose(a_nm.time, a_eval_nm.time, rtol=1e-8)
+    npt.assert_allclose(a_nm.time, a_eval_nm.time, rtol=1e-14, atol=1e-14)
