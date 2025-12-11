@@ -414,6 +414,23 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)
 
+    @classmethod
+    def from_spherical_harmonics_definition(
+            cls, data, sampling_rate, sh_definition, domain='time',
+            fft_norm='none', comment="", is_complex=False):
+        r"""
+            Create a SphericalHarmonicsSignal class object from
+            SphericalHarmonicsDefinition object, data, and sampling
+            rate.
+        """
+        return cls(data, sampling_rate,
+                   basis_type=sh_definition.basis_type,
+                   normalization=sh_definition.normalization,
+                   channel_convention=sh_definition.channel_convention,
+                   condon_shortley=sh_definition.condon_shortley,
+                   domain=domain, fft_norm=fft_norm,
+                   comment=comment, is_complex=is_complex)
+
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""

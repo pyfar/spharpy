@@ -1,5 +1,6 @@
 import pytest
 from spharpy.classes import SphericalHarmonicSignal
+from spharpy.classes import SphericalHarmonicDefinition
 import numpy as np
 import re
 
@@ -16,6 +17,26 @@ def test_spherical_harmonic_signal_init():
                                      channel_convention='ACN',
                                      normalization='N3D',
                                      condon_shortley=False)
+    assert isinstance(signal, SphericalHarmonicSignal)
+
+
+def test_sh_signal_from_sh_definition():
+    """Test init SphericalHarmonicsSignal."""
+
+    shd = SphericalHarmonicDefinition(
+        n_max=0, basis_type="real",
+        channel_convention="ACN",
+        normalization="N3D",
+        condon_shortley=False)
+
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+
+    signal = SphericalHarmonicSignal.from_spherical_harmonics_definition(
+        data=data, sampling_rate=44100, sh_definition=shd)
+
     assert isinstance(signal, SphericalHarmonicSignal)
 
 
