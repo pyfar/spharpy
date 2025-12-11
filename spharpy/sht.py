@@ -175,11 +175,8 @@ def isht(sh_signal, coordinates):
                           times=sh_signal.times,
                           comment=sh_signal.comment,
                           is_complex=sh_signal.complex)
-    elif isinstance(sh_signal, SphericalHarmonicFrequencyData):
+    else:
         signal = FrequencyData(data=data,
                                frequencies=sh_signal.frequencies,
                                comment=sh_signal.comment)
-    else:
-        raise ValueError("Input signal has to be Signal, TimeData, or "
-                         f"FrequencyData but is {type(signal)}")
     return signal
