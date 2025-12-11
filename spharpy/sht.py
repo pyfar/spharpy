@@ -58,7 +58,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
             raise ValueError("No axes matches the number of spherical "
                              "harmonics basis functions")
         if len(axis) > 1:
-            raise ValueError("To many axis match the number of spherical "
+            raise ValueError("Too many axis match the number of spherical "
                              "harmonics basis functions")
         axis = axis[0]
 
@@ -162,7 +162,7 @@ def isht(sh_signal, coordinates):
                          f"but is {type(sh_signal)}")
 
     # perform inverse transform
-    data = np.tensordot(spherical_harmonics.basis, sh_signal.time, [1, -2])
+    data = np.tensordot(spherical_harmonics.basis, data, [1, -2])
 
     if isinstance(sh_signal, SphericalHarmonicSignal):
         signal = Signal(data,
