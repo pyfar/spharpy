@@ -3,7 +3,7 @@ Documentation for the SphericalHarmonics class, will be added in an other PR.
 """
 import numpy as np
 import pyfar as pf
-import spharpy as sy
+import spharpy
 from abc import ABC, abstractmethod
 
 
@@ -461,9 +461,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         Compute the basis matrix for the SphericalHarmonics class.
         """
         if self.basis_type == "complex":
-            function = sy.spherical.spherical_harmonic_basis
+            function = spharpy.spherical.spherical_harmonic_basis
         elif self.basis_type == "real":
-            function = sy.spherical.spherical_harmonic_basis_real
+            function = spharpy.spherical.spherical_harmonic_basis_real
         else:
             raise ValueError(
                 "Invalid basis type, should be either 'complex' or 'real'")
@@ -484,9 +484,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
             f"channel convention '{self.channel_convention}'.")
 
         if self.basis_type == "complex":
-            function = sy.spherical.spherical_harmonic_basis_gradient
+            function = spharpy.spherical.spherical_harmonic_basis_gradient
         elif self.basis_type == "real":
-            function = sy.spherical.spherical_harmonic_basis_gradient_real
+           function = spharpy.spherical.spherical_harmonic_basis_gradient_real
         else:
             raise ValueError(
                 "Invalid basis type, should be either 'complex' or 'real'")

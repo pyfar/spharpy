@@ -5,6 +5,7 @@ import pytest
 import numpy as np
 from spharpy import SphericalHarmonics
 from spharpy.classes.sh import SphericalHarmonicDefinition
+import pyfar as pf
 
 
 def test_spherical_harmonics_definition_init():
