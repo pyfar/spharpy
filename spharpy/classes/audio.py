@@ -1,3 +1,7 @@
+"""
+Documentation for all SphericalHarmonics Audio classes will be provided in
+another PR.
+"""
 from pyfar import Signal, TimeData, FrequencyData
 from pyfar.classes.audio import _Audio
 from spharpy.spherical import renormalize, change_channel_convention
