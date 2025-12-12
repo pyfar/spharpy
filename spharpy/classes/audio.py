@@ -21,11 +21,13 @@ def _assert_valid_number_of_sh_channels(shape):
     ----------
     shape : tuple, int
         Shape of the data array.
+
     Raises
     ------
     ValueError
         Raised if the number of spherical harmonic channels does not match
         (n_max + 1)^2 for an integer n_max.
+
     """
 
     sh_channels = shape[-2]
@@ -109,9 +111,9 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
     This class extends the pyfar Audio class with all methods and
     properties required for spherical harmonics data and are common to the
-    three sub-classes :py:func:`SphericalHarmonicsTimeData`,
-    :py:func:`SphericalHarmonicsFrequencyData`, and
-    :py:func:`SphericalHarmonicsSignal`.
+    three sub-classes :py:class:`SphericalHarmonicsTimeData`,
+    :py:class:`SphericalHarmonicsFrequencyData`, and
+    :py:class:`SphericalHarmonicsSignal`.
 
     Objects of this class contain spherical harmonics coefficients which are
     directly convertible between channel conventions ACN and FUMA, as
@@ -157,14 +159,14 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         """Get or set the spherical harmonic order."""
         return int(np.sqrt(self.cshape[-1])-1)
 
-    @property
-    def basis_type(self):
-        """Get or set the type of spherical harmonic basis."""
-        return _SphericalHarmonicBase.basis_type.fget(self)
-
-    @basis_type.setter
+    @_SphericalHarmonicBase.basis_type.setter
     def basis_type(self, value):
         """Get or set the type of spherical harmonic basis."""
+
+        # Make sure that the basis type can only be set during initialization.
+        # Changing it afterwards requires implementing the conversion between
+        # real and complex-valued coefficients, which is possible but not yet
+        # implemented.
         if self._basis_type is not None:
             raise AttributeError("Changing the basis_type is not yet "
                                  "supported.")
@@ -183,10 +185,13 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     Parameters
     ----------
     data : array, double
-        Raw data in the time domain. The data should have at least 3
-        dimensions, according to the 'C' memory layout, e.g. data of
+        Raw data in the time domain. The data should have at least 2
+        dimensions, with the last dimension representing the time domain
+        samples, the second to last the spherical harmonic coefficients,
+        and any leading dimensions representing optional channels. Accordingly,
+        the data should follow the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples each. The data can be ``int``,
+        coefficients with 1024 samples each. When The data can be ``int``,
         ``float`` or ``complex``. Data of type ``int`` is converted to
         ``float``.
     times : array, double
@@ -263,9 +268,12 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     ----------
     data : array, double
         Raw data in the frequency domain. The data should have at least
-        3 dimensions, according to the 'C' memory layout, e.g. data of
+        2 dimensions, with the last dimension representing the frequency domain
+        bins, the second to last the spherical harmonic coefficients,
+        and any leading dimensions representing optional channels. Accordingly,
+        the data should follow the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 frequency bins each.. Data can be ``int``,
+        coefficients with 1024 frequency bins each. Data can be ``int``,
         ``float`` or ``complex``. Data of type ``int`` is converted to
         ``float``.
     frequencies : array, double
@@ -337,10 +345,13 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     ----------
     data : ndarray, double
         Raw data of the spherical harmonics signal in the time or
-        frequency domain. The data should have at least 3 dimensions,
-        according to the 'C' memory layout, e.g. data of
-        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples or frequency
+        frequency domain. The data should have at least 2 dimensions, with
+        the last dimension representing the time domain
+        samples/frequency domain bins, the second to last the spherical
+        harmonic coefficients, and any leading dimensions representing
+        optional channels. Accordingly, the data should follow the 'C'
+        memory layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel
+        with 4 spherical harmonic coefficients with 1024 samples or frequency
         bins each. Time data is converted to ``float``. Frequency is
         converted to ``complex`` and must be provided as single
         sided spectra, i.e., for all frequencies between 0 Hz and
@@ -440,7 +451,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                                                  self.channel_convention)
 
     @freq_raw.setter
-    def freq_raw(self, value, raw):
+    def freq_raw(self, value):
         """Return or set the frequency domain data without normalization."""
         value = _atleast_3d_first_dimension(value)
         _assert_valid_number_of_sh_channels(value.shape)

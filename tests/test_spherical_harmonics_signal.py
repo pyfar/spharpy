@@ -98,8 +98,8 @@ def test_init_wrong_basis_type():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
     with pytest.raises(ValueError,
-                       match="Invalid basis type, only "
-                             "'complex' and 'real' are supported"):
+                    match="Invalid basis type, only "
+                          "'complex' and 'real' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='invalid_basis_type',
                                 channel_convention='ACN',

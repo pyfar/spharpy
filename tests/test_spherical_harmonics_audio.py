@@ -1,4 +1,3 @@
-import pytest
 from spharpy.classes.audio import (
     SphericalHarmonicTimeData,
     SphericalHarmonicFrequencyData,
