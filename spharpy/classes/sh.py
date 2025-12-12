@@ -331,13 +331,16 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         The default is ``'ACN'``.
         (FuMa is only supported up to 3rd order)
-    inverse_method : {'auto', 'quadrature', 'pseudo_inverse'}, default='auto'
-        Method for computing the inverse transform:
+    inverse_method : {'auto', 'quadrature', 'pseudo_inverse', `None`}
+        Method for computing the inverse transform (by default 'auto'):
 
-        - ‘auto’: use ‘quadrature’ when applicable, otherwise ‘pseudo_inverse’.
-        - ‘quadrature’: compute the inverse via numerical quadrature.
-        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse
+        - 'auto': If coordinates are a spharpy.SamplingSphere, use 'quadrature'
+          when applicable, otherwise 'pseudo_inverse'. If coordinates are a
+            pyfar.Coordinates object, default to `None`.
+        - 'quadrature': compute the inverse via numerical quadrature.
+        - 'pseudo_inverse': compute the inverse via a pseudo-inverse
           approximation.
+        - `None`: do not compute the inverse basis matrix.
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
         Condon-Shortley is included, if ``False`` it is not
@@ -407,6 +410,10 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
             return
 
         if type(self.coordinates) is pf.Coordinates:
+            if value == "auto":
+                self.inverse_method = None
+                return
+
             raise ValueError(
                 "The inverse method can only be set if the coordinates "
                 "are a provided as SamplingSphere.")
