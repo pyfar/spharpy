@@ -178,6 +178,17 @@ def test_sphharm_init_invalid_coordinates():
                        "object or spharpy.SamplingSphere object"):
         SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
 
+def test_sphharm_init_invalid_inverse_method(icosahedron_sampling):
+    """Test error handling for invalid inverse_method values."""
+    with pytest.raises(ValueError, match="Invalid inverse_method."):
+        SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling,
+                           inverse_method='invalid')
+
+    coords = pf.Coordinates(1, 0, 0)
+    with pytest.raises(ValueError, match="method can only be set if"):
+        SphericalHarmonics(n_max=0, coordinates=coords, inverse_method='auto')
+
+
 def test_sphharm_init_invalid_n_max(icosahedron_sampling):
     """Test error handling for invalid n_max values."""
     with pytest.raises(ValueError, match='n_max must be a positive integer'):

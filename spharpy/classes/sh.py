@@ -399,36 +399,41 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @inverse_method.setter
     def inverse_method(self, value):
         """Get or set the inverse transform type."""
+        if value == self._inverse_method:
+            return
+
         if value is None:
             self._inverse_method = value
             return
 
-        # If the user passes "auto", require SamplingSphere and resolve it
-        if isinstance(value, str) and value == "auto":
-            if not isinstance(self.coordinates, sy.SamplingSphere):
-                raise ValueError(
-                    "'auto' is only valid if `coordinates` is "
-                    "a SamplingSphere.")
-            value = (
-                "quadrature"
-                if self.coordinates.quadrature
-                else "pseudo_inverse"
-            )
-
-        elif value == "quadrature":
-            if not isinstance(self.coordinates, sy.SamplingSphere) or \
-                not self.coordinates.quadrature:
-                raise ValueError("'quadrature' requires `coordinates` to be " \
-                    "a SamplingSphere and coordinates.quadrature to be True.")
-
-        elif value != "pseudo_inverse":
+        if type(self.coordinates) is pf.Coordinates:
             raise ValueError(
-                "Invalid inverse_method. Allowed: 'pseudo_inverse', "
-                "'quadrature', or 'auto'.")
+                "The inverse method can only be set if the coordinates "
+                "are a provided as SamplingSphere.")
 
-        if value != self._inverse_method:
-            self._reset_compute_attributes()
-            self._inverse_method = value
+        elif type(self.coordinates) is spharpy.SamplingSphere:
+            if value == "auto":
+
+                value = (
+                    "quadrature"
+                    if self.coordinates.quadrature
+                    else "pseudo_inverse"
+                )
+
+            elif value == "quadrature":
+                if self.coordinates.quadrature is False:
+                    raise ValueError(
+                        "'quadrature' requires `coordinates` to be a '"
+                        "SamplingSphere and coordinates.quadrature to be "
+                        "True.")
+
+            elif value != "pseudo_inverse":
+                raise ValueError(
+                    "Invalid inverse_method. Allowed: 'pseudo_inverse', "
+                    "'quadrature', or 'auto'.")
+
+        self._reset_compute_attributes()
+        self._inverse_method = value
 
     @property
     def basis(self):
