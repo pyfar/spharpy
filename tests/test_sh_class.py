@@ -3,7 +3,7 @@ Tests for spherical harmonic class.
 """
 import pytest
 import numpy as np
-from spharpy import SphericalHarmonics
+from spharpy import SphericalHarmonics, SamplingSphere
 from spharpy.classes.sh import SphericalHarmonicDefinition
 import pyfar as pf
 
@@ -165,12 +165,20 @@ def test_setter_basis_type():
         sph_harm.basis_type = "invalid"  # Invalid value
 
 
-def test_sphharm_init(icosahedron_sampling):
+@pytest.mark.parametrize(
+        ("points", "method"), [
+            (SamplingSphere([1, -1], [0, 0], [0, 0]), 'pseudo_inverse'),
+            (pf.Coordinates(1, 0, 0), None),
+        ],
+    )
+def test_sphharm_init(points, method):
     """Test default behaviour after initialization."""
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
-    assert sph_harm.n_max == 2
-    assert np.all(sph_harm.coordinates == icosahedron_sampling)
-    assert sph_harm.inverse_method == 'quadrature'
+    n_max = 0
+    sph_harm = SphericalHarmonics(n_max=n_max, coordinates=points)
+    assert sph_harm.n_max == n_max
+    assert np.all(sph_harm.coordinates == points)
+    assert sph_harm.inverse_method == method
+
 
 def test_sphharm_init_invalid_coordinates():
     """Test error handling for invalid coordinate types."""
