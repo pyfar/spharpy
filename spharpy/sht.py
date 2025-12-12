@@ -11,18 +11,20 @@ def sht(signal, spherical_harmonics, axis='auto'):
 
     Parameters
     ----------
-    signal: Signal, TimeData, or FrequencyData
+    signal : Signal, TimeData, or FrequencyData
         the signal for which the spherical harmonics transform is computed
-    spherical_harmonics: :class:`spharpy.SphericalHarmonics`
+    spherical_harmonics : :class:`spharpy.SphericalHarmonics`
         Spherical harmonics object
-    axis: integer
-        Axis along which the SH transform is computed
+    axis : integer or 'auto'
+        Axis along which the SH transform is computed. If 'auto' the
+        transformation is computed along the axis which matches the number
+        of spherical samples of the spherical_harmonics basis
 
     Returns
     ----------
-    SphericalHarmonicSignal, SphericalHarmonicsTimeData,
-    or SphericalHarmonicsFrequencyData
-
+    sh_signal : SphericalHarmonicSignal, SphericalHarmonicsTimeData,
+               or SphericalHarmonicsFrequencyData
+                signal with spherical harmonics coefficients.
     References
     ----------
 
@@ -36,10 +38,8 @@ def sht(signal, spherical_harmonics, axis='auto'):
     """
     if isinstance(signal, (Signal, TimeData)):
         data = signal.time
-        target_n = signal.n_samples
     elif isinstance(signal, FrequencyData):
         data = signal.freq
-        target_n = signal.n_bins
     else:
         raise ValueError("Input signal must be a Signal, TimeData, or "
                          f"FrequencyData but is {type(signal)}")
@@ -63,26 +63,18 @@ def sht(signal, spherical_harmonics, axis='auto'):
         raise ValueError("Spherical samples of provided axis does not match "
                          "the number of spherical harmonics basis functions.")
 
+    # move spherical samples to -2
+    data = np.moveaxis(data, axis, -2)
+
     # perform transform
     data_nm = np.tensordot(Y_inv, data, [1, axis])
 
+    # move SH channels to -2
+    data_nm = np.moveaxis(data_nm, 0, -2)
+
+    # ensure result has 3 dimensions
     if len(data_nm.shape) < 3:
         data_nm = data_nm[np.newaxis, ...]
-
-    # ensure that number of SH channels is at -2
-    target_m = (spherical_harmonics.n_max+1)**2
-
-    # find corresponding axes
-    axis_m = next(i for i, dim in enumerate(data_nm.shape) if dim == target_m)
-    axis_n = next(i for i, dim in enumerate(data_nm.shape)
-                  if dim == target_n and i != axis_m)
-
-    # create new shape
-    new_axes = [
-        i for i in range(len(data_nm.shape)) if i not in (axis_m, axis_n)
-    ] + [axis_m, axis_n]
-
-    data_nm = data_nm.transpose(*new_axes)
 
     if isinstance(signal, Signal):
         sh_signal = SphericalHarmonicSignal(
@@ -123,12 +115,13 @@ def isht(sh_signal, coordinates):
 
     Parameters
     ----------
-    sh_signal: Signal
-        The spherical harmonics signal for which the inverse spherical
-        harmonics transform is computed
+    sh_signal: SphericalHarmonicsSignal, SphericalHarmonicsTimeData, or
+               SphericalHarmonicsFrequencyData
+               The spherical harmonics signal for which the inverse spherical
+               harmonics transform is computed
     coordinates: :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates
                  <pyfar:classes/pyfar.coordinates>`
-        Coordinates for which the inverse SH transform is computed
+                 Coordinates for which the inverse SH transform is computed
 
     Returns
     ----------
@@ -158,6 +151,9 @@ def isht(sh_signal, coordinates):
 
     # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, data, [1, -2])
+
+    # and ensure that spherical samples are at second to last axis
+    data = np.moveaxis(data, 0, -2)
 
     if isinstance(sh_signal, SphericalHarmonicSignal):
         signal = Signal(data,
