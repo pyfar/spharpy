@@ -58,6 +58,56 @@ def test_sht_assert_num_channels():
         _ = sht(signal, sh, axis=0)
 
 
+def test_isht_input_parameter():
+    n_max = 1
+    data = np.zeros((1, (n_max+1) ** 2, 16))
+    sampling = samplings.gaussian(n_max=n_max)
+    with raises(ValueError,
+                match="Input signal has to be SphericalHarmonicSignal, "
+                      "SphericalHarmonicTimeData, or "
+                      "SphericalHarmonicFrequencyData "
+                      f"but is {type(data)}"):
+        _ = isht(sh_signal=data, coordinates=sampling)
+
+
+def test_isht_output_parameter():
+    n_max = 1
+    data = np.zeros((1, (n_max+1) ** 2, 5))
+    sampling = samplings.gaussian(n_max=n_max)
+
+    # test Signal
+    a_nm = SphericalHarmonicSignal(data,
+                                   basis_type='real',
+                                   channel_convention='ACN',
+                                   condon_shortley=True,
+                                   normalization='N3D',
+                                   sampling_rate=48000)
+    test = isht(sh_signal=a_nm, coordinates=sampling)
+    assert isinstance(test, pf.Signal)
+
+    # test TimeData
+    a_nm = SphericalHarmonicTimeData(data,
+                                     times=[1, 2, 3, 4, 5],
+                                     basis_type='real',
+                                     channel_convention='ACN',
+                                     condon_shortley=True,
+                                     normalization='N3D')
+    test = isht(sh_signal=a_nm, coordinates=sampling)
+    assert isinstance(test, pf.TimeData)
+
+    # test FrequencyData
+    a_nm = SphericalHarmonicFrequencyData(
+        data,
+        frequencies=[1, 2, 3, 4, 5],
+        basis_type='real',
+        channel_convention='ACN',
+        condon_shortley=True,
+        normalization='N3D')
+
+    test = isht(sh_signal=a_nm, coordinates=sampling)
+    assert isinstance(test, pf.FrequencyData)
+
+
 def test_sht_auto_axis():
     "test warning wrong axis"
     n_max = 3
@@ -103,10 +153,12 @@ def test_back_and_forth(n_max, basis_type, normalization, condon_shortley):
                                    sampling_rate=48000,
                                    is_complex=is_complex)
     a = isht(a_nm, sampling)
+    assert a_nm.n_samples == a.n_samples
     sh = SphericalHarmonics(n_max=n_max,
                             coordinates=sampling,
                             basis_type=basis_type,
                             normalization=normalization,
                             condon_shortley=condon_shortley)
     a_eval_nm = sht(a, sh)
+    assert a_eval_nm.n_samples == a.n_samples
     npt.assert_allclose(a_nm.time, a_eval_nm.time, rtol=1e-14, atol=1e-14)

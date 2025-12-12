@@ -34,10 +34,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
             Acoustics, Speech, and Signal Processing (ICASSP), Montreal,
             Canada, May 2004, p. 45-48, doi: 10.1109/ICASSP.2004.1326759.
     """
-    if isinstance(signal, Signal):
-        data = signal.time
-        target_n = signal.n_samples
-    elif isinstance(signal, TimeData):
+    if isinstance(signal, (Signal, TimeData)):
         data = signal.time
         target_n = signal.n_samples
     elif isinstance(signal, FrequencyData):
@@ -137,6 +134,16 @@ def isht(sh_signal, coordinates):
     ----------
     Signal
     """
+    if isinstance(sh_signal, (SphericalHarmonicSignal,
+                              SphericalHarmonicTimeData)):
+        data = sh_signal.time
+    elif isinstance(sh_signal, SphericalHarmonicFrequencyData):
+        data = sh_signal.freq
+    else:
+        raise ValueError("Input signal has to be SphericalHarmonicSignal, "
+                         "SphericalHarmonicTimeData, or "
+                         "SphericalHarmonicFrequencyData "
+                         f"but is {type(sh_signal)}")
 
     # get spherical harmonics basis functions according to sh_signals
     # properties
@@ -148,18 +155,6 @@ def isht(sh_signal, coordinates):
         normalization=sh_signal.normalization,
         inverse_method="pseudo_inverse",
         condon_shortley=sh_signal.condon_shortley)
-
-    if isinstance(sh_signal, SphericalHarmonicSignal):
-        data = sh_signal.time
-    elif isinstance(sh_signal, SphericalHarmonicTimeData):
-        data = sh_signal.time
-    elif isinstance(sh_signal, SphericalHarmonicFrequencyData):
-        data = sh_signal.freq
-    else:
-        raise ValueError("Input signal has to be SphericalHarmonicSignal, "
-                         "SphericalHarmonicTimeData, or "
-                         "SphericalHarmonicFrequencyData "
-                         f"but is {type(sh_signal)}")
 
     # perform inverse transform
     data = np.tensordot(spherical_harmonics.basis, data, [1, -2])
