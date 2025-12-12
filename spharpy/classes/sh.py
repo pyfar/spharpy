@@ -399,6 +399,10 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @inverse_method.setter
     def inverse_method(self, value):
         """Get or set the inverse transform type."""
+        if value is None:
+            self._inverse_method = value
+            return
+
         # If the user passes "auto", require SamplingSphere and resolve it
         if isinstance(value, str) and value == "auto":
             if not isinstance(self.coordinates, sy.SamplingSphere):
@@ -487,6 +491,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @property
     def basis_inv(self):
         """Get or set the inverse basis matrix."""
+        if self._inverse_method is None:
+            raise ValueError("The inverse method is not defined.")
+
         if self._basis is None:
             self._compute_basis()
         if self._basis_inv is None:
