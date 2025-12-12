@@ -515,8 +515,8 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         if _inv_flag == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
         elif _inv_flag == "quadrature":
-            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis),
-                                         self.coordinates.weights)
+            self._basis_inv = np.einsum(
+                'ij,i->ji', np.conj(self._basis), self.coordinates.weights)
 
     def _reset_compute_attributes(self):
         """Reset the computed attributes for the SphericalHarmonics class in
