@@ -46,9 +46,9 @@ def equidistant_cuboid(n_points, flatten_output=True):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.equidistant_cuboid(3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.equidistant_cuboid(3)
+        >>> spharpy.plot.scatter(coords)
     """
     if not isinstance(flatten_output, bool):
         raise ValueError("flatten_output must be a boolean.")
@@ -127,9 +127,9 @@ def hyperinterpolation(n_max, radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.hyperinterpolation(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.hyperinterpolation(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
     # check inputs
@@ -242,9 +242,9 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.t_design(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.t_design(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
 
@@ -336,9 +336,9 @@ def dodecahedron(radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.dodecahedron()
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.dodecahedron()
+        >>> spharpy.plot.scatter(coords)
     """
 
     dihedral = 2 * np.arcsin(np.cos(np.pi / 3) / np.sin(np.pi / 5))
@@ -397,9 +397,9 @@ def icosahedron(radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.icosahedron()
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.icosahedron()
+        >>> spharpy.plot.scatter(coords)
 
     """
     gamma_R_r = np.arccos(np.cos(np.pi/3) / np.sin(np.pi/5))
@@ -458,9 +458,9 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.equiangular(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.equiangular(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
     if (n_points is None) and (n_max is None):
@@ -554,9 +554,9 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.gaussian(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.gaussian(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
     if (n_points is None) and (n_max is None):
@@ -625,9 +625,9 @@ def eigenmike_em32():
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.eigenmike_em32()
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.eigenmike_em32()
+        >>> spharpy.plot.scatter(coords)
     """  # noqa: E501
     rad = np.ones(32)
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
@@ -665,9 +665,9 @@ def eigenmike_em64():
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.eigenmike_em64()
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.eigenmike_em64()
+        >>> spharpy.plot.scatter(coords)
     """  # noqa: E501
 
     rad = np.ones(64)*0.042
@@ -732,9 +732,9 @@ def icosahedron_ke4():
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.icosahedron_ke4()
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.icosahedron_ke4()
+        >>> spharpy.plot.scatter(coords)
     """
 
     theta = np.array([1.565269801525254, 2.294997457752220, 1.226592351686568,
@@ -792,9 +792,9 @@ def equal_area(n_max, condition_num=2.5, n_points=None):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.equal_area(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.equal_area(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
     if not n_points:
@@ -851,9 +851,9 @@ def spiral_points(n_max, condition_num=2.5, n_points=None):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.spiral_points(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.spiral_points(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
     if n_points is None:
@@ -933,9 +933,9 @@ def equal_angle(delta_angles, radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.equal_angle(delta_angles=45)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.equal_angle(delta_angles=45)
+        >>> spharpy.plot.scatter(coords)
 
     """
 
@@ -1023,9 +1023,9 @@ def great_circle(
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.great_circle()
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.great_circle()
+        >>> spharpy.plot.scatter(coords)
 
     """
 
@@ -1119,9 +1119,9 @@ def lebedev(n_points=None, n_max=None, radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.lebedev(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.lebedev(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """  # noqa: E501
 
@@ -1289,9 +1289,9 @@ def fliege(n_points=None, n_max=None, radius=1.):
 
     .. plot::
 
-        >>> import spharpy as sy
-        >>> coords = sy.samplings.fliege(n_max=3)
-        >>> sy.plot.scatter(coords)
+        >>> import spharpy
+        >>> coords = spharpy.samplings.fliege(n_max=3)
+        >>> spharpy.plot.scatter(coords)
 
     """
 
