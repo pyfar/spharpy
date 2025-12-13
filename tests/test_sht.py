@@ -120,8 +120,8 @@ def test_sht_auto_axis():
         _ = sht(signal, sh, axis='auto')
 
     signal = pf.Signal(data=np.zeros((64, 64, 64)), sampling_rate=48000)
-    with raises(ValueError, match="Too many axis match the number of spherical "
-                                  "harmonics basis functions"):
+    with raises(ValueError, match="Too many axis match the number of "
+                                  "spherical harmonics basis functions"):
         _ = sht(signal, sh, axis='auto')
 
 

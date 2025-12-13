@@ -67,7 +67,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
     data = np.moveaxis(data, axis, -2)
 
     # perform transform
-    data_nm = np.tensordot(Y_inv, data, [1, axis])
+    data_nm = np.tensordot(Y_inv, data, [1, -2])
 
     # move SH channels to -2
     data_nm = np.moveaxis(data_nm, 0, -2)
