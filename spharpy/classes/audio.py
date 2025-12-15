@@ -114,15 +114,15 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     Base class for spherical harmonics audio objects.
 
     This class extends the pyfar Audio class with all methods and
-    properties required for spherical harmonics data and are common to the
-    three sub-classes :py:class:`SphericalHarmonicsTimeData`,
-    :py:class:`SphericalHarmonicsFrequencyData`, and
-    :py:class:`SphericalHarmonicsSignal`.
+    properties required for spherical harmonic data and are common to the
+    three sub-classes :py:class:`SphericalHarmonicTimeData`,
+    :py:class:`SphericalHarmonicFrequencyData`, and
+    :py:class:`SphericalHarmonicSignal`.
 
-    Objects of this class contain spherical harmonics coefficients which are
+    Objects of this class contain spherical harmonic coefficients which are
     directly convertible between channel conventions ACN and FUMA, as
     well as the normalizations N3D, SN3D, or MaxN. The definition of
-    the spherical harmonics basis functions is based on the scipy convention
+    the spherical harmonic basis functions is based on the scipy convention
     which includes the Condon-Shortley phase.
 
 
@@ -184,7 +184,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     harmonic coefficients and times.
 
     Objects of this class contain time data which is not directly convertible
-    to the frequency domain, i.e., non-equidistant samples.
+    to the frequency domain, i.e., non-equidistant temporal sampling.
 
     Parameters
     ----------
@@ -337,7 +337,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     Create audio object with spherical harmonics coefficients in time or
     frequency domain.
 
-    Objects of this class contain spherical harmonics coefficients which are
+    Objects of this class contain spherical harmonic coefficients which are
     directly convertible between time and frequency domain (equally spaced
     samples and frequency bins), the channel conventions ACN and FuMa, as
     well as the normalizations N3D, SN3D, or MaxN, see [#]_. The definition of
