@@ -7,6 +7,8 @@ from .sh import (
 
 from .audio import (
     SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData,
 )
 
 from .coordinates import (
@@ -17,5 +19,7 @@ __all__ = [
     'SphericalHarmonicDefinition',
     'SphericalHarmonics',
     'SphericalHarmonicSignal',
+    'SphericalHarmonicTimeData',
+    'SphericalHarmonicFrequencyData',
     'SamplingSphere',
 ]

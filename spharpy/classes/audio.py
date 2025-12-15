@@ -1,15 +1,343 @@
-"""Implementations of audio data container classes."""
-
-from pyfar import Signal
+"""
+Documentation for all SphericalHarmonics Audio classes will be provided in
+another PR.
+"""
+from pyfar import Signal, TimeData, FrequencyData
+from pyfar.classes.audio import _Audio
 from spharpy.spherical import renormalize, change_channel_convention
+from spharpy.classes.sh import _SphericalHarmonicBase
 import numpy as np
+from abc import ABC
 
 
-class SphericalHarmonicSignal(Signal):
-    """Create audio object with spherical harmonics coefficients in time or
+def _atleast_3d_first_dimension(data):
+    """Ensure that data has at least 3 dimensions.
+    Adds a singleton dimensions at the front if necessary.
+    """
+
+    return np.atleast_2d(data)[np.newaxis, ...] if data.ndim < 3 else data
+
+
+def _assert_valid_number_of_sh_channels(shape):
+    """Check if the channel shape matches an integer spherical harmonic order.
+
+    Parameters
+    ----------
+    shape : tuple, int
+        Shape of the data array.
+
+    Raises
+    ------
+    ValueError
+        Raised if the number of spherical harmonic channels does not match
+        (n_max + 1)^2 for an integer n_max.
+
+    """
+
+    sh_channels = shape[-2]
+    n_max = np.sqrt(sh_channels)-1
+    if n_max - int(n_max) != 0:
+        raise ValueError(
+            "Invalid number of spherical harmonic channels: "
+            f"{sh_channels}. It must match (n_max + 1)^2.")
+
+
+def _convert_to_standard_definition(
+        data,
+        normalization,
+        channel_convention):
+    """Convert data to the standard spherical harmonic definition.
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Spherical harmonic data.
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+
+    Returns
+    -------
+    numpy.ndarray
+        Spherical harmonic data following the standard definition (N3D, ACN).
+    """
+
+    data = renormalize(
+        data, channel_convention, normalization,
+        "N3D", axis=-2)
+
+    data = change_channel_convention(
+        data, channel_convention, "ACN", axis=-2)
+
+    return data
+
+
+def _convert_from_standard_definition(
+        data,
+        normalization,
+        channel_convention):
+    """Convert data from standard definition to the desired one.
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Spherical harmonic data using the standard definition (N3D, ACN).
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+
+    Returns
+    -------
+    numpy.ndarray
+        Spherical harmonic data according to the desired definition.
+    """
+
+    data = renormalize(
+        data, "ACN", "N3D", normalization, axis=-2)
+
+    data = change_channel_convention(
+        data, "ACN", channel_convention, axis=-2)
+
+    return data
+
+
+class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
+    """
+    Base class for spherical harmonics audio objects.
+
+    This class extends the pyfar Audio class with all methods and
+    properties required for spherical harmonic data and are common to the
+    three sub-classes :py:class:`SphericalHarmonicTimeData`,
+    :py:class:`SphericalHarmonicFrequencyData`, and
+    :py:class:`SphericalHarmonicSignal`.
+
+    Objects of this class contain spherical harmonic coefficients which are
+    directly convertible between channel conventions ACN and FUMA, as
+    well as the normalizations N3D, SN3D, or MaxN. The definition of
+    the spherical harmonic basis functions is based on the scipy convention
+    which includes the Condon-Shortley phase.
+
+
+    Parameters
+    ----------
+    basis_type : str
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``.
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
+    domain : ``'time'``, ``'freq'``, optional
+        Domain of data. The default is ``'time'``
+    comment : str
+        A comment related to `data`. The default is ``None``.
+
+    """
+
+    def __init__(self, basis_type, normalization, channel_convention,
+                 condon_shortley):
+
+        _SphericalHarmonicBase.__init__(
+            self,
+            basis_type,
+            channel_convention,
+            normalization,
+            condon_shortley)
+
+    @property
+    def n_max(self):
+        """Get or set the spherical harmonic order."""
+        return int(np.sqrt(self.cshape[-1])-1)
+
+    @_SphericalHarmonicBase.basis_type.setter
+    def basis_type(self, value):
+        """Get or set the type of spherical harmonic basis."""
+
+        # Make sure that the basis type can only be set during initialization.
+        # Changing it afterwards requires implementing the conversion between
+        # real and complex-valued coefficients, which is possible but not yet
+        # implemented.
+        if self._basis_type is not None:
+            raise AttributeError("Changing the basis_type is not yet "
+                                 "supported.")
+        else:
+            _SphericalHarmonicBase.basis_type.fset(self, value)
+
+
+class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
+    """
+    Create spherical harmonic audio object with time domain spherical
+    harmonic coefficients and times.
+
+    Objects of this class contain time data which is not directly convertible
+    to the frequency domain, i.e., non-equidistant temporal sampling.
+
+    Parameters
+    ----------
+    data : array, double
+        Raw data in the time domain. The data should have at least 2
+        dimensions, with the last dimension representing the time domain
+        samples, the second to last the spherical harmonic coefficients,
+        and any leading dimensions representing optional channels. Accordingly,
+        the data should follow the 'C' memory layout, e.g. data of
+        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+        coefficients with 1024 samples each. The data can be ``int``,
+        ``float`` or ``complex``. Data of type ``int`` is converted to
+        ``float``.
+    times : array, double
+        Times in seconds at which the data is sampled. The number of times
+        must match the size of the last dimension of `data`, i.e.,
+        ``data.shape[-1]``.
+    basis_type : str
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``.
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
+    comment : str
+        A comment related to `data`. The default is ``""``.
+    is_complex : bool, optional
+        A flag which indicates if the time data are real or complex-valued.
+        The default is ``False``.
+    """
+
+    def __init__(self, data, times, basis_type, normalization,
+                 channel_convention, condon_shortley, comment="",
+                 is_complex=False):
+
+        if not is_complex and basis_type == 'complex':
+            raise ValueError(
+                "Complex spherical harmonic basis requires "
+                "complex time data. Set is_complex=True.")
+
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape)
+
+        _SphericalHarmonicAudio.__init__(
+            self, basis_type, normalization, channel_convention,
+            condon_shortley)
+
+        TimeData.__init__(self, data=data, times=times, comment=comment,
+                          is_complex=is_complex)
+
+    @property
+    def time(self):
+        """Return or set the time data."""
+        return _convert_from_standard_definition(TimeData.time.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
+
+    @time.setter
+    def time(self, value):
+        """Return or set the time data."""
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
+
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
+        TimeData.time.fset(self, value)
+
+
+class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
+    """
+    Create spherical harmonic audio object with frequency domain spherical
+    harmonic coefficients and frequencies.
+
+    Objects of this class contain frequency data which is not directly
+    convertible to the time domain, i.e., non-equidistantly spaced bins or
+    incomplete spectra.
+
+    Parameters
+    ----------
+    data : array, double
+        Raw data in the frequency domain. The data should have at least
+        2 dimensions, with the last dimension representing the frequency domain
+        bins, the second to last the spherical harmonic coefficients,
+        and any leading dimensions representing optional channels. Accordingly,
+        the data should follow the 'C' memory layout, e.g. data of
+        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+        coefficients with 1024 frequency bins each. The data can be ``int``,
+        ``float`` or ``complex``. Data of type ``int`` is converted to
+        ``float``.
+    frequencies : array, double
+        Frequencies of the data in Hz. The number of frequencies must match
+        the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
+    basis_type : str
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``.
+    normalization : str
+        Normalization convention, either ``'N3D'``, ``'NM'``,
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
+    channel_convention : str
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        (FuMa is only supported up to 3rd order)
+    condon_shortley : bool
+        Flag to indicate if the Condon-Shortley phase term is included
+        (``True``) or not (``False``).
+    comment : str
+        A comment related to `data`. The default is ``""``.
+    """
+
+    def __init__(self, data, frequencies, basis_type, normalization,
+                 channel_convention, condon_shortley, comment=""):
+
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape)
+
+        _SphericalHarmonicAudio.__init__(
+            self, basis_type, normalization, channel_convention,
+            condon_shortley)
+
+        FrequencyData.__init__(self, data=data, frequencies=frequencies,
+                               comment=comment)
+
+    @property
+    def freq(self):
+        """Return or set the data in the frequency domain."""
+        return _convert_from_standard_definition(FrequencyData.freq.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
+
+    @freq.setter
+    def freq(self, value):
+        """Return or set the data in the frequency domain."""
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
+
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
+
+        FrequencyData.freq.fset(self, value)
+
+
+class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
+    """
+    Create audio object with spherical harmonics coefficients in time or
     frequency domain.
 
-    Objects of this class contain spherical harmonics coefficients which are
+    Objects of this class contain spherical harmonic coefficients which are
     directly convertible between time and frequency domain (equally spaced
     samples and frequency bins), the channel conventions ACN and FuMa, as
     well as the normalizations N3D, SN3D, or MaxN, see [#]_. The definition of
@@ -21,10 +349,13 @@ class SphericalHarmonicSignal(Signal):
     ----------
     data : ndarray, double
         Raw data of the spherical harmonics signal in the time or
-        frequency domain. The data should have at least 3 dimensions,
-        according to the 'C' memory layout, e.g. data of
-        ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples or frequency
+        frequency domain. The data should have at least 2 dimensions, with
+        the last dimension representing the time domain
+        samples/frequency domain bins, the second to last the spherical
+        harmonic coefficients, and any leading dimensions representing
+        optional channels. Accordingly, the data should follow the 'C'
+        memory layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel
+        with 4 spherical harmonic coefficients with 1024 samples or frequency
         bins each. Time data is converted to ``float``. Frequency is
         converted to ``complex`` and must be provided as single
         sided spectra, i.e., for all frequencies between 0 Hz and
@@ -36,8 +367,8 @@ class SphericalHarmonicSignal(Signal):
         ``'real'``.
     normalization : str
         Normalization convention, either ``'N3D'``, ``'NM'``,
-        ``'maxN'``, ``'SN3D'``, or ``'SNM'``.
-        (maxN is only supported up to 3rd order)
+        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
+        to 3rd order)
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
@@ -74,112 +405,79 @@ class SphericalHarmonicSignal(Signal):
 
     """
 
-    def __init__(
-            self,
-            data,
-            sampling_rate,
-            basis_type,
-            normalization,
-            channel_convention,
-            condon_shortley,
-            n_samples=None,
-            domain='time',
-            fft_norm='none',
-            comment="",
-            is_complex=False):
-        """
-        Create SphericalHarmonicSignal with data, and sampling rate.
-        """
-        # check dimensions
-        if len(data.shape) < 3:
-            raise ValueError("Invalid number of dimensions. Data should have "
-                             "at least 3 dimensions.")
+    def __init__(self,
+                 data,
+                 sampling_rate,
+                 basis_type,
+                 normalization,
+                 channel_convention,
+                 condon_shortley,
+                 n_samples=None,
+                 domain='time',
+                 fft_norm='none',
+                 comment="",
+                 is_complex=False):
 
-        # set n_max
-        n_max = np.sqrt(data.shape[-2])-1
-        if n_max - int(n_max) != 0:
-            raise ValueError("Invalid number of SH channels: "
-                             f"{data.shape[-2]}. It must match (n_max + 1)^2.")
-        self._n_max = int(n_max)
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape)
 
-        # set basis_type
-        if basis_type not in ["complex", "real"]:
-            raise ValueError("Invalid basis type, only "
-                             "'complex' and 'real' are supported")
-        self._basis_type = basis_type
+        _SphericalHarmonicAudio.__init__(
+            self, basis_type, normalization, channel_convention,
+            condon_shortley)
 
-        # set normalization
-        if normalization not in ["N3D", "NM", "maxN", "SN3D", "SNM"]:
-            raise ValueError("Invalid normalization, has to be 'N3D', 'NM', "
-                             "'maxN', 'SN3D', or 'SNM', "
-                             f"but is {normalization}")
-        self._normalization = normalization
-
-        # set channel_convention
-        if channel_convention not in ["ACN", "FuMa"]:
-            raise ValueError("Invalid channel convention, has to be 'ACN' "
-                             f"or 'FuMa', but is {channel_convention}")
-        self._channel_convention = channel_convention
-
-        # set Condon Shortley
-        if not isinstance(condon_shortley, bool):
-            raise ValueError("Condon_shortley has to be a bool.")
-        self._condon_shortley = condon_shortley
-
-        Signal.__init__(self, data, sampling_rate=sampling_rate,
+        Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)
 
     @property
-    def n_max(self):
-        """Get the maximum spherical harmonic order."""
-        return self._n_max
+    def freq(self):
+        """Return or set the data in the frequency domain."""
+        return _convert_from_standard_definition(Signal.freq.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
+
+    @freq.setter
+    def freq(self, value):
+        """Return or set the data in the frequency domain."""
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
+
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
+
+        Signal.freq.fset(self, value)
 
     @property
-    def basis_type(self):
-        """Get the type of the spherical harmonic basis."""
-        return self._basis_type
+    def freq_raw(self):
+        """Return or set the frequency domain data without normalization."""
+        return _convert_from_standard_definition(Signal.freq_raw.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
+
+    @freq_raw.setter
+    def freq_raw(self, value):
+        """Return or set the frequency domain data without normalization."""
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
+
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
+
+        Signal.freq_raw.fset(self, value)
 
     @property
-    def normalization(self):
-        """
-        Get or set and apply the normalization of the spherical harmonic
-        coefficients.
-        """
-        return self._normalization
+    def time(self):
+        """Return or set the time data."""
+        return _convert_from_standard_definition(Signal.time.fget(self),
+                                                 self.normalization,
+                                                 self.channel_convention)
 
-    @normalization.setter
-    def normalization(self, value):
-        """
-        Get or set and apply the normalization of the spherical harmonic
-        coefficients.
-        """
-        if self.normalization is not value:
-            self._data = renormalize(self._data, self.channel_convention,
-                                     self.normalization, value, axis=-2)
-            self._normalization = value
+    @time.setter
+    def time(self, value):
+        """Return or set the time data."""
+        value = _atleast_3d_first_dimension(value)
+        _assert_valid_number_of_sh_channels(value.shape)
 
-    @property
-    def condon_shortley(self):
-        """Get info whether to include the Condon-Shortley phase term."""
-        return self._condon_shortley
-
-    @property
-    def channel_convention(self):
-        """
-        Get or set and apply the channel convention of the spherical harmonic
-        coefficients.
-        """
-        return self._channel_convention
-
-    @channel_convention.setter
-    def channel_convention(self, value):
-        """
-        Get or set and apply the channel convention of the spherical harmonic
-        coefficients.
-        """
-        if self.channel_convention is not value:
-            self._data = change_channel_convention(self._data,
-                                                   self.channel_convention,
-                                                   value, axis=-2)
-            self._channel_convention = value
+        value = _convert_to_standard_definition(
+            value, self.normalization, self.channel_convention)
+        Signal.time.fset(self, value)

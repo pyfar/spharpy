@@ -9,6 +9,8 @@ __version__ = '0.6.2'
 from .classes.sh import SphericalHarmonics
 from .classes.coordinates import SamplingSphere
 from .classes.audio import SphericalHarmonicSignal
+from .classes.audio import SphericalHarmonicTimeData
+from .classes.audio import SphericalHarmonicFrequencyData
 from . import spherical
 from . import samplings
 from . import plot
@@ -22,6 +24,8 @@ from . import special
 __all__ = [
     'SphericalHarmonics',
     'SphericalHarmonicSignal',
+    'SphericalHarmonicTimeData',
+    'SphericalHarmonicFrequencyData',
     'spherical',
     'samplings',
     'plot',

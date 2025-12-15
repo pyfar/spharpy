@@ -48,20 +48,6 @@ def test_spherical_harmonic_signal_init_condon_shortley():
 def test_spherical_harmonic_signal_wrong_dimensions():
     """Test dimensions of SH coefficient data."""
 
-    data = np.array([[1., 2., 3.],
-                     [1., 2., 3.],
-                     [1., 2., 3.],
-                     [1., 2., 3.]])
-
-    # test if dimension of data is < 3
-    with pytest.raises(ValueError,
-                match="Invalid number of dimensions. Data should have "
-                      "at least 3 dimensions."):
-        SphericalHarmonicSignal(data,
-                                44100, basis_type='real',
-                                channel_convention='ACN',
-                                condon_shortley=False,
-                                normalization='N3D')
     # test if sh channels are valid
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],
@@ -70,9 +56,9 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                      [1., 2., 3.]]).reshape(1, 5, 3)
 
     with pytest.raises(ValueError,
-                match=re.escape("Invalid number of SH channels: "
-                                f"{data.shape[-2]}. It must match "
-                                "(n_max + 1)^2.")):
+                   match=re.escape("Invalid number of spherical harmonic "
+                                   f"channels: {data.shape[-2]}. It must "
+                                   "match (n_max + 1)^2.")):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='ACN',
@@ -142,9 +128,8 @@ def test_init_wrong_normalization():
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
     with pytest.raises(ValueError,
-                       match="Invalid normalization, has to be 'N3D', 'NM', "
-                             "'maxN', 'SN3D', or 'SNM', but is "
-                             "invalid_normalization"):
+                       match="Invalid normalization, currently only 'N3D', "
+                             "'NM', 'maxN', 'SN3D', 'SNM' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='ACN',
@@ -184,9 +169,10 @@ def test_init_wrong_channel_convention():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
-    with pytest.raises(ValueError,
-                match="Invalid channel convention, has to be 'ACN' "
-                      "or 'FuMa', but is invalid_convention"):
+    with pytest.raises(
+        ValueError,
+        match="Invalid channel convention, currently only 'ACN' "
+              "and 'FuMa' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='invalid_convention',
@@ -209,3 +195,39 @@ def test_spherical_harmonic_signal_channel_convention_setter():
 
     signal.channel_convention = 'ACN'
     assert signal.channel_convention == 'ACN'
+
+
+def test_spherical_harmonic_signal_change_channel_convention():
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+    signal = SphericalHarmonicSignal(data,
+                                     44100, basis_type='real',
+                                     channel_convention='ACN',
+                                     normalization='N3D',
+                                     condon_shortley=False)
+    signal.channel_convention = 'FuMa'
+    assert signal.channel_convention == 'FuMa'
+
+    data_fuma = data[:, [0, 3, 1, 2], :]
+
+    np.testing.assert_equal(data_fuma,
+                            signal.time)
+
+
+def test_spherical_harmonic_signal_renormalize():
+    data = np.ones((1, 4, 2))
+    signal = SphericalHarmonicSignal(data,
+                                     44100, basis_type='real',
+                                     channel_convention='ACN',
+                                     normalization='N3D',
+                                     condon_shortley=False)
+    signal.normalization = 'maxN'
+    data_ref = np.array([[np.sqrt(1 / 2), np.sqrt(1 / 2)],
+                         [np.sqrt(1 / 3), np.sqrt(1 / 3)],
+                         [np.sqrt(1 / 3), np.sqrt(1 / 3)],
+                         [np.sqrt(1 / 3), np.sqrt(1 / 3)]]).reshape(1, 4, 2)
+
+    np.testing.assert_equal(signal.time,
+                            data_ref)
