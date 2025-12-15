@@ -195,7 +195,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         and any leading dimensions representing optional channels. Accordingly,
         the data should follow the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples each. When The data can be ``int``,
+        coefficients with 1024 samples each. The data can be ``int``,
         ``float`` or ``complex``. Data of type ``int`` is converted to
         ``float``.
     times : array, double
@@ -277,7 +277,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         and any leading dimensions representing optional channels. Accordingly,
         the data should follow the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 frequency bins each. Data can be ``int``,
+        coefficients with 1024 frequency bins each. The data can be ``int``,
         ``float`` or ``complex``. Data of type ``int`` is converted to
         ``float``.
     frequencies : array, double
