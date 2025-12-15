@@ -56,9 +56,9 @@ def test_spherical_harmonic_signal_wrong_dimensions():
                      [1., 2., 3.]]).reshape(1, 5, 3)
 
     with pytest.raises(ValueError,
-                       match=re.escape("Invalid number of spherical harmonic "
-                                       f"channels: {data.shape[-2]}. It must "
-                                       "match (n_max + 1)^2.")):
+                   match=re.escape("Invalid number of spherical harmonic "
+                                   f"channels: {data.shape[-2]}. It must "
+                                   "match (n_max + 1)^2.")):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='ACN',
