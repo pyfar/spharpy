@@ -432,9 +432,9 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             cls, data, sampling_rate, sh_definition, domain='time',
             fft_norm='none', comment="", is_complex=False):
         r"""
-            Create a SphericalHarmonicsSignal class object from
-            SphericalHarmonicsDefinition object, data, and sampling
-            rate.
+        Create a SphericalHarmonicsSignal class object from
+        SphericalHarmonicsDefinition object, data, and sampling
+        rate.
         """
         return cls(data, sampling_rate,
                    basis_type=sh_definition.basis_type,
