@@ -125,6 +125,60 @@ def test_sht_auto_axis():
         _ = sht(signal, sh, axis='auto')
 
 
+def test_in_out_dimensions():
+    n_max = 3
+    n_samples = 128
+    sampling = samplings.equiangular(n_max=n_max)
+    signal = pf.Signal(data=np.zeros((sampling.csize, n_samples)),
+                       sampling_rate=48000)
+    sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
+
+    sh_signal = sht(signal, sh, axis=0)
+    assert sh_signal.n_samples == n_samples
+    assert sh_signal.cshape[-1] == int(np.power(n_max+1, 2))
+    assert sh_signal.cshape[0] == 1
+
+    signal = pf.Signal(data=np.zeros((1, sampling.csize, n_samples)),
+                       sampling_rate=48000)
+    sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
+
+    sh_signal = sht(signal, sh, axis=1)
+    assert sh_signal.n_samples == n_samples
+    assert sh_signal.cshape[-1] == int(np.power(n_max+1, 2))
+    assert sh_signal.cshape[0] == 1
+
+    signal = pf.Signal(data=np.zeros((sampling.csize, 1, n_samples)),
+                       sampling_rate=48000)
+    sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
+
+    sh_signal = sht(signal, sh, axis=0)
+    assert sh_signal.n_samples == n_samples
+    assert sh_signal.cshape[-1] == int(np.power(n_max+1, 2))
+    assert sh_signal.cshape[0] == 1
+
+    signal = pf.Signal(data=np.zeros((sampling.csize, 1, 2, 3, n_samples)),
+                       sampling_rate=48000)
+    sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
+
+    sh_signal = sht(signal, sh, axis=0)
+    assert sh_signal.n_samples == n_samples
+    assert sh_signal.cshape[-1] == int(np.power(n_max+1, 2))
+    assert sh_signal.cshape[0] == 1
+    assert sh_signal.cshape[1] == 2
+    assert sh_signal.cshape[2] == 3
+
+    signal = pf.Signal(data=np.zeros((1, 2, sampling.csize, 3, n_samples)),
+                       sampling_rate=48000)
+    sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
+
+    sh_signal = sht(signal, sh, axis=2)
+    assert sh_signal.n_samples == n_samples
+    assert sh_signal.cshape[-1] == int(np.power(n_max+1, 2))
+    assert sh_signal.cshape[0] == 1
+    assert sh_signal.cshape[1] == 2
+    assert sh_signal.cshape[2] == 3
+
+
 @mark.parametrize("n_max", [1, 3, 12, 20])
 @mark.parametrize("basis_type", ["real", "complex"])
 @mark.parametrize("normalization", ["N3D", "SN3D"])

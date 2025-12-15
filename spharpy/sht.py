@@ -7,24 +7,27 @@ from . import SphericalHarmonicFrequencyData
 
 
 def sht(signal, spherical_harmonics, axis='auto'):
-    """Compute the spherical harmonics transform
+    """Compute the spherical harmonic transform
 
     Parameters
     ----------
     signal : Signal, TimeData, or FrequencyData
-        the signal for which the spherical harmonics transform is computed
+        the signal for which the spherical harmonic transform is computed
     spherical_harmonics : :class:`spharpy.SphericalHarmonics`
         Spherical harmonics object
     axis : integer or 'auto'
-        Axis along which the SH transform is computed. If 'auto' the
+        Axis along which the spherical harmonic transform is computed. If 'auto' the
         transformation is computed along the axis which matches the number
         of spherical samples of the spherical_harmonics basis
 
     Returns
     ----------
     sh_signal : SphericalHarmonicSignal, SphericalHarmonicsTimeData,
-               or SphericalHarmonicsFrequencyData
-                signal with spherical harmonics coefficients.
+                or SphericalHarmonicsFrequencyData
+                signal with spherical harmonic coefficients. According to 
+                SphericalHarmonicsAudio definitions, the spherical harmonic
+                coefficients are always in the second to last dimension. The
+                order of all other channels remains unchanged.
     References
     ----------
 
@@ -111,21 +114,25 @@ def sht(signal, spherical_harmonics, axis='auto'):
 
 
 def isht(sh_signal, coordinates):
-    """Compute the inverse spherical harmonics transform
+    """Compute the inverse spherical harmonic transform
 
     Parameters
     ----------
     sh_signal: SphericalHarmonicsSignal, SphericalHarmonicsTimeData, or
                SphericalHarmonicsFrequencyData
-               The spherical harmonics signal for which the inverse spherical
-               harmonics transform is computed
+               The spherical harmonic signal for which the inverse spherical
+               harmonic transform is computed.
     coordinates: :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates
                  <pyfar:classes/pyfar.coordinates>`
                  Coordinates for which the inverse SH transform is computed
 
     Returns
     ----------
-    Signal
+    signal : Signal, TimeData, or FrequencyData
+             inverse transformed signal in space domain. The spherical
+             samples are always in the second to last dimension. All other
+             channels remain unchaged.
+
     """
     if isinstance(sh_signal, (SphericalHarmonicSignal,
                               SphericalHarmonicTimeData)):
