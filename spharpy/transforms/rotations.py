@@ -54,7 +54,7 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     def as_spherical_harmonic_matrix(
             self,
-            spherical_harmonic_definition : SphericalHarmonicDefinition
+            spherical_harmonic_definition : SphericalHarmonicDefinition,
         ) -> np.ndarray:
         """Express the rotation as spherical harmonic rotation matrices.
 
