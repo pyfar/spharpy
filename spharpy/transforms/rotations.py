@@ -18,6 +18,19 @@ from typing import Union
 class SphericalHarmonicRotation(ScipyRotation):
     """Class for rotations of coordinates and data.
 
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import spharpy
+    >>> definition = spharpy.SphericalHarmonicDefinition(n_max=2)
+    >>>
+
+
+    Note
+    ----
+    Initializing using the constructor is not advised. Always use the
+    respective ``from_*`` method.
+
     """
 
     def __init__(
@@ -68,7 +81,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         Returns
         -------
         np.ndarray, complex or float
-            Stack of block-diagonal rotation matrices.
+            Stack of block-diagonal rotation matrices with individual shapes
+            :math:`[(n_{max}+1)^2, (n_{max}+1)^2]`.
         """
         euler_angles = np.atleast_2d(self.as_euler('zyz'))
         n_matrices = euler_angles.shape[0]
@@ -100,7 +114,7 @@ class SphericalHarmonicRotation(ScipyRotation):
             SphericalHarmonicTimeData,
             SphericalHarmonicFrequencyData,
             SphericalHarmonicSignal]:
-        """Apply the rotation to a signal.
+        """Apply the rotation to spherical harmonic data object.
 
         Note that the spherical harmonic definition of the target signal is
         used for the creation of the rotation matrix.
