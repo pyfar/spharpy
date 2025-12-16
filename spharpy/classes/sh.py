@@ -373,16 +373,16 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         self.inverse_method = inverse_method
 
     @classmethod
-    def from_definition(cls, coordinates, definition, inverse_method="auto"):
+    def from_definition(cls, definition, coordinates, inverse_method="auto"):
         """
         Create SphericalHarmonics instance from SphericalHarmonicDefinition.
 
         Parameters
         ----------
-        coordinates : :py:class:`pyfar.Coordinates`, spharpy.SamplingSphere
-            Sampling points for which the basis matrix is calculated.
         definition : SphericalHarmonicDefinition
             The spherical harmonic definition.
+        coordinates : :py:class:`pyfar.Coordinates`, spharpy.SamplingSphere
+            Sampling points for which the basis matrix is calculated.
         inverse_method : {'auto', 'quadrature', 'pseudo_inverse', `None`}
             Method for computing the inverse transform (by default 'auto'):
 

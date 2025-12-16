@@ -194,7 +194,7 @@ def test_sphharm_init_from_definition():
     # generate from definition
     definition = SphericalHarmonicDefinition(n_max)
     sh_from_definition = SphericalHarmonics.from_definition(
-        coordinates, definition, inverse_method)
+        definition, coordinates, inverse_method)
 
     # generate manually
     sh_manually = SphericalHarmonics(
@@ -212,7 +212,7 @@ def test_sphharm_init_from_definition_error():
 
     with pytest.raises(TypeError, match=message):
         SphericalHarmonics.from_definition(
-            SamplingSphere(1, 0, 0), "definition")
+            "definition", SamplingSphere(1, 0, 0))
 
 def test_sphharm_compute_basis(icosahedron_sampling):
     """Test spherical harmonic basis computation."""
