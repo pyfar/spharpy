@@ -3,8 +3,9 @@ Tests for spherical harmonic class.
 """
 import pytest
 import numpy as np
-from spharpy import SphericalHarmonics, SamplingSphere
-from spharpy.classes.sh import SphericalHarmonicDefinition
+from spharpy import (
+    SphericalHarmonics, SamplingSphere, SphericalHarmonicDefinition,
+)
 import pyfar as pf
 
 
