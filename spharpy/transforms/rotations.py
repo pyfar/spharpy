@@ -7,7 +7,12 @@ import spharpy
 from scipy.special import eval_jacobi, factorial
 from scipy.spatial.transform import Rotation as ScipyRotation
 from spharpy.classes.sh import SphericalHarmonicDefinition
-from spharpy.classes.audio import SphericalHarmonicSignal
+from spharpy.classes.audio import (
+    SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData,
+)
+from typing import Union
 
 
 class SphericalHarmonicRotation(ScipyRotation):
@@ -87,8 +92,14 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     def apply(
             self,
-            target : SphericalHarmonicSignal
-        ) -> SphericalHarmonicSignal:
+            target : Union[
+                SphericalHarmonicTimeData,
+                SphericalHarmonicFrequencyData,
+                SphericalHarmonicSignal],
+        ) -> Union[
+            SphericalHarmonicTimeData,
+            SphericalHarmonicFrequencyData,
+            SphericalHarmonicSignal]:
         """Apply the rotation to a signal.
 
         Note that the spherical harmonic definition of the target signal is
@@ -96,14 +107,14 @@ class SphericalHarmonicRotation(ScipyRotation):
 
         Parameters
         ----------
-        target : SphericalHarmonicSignal
+        target : SphericalHarmonicTimeData, SphericalHarmonicFrequencyData, SphericalHarmonicSignal
             Spherical harmonic series expansion to be rotated.
 
         Returns
         -------
-        SphericalHarmonicSignal
+        SphericalHarmonicTimeData, SphericalHarmonicFrequencyData, SphericalHarmonicSignal
             The rotated signal.
-        """
+        """  # noqa: E501
         D = self.as_spherical_harmonic_matrix(target)
         M = np.linalg.multi_dot(list(D)) if D.ndim > 2 else D
 
