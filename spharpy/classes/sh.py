@@ -402,6 +402,11 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @inverse_method.setter
     def inverse_method(self, value):
         """Get or set the inverse transform type."""
+        if value not in ["pseudo_inverse", "quadrature", "auto", None]:
+            raise ValueError(
+                "Invalid inverse_method. Allowed: 'pseudo_inverse', "
+                "'quadrature', or 'auto'.")
+
         if value == self._inverse_method:
             return
 
@@ -427,17 +432,11 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
                     else "pseudo_inverse"
                 )
 
-            elif value == "quadrature":
-                if self.coordinates.quadrature is False:
-                    raise ValueError(
-                        "'quadrature' requires `coordinates` to be a '"
-                        "SamplingSphere and coordinates.quadrature to be "
-                        "True.")
-
-            elif value != "pseudo_inverse":
+            elif value == "quadrature" and not self.coordinates.quadrature:
                 raise ValueError(
-                    "Invalid inverse_method. Allowed: 'pseudo_inverse', "
-                    "'quadrature', or 'auto'.")
+                    "'quadrature' requires `coordinates` to be a '"
+                    "SamplingSphere and coordinates.quadrature to be "
+                    "True.")
 
         self._reset_compute_attributes()
         self._inverse_method = value
