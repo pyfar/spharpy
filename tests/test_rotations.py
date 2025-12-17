@@ -242,3 +242,24 @@ def test_SphericalHarmonicRotation_mul_invalid():
 
     with pytest.raises(ValueError, match="Multiplication is only supported"):
         result = rot * 42
+
+
+def test_SphericalHarmonicRotation_invalid_definition():
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
+
+    definition = SphericalHarmonicDefinition(
+        n_max=2, normalization='N3D', channel_convention='FuMa')
+    with pytest.raises(
+            NotImplementedError,
+            match="Only 'ACN' channel convention is supporte"
+        ):
+        rot.as_spherical_harmonic_matrix(definition)
+
+    definition = SphericalHarmonicDefinition(
+        n_max=2, normalization='SN3D', channel_convention='ACN')
+    with pytest.raises(
+            NotImplementedError,
+            match="Only 'N3D' normalization is supported",
+        ):
+        rot.as_spherical_harmonic_matrix(definition)
+

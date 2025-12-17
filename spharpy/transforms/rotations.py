@@ -167,7 +167,22 @@ class SphericalHarmonicRotation(ScipyRotation):
         np.ndarray, complex or float
             Stack of block-diagonal rotation matrices with individual shapes
             :math:`[(n_{max}+1)^2, (n_{max}+1)^2]`.
+
+        Note
+        ----
+        At the moment, only spherical harmonic rotations matrices following
+        the ``ACN`` indexing and ``N3D`` normalization are supported.
+
         """
+        if spherical_harmonic_definition.normalization != 'N3D':
+            raise NotImplementedError(
+                "Only 'N3D' normalization is supported for spherical "
+                "harmonic rotations.")
+        if spherical_harmonic_definition.channel_convention != 'ACN':
+            raise NotImplementedError(
+                "Only 'ACN' channel convention is supported for spherical "
+                "harmonic rotations.")
+
         euler_angles = np.atleast_2d(self.as_euler('zyz'))
         n_matrices = euler_angles.shape[0]
 
@@ -201,7 +216,7 @@ class SphericalHarmonicRotation(ScipyRotation):
         """Apply the rotation to spherical harmonic data object.
 
         Note that the spherical harmonic definition of the target signal is
-        used for the creation of the rotation matrix.
+        used for the rotation operation.
 
         Parameters
         ----------
