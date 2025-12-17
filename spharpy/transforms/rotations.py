@@ -65,7 +65,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         to the using the following:
 
         >>> D = R.as_spherical_harmonic_matrix(definition)
-        >>> print(f"Rotated coefficients: {np.round(D @ coefficients, 2)}")
+        >>> rotated_coefficients = D @ coefficients
+        >>> print(f"Rotated coefficients: {np.round(rotated_coefficients, 2)}")
         ... # Rotated coefficients: [ 0.   0.71 0.   -0.71]
 
         To visualize the effect of the rotation, we can expand the series
@@ -81,7 +82,7 @@ class SphericalHarmonicRotation(ScipyRotation):
         >>> spharpy.plot.balloon_wireframe(
         >>>     sampling, Y.basis @ coefficients, ax=axs[0], colorbar=False)
         >>> spharpy.plot.balloon_wireframe(
-        >>>     sampling, Y.basis @ D @ coefficients, ax=axs[1],
+        >>>     sampling, Y.basis @ rotated_coefficients, ax=axs[1],
         >>>     colorbar=False)
 
     .. plot::
