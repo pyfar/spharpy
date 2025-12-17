@@ -26,6 +26,7 @@ class SphericalHarmonicRotation(ScipyRotation):
     data containers using the implemented methods and operators.
 
     .. plot::
+        :context: close-figs
 
         >>> import numpy as np
         >>> import matplotlib.pyplot as plt
@@ -67,6 +68,9 @@ class SphericalHarmonicRotation(ScipyRotation):
         >>> spharpy.plot.balloon_wireframe(
         >>>     sampling, Y.basis @ D @ coefficients, ax=axs[1],
         >>>     colorbar=False)
+
+    .. plot::
+        :context: close-figs
 
         The rotation can also be applied to spherical harmonic data objects
         using the overloaded multiplication operator. This includes the
