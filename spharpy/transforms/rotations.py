@@ -253,7 +253,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         else:
             raise ValueError(
                 "Multiplication is only supported for "
-                "SphericalHarmonicRotation and SphericalHarmonicSignal.")
+                "SphericalHarmonicRotation and SphericalHarmonic* audio "
+                "objects.")
 
 
 def rotation_z_axis(n_max, angle):
