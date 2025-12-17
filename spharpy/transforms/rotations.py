@@ -20,10 +20,89 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     Examples
     --------
-    >>> import numpy as np
-    >>> import spharpy
-    >>> definition = spharpy.SphericalHarmonicDefinition(n_max=2)
-    >>>
+    The following examples demonstrate how to create a rotation and apply it
+    to spherical harmonic coefficients and corresponding spherical harmonic
+    data containers using the implemented methods and operators.
+
+    .. plot::
+
+        >>> import numpy as np
+        >>> import matplotlib.pyplot as plt
+        >>> import spharpy
+
+        Define the convention and order of the spherical harmonics and a set of
+        coefficients. Note that the generated coefficients correspond to a
+        dipole oriented along the y-axis.
+
+        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=1)
+        >>> coefficients = np.array([0, 1, 0, 0])
+
+        Define a rotation by 45 degrees around the z-axis based on the Euler
+        angles.
+
+        >>> angle = np.pi / 4
+        >>> R = spharpy.transforms.SphericalHarmonicRotation.from_euler(
+        >>>     'z', angle)
+
+        The spherical harmonic rotation matrix can be obtained and applied
+        to the using the following:
+
+        >>> D = R.as_spherical_harmonic_matrix(definition)
+        >>> print(f"Rotated coefficients: {np.round(D @ coefficients, 2)}")
+        ... # Rotated coefficients: [ 0.   0.71 0.   -0.71]
+
+        To visualize the effect of the rotation, we can expand the series
+        expansion on the unit sphere and plot the original and rotated
+        data:
+
+        >>> sampling = spharpy.samplings.equal_area(0, n_points=250)
+        >>> Y = spharpy.SphericalHarmonics.from_definition(
+        >>>     definition, coordinates=sampling)
+        ...
+        >>> _, axs = plt.subplots(
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, Y.basis @ coefficients, ax=axs[0], colorbar=False)
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, Y.basis @ D @ coefficients, ax=axs[1],
+        >>>     colorbar=False)
+
+        The rotation can also be applied to spherical harmonic data objects
+        using the overloaded multiplication operator. This includes the
+        class object itself as well as
+        :class:`~spharpy.SphericalHarmonicFrequencyData`,
+        :class:`~spharpy.SphericalHarmonicTimeData`, and
+        :class:`~spharpy.SphericalHarmonicSignal`.
+
+        The following example demonstrates the application to an arbitrary
+        :class:`~spharpy.SphericalHarmonicFrequencyData` object containign the
+        same series expansion as above:
+
+        >>> frequency_data = spharpy.SphericalHarmonicFrequencyData(
+        >>>     np.atleast_2d(coefficients).T, frequencies=1e3,
+        >>>     basis_type=definition.basis_type,
+        >>>     normalization=definition.normalization,
+        >>>     channel_convention=definition.channel_convention,
+        >>>     condon_shortley=definition.condon_shortley)
+
+        The rotation can now be applied using the `*` operator:
+        Note that due to the multiplication with itself, the rotation
+        is applied twice, which corresponds to a rotation of 90 degrees around
+        the z-axis.
+
+        >>> rotated_frequency_data = R * R * frequency_data
+
+        The effect of the rotation can again be visualized by evaluating the
+        series expansion on the unit sphere:
+
+        >>> _, axs = plt.subplots(
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ frequency_data.freq),
+        >>>     ax=axs[0], colorbar=False)
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ rotated_frequency_data.freq),
+        >>>     ax=axs[1], colorbar=False)
 
 
     Note
