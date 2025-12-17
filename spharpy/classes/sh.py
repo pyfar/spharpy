@@ -3,7 +3,7 @@ Documentation for the SphericalHarmonics class, will be added in an other PR.
 """
 import numpy as np
 import pyfar as pf
-import spharpy as sy
+import spharpy
 from abc import ABC, abstractmethod
 
 
@@ -331,13 +331,16 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         The default is ``'ACN'``.
         (FuMa is only supported up to 3rd order)
-    inverse_method : {'auto', 'quadrature', 'pseudo_inverse'}, default='auto'
-        Method for computing the inverse transform:
+    inverse_method : {'auto', 'quadrature', 'pseudo_inverse', `None`}
+        Method for computing the inverse transform (by default 'auto'):
 
-        - ‘auto’: use ‘quadrature’ when applicable, otherwise ‘pseudo_inverse’.
-        - ‘quadrature’: compute the inverse via numerical quadrature.
-        - ‘pseudo_inverse’: compute the inverse via a pseudo-inverse
+        - 'auto': If coordinates are a spharpy.SamplingSphere, use 'quadrature'
+          when applicable, otherwise 'pseudo_inverse'. If coordinates are a
+            pyfar.Coordinates object, default to `None`.
+        - 'quadrature': compute the inverse via numerical quadrature.
+        - 'pseudo_inverse': compute the inverse via a pseudo-inverse
           approximation.
+        - `None`: do not compute the inverse basis matrix.
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
         Condon-Shortley is included, if ``False`` it is not
@@ -399,32 +402,44 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @inverse_method.setter
     def inverse_method(self, value):
         """Get or set the inverse transform type."""
-        # If the user passes "auto", require SamplingSphere and resolve it
-        if isinstance(value, str) and value == "auto":
-            if not isinstance(self.coordinates, sy.SamplingSphere):
-                raise ValueError(
-                    "'auto' is only valid if `coordinates` is "
-                    "a SamplingSphere.")
-            value = (
-                "quadrature"
-                if self.coordinates.quadrature
-                else "pseudo_inverse"
-            )
-
-        elif value == "quadrature":
-            if not isinstance(self.coordinates, sy.SamplingSphere) or \
-                not self.coordinates.quadrature:
-                raise ValueError("'quadrature' requires `coordinates` to be " \
-                    "a SamplingSphere and coordinates.quadrature to be True.")
-
-        elif value != "pseudo_inverse":
+        if value not in ["pseudo_inverse", "quadrature", "auto", None]:
             raise ValueError(
                 "Invalid inverse_method. Allowed: 'pseudo_inverse', "
                 "'quadrature', or 'auto'.")
 
-        if value != self._inverse_method:
-            self._reset_compute_attributes()
+        if value == self._inverse_method:
+            return
+
+        if value is None:
             self._inverse_method = value
+            return
+
+        if type(self.coordinates) is pf.Coordinates:
+            if value == "auto":
+                self.inverse_method = None
+                return
+
+            raise ValueError(
+                "The inverse method can only be set if the coordinates "
+                "are a provided as SamplingSphere.")
+
+        elif type(self.coordinates) is spharpy.SamplingSphere:
+            if value == "auto":
+
+                value = (
+                    "quadrature"
+                    if self.coordinates.quadrature
+                    else "pseudo_inverse"
+                )
+
+            elif value == "quadrature" and not self.coordinates.quadrature:
+                raise ValueError(
+                    "'quadrature' requires `coordinates` to be a '"
+                    "SamplingSphere and coordinates.quadrature to be "
+                    "True.")
+
+        self._reset_compute_attributes()
+        self._inverse_method = value
 
     @property
     def basis(self):
@@ -452,9 +467,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         Compute the basis matrix for the SphericalHarmonics class.
         """
         if self.basis_type == "complex":
-            function = sy.spherical.spherical_harmonic_basis
+            function = spharpy.spherical.spherical_harmonic_basis
         elif self.basis_type == "real":
-            function = sy.spherical.spherical_harmonic_basis_real
+            function = spharpy.spherical.spherical_harmonic_basis_real
         else:
             raise ValueError(
                 "Invalid basis type, should be either 'complex' or 'real'")
@@ -475,9 +490,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
             f"channel convention '{self.channel_convention}'.")
 
         if self.basis_type == "complex":
-            function = sy.spherical.spherical_harmonic_basis_gradient
+            function = spharpy.spherical.spherical_harmonic_basis_gradient
         elif self.basis_type == "real":
-            function = sy.spherical.spherical_harmonic_basis_gradient_real
+           function = spharpy.spherical.spherical_harmonic_basis_gradient_real
         else:
             raise ValueError(
                 "Invalid basis type, should be either 'complex' or 'real'")
@@ -487,6 +502,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     @property
     def basis_inv(self):
         """Get or set the inverse basis matrix."""
+        if self._inverse_method is None:
+            raise ValueError("The inverse method is not defined.")
+
         if self._basis is None:
             self._compute_basis()
         if self._basis_inv is None:
@@ -503,8 +521,8 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         if _inv_flag == "pseudo_inverse":
             self._basis_inv = np.linalg.pinv(self._basis)
         elif _inv_flag == "quadrature":
-            self._basis_inv = np.einsum('ij,i->ji', np.conj(self._basis),
-                                         self.coordinates.weights)
+            self._basis_inv = np.einsum(
+                'ij,i->ji', np.conj(self._basis), self.coordinates.weights)
 
     def _reset_compute_attributes(self):
         """Reset the computed attributes for the SphericalHarmonics class in
