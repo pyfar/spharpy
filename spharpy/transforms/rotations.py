@@ -17,7 +17,22 @@ from typing import Union
 
 
 class SphericalHarmonicRotation(ScipyRotation):
-    """Class for rotations of coordinates and data.
+    """Class for rotations of coordinates and spherical harmonic expansions.
+
+    The class extends the :py:class:`~scipy.spatial.transform.Rotation` class
+    and provides methods to express the rotation as spherical harmonic rotation
+    matrices as well as to apply the rotation to spherical harmonic data
+    objects.
+    The spherical harmonic rotation matrices are computed based on the Wigner-D
+    functions as described in [#]_ and [#]_ for complex and real-valued
+    spherical harmonics, respectively.
+
+    To create a rotation object, use one of the available
+    :py:meth:`~scipy.spatial.transform.Rotation.from_*` methods, e.g.,
+    :py:meth:`~scipy.spatial.transform.Rotation.from_euler` or
+    :py:meth:`~scipy.spatial.transform.Rotation.from_quat` for creation using
+    Euler angles or quaternions, respectively. Also see the examples below.
+
 
     Examples
     --------
@@ -112,8 +127,18 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     Note
     ----
-    Initializing using the constructor is not advised. Always use the
-    respective ``from_*`` method.
+    Currently, only spherical harmonic rotations matrices following the
+    ``ACN`` indexing and ``N3D`` normalization are supported.
+
+    References
+    ----------
+
+    .. [#] B. Rafaely, Fundamentals of Spherical Array Processing, 1st ed.,
+           vol. 8. Springer-Verlag GmbH Berlin Heidelberg, 2015.
+    .. [#] M. A. Blanco, M. Flórez, and M. Bermejo, “Evaluation of the
+           rotation matrices in the basis of real spherical harmonics,”
+           Journal of Molecular Structure: THEOCHEM,  vol. 419, no. 1-3,
+           pp. 19-27, Dec. 1997, doi: 10.1016/S0166-1280(97)00185-1.
 
     """
 
