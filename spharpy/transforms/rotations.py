@@ -6,12 +6,13 @@ import numpy as np
 import spharpy
 from scipy.special import eval_jacobi, factorial
 from scipy.spatial.transform import Rotation as ScipyRotation
-from spharpy.classes.sh import SphericalHarmonicDefinition
-from spharpy.classes.audio import (
+from spharpy import (
     SphericalHarmonicSignal,
     SphericalHarmonicTimeData,
     SphericalHarmonicFrequencyData,
+    SphericalHarmonicDefinition,
 )
+from spharpy.classes.audio import _SphericalHarmonicAudio
 from typing import Union
 
 
@@ -221,7 +222,7 @@ class SphericalHarmonicRotation(ScipyRotation):
         if isinstance(other, ScipyRotation):
             result = super().__mul__(other)
             return SphericalHarmonicRotation.from_quat(result.as_quat())
-        elif isinstance(other, SphericalHarmonicSignal):
+        elif isinstance(other, _SphericalHarmonicAudio):
             return self.apply(other)
         else:
             raise ValueError(
