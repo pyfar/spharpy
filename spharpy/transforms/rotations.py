@@ -215,8 +215,8 @@ class SphericalHarmonicRotation(ScipyRotation):
             SphericalHarmonicSignal]:
         """Apply the rotation to spherical harmonic data object.
 
-        Note that the spherical harmonic definition of the target signal is
-        used for the rotation operation.
+        Note that the spherical harmonic definition of the target object is
+        used to generate a fitting spherical harmonic rotation matrix.
 
         Parameters
         ----------
@@ -228,7 +228,14 @@ class SphericalHarmonicRotation(ScipyRotation):
         SphericalHarmonicTimeData, SphericalHarmonicFrequencyData, SphericalHarmonicSignal
             The rotated signal.
         """  # noqa: E501
-        D = self.as_spherical_harmonic_matrix(target)
+        # Audio objects use ACN/N3D internally
+        target_definition = SphericalHarmonicDefinition(
+            n_max=target.n_max,
+            basis_type=target.basis_type,
+            normalization='N3D',
+            channel_convention='ACN',
+        )
+        D = self.as_spherical_harmonic_matrix(target_definition)
         M = np.linalg.multi_dot(list(D)) if D.ndim > 2 else D
 
         rotated_data = np.einsum('ij, ljt -> lit', M, target._data)
