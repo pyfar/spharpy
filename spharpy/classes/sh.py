@@ -375,6 +375,42 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         self.coordinates = coordinates
         self.inverse_method = inverse_method
 
+    @classmethod
+    def from_definition(cls, definition, coordinates, inverse_method="auto"):
+        """
+        Create SphericalHarmonics instance from SphericalHarmonicDefinition.
+
+        Parameters
+        ----------
+        definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
+        coordinates : :py:class:`pyfar.Coordinates`, spharpy.SamplingSphere
+            Sampling points for which the basis matrix is calculated.
+        inverse_method : {'auto', 'quadrature', 'pseudo_inverse', `None`}
+            Method for computing the inverse transform (by default 'auto'):
+
+            - 'auto': If coordinates are a spharpy.SamplingSphere, use
+              'quadrature' when applicable, otherwise 'pseudo_inverse'. If
+              coordinates are a pyfar.Coordinates object, default to `None`.
+            - 'quadrature': compute the inverse via numerical quadrature.
+            - 'pseudo_inverse': compute the inverse via a pseudo-inverse
+               approximation.
+            - `None`: do not compute the inverse basis matrix.
+
+        Returns
+        -------
+        SphericalHarmonics
+            A new SphericalHarmonics instance initialized with the parameters
+            from the definition object.
+        """  # noqa: E501
+
+        if type(definition) is not SphericalHarmonicDefinition:
+            raise TypeError('definition must be a SphericalHarmonicDefinition')
+
+        return cls(definition.n_max, coordinates, definition.basis_type,
+                   definition.normalization, definition.channel_convention,
+                   inverse_method, definition.condon_shortley)
+
     @property
     def coordinates(self):
         """Get or set the coordinates object."""
