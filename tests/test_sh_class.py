@@ -3,8 +3,10 @@ Tests for spherical harmonic class.
 """
 import pytest
 import numpy as np
-from spharpy import (SphericalHarmonics, SamplingSphere,
-                     SphericalHarmonicDefinition)
+from spharpy import (
+    SphericalHarmonics, SamplingSphere, SphericalHarmonicDefinition,
+)
+import pyfar as pf
 import deepdiff
 
 
@@ -165,12 +167,20 @@ def test_setter_basis_type():
         sph_harm.basis_type = "invalid"  # Invalid value
 
 
-def test_sphharm_init(icosahedron_sampling):
+@pytest.mark.parametrize(
+        ("points", "method"), [
+            (SamplingSphere([1, -1], [0, 0], [0, 0]), 'pseudo_inverse'),
+            (pf.Coordinates(1, 0, 0), None),
+        ],
+    )
+def test_sphharm_init(points, method):
     """Test default behaviour after initialization."""
-    sph_harm = SphericalHarmonics(n_max=2, coordinates=icosahedron_sampling)
-    assert sph_harm.n_max == 2
-    assert np.all(sph_harm.coordinates == icosahedron_sampling)
-    assert sph_harm.inverse_method == 'quadrature'
+    n_max = 0
+    sph_harm = SphericalHarmonics(n_max=n_max, coordinates=points)
+    assert sph_harm.n_max == n_max
+    assert np.all(sph_harm.coordinates == points)
+    assert sph_harm.inverse_method == method
+
 
 def test_sphharm_init_invalid_coordinates():
     """Test error handling for invalid coordinate types."""
@@ -178,6 +188,20 @@ def test_sphharm_init_invalid_coordinates():
                        match="coordinates must be a pyfar.Coordinates " \
                        "object or spharpy.SamplingSphere object"):
         SphericalHarmonics(n_max=2, coordinates=[0, 0, 1])
+
+def test_sphharm_init_invalid_inverse_method(icosahedron_sampling):
+    """Test error handling for invalid inverse_method values."""
+    with pytest.raises(ValueError, match="Invalid inverse_method."):
+        SphericalHarmonics(
+            n_max=2, coordinates=icosahedron_sampling,
+            inverse_method='invalid')
+
+    coords = pf.Coordinates(1, 0, 0)
+    with pytest.raises(ValueError, match="method can only be set if"):
+        SphericalHarmonics(
+            n_max=0, coordinates=coords,
+            inverse_method='pseudo_inverse')
+
 
 def test_sphharm_init_invalid_n_max(icosahedron_sampling):
     """Test error handling for invalid n_max values."""
