@@ -14,7 +14,9 @@ def dolph_chebyshev_weights(
         n_max,
         design_parameter,
         design_criterion='sidelobe'):
-    """Calculate the weights for a spherical Dolph-Chebyshev beamformer.
+    r"""
+    Calculate the weights for a spherical Dolph-Chebyshev beamformer.
+
     The design criterion can either be a desired side-lobe attenuation or a
     desired main-lobe width. Once one criterion is chosen, the other will
     become a dependent property which will be chosen accordingly [#]_.
@@ -22,20 +24,19 @@ def dolph_chebyshev_weights(
     Parameters
     ----------
     n_max : int
-        Spherical harmonic order
+        Spherical harmonic order. Must be an integer greater than zero.
     design_parameter : float
         This can either be the desired side-lobe attenuation or the width of
         the main-lobe in radians.
     design_criterion : str
-        Can be either ``'sidelobe'``or ``'mainlobe'``.
-        Determines whether the design parameter argument is the desired
-        side-lobe attenuation or the desired main-lobe width.
-        Default is ``'sidelobe'``.
+        Can be either ``'sidelobe'`` or ``'mainlobe'`` (see
+        `design_parameter` above). The default is ``'sidelobe'``.
 
     Returns
     -------
     weights : array-like, float
-        An array containing the weight coefficients.
+        A flat array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
+        weights.
 
     References
     ----------
@@ -45,9 +46,8 @@ def dolph_chebyshev_weights(
 
     Examples
     --------
-    Apply the weights for a Dolph-Chebyshev beamformer with a side-lobe
-    attenuation of 50 dB to a plane wave decomposition. The direction of
-    arrival is zero degrees azimuth.
+    Apply Dolph-Chebyshev beamformers with a side-lobe
+    attenuation of 50 dB to a plane wave from zero degrees azimuth.
 
     .. plot::
 
@@ -55,24 +55,40 @@ def dolph_chebyshev_weights(
         >>> import pyfar as pf
         >>> import matplotlib.pyplot as plt
         >>> import numpy as np
-        >>> N = 7
-        >>> steering = pf.Coordinates.from_spherical_colatitude(
-        ...     np.linspace(0, 2*np.pi, 500), np.ones(500)*np.pi/2,
-        ...     np.ones(500))
-        >>> Y_steering = spharpy.spherical.spherical_harmonic_basis_real(
-        ...     N, steering)
-        >>> a_nm = spharpy.spherical.spherical_harmonic_basis_real(
-        ...     N, pf.Coordinates(1, 0, 0))
+        >>>
+        >>> # use real valued spherical harmonics of order 7
+        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=7)
+        >>>
+        >>> # define the sound field (plane wave from 0 degree azimuth)
+        >>> soundfield = spharpy.SphericalHarmonics.from_definition(
+        ...     definition, pf.Coordinates(1, 0, 0))
+        >>> a_nm = soundfield.basis
+        >>>
+        >>> # beamforming
+        >>> # a) generate 500 steering vectors
+        >>> steering = spharpy.SphericalHarmonics.from_definition(
+        ...     definition, pf.Coordinates.from_spherical_elevation(
+        ...         np.linspace(0, 2*np.pi, 500), 0, 1))
+        >>> Y_steering = steering.basis
+        >>>
+        >>> # b) design beamformer weights
         >>> R = 10**(50/20)
         >>> d_nm = spharpy.beamforming.dolph_chebyshev_weights(
-        ...     N, R, design_criterion='sidelobe')
-        >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)
+        ...     definition.n_max, R, design_criterion='sidelobe')
+        >>>
+        >>> # c) appling beamformer weights yields 500 beamformers
+        >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm))
+        >>>
+        >>> # d) apply beamformers to the soundfield
+        >>> soundfield_beamformed = beamformer @ a_nm.T
+        >>>
+        >>> # plot soundfield evaluated with beamformers
         >>> ax = plt.axes(projection='polar')
-        >>> ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))
+        >>> ax.plot(steering.coordinates.azimuth,
+        ...         20*np.log10(np.abs(soundfield_beamformed)))
         >>> ax.set_rticks([-50, -25, 0])
         >>> ax.set_theta_zero_location('N')
-        >>> ax.set_xlabel('Azimuth (deg)')
-
+        >>> ax.set_xlabel('Azimuth in degree')
     """
     M = 2*n_max
     if design_criterion == 'sidelobe':
@@ -106,21 +122,25 @@ def dolph_chebyshev_weights(
 
 
 def rE_max_weights(n_max, normalize=True):
-    """Weights that maximize the length of the energy vector.
+    r"""
+    Calculate weights for a max :math:`\mathrm{r}_\mathrm{E}` beamformer.
+
+    The weights that maximize the length of the energy vector.
     This is most often used in Ambisonics decoding [#]_.
 
     Parameters
     ----------
     n_max : int
-        Spherical harmonic order
+        Spherical harmonic order. Must be an integer greater than zero.
     normalize : bool
         If ``True``, the weights will be normalized such that the complex
-        amplitude of a plane wave is not distorted. Default is ``True``.
+        amplitude of a plane wave is not distorted. The default is ``True``.
 
     Returns
     -------
     weights : array-like, float
-        An array containing the weight coefficients.
+        A flat array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
+        weights.
 
     References
     ----------
@@ -130,8 +150,8 @@ def rE_max_weights(n_max, normalize=True):
 
     Examples
     --------
-    Apply the max-rE weights to a plane wave decomposition. The direction of
-    arrival is zero degrees azimuth.
+    Apply max :math:`\mathrm{r}_\mathrm{E}` beamformers to a plane wave from
+    zero degrees azimuth.
 
     .. plot::
 
@@ -139,22 +159,38 @@ def rE_max_weights(n_max, normalize=True):
         >>> import pyfar as pf
         >>> import matplotlib.pyplot as plt
         >>> import numpy as np
-        >>> N = 7
-        >>> steering = pf.Coordinates.from_spherical_colatitude(
-        ...     np.linspace(0, 2*np.pi, 500), np.ones(500)*np.pi/2,
-        ...     np.ones(500))
-        >>> Y_steering = spharpy.spherical.spherical_harmonic_basis_real(
-        ...     N, steering)
-        >>> a_nm = spharpy.spherical.spherical_harmonic_basis_real(
-        ...     N, pf.Coordinates(1, 0, 0))
-        >>> d_nm = spharpy.beamforming.rE_max_weights(N)
-        >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)
+        >>>
+        >>> # use real valued spherical harmonics of order 7
+        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=7)
+        >>>
+        >>> # define the sound field (plane wave from 0 degree azimuth)
+        >>> soundfield = spharpy.SphericalHarmonics.from_definition(
+        ...     definition, pf.Coordinates(1, 0, 0))
+        >>> a_nm = soundfield.basis
+        >>>
+        >>> # beamforming
+        >>> # a) generate 500 steering vectors
+        >>> steering = spharpy.SphericalHarmonics.from_definition(
+        ...     definition, pf.Coordinates.from_spherical_elevation(
+        ...         np.linspace(0, 2*np.pi, 500), 0, 1))
+        >>> Y_steering = steering.basis
+        >>>
+        >>> # b) design beamformer weights
+        >>> d_nm = spharpy.beamforming.rE_max_weights(definition.n_max)
+        >>>
+        >>> # c) appling beamformer weights yields 500 beamformers
+        >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm))
+        >>>
+        >>> # d) apply beamformers to the soundfield
+        >>> soundfield_beamformed = beamformer @ a_nm.T
+        >>>
+        >>> # plot soundfield evaluated with beamformers
         >>> ax = plt.axes(projection='polar')
-        >>> ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))
+        >>> ax.plot(steering.coordinates.azimuth,
+        ...         20*np.log10(np.abs(soundfield_beamformed)))
         >>> ax.set_rticks([-50, -25, 0])
         >>> ax.set_theta_zero_location('N')
-        >>> ax.set_xlabel('Azimuth (deg)')
-
+        >>> ax.set_xlabel('Azimuth in degree')
     """
     leg = poly.legendre.Legendre.basis(n_max+1)
     P_n_root = poly.legendre.legroots(leg.coef)
@@ -171,7 +207,9 @@ def rE_max_weights(n_max, normalize=True):
 
 
 def maximum_front_back_ratio_weights(n_max, normalize=True):
-    """Weights that maximize the front-back ratio of the beam pattern.
+    r"""
+    Compute weights that maximize the front-back ratio of the beam pattern.
+
     This is also often referred to as the super-cardioid beam pattern.
     The weights are calculated from an eigenvalue problem [#]_. For high
     spherical harmonic orders, the eigenvalue problem may not be feasible and
@@ -180,15 +218,16 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     Parameters
     ----------
     n_max : int
-        The spherical harmonic order
+        The spherical harmonic order. Must be an integer greater than zero.
     normalize : bool
         If ``True``, the weights will be normalized such that the complex
-        amplitude of a plane wave is not distorted. Default is ``True``.
+        amplitude of a plane wave is not distorted. The default is ``True``.
 
     Returns
     -------
     weights : array-like, float
-        An array containing the weight coefficients
+        A flat array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
+        weights.
 
     References
     ----------
@@ -197,8 +236,8 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
 
     Examples
     --------
-    Apply weights maximizing the front-back ratio to a plane wave
-    decomposition. The direction of arrival is zero degrees azimuth.
+    Apply beamformers maximizing the front-back ratio to a plane wave from
+    zero degrees azimuth.
 
     .. plot::
 
@@ -206,22 +245,40 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
         >>> import pyfar as pf
         >>> import matplotlib.pyplot as plt
         >>> import numpy as np
-        >>> N = 5
-        >>> steering = pf.Coordinates.from_spherical_colatitude(
-        ...     np.linspace(0, 2*np.pi, 500), np.ones(500)*np.pi/2,
-        ...     np.ones(500))
-        >>> Y_steering = spharpy.spherical.spherical_harmonic_basis_real(
-        ...     N, steering)
-        >>> a_nm = spharpy.spherical.spherical_harmonic_basis_real(
-        ...     N, pf.Coordinates(1, 0, 0))
-        >>> d_nm = spharpy.beamforming.maximum_front_back_ratio_weights(N)
-        >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm) @ a_nm.T)
+        >>>
+        >>> # use real valued spherical harmonics of order 7
+        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=7)
+        >>>
+        >>> # define the sound field (plane wave from 0 degree azimuth)
+        >>> soundfield = spharpy.SphericalHarmonics.from_definition(
+        ...     definition, pf.Coordinates(1, 0, 0))
+        >>> a_nm = soundfield.basis
+        >>>
+        >>> # beamforming
+        >>> # a) generate 500 steering vectors
+        >>> steering = spharpy.SphericalHarmonics.from_definition(
+        ...     definition, pf.Coordinates.from_spherical_elevation(
+        ...         np.linspace(0, 2*np.pi, 500), 0, 1))
+        >>> Y_steering = steering.basis
+        >>>
+        >>> # b) design beamformer weights
+        >>> R = 10**(50/20)
+        >>> d_nm = spharpy.beamforming.maximum_front_back_ratio_weights(
+        ...     definition.n_max)
+        >>>
+        >>> # c) appling beamformer weights yields 500 beamformers
+        >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm))
+        >>>
+        >>> # d) apply beamformers to the soundfield
+        >>> soundfield_beamformed = beamformer @ a_nm.T
+        >>>
+        >>> # plot soundfield evaluated with beamformers
         >>> ax = plt.axes(projection='polar')
-        >>> ax.plot(steering.azimuth, 20*np.log10(np.abs(beamformer)))
-        >>> ax.set_rticks([-75, -50, -25, 0])
+        >>> ax.plot(steering.coordinates.azimuth,
+        ...         20*np.log10(np.abs(soundfield_beamformed)))
+        >>> ax.set_rticks([-50, -25, 0])
         >>> ax.set_theta_zero_location('N')
-        >>> ax.set_xlabel('Azimuth (deg)')
-
+        >>> ax.set_xlabel('Azimuth in degree')
     """
     P_N = np.zeros((n_max+1, n_max+1))
     for n in range(n_max+1):
@@ -258,15 +315,19 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
 
 
 def normalize_beamforming_weights(weights, n_max):
-    """Normalize the beamforming weights such that the complex amplitude of a
+    r"""
+    Normalize the beamforming weights.
+
+    The weights are normalized such that the complex amplitude of a
     plane wave is not distorted.
 
     Parameters
     ----------
     weights : array-like, float
-        An array containing the beamforming weights
+        An array containing the beamforming weights. The array must be of
+        shaoe :math:`(\dots, (n_\mathrm{max}+1)^2)`.
     n_max : int
-        The spherical harmonic order
+        The spherical harmonic order. Must be an integer greater than zero.
 
     Returns
     -------
@@ -275,11 +336,11 @@ def normalize_beamforming_weights(weights, n_max):
 
     Examples
     --------
-    Calculate hann window function based tapering weights for a plane wave
-    decomposition beamformer and normalize.
+    Calculate and normalize hann window function based beamforming weights.
 
     >>> import spharpy
     >>> from scipy.signal.windows import hann
+    ...
     >>> tapering_window = hann(2*(N+1)+1)[N+1:-1], N)
     >>> h_n = spharpy.beamforming.normalize_beamforming_weights(
     ...     tapering_window, N)
