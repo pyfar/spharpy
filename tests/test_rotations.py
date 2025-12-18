@@ -194,7 +194,8 @@ def test_SphericalHarmonicRotation_apply():
     noise = pyfar.signals.noise(512)
 
     sh_signal = SphericalHarmonicSignal(
-        np.atleast_3d(spherical_harmonics.basis.T * noise.time).transpose(1, 0, 2),
+        np.atleast_3d(
+            spherical_harmonics.basis.T * noise.time).transpose(1, 0, 2),
         noise.sampling_rate,
         basis_type=spherical_harmonics.basis_type,
         normalization=spherical_harmonics.normalization,
@@ -241,7 +242,7 @@ def test_SphericalHarmonicRotation_mul_invalid():
     rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
 
     with pytest.raises(ValueError, match="Multiplication is only supported"):
-        result = rot * 42
+        rot * 42 # type: ignore
 
 
 def test_SphericalHarmonicRotation_invalid_definition():
@@ -251,7 +252,7 @@ def test_SphericalHarmonicRotation_invalid_definition():
         n_max=2, normalization='N3D', channel_convention='FuMa')
     with pytest.raises(
             NotImplementedError,
-            match="Only 'ACN' channel convention is supporte"
+            match="Only 'ACN' channel convention is supported",
         ):
         rot.as_spherical_harmonic_matrix(definition)
 
