@@ -1,5 +1,5 @@
-spharpy.SamplingSphere
-----------------------
+Coordinates
+-----------
 
 .. automodule:: spharpy.classes.coordinates
 
