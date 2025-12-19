@@ -35,7 +35,7 @@ def dolph_chebyshev_weights(
     Returns
     -------
     weights : array-like, float
-        A flat array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
+        An array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
         weights.
 
     References
@@ -59,7 +59,8 @@ def dolph_chebyshev_weights(
         >>> # use real valued spherical harmonics of order 7
         >>> definition = spharpy.SphericalHarmonicDefinition(n_max=7)
         >>>
-        >>> # define the sound field (plane wave from 0 degree azimuth)
+        >>> # define the direction of the incident sound field
+        >>> # (0 degree azimuth)
         >>> soundfield = spharpy.SphericalHarmonics.from_definition(
         ...     definition, pf.Coordinates(1, 0, 0))
         >>> a_nm = soundfield.basis
@@ -80,12 +81,12 @@ def dolph_chebyshev_weights(
         >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm))
         >>>
         >>> # d) apply beamformers to the soundfield
-        >>> soundfield_beamformed = beamformer @ a_nm.T
+        >>> beamformer_output = beamformer @ a_nm.T
         >>>
         >>> # plot soundfield evaluated with beamformers
         >>> ax = plt.axes(projection='polar')
         >>> ax.plot(steering.coordinates.azimuth,
-        ...         20*np.log10(np.abs(soundfield_beamformed)))
+        ...         20*np.log10(np.abs(beamformer_output)))
         >>> ax.set_rticks([-50, -25, 0])
         >>> ax.set_theta_zero_location('N')
         >>> ax.set_xlabel('Azimuth in degree')
@@ -139,7 +140,7 @@ def rE_max_weights(n_max, normalize=True):
     Returns
     -------
     weights : array-like, float
-        A flat array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
+        An array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
         weights.
 
     References
@@ -163,7 +164,8 @@ def rE_max_weights(n_max, normalize=True):
         >>> # use real valued spherical harmonics of order 7
         >>> definition = spharpy.SphericalHarmonicDefinition(n_max=7)
         >>>
-        >>> # define the sound field (plane wave from 0 degree azimuth)
+        >>> # define the direction of the incident sound field
+        >>> # (0 degree azimuth)
         >>> soundfield = spharpy.SphericalHarmonics.from_definition(
         ...     definition, pf.Coordinates(1, 0, 0))
         >>> a_nm = soundfield.basis
@@ -182,12 +184,12 @@ def rE_max_weights(n_max, normalize=True):
         >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm))
         >>>
         >>> # d) apply beamformers to the soundfield
-        >>> soundfield_beamformed = beamformer @ a_nm.T
+        >>> beamformer_output = beamformer @ a_nm.T
         >>>
         >>> # plot soundfield evaluated with beamformers
         >>> ax = plt.axes(projection='polar')
         >>> ax.plot(steering.coordinates.azimuth,
-        ...         20*np.log10(np.abs(soundfield_beamformed)))
+        ...         20*np.log10(np.abs(beamformer_output)))
         >>> ax.set_rticks([-50, -25, 0])
         >>> ax.set_theta_zero_location('N')
         >>> ax.set_xlabel('Azimuth in degree')
@@ -226,7 +228,7 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
     Returns
     -------
     weights : array-like, float
-        A flat array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
+        An array containing the :math:`(n_\mathrm{max} + 1)^2` beamformer
         weights.
 
     References
@@ -246,10 +248,11 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
         >>> import matplotlib.pyplot as plt
         >>> import numpy as np
         >>>
-        >>> # use real valued spherical harmonics of order 7
-        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=7)
+        >>> # use real valued spherical harmonics of order 5
+        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=5)
         >>>
-        >>> # define the sound field (plane wave from 0 degree azimuth)
+        >>> # define the direction of the incident sound field
+        >>> # (0 degree azimuth)
         >>> soundfield = spharpy.SphericalHarmonics.from_definition(
         ...     definition, pf.Coordinates(1, 0, 0))
         >>> a_nm = soundfield.basis
@@ -270,13 +273,13 @@ def maximum_front_back_ratio_weights(n_max, normalize=True):
         >>> beamformer = np.squeeze(Y_steering @ np.diag(d_nm))
         >>>
         >>> # d) apply beamformers to the soundfield
-        >>> soundfield_beamformed = beamformer @ a_nm.T
+        >>> beamformer_output = beamformer @ a_nm.T
         >>>
         >>> # plot soundfield evaluated with beamformers
         >>> ax = plt.axes(projection='polar')
         >>> ax.plot(steering.coordinates.azimuth,
-        ...         20*np.log10(np.abs(soundfield_beamformed)))
-        >>> ax.set_rticks([-50, -25, 0])
+        ...         20*np.log10(np.abs(beamformer_output)))
+        >>> ax.set_rticks([-75, -50, -25, 0])
         >>> ax.set_theta_zero_location('N')
         >>> ax.set_xlabel('Azimuth in degree')
     """
@@ -325,14 +328,15 @@ def normalize_beamforming_weights(weights, n_max):
     ----------
     weights : array-like, float
         An array containing the beamforming weights. The array must be of
-        shaoe :math:`(\dots, (n_\mathrm{max}+1)^2)`.
+        shape :math:`(\dots, (n_\mathrm{max}+1)^2)`.
     n_max : int
         The spherical harmonic order. Must be an integer greater than zero.
 
     Returns
     -------
     weights : array-like, float
-        An array containing the normalized beamforming weights
+        An array containing the normalized beamforming weights. The shape
+        of the output weights is the same as the shape of the input weights.
 
     Examples
     --------
