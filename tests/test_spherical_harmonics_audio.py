@@ -46,8 +46,8 @@ def test_sh_time_data_from_sh_definition():
     data = np.ones((1, 4, 4))
     times = [1, 2, 3, 4]
 
-    time_data_def = SphericalHarmonicTimeData.from_spherical_harmonics_definition(
-        data=data, times=times, sh_definition=shd)
+    time_data_def = SphericalHarmonicTimeData.from_definition(
+        sh_definition=shd, data=data, times=times)
 
     assert isinstance(time_data_def, SphericalHarmonicTimeData)
 
@@ -85,8 +85,8 @@ def test_sh_freq_data_from_sh_definition():
     data = np.ones((1, 4, 4))
     freqs = [1, 2, 3, 4]
 
-    freq_data_def = SphericalHarmonicFrequencyData.from_spherical_harmonics_definition(
-        data=data, frequencies=freqs, sh_definition=shd)
+    freq_data_def = SphericalHarmonicFrequencyData.from_definition(
+        sh_definition=shd, data=data, frequencies=freqs)
 
     assert isinstance(freq_data_def, SphericalHarmonicFrequencyData)
 

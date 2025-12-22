@@ -35,8 +35,8 @@ def test_sh_signal_from_sh_definition():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
-    signal_def = SphericalHarmonicSignal.from_spherical_harmonics_definition(
-        data=data, sampling_rate=44100, sh_definition=shd)
+    signal_def = SphericalHarmonicSignal.from_definition(
+        sh_definition=shd, data=data, sampling_rate=44100)
 
     assert isinstance(signal_def, SphericalHarmonicSignal)
 
@@ -128,8 +128,8 @@ def test_init_wrong_basis_type():
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
     with pytest.raises(ValueError,
-                       match="Invalid basis type, only "
-                             "'complex' and 'real' are supported"):
+                    match="Invalid basis type, only "
+                        "'complex' and 'real' are supported"):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='invalid_basis_type',
                                 channel_convention='ACN',
