@@ -17,6 +17,7 @@ from scipy.stats import circmean
 from .cmap import phase_twilight
 
 from pyfar.plot._utils import _add_colorbar
+from pyfar.plot.utils import context
 from spharpy.samplings import spherical_voronoi
 from spharpy.plot._utils import _prepare_plot
 from pyfar.classes.coordinates import sph2cart
@@ -45,7 +46,7 @@ def set_aspect_equal_3d(ax):
     ax.set_zlim3d([zmean - plot_radius, zmean + plot_radius])
 
 
-def scatter(coordinates, ax=None, **kwargs):
+def scatter(coordinates, ax=None, style='light', **kwargs):
     """Plot the x, y, and z coordinates of the sampling grid in the 3d space.
 
     Parameters
@@ -55,6 +56,14 @@ def scatter(coordinates, ax=None, **kwargs):
     ax : matplotlib.axis, None, optional
         The matplotlib axis object used for plotting. By default ``None``,
         which will create a new axis object.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
     **kwargs : optional
         Additional keyword arguments passed to the scatter function.
 
@@ -77,22 +86,23 @@ def scatter(coordinates, ax=None, **kwargs):
     if not isinstance(coordinates, pf.Coordinates):
         raise ValueError("coordinates must be a coordinates object.")
 
-    fig = plt.gcf()
-    if ax is None:
-        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+    with context(style):
+        fig = plt.gcf()
+        if ax is None:
+            ax = plt.gca() if fig.axes else plt.axes(projection='3d')
 
-    if '3d' not in ax.name:
-        raise ValueError("The projection of the axis needs to be '3d'")
+        if '3d' not in ax.name:
+            raise ValueError("The projection of the axis needs to be '3d'")
 
-    ax.scatter(coordinates.x, coordinates.y, coordinates.z, **kwargs)
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
+        ax.scatter(coordinates.x, coordinates.y, coordinates.z, **kwargs)
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
 
-    ax.set_box_aspect([
-        np.ptp(coordinates.x),
-        np.ptp(coordinates.y),
-        np.ptp(coordinates.z)])
+        ax.set_box_aspect([
+            np.ptp(coordinates.x),
+            np.ptp(coordinates.y),
+            np.ptp(coordinates.z)])
 
     return ax
 
@@ -248,6 +258,7 @@ def pcolor_sphere(
         limits=None,
         cmap_encoding='phase',
         ax=None,
+        style='light',
         **kwargs):
     """Plot data on the surface of a sphere defined by the coordinate angles
     theta and phi. The data array will be mapped onto the surface of a sphere.
@@ -290,6 +301,14 @@ def pcolor_sphere(
             ``'rectilinear'``.
 
         The default is ``None``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
@@ -326,51 +345,52 @@ def pcolor_sphere(
 
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
 
-    fig, ax = _prepare_plot(ax, '3d')
+    with context(style):
+        fig, ax = _prepare_plot(ax, '3d')
 
-    if not isinstance(ax, (list, tuple, np.ndarray)):
-        ax = [ax, None]
+        if not isinstance(ax, (list, tuple, np.ndarray)):
+            ax = [ax, None]
 
-    if '3d' not in ax[0].name:
-        raise ValueError("The projection of the axis needs to be '3d'")
+        if '3d' not in ax[0].name:
+            raise ValueError("The projection of the axis needs to be '3d'")
 
-    if cmap_encoding == 'phase':
-        if cmap is None:
-            cmap = phase_twilight()
-        clabel = 'Phase (rad)'
-    elif cmap_encoding == 'magnitude':
-        if cmap is None:
-            cmap = plt.get_cmap('viridis')
-        clabel = 'Magnitude'
+        if cmap_encoding == 'phase':
+            if cmap is None:
+                cmap = phase_twilight()
+            clabel = 'Phase (rad)'
+        elif cmap_encoding == 'magnitude':
+            if cmap is None:
+                cmap = plt.get_cmap('viridis')
+            clabel = 'Magnitude'
 
-    cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
+        cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
-    if limits is not None:
-        vmin, vmax = limits
+        if limits is not None:
+            vmin, vmax = limits
 
-    plot = ax[0].plot_trisurf(tri,
-                              xyz[2],
-                              cmap=cmap,
-                              antialiased=True,
-                              vmin=vmin,
-                              vmax=vmax,
-                              **kwargs)
+        plot = ax[0].plot_trisurf(tri,
+                                  xyz[2],
+                                  cmap=cmap,
+                                  antialiased=True,
+                                  vmin=vmin,
+                                  vmax=vmax,
+                                  **kwargs)
 
-    plot.set_array(cdata)
+        plot.set_array(cdata)
 
-    cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+        cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
 
-    # reduce to plot-axis, colorbar-axis will be returned as cb.ax
-    ax = ax[0]
+        # reduce to plot-axis, colorbar-axis will be returned as cb.ax
+        ax = ax[0]
 
-    ax.set_xlabel('x[m]')
-    ax.set_ylabel('y[m]')
-    ax.set_zlabel('z[m]')
+        ax.set_xlabel('x[m]')
+        ax.set_ylabel('y[m]')
+        ax.set_zlabel('z[m]')
 
-    ax.set_box_aspect([
-        np.ptp(coordinates.x),
-        np.ptp(coordinates.y),
-        np.ptp(coordinates.z)])
+        ax.set_box_aspect([
+            np.ptp(coordinates.x),
+            np.ptp(coordinates.y),
+            np.ptp(coordinates.z)])
 
     if colorbar:
         ax = [ax, cb.ax]
@@ -386,6 +406,7 @@ def balloon_wireframe(
         limits=None,
         cmap_encoding='phase',
         ax=None,
+        style='light',
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles
     theta and phi. The magnitude information is mapped onto the radius of the
@@ -430,6 +451,14 @@ def balloon_wireframe(
             ``'rectilinear'``.
 
         The default is ``None``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
@@ -470,64 +499,65 @@ def balloon_wireframe(
 
     tri, xyz = _triangulation_sphere(coordinates, data)
 
-    fig, ax = _prepare_plot(ax, '3d')
+    with context(style):
+        fig, ax = _prepare_plot(ax, '3d')
 
-    if not isinstance(ax, (list, tuple, np.ndarray)):
-        ax = [ax, None]
+        if not isinstance(ax, (list, tuple, np.ndarray)):
+            ax = [ax, None]
 
-    if '3d' not in ax[0].name:
-        raise ValueError("The projection of the axis needs to be '3d'")
+        if '3d' not in ax[0].name:
+            raise ValueError("The projection of the axis needs to be '3d'")
 
-    if cmap_encoding == 'phase':
-        if cmap is None:
-            cmap = phase_twilight()
-        clabel = 'Phase (rad)'
-    elif cmap_encoding == 'magnitude':
-        if cmap is None:
-            cmap = plt.get_cmap('viridis')
-        clabel = 'Magnitude'
+        if cmap_encoding == 'phase':
+            if cmap is None:
+                cmap = phase_twilight()
+            clabel = 'Phase (rad)'
+        elif cmap_encoding == 'magnitude':
+            if cmap is None:
+                cmap = plt.get_cmap('viridis')
+            clabel = 'Magnitude'
 
-    cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
+        cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
-    if limits is not None:
-        vmin, vmax = limits
+        if limits is not None:
+            vmin, vmax = limits
 
-    plot = ax[0].plot_trisurf(tri,
-                              xyz[2],
-                              cmap=cmap,
-                              antialiased=True,
-                              vmin=vmin,
-                              vmax=vmax,
-                              **kwargs)
+        plot = ax[0].plot_trisurf(tri,
+                                  xyz[2],
+                                  cmap=cmap,
+                                  antialiased=True,
+                                  vmin=vmin,
+                                  vmax=vmax,
+                                  **kwargs)
 
-    # Set values to `None`. Otherwise theses values will always overwrite what
-    # is set using plot.set_facecolors.
-    plot.set_array(None)
+        # Set values to `None`. Otherwise theses values will always overwrite
+        # what is set using plot.set_facecolors.
+        plot.set_array(None)
 
-    cnorm = plt.Normalize(vmin, vmax)
+        cnorm = plt.Normalize(vmin, vmax)
 
-    # Get colors from cdata for plot.set_edgecolors
-    cmap_colors = cmap(cnorm(cdata))
+        # Get colors from cdata for plot.set_edgecolors
+        cmap_colors = cmap(cnorm(cdata))
 
-    cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
-    cmappable.set_array(np.linspace(vmin, vmax, cdata.size))
+        cmappable = mpl.cm.ScalarMappable(cnorm, cmap)
+        cmappable.set_array(np.linspace(vmin, vmax, cdata.size))
 
-    plot.set_edgecolors(cmap_colors)
-    plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
+        plot.set_edgecolors(cmap_colors)
+        plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
-    cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+        cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
 
-    # reduce to plot-axis, colorbar-axis will be returned as cb.ax
-    ax = ax[0]
+        # reduce to plot-axis, colorbar-axis will be returned as cb.ax
+        ax = ax[0]
 
-    ax.set_xlabel('x[m]')
-    ax.set_ylabel('y[m]')
-    ax.set_zlabel('z[m]')
+        ax.set_xlabel('x[m]')
+        ax.set_ylabel('y[m]')
+        ax.set_zlabel('z[m]')
 
-    ax.set_box_aspect([
-        np.ptp(xyz[0]),
-        np.ptp(xyz[1]),
-        np.ptp(xyz[2])])
+        ax.set_box_aspect([
+            np.ptp(xyz[0]),
+            np.ptp(xyz[1]),
+            np.ptp(xyz[2])])
 
     if colorbar:
         ax = [ax, cb.ax]
@@ -543,6 +573,7 @@ def balloon(
         limits=None,
         cmap_encoding='phase',
         ax=None,
+        style='light',
         **kwargs):
     """Plot data on a sphere defined by the coordinate angles theta and phi.
     The magnitude information is mapped onto the radius of the sphere.
@@ -587,6 +618,14 @@ def balloon(
             ``'rectilinear'``.
 
         The default is ``None``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
     **kwargs : optional
         Additional arguments passed to the plot_trisurf function.
 
@@ -624,52 +663,53 @@ def balloon(
 
     tri, xyz = _triangulation_sphere(coordinates, data)
 
-    fig, ax = _prepare_plot(ax, '3d')
+    with context(style):
+        fig, ax = _prepare_plot(ax, '3d')
 
-    # _add_colorbar expects a list of axes
-    if not isinstance(ax, (list, tuple, np.ndarray)):
-        ax = [ax, None]
+        # _add_colorbar expects a list of axes
+        if not isinstance(ax, (list, tuple, np.ndarray)):
+            ax = [ax, None]
 
-    if '3d' not in ax[0].name:
-        raise ValueError("The projection of the axis needs to be '3d'")
+        if '3d' not in ax[0].name:
+            raise ValueError("The projection of the axis needs to be '3d'")
 
-    if cmap_encoding == 'phase':
-        if cmap is None:
-            cmap = phase_twilight()
-        clabel = 'Phase (rad)'
-    elif cmap_encoding == 'magnitude':
-        if cmap is None:
-            cmap = plt.get_cmap('viridis')
-        clabel = cmap_encoding.title()
+        if cmap_encoding == 'phase':
+            if cmap is None:
+                cmap = phase_twilight()
+            clabel = 'Phase (rad)'
+        elif cmap_encoding == 'magnitude':
+            if cmap is None:
+                cmap = plt.get_cmap('viridis')
+            clabel = cmap_encoding.title()
 
-    cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
+        cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
-    if limits is not None:
-        vmin, vmax = limits
+        if limits is not None:
+            vmin, vmax = limits
 
-    plot = ax[0].plot_trisurf(tri,
-                              xyz[2],
-                              cmap=cmap,
-                              antialiased=True,
-                              vmin=vmin,
-                              vmax=vmax,
-                              **kwargs)
+        plot = ax[0].plot_trisurf(tri,
+                                  xyz[2],
+                                  cmap=cmap,
+                                  antialiased=True,
+                                  vmin=vmin,
+                                  vmax=vmax,
+                                  **kwargs)
 
-    plot.set_array(cdata)
+        plot.set_array(cdata)
 
-    ax[0].set_box_aspect([
-        np.ptp(xyz[0]),
-        np.ptp(xyz[1]),
-        np.ptp(xyz[2])])
+        ax[0].set_box_aspect([
+            np.ptp(xyz[0]),
+            np.ptp(xyz[1]),
+            np.ptp(xyz[2])])
 
-    cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+        cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
 
-    # reduce to plot-axis, colorbar-axis will be returned as cb.ax
-    ax = ax[0]
+        # reduce to plot-axis, colorbar-axis will be returned as cb.ax
+        ax = ax[0]
 
-    ax.set_xlabel('x[m]')
-    ax.set_ylabel('y[m]')
-    ax.set_zlabel('z[m]')
+        ax.set_xlabel('x[m]')
+        ax.set_ylabel('y[m]')
+        ax.set_zlabel('z[m]')
 
     if colorbar:
         ax = [ax, cb.ax]
@@ -677,7 +717,7 @@ def balloon(
     return (ax, plot, cb)
 
 
-def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
+def voronoi_cells_sphere(sampling, round_decimals=13, ax=None, style='light'):
     """Plot the Voronoi cells of a Voronoi tesselation on a sphere.
 
     Parameters
@@ -690,6 +730,14 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     ax : AxesSubplot, None, optional
         The subplot axes to use for plotting. The used projection needs to be
         ``'3d'``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
 
     Returns
     -------
@@ -713,42 +761,43 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None):
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
 
-    fig = plt.gcf()
-    if ax is None:
-        ax = plt.gca() if fig.axes else plt.axes(projection='3d')
+    with context(style):
+        fig = plt.gcf()
+        if ax is None:
+            ax = plt.gca() if fig.axes else plt.axes(projection='3d')
 
-    if '3d' not in ax.name:
-        raise ValueError("The projection of the axis needs to be '3d'")
+        if '3d' not in ax.name:
+            raise ValueError("The projection of the axis needs to be '3d'")
 
-    if version.parse(mpl.__version__) < version.parse('3.1.0'):
-        ax.set_aspect('equal')
+        if version.parse(mpl.__version__) < version.parse('3.1.0'):
+            ax.set_aspect('equal')
 
-    # plot the unit sphere for reference (optional)
-    u = np.linspace(0, 2 * np.pi, 100)
-    v = np.linspace(0, np.pi, 100)
-    x = np.outer(np.cos(u), np.sin(v))
-    y = np.outer(np.sin(u), np.sin(v))
-    z = np.outer(np.ones(np.size(u)), np.cos(v))
-    ax.plot_surface(x, y, z, color='y', alpha=0.1)
+        # plot the unit sphere for reference (optional)
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        x = np.outer(np.cos(u), np.sin(v))
+        y = np.outer(np.sin(u), np.sin(v))
+        z = np.outer(np.ones(np.size(u)), np.cos(v))
+        ax.plot_surface(x, y, z, color='y', alpha=0.1)
 
-    ax.scatter(points[0], points[1], points[2], c='r')
+        ax.scatter(points[0], points[1], points[2], c='r')
 
-    for region in sv.regions:
-        polygon = Poly3DCollection(
-            [sv.vertices[region]], alpha=0.5, facecolor=None)
-        polygon.set_edgecolor((0, 0, 0, 1))
-        polygon.set_facecolor((1, 1, 1, 0.))
+        for region in sv.regions:
+            polygon = Poly3DCollection(
+                [sv.vertices[region]], alpha=0.5, facecolor=None)
+            polygon.set_edgecolor((0, 0, 0, 1))
+            polygon.set_facecolor((1, 1, 1, 0.))
 
-        ax.add_collection3d(polygon)
+            ax.add_collection3d(polygon)
 
-    ax.set_box_aspect([
-        np.ptp(sampling.x),
-        np.ptp(sampling.y),
-        np.ptp(sampling.z)])
+        ax.set_box_aspect([
+            np.ptp(sampling.x),
+            np.ptp(sampling.y),
+            np.ptp(sampling.z)])
 
-    ax.set_xlabel('x[m]')
-    ax.set_ylabel('y[m]')
-    ax.set_zlabel('z[m]')
+        ax.set_xlabel('x[m]')
+        ax.set_ylabel('y[m]')
+        ax.set_zlabel('z[m]')
 
     return ax
 
@@ -817,6 +866,7 @@ def pcolor_map(
         projection='mollweide',
         refine=False,
         ax=None,
+        style='light',
         **kwargs):
     """
     Plot the map projection of data points sampled on a spherical surface.
@@ -867,6 +917,14 @@ def pcolor_map(
             ``'rectilinear'``.
 
         The default is ``None``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
     **kwargs : optional
         Additional arguments passed to the tripcolor function.
 
@@ -911,40 +969,41 @@ def pcolor_map(
             triinterpolator=mtri.LinearTriInterpolator(tri, data),
             subdiv=subdiv)
 
-    fig, ax = _prepare_plot(ax, projection)
+    with context(style):
+        fig, ax = _prepare_plot(ax, projection)
 
-    if not isinstance(ax, (list, tuple, np.ndarray)):
-        ax = [ax, None]
+        if not isinstance(ax, (list, tuple, np.ndarray)):
+            ax = [ax, None]
 
-    if ax[0].name != projection:
-        raise ValueError(
-            f"The projection of the axis needs to be '{projection}'"
-            f", but is '{ax[0].name}'")
+        if ax[0].name != projection:
+            raise ValueError(
+                f"The projection of the axis needs to be '{projection}'"
+                f", but is '{ax[0].name}'")
 
-    ax[0].set_xlabel('Longitude [$^\\circ$]')
-    ax[0].set_ylabel('Latitude [$^\\circ$]')
+        ax[0].set_xlabel('Longitude [$^\\circ$]')
+        ax[0].set_ylabel('Latitude [$^\\circ$]')
 
-    extend = 'neither'
-    if limits is None:
-        limits = (data.min(), data.max())
-    else:
-        mask_min = data < limits[0]
-        data[mask_min] = limits[0]
-        mask_max = data > limits[1]
-        data[mask_max] = limits[1]
-        if np.any(mask_max) & np.any(mask_min):
-            extend = 'both'
-        elif np.any(mask_max) & ~np.any(mask_min):
-            extend = 'max'
-        elif ~np.any(mask_max) & np.any(mask_min):
-            extend = 'min'
+        extend = 'neither'
+        if limits is None:
+            limits = (data.min(), data.max())
+        else:
+            mask_min = data < limits[0]
+            data[mask_min] = limits[0]
+            mask_max = data > limits[1]
+            data[mask_max] = limits[1]
+            if np.any(mask_max) & np.any(mask_min):
+                extend = 'both'
+            elif np.any(mask_max) & ~np.any(mask_min):
+                extend = 'max'
+            elif ~np.any(mask_max) & np.any(mask_min):
+                extend = 'min'
 
-    cf = ax[0].tripcolor(
-        tri, data, cmap=cmap, vmin=limits[0], vmax=limits[1], **kwargs)
+        cf = ax[0].tripcolor(
+            tri, data, cmap=cmap, vmin=limits[0], vmax=limits[1], **kwargs)
 
-    plt.grid(True)
+        plt.grid(True)
 
-    cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
+        cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
 
     ax = ax[0]
 
@@ -963,7 +1022,8 @@ def contour_map(
         limits=None,
         projection='mollweide',
         levels=None,
-        ax=None):
+        ax=None,
+        style='light'):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real.
@@ -1019,6 +1079,14 @@ def contour_map(
             ``'rectilinear'``.
 
         The default is ``None``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
 
     Returns
     -------
@@ -1050,31 +1118,32 @@ def contour_map(
     _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     data = data.copy()
 
-    fig, ax = _prepare_plot(ax, projection)
+    with context(style):
+        fig, ax = _prepare_plot(ax, projection)
 
-    if not isinstance(ax, (list, tuple, np.ndarray)):
-        ax = [ax, None]
+        if not isinstance(ax, (list, tuple, np.ndarray)):
+            ax = [ax, None]
 
-    if ax[0].name != projection:
-        raise ValueError(
-            f"The projection of the axis needs to be '{projection}'"
-            f", but is '{ax[0].name}'")
+        if ax[0].name != projection:
+            raise ValueError(
+                f"The projection of the axis needs to be '{projection}'"
+                f", but is '{ax[0].name}'")
 
-    ax[0].set_xlabel('Longitude [$^\\circ$]')
-    ax[0].set_ylabel('Latitude [$^\\circ$]')
+        ax[0].set_xlabel('Longitude [$^\\circ$]')
+        ax[0].set_ylabel('Latitude [$^\\circ$]')
 
-    _, latitude, longitude = coordinates2latlon(coordinates)
-    cf = _combined_contour(longitude, latitude, data, limits, cmap, levels,
-                           ax[0])
+        _, latitude, longitude = coordinates2latlon(coordinates)
+        cf = _combined_contour(longitude, latitude, data, limits, cmap, levels,
+                               ax[0])
 
-    if type(levels) is int:
-        levels = mpl.ticker.MaxNLocator(levels)
+        if type(levels) is int:
+            levels = mpl.ticker.MaxNLocator(levels)
 
-    plt.grid(True)
+        plt.grid(True)
 
-    cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
-    if colorbar and levels is not None:
-        cb.set_ticks(levels)
+        cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
+        if colorbar and levels is not None:
+            cb.set_ticks(levels)
 
     ax = ax[0]
 
@@ -1091,7 +1160,8 @@ def contour(
         colorbar=True,
         limits=None,
         levels=None,
-        ax=None):
+        ax=None,
+        style='light'):
     """
     Plot the map projection of data points sampled on a spherical surface.
     The data has to be real-valued.
@@ -1142,6 +1212,14 @@ def contour(
             ``'rectilinear'``.
 
         The default is ``None``.
+    style : str
+        ``light`` or ``dark`` to use the pyfar plot styles
+        (see :py:func:`pyfar.plot.context`) or a plot style from
+        :py:data:`matplotlib.style.available`. Pass a dictionary to set
+        specific plot parameters, for example
+        ``style = {'axes.facecolor':'black'}``. Pass an empty dictionary
+        ``style = {}`` to use the currently active plotstyle. The default is
+        ``light``.
 
     Returns
     -------
@@ -1177,29 +1255,31 @@ def contour(
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
 
-    fig, ax = _prepare_plot(ax, 'rectilinear')
+    with context(style):
+        fig, ax = _prepare_plot(ax, 'rectilinear')
 
-    if not isinstance(ax, (list, tuple, np.ndarray)):
-        ax = [ax, None]
+        if not isinstance(ax, (list, tuple, np.ndarray)):
+            ax = [ax, None]
 
-    if ax[0].name != 'rectilinear':
-        raise ValueError(
-            f"The projection of the axis needs to be 'rectilinear'"
-            f", but is '{ax[0].name}'")
+        if ax[0].name != 'rectilinear':
+            raise ValueError(
+                f"The projection of the axis needs to be 'rectilinear'"
+                f", but is '{ax[0].name}'")
 
-    ax[0].set_xlabel('Longitude [$^\\circ$]')
-    ax[0].set_ylabel('Latitude [$^\\circ$]')
+        ax[0].set_xlabel('Longitude [$^\\circ$]')
+        ax[0].set_ylabel('Latitude [$^\\circ$]')
 
-    cf = _combined_contour(lon_deg, lat_deg, data, limits, cmap, levels, ax[0])
+        cf = _combined_contour(lon_deg, lat_deg, data, limits, cmap, levels,
+                               ax[0])
 
-    if type(levels) is int:
-        levels = mpl.ticker.MaxNLocator(levels)
+        if type(levels) is int:
+            levels = mpl.ticker.MaxNLocator(levels)
 
-    plt.grid(True)
+        plt.grid(True)
 
-    cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
-    if colorbar and levels is not None:
-        cb.set_ticks(levels)
+        cb = _add_colorbar(colorbar, fig, ax, cf, 'Amplitude')
+        if colorbar and levels is not None:
+            cb.set_ticks(levels)
 
     ax = ax[0]
 
