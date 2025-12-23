@@ -482,7 +482,7 @@ def spherical_harmonic_basis(
             # Condon-Shortley phase term is already included in
             # the special.spherical_harmonic function
             # so need to divide by (-1)^m
-            basis[:, acn] /= (-1) ** float(degree)
+            basis[:, acn] /= (-1) ** float(degree.squeeze())
     return basis
 
 
@@ -684,7 +684,8 @@ def spherical_harmonic_basis_real(
         if condon_shortley:
             # Condon-Shortley phase term is not included in
             # the special.spherical_harmonic function
-            basis[:, acn] *= (-1) ** float(degree)
+            print(degree, degree.shape, type(degree))
+            basis[:, acn] *= (-1) ** float(degree.squeeze())
 
     return basis
 
