@@ -4,7 +4,6 @@ from spharpy.classes.audio import (
     _atleast_3d_first_dimension)
 from spharpy import SphericalHarmonicDefinition
 import numpy as np
-import deepdiff
 
 
 def test_atleast_3d_data():
@@ -58,8 +57,7 @@ def test_sh_time_data_from_sh_definition():
             normalization='N3D',
             condon_shortley=False)
 
-    assert not deepdiff.DeepDiff(
-        time_data_def.__dict__, time_data.__dict__)
+    assert time_data == time_data_def
 
 
 def test_init_sh_frequency_data():
@@ -97,5 +95,4 @@ def test_sh_freq_data_from_sh_definition():
             normalization='N3D',
             condon_shortley=False)
 
-    assert not deepdiff.DeepDiff(
-        freq_data_def.__dict__, freq_data.__dict__)
+    assert freq_data == freq_data_def

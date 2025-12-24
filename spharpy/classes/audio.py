@@ -244,7 +244,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
             cls, sh_definition, data, times, comment="", is_complex=False):
         r"""
         Create a SphericalHarmonicTimeData class object from
-        SphericalHarmonicsDefinition object, data, and times.
+        SphericalHarmonicDefinition object, data, and times.
 
         Parameters
         ----------
@@ -354,7 +354,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
             cls, sh_definition, data, frequencies, comment=""):
         r"""
         Create a SphericalHarmonicFrequencyData class object from
-        SphericalHarmonicsDefinition object, data, and frequencies
+        SphericalHarmonicDefinition object, data, and frequencies
         rate.
 
         Parameters
@@ -405,7 +405,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
 
 class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     """
-    Create audio object with spherical harmonics coefficients in time or
+    Create audio object with spherical harmonic coefficients in time or
     frequency domain.
 
     Objects of this class contain spherical harmonic coefficients which are
@@ -505,8 +505,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             cls, sh_definition, data, sampling_rate, domain='time',
             fft_norm='none', comment="", is_complex=False):
         r"""
-        Create a SphericalHarmonicsSignal class object from
-        SphericalHarmonicsDefinition object, data, and sampling
+        Create a SphericalHarmonicSignal class object from
+        SphericalHarmonicDefinition object, data, and sampling
         rate.
 
         Parameters

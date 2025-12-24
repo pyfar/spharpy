@@ -3,7 +3,6 @@ from spharpy.classes import SphericalHarmonicSignal
 from spharpy.classes import SphericalHarmonicDefinition
 import numpy as np
 import re
-import deepdiff
 
 
 def test_spherical_harmonic_signal_init():
@@ -45,8 +44,7 @@ def test_sh_signal_from_sh_definition():
                                      channel_convention='ACN',
                                      normalization='N3D',
                                      condon_shortley=False)
-    assert not deepdiff.DeepDiff(
-        signal_def.__dict__, signal.__dict__)
+    assert signal_def == signal
 
 
 def test_spherical_harmonic_signal_init_condon_shortley():
