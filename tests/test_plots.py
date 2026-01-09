@@ -486,3 +486,57 @@ def test_ax_input(function, projection, ax_option, equal_area_sampling):
 
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
+
+
+@pytest.mark.parametrize(
+        ('function', 'kind'),
+        [(sp.plot.scatter, 'coordinate_plot'),
+         (sp.plot.voronoi_cells_sphere, 'coordinate_plot'),
+         (sp.plot.pcolor_sphere, 'data_plot'),
+         (sp.plot.pcolor_map, 'data_plot'),
+         (sp.plot.balloon, 'data_plot'),
+         (sp.plot.balloon_wireframe, 'data_plot'),
+         (sp.plot.contour, 'data_plot'),
+         (sp.plot.contour_map, 'data_plot')],
+)
+@pytest.mark.parametrize(
+        'style',
+        [('light'), ('dark')],
+)
+def test_pyfar_styles(function, style, kind, equal_area_sampling):
+    """Test style-parameter with pyfar plot styles 'light' and 'dark'."""
+    coords, data = equal_area_sampling
+    filename = f'{function.__name__}_style_{style}'
+
+    if kind == 'coordinate_plot':
+        function(coords, style=style)
+    elif kind == 'data_plot':
+        function(coords, data, style=style)
+
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+
+
+@pytest.mark.parametrize(
+        ('function', 'kind'),
+        [(sp.plot.scatter, 'coordinate_plot'),
+         (sp.plot.voronoi_cells_sphere, 'coordinate_plot'),
+         (sp.plot.pcolor_sphere, 'data_plot'),
+         (sp.plot.pcolor_map, 'data_plot'),
+         (sp.plot.balloon, 'data_plot'),
+         (sp.plot.balloon_wireframe, 'data_plot'),
+         (sp.plot.contour, 'data_plot'),
+         (sp.plot.contour_map, 'data_plot')],
+)
+def test_custom_style(function, kind, equal_area_sampling):
+    """Test style parameter with custom value."""
+    coords, data = equal_area_sampling
+    style = {'axes.facecolor': '#000000'}
+
+    if kind == 'coordinate_plot':
+        function(coords, style=style)
+    elif kind == 'data_plot':
+        function(coords, data, style=style)
+
+    facecolor = mpl.colors.to_hex(plt.gca().patch.get_facecolor())
+    assert facecolor == style['axes.facecolor']
