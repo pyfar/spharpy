@@ -17,7 +17,7 @@ from scipy.stats import circmean
 from .cmap import phase_twilight
 
 from pyfar.plot._utils import _add_colorbar
-from pyfar.plot.utils import context
+from pyfar.plot.utils import context as pyfar_plot_context
 from spharpy.samplings import spherical_voronoi
 from spharpy.plot._utils import _prepare_plot
 from pyfar.classes.coordinates import sph2cart
@@ -86,7 +86,7 @@ def scatter(coordinates, ax=None, style='light', **kwargs):
     if not isinstance(coordinates, pf.Coordinates):
         raise ValueError("coordinates must be a coordinates object.")
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig = plt.gcf()
         if ax is None:
             ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -345,7 +345,7 @@ def pcolor_sphere(
 
     tri, xyz = _triangulation_sphere(coordinates, np.ones_like(data))
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, '3d')
 
         if not isinstance(ax, (list, tuple, np.ndarray)):
@@ -499,7 +499,7 @@ def balloon_wireframe(
 
     tri, xyz = _triangulation_sphere(coordinates, data)
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, '3d')
 
         if not isinstance(ax, (list, tuple, np.ndarray)):
@@ -663,7 +663,7 @@ def balloon(
 
     tri, xyz = _triangulation_sphere(coordinates, data)
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, '3d')
 
         # _add_colorbar expects a list of axes
@@ -761,7 +761,7 @@ def voronoi_cells_sphere(sampling, round_decimals=13, ax=None, style='light'):
     sv.sort_vertices_of_regions()
     points = sampling.cartesian.T
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig = plt.gcf()
         if ax is None:
             ax = plt.gca() if fig.axes else plt.axes(projection='3d')
@@ -969,7 +969,7 @@ def pcolor_map(
             triinterpolator=mtri.LinearTriInterpolator(tri, data),
             subdiv=subdiv)
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, projection)
 
         if not isinstance(ax, (list, tuple, np.ndarray)):
@@ -1118,7 +1118,7 @@ def contour_map(
     _check_input_parameters(coordinates, data, cmap, colorbar, limits, ax)
     data = data.copy()
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, projection)
 
         if not isinstance(ax, (list, tuple, np.ndarray)):
@@ -1255,7 +1255,7 @@ def contour(
     lat_deg = latitude * 180/np.pi
     lon_deg = longitude * 180/np.pi
 
-    with context(style):
+    with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, 'rectilinear')
 
         if not isinstance(ax, (list, tuple, np.ndarray)):
