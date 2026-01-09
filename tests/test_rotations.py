@@ -136,6 +136,9 @@ def test_wigner_d_rot():
 
 
 def test_SphericalHarmonicRotation():
+    """Test SphericalHarmonicRotation creation and check against reference
+    for a 90 deg rotation around the z-axis.
+    """
     n_max = 2
     definition = SphericalHarmonicDefinition(n_max=n_max)
     rot_angle_z = np.pi/2
@@ -184,6 +187,11 @@ def test_SphericalHarmonicRotation():
 
 
 def test_SphericalHarmonicRotation_apply():
+    """
+    Test application of SphericalHarmonicRotation to SphericalHarmonicSignal
+    using the apply method, the multiplication operator, and the rotation
+    matrix.
+    """
     n_max = 2
     spherical_harmonics = SphericalHarmonics(
         n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
@@ -223,6 +231,7 @@ def test_SphericalHarmonicRotation_apply():
 
 
 def test_SphericalHarmonicRotation_mul_rotations():
+    """Test multiplication of two SphericalHarmonicRotation objects."""
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
     rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
@@ -239,6 +248,7 @@ def test_SphericalHarmonicRotation_mul_rotations():
 
 
 def test_SphericalHarmonicRotation_mul_invalid():
+    """Test if invalid multiplication operations raise errors."""
     rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
 
     with pytest.raises(ValueError, match="Multiplication is only supported"):
@@ -246,6 +256,7 @@ def test_SphericalHarmonicRotation_mul_invalid():
 
 
 def test_SphericalHarmonicRotation_invalid_definition():
+    """Test if invalid spherical harmonic definitions raise errors."""
     rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
 
     definition = SphericalHarmonicDefinition(
