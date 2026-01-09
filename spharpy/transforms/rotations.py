@@ -19,7 +19,7 @@ from typing import Union
 class SphericalHarmonicRotation(ScipyRotation):
     """Class for rotations of coordinates and spherical harmonic expansions.
 
-    The class extends the :py:class:`~scipy.spatial.transform.Rotation` class
+    The class extends the :py:class:`scipy.spatial.transform.Rotation` class
     and provides methods to express the rotation as spherical harmonic rotation
     matrices as well as to apply the rotation to spherical harmonic data
     objects.
@@ -29,8 +29,8 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     To create a rotation object, use one of the available
     :py:meth:`~scipy.spatial.transform.Rotation.from_*` methods, e.g.,
-    :py:meth:`~scipy.spatial.transform.Rotation.from_euler` or
-    :py:meth:`~scipy.spatial.transform.Rotation.from_quat` for creation using
+    :py:meth:`scipy.spatial.transform.Rotation.from_euler` or
+    :py:meth:`scipy.spatial.transform.Rotation.from_quat` for creation using
     Euler angles or quaternions, respectively. Also see the examples below.
 
 
@@ -62,7 +62,7 @@ class SphericalHarmonicRotation(ScipyRotation):
         >>>     'z', angle)
 
         The spherical harmonic rotation matrix can be obtained and applied
-        to the using the following:
+        to the spherical harmonic coefficients using the following:
 
         >>> D = R.as_spherical_harmonic_matrix(definition)
         >>> rotated_coefficients = D @ coefficients
@@ -96,8 +96,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         :class:`~spharpy.SphericalHarmonicSignal`.
 
         The following example demonstrates the application to an arbitrary
-        :class:`~spharpy.SphericalHarmonicFrequencyData` object containign the
-        same series expansion as above:
+        :class:`~spharpy.SphericalHarmonicFrequencyData` object containing the
+        same series expansion in `frequency_data.freq` as above:
 
         >>> frequency_data = spharpy.SphericalHarmonicFrequencyData(
         >>>     np.atleast_2d(coefficients).T, frequencies=1e3,
@@ -106,15 +106,35 @@ class SphericalHarmonicRotation(ScipyRotation):
         >>>     channel_convention=definition.channel_convention,
         >>>     condon_shortley=definition.condon_shortley)
 
-        The rotation can now be applied using the `*` operator:
-        Note that due to the multiplication with itself, the rotation
-        is applied twice, which corresponds to a rotation of 90 degrees around
-        the z-axis.
+        The rotation can now be applied using the `apply` method
 
-        >>> rotated_frequency_data = R * R * frequency_data
+        >>> rotated_frequency_data = R.apply(frequency_data)
+
+        or the `*` operator
+
+        >>> rotated_frequency_data = R * frequency_data
 
         The effect of the rotation can again be visualized by evaluating the
         series expansion on the unit sphere:
+
+        >>> _, axs = plt.subplots(
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ frequency_data.freq),
+        >>>     ax=axs[0], colorbar=False)
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ rotated_frequency_data.freq),
+        >>>     ax=axs[1], colorbar=False)
+
+    .. plot::
+        :context: close-figs
+
+        Multiple rotations can be combined by multiplying the respective
+        :class:`~spharpy.transforms.SphericalHarmonicRotation` objects.
+
+        >>> rotated_frequency_data = R * R * frequency_data
+
+        This corresponds to a rotation of 90 degrees around the z-axis.
 
         >>> _, axs = plt.subplots(
         >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
