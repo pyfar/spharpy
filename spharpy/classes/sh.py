@@ -253,12 +253,12 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
           that this requires `coordinates` to be a :py:class:`SamplingSphere`
           object with weights summing to :math:`4\pi`.
         - ``'pseudo_inverse'``: compute the inverse via the pseudo-inverse.
-          Note that this requires `coordinates? to be a
+          Note that this requires `coordinates` to be a
           :py:class:`SamplingSphere` object.
-        - ``None``: denotes that the inverse is not defined an cannot be
+        - ``None``: denotes that the inverse is not defined and cannot be
           computed.
 
-          The default is ``'auto'``.
+        The default is ``'auto'``.
 
     condon_shortley : bool or str, optional
         Whether to include the Condon-Shortley phase term. If ``True``,
@@ -316,9 +316,9 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
               :py:class:`SamplingSphere` object with weights summing to
               :math:`4\pi`.
             - ``'pseudo_inverse'``: compute the inverse via the pseudo-inverse.
-              Note that this requires `coordinates? to be a
+              Note that this requires `coordinates` to be a
               :py:class:`SamplingSphere` object.
-            - ``None``: denotes that the inverse is not defined an cannot be
+            - ``None``: denotes that the inverse is not defined and cannot be
               computed.
 
             The default is ``'auto'``.
