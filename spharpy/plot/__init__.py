@@ -37,7 +37,7 @@ Example
     >>> cax = fig.add_subplot(gs[1])
     >>>
     >>> # Plot
-    >>> spharpy.plot.balloon(coords, data, ax = [ax, cax])
+    >>> spharpy.plot.balloon(coords, data, ax=[ax, cax])
     >>> plt.show()
 """
 
