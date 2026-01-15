@@ -39,8 +39,6 @@ Example
     >>> # Plot
     >>> spharpy.plot.balloon(coords, data, ax = [ax, cax])
     >>> plt.show()
-
-
 """
 
 from .spatial import (
