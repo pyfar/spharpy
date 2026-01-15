@@ -11,8 +11,8 @@ don't always work correctly.
 
 This can cause elements to overlap, such as colorbar and axes.
 To prevent this, spharpy plot functions enable passing a list of axes for
-the plot itself and the colorbar. The best way to handle space in the layout
-is :class:`matplotlib.gridspec.GridSpec`.
+the plot itself and the colorbar. The best way to handle the layout of a
+figure is :class:`matplotlib.gridspec.GridSpec`.
 
 
 Example
