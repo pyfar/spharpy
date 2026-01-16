@@ -224,6 +224,11 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     r"""
     Compute spherical harmonic basis matrices, their inverses, and gradients.
 
+    The the basis functions that are used to build the matrices can be
+    configured with the parameters described below. See the
+    :py:mod:`spherical harmonic documentation<spharpy.classes.sh>` for a
+    detailed description.
+
     Parameters
     ----------
     n_max : int
@@ -245,10 +250,6 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     inverse_method : str, ``None``, optional
         Method for computing the inverse transform:
 
-        - ``'auto'``: If coordinates are a :py:class:`SamplingSphere`, use
-          ``'quadrature'`` when applicable (see below) and ``'pseudo_inverse'``
-          otherwise. If coordinates are a :py:class:`~pyfar.Coordinates` object
-          `None` is used.
         - ``'quadrature'``: compute the inverse via numerical quadrature. Note
           that this requires `coordinates` to be a :py:class:`SamplingSphere`
           object with weights summing to :math:`4\pi`.
@@ -257,6 +258,10 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
           :py:class:`SamplingSphere` object.
         - ``None``: denotes that the inverse is not defined and cannot be
           computed.
+        - ``'auto'``: If coordinates are a :py:class:`SamplingSphere`, use
+          ``'quadrature'`` when applicable and ``'pseudo_inverse'`` otherwise.
+          If coordinates are a :py:class:`~pyfar.Coordinates` object ``None``
+          is used.
 
         The default is ``'auto'``.
 
@@ -307,10 +312,6 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         inverse_method : str, ``None``, optional
             Method for computing the inverse transform:
 
-            - ``'auto'``: If coordinates are a :py:class:`SamplingSphere`, use
-              ``'quadrature'`` when applicable (see below) and
-              ``'pseudo_inverse'`` otherwise. If coordinates are a
-              :py:class:`~pyfar.Coordinates` object `None` is used.
             - ``'quadrature'``: compute the inverse via numerical quadrature.
               Note that this requires `coordinates` to be a
               :py:class:`SamplingSphere` object with weights summing to
@@ -320,6 +321,10 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
               :py:class:`SamplingSphere` object.
             - ``None``: denotes that the inverse is not defined and cannot be
               computed.
+              - ``'auto'``: If coordinates are a :py:class:`SamplingSphere`,
+              use ``'quadrature'`` when applicable and ``'pseudo_inverse'``
+              otherwise. If coordinates are a :py:class:`~pyfar.Coordinates`
+              object ``None`` is used.
 
             The default is ``'auto'``.
 
