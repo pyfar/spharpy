@@ -78,7 +78,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         >>>     definition, coordinates=sampling)
         ...
         >>> _, axs = plt.subplots(
-        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5),
+        >>>     layout='constrained')
         >>> spharpy.plot.balloon_wireframe(
         >>>     sampling, Y.basis @ coefficients, ax=axs[0], colorbar=False)
         >>> spharpy.plot.balloon_wireframe(
@@ -118,7 +119,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         series expansion on the unit sphere:
 
         >>> _, axs = plt.subplots(
-        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5),
+        >>>     layout='constrained')
         >>> spharpy.plot.balloon_wireframe(
         >>>     sampling, np.squeeze(Y.basis @ frequency_data.freq),
         >>>     ax=axs[0], colorbar=False)
@@ -137,7 +139,8 @@ class SphericalHarmonicRotation(ScipyRotation):
         This corresponds to a rotation of 90 degrees around the z-axis.
 
         >>> _, axs = plt.subplots(
-        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5))
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5),
+        >>>     layout='constrained')
         >>> spharpy.plot.balloon_wireframe(
         >>>     sampling, np.squeeze(Y.basis @ frequency_data.freq),
         >>>     ax=axs[0], colorbar=False)
