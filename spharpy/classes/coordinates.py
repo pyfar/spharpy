@@ -64,7 +64,8 @@ class SamplingSphere(pf.Coordinates):
             Z coordinate of a right handed Cartesian coordinate system in
             meters (-\infty < z < \infty).
         n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
+            Maximum spherical harmonic order of the sampling grid. If
+            provided, it must be an integer greater or equal to 0.
             The default is ``None``.
         weights: array like, number, optional
             Weighting factors for coordinate points. Their sum must equal to
@@ -509,12 +510,12 @@ class SamplingSphere(pf.Coordinates):
 
     @property
     def n_max(self):
-        """Get the maximum spherical harmonic order."""
+        """Get or set the spherical harmonic order."""
         return self._n_max
 
     @n_max.setter
     def n_max(self, value):
-        """Set the maximum spherical harmonic order."""
+        """Get or set the spherical harmonic order."""
         assert value >= 0
 
         if value is None:

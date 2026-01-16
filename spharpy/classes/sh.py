@@ -162,23 +162,24 @@ class SphericalHarmonicDefinition(_SphericalHarmonicBase):
     Attributes
     ----------
     n_max : int, optional
-        Maximum spherical harmonic order. The default is ``0``.
+        Maximum spherical harmonic order. Must be an integer greater or equal
+        to 0. The default is ``0``.
     basis_type : str
-        Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
-        The default is ``'real'``.
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``. The default is ``'real'``.
     channel_convention : str, optional
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
-        The default is ``'ACN'``. Note that ``'FuMa'`` is only supported up to
-        3rd order.
+        ``'FuMa'`` is only supported up to 3rd order.
+        The default is ``'ACN'``.
     normalization : str, optional
-        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
-        ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``. Note that
-        ``'maxN'`` is only supported up to 3rd order.
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'SN3D'``,
+        ``'SNM'``, or ``'maxN'``. ``'maxN'`` is only supported up to 3rd order.
+        The default is ``'N3D'``.
     condon_shortley : bool, str, optional
-        Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
-        if ``False`` it is not included. The default is ``'auto'``, which
-        corresponds to ``True`` for type ``complex`` and ``False`` for type
-        ``real``.
+         Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``, which corresponds to
+        ``True`` for complex `basis_type` and ``False`` for real `basis_type`.
     """
 
     def __init__(
@@ -300,7 +301,7 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
 
     @classmethod
     def from_definition(cls, definition, coordinates, inverse_method="auto"):
-        """
+        r"""
         Create SphericalHarmonics instance from SphericalHarmonicDefinition.
 
         Parameters
