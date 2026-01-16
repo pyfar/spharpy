@@ -154,8 +154,8 @@ class SphericalHarmonicRotation(ScipyRotation):
     References
     ----------
 
-    .. [#] B. Rafaely, Fundamentals of Spherical Array Processing, 1st ed.,
-           vol. 8. Springer-Verlag GmbH Berlin Heidelberg, 2015.
+    .. [#] B. Rafaely, Fundamentals of Spherical Array Processing, 2nd ed.,
+           vol. 8. Springer-Verlag GmbH Berlin Heidelberg, 2019.
     .. [#] M. A. Blanco, M. Flórez, and M. Bermejo, “Evaluation of the
            rotation matrices in the basis of real spherical harmonics,”
            Journal of Molecular Structure: THEOCHEM,  vol. 419, no. 1-3,
@@ -197,7 +197,7 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     def as_spherical_harmonic_matrix(
             self,
-            spherical_harmonic_definition : SphericalHarmonicDefinition,
+            spherical_harmonic_definition: SphericalHarmonicDefinition,
         ) -> np.ndarray:
         """Express the rotation as spherical harmonic rotation matrices.
 
@@ -251,7 +251,7 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     def apply(
             self,
-            target : Union[
+            target: Union[
                 SphericalHarmonicTimeData,
                 SphericalHarmonicFrequencyData,
                 SphericalHarmonicSignal],
@@ -299,7 +299,7 @@ class SphericalHarmonicRotation(ScipyRotation):
         else:
             raise ValueError(
                 "Multiplication is only supported for "
-                "SphericalHarmonicRotation and SphericalHarmonic* audio "
+                "SphericalHarmonicRotation and SphericalHarmonic audio "
                 "objects.")
 
 
