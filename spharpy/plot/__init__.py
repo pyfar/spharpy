@@ -1,7 +1,7 @@
 """
 Plotting functions for spherical data.
 
-Troubleshooting - Overlapping Elements
+Adjusting the Plot Layout
 --------------------------------------
 
 A common issue with matplotlib 3D axes objects is that layout-options like
