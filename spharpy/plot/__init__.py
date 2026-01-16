@@ -16,7 +16,7 @@ figure is :class:`matplotlib.gridspec.GridSpec`.
 
 
 Example
-~~~~~~~~
+~~~~~~~
 
 .. plot::
 
