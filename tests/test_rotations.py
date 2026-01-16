@@ -13,6 +13,7 @@ from spharpy.classes.audio import (
     SphericalHarmonicSignal,
     SphericalHarmonicTimeData,
     SphericalHarmonicFrequencyData)
+from scipy.spatial.transform import Rotation
 import pyfar
 
 
@@ -200,7 +201,6 @@ def test_SphericalHarmonicRotation_apply():
         n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    from scipy.spatial.transform import Rotation
     scipy_rot = Rotation.from_rotvec(rot_vec)
     rot = SphericalHarmonicRotation(scipy_rot.as_quat())
 
@@ -246,7 +246,6 @@ def test_SphericalHarmonicRotation_apply_time_data():
         n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    from scipy.spatial.transform import Rotation
     scipy_rot = Rotation.from_rotvec(rot_vec)
     rot = SphericalHarmonicRotation(scipy_rot.as_quat())
 
@@ -293,7 +292,6 @@ def test_SphericalHarmonicRotation_apply_frequency_data():
         n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    from scipy.spatial.transform import Rotation
     scipy_rot = Rotation.from_rotvec(rot_vec)
     rot = SphericalHarmonicRotation(scipy_rot.as_quat())
 
