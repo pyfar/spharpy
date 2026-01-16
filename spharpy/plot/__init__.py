@@ -1,5 +1,5 @@
 """
-Plotting functions for spherical data.
+This module offers plotting functions for spherical data based on Matplotlib.
 
 Adjusting the Plot Layout
 --------------------------------------
