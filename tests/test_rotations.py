@@ -9,7 +9,10 @@ from spharpy.classes.sh import (
     SphericalHarmonicDefinition, SphericalHarmonics)
 import pytest
 from pyfar import Coordinates
-from spharpy.classes.audio import SphericalHarmonicSignal
+from spharpy.classes.audio import (
+    SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData)
 import pyfar
 
 
@@ -197,7 +200,9 @@ def test_SphericalHarmonicRotation_apply():
         n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+    from scipy.spatial.transform import Rotation
+    scipy_rot = Rotation.from_rotvec(rot_vec)
+    rot = SphericalHarmonicRotation(scipy_rot.as_quat())
 
     noise = pyfar.signals.noise(512)
 
@@ -227,6 +232,103 @@ def test_SphericalHarmonicRotation_apply():
     np.testing.assert_allclose(
         sh_signal_rotated._data,
         sh_signal_rot_operator._data,
+        atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_apply_time_data():
+    """
+    Test application of SphericalHarmonicRotation to SphericalHarmonicTimeData
+    using the apply method, the multiplication operator, and the rotation
+    matrix.
+    """
+    n_max = 2
+    spherical_harmonics = SphericalHarmonics(
+        n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    from scipy.spatial.transform import Rotation
+    scipy_rot = Rotation.from_rotvec(rot_vec)
+    rot = SphericalHarmonicRotation(scipy_rot.as_quat())
+
+    # Create time data with non-equidistant sampling
+    times = np.array([0.0, 0.1, 0.3, 0.6, 1.0])
+    data = np.random.rand(1, spherical_harmonics.basis.shape[1], len(times))
+
+    sh_time_data = SphericalHarmonicTimeData(
+        data,
+        times,
+        basis_type=spherical_harmonics.basis_type,
+        normalization=spherical_harmonics.normalization,
+        channel_convention=spherical_harmonics.channel_convention,
+        condon_shortley=spherical_harmonics.condon_shortley,
+    )
+
+    sh_time_data_rotated = rot.apply(sh_time_data)
+
+    rot_mat = rot.as_spherical_harmonic_matrix(sh_time_data)
+
+    sh_data_rotated = rot_mat @ sh_time_data._data
+
+    np.testing.assert_allclose(
+        sh_time_data_rotated._data,
+        sh_data_rotated,
+        atol=1e-10)
+
+    sh_time_data_rot_operator = rot * sh_time_data
+
+    np.testing.assert_allclose(
+        sh_time_data_rotated._data,
+        sh_time_data_rot_operator._data,
+        atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_apply_frequency_data():
+    """
+    Test application of SphericalHarmonicRotation to
+    SphericalHarmonicFrequencyData using the apply method, the multiplication
+    operator, and the rotation matrix.
+    """
+    n_max = 2
+    spherical_harmonics = SphericalHarmonics(
+        n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    from scipy.spatial.transform import Rotation
+    scipy_rot = Rotation.from_rotvec(rot_vec)
+    rot = SphericalHarmonicRotation(scipy_rot.as_quat())
+
+    # Create frequency data with non-equidistant bins
+    frequencies = np.array([0.0, 100.0, 500.0, 1000.0, 2000.0])
+    data = np.random.rand(
+        1, spherical_harmonics.basis.shape[1], len(frequencies)
+    ) + 1j * np.random.rand(
+        1, spherical_harmonics.basis.shape[1], len(frequencies))
+
+    sh_freq_data = SphericalHarmonicFrequencyData(
+        data,
+        frequencies,
+        basis_type=spherical_harmonics.basis_type,
+        normalization=spherical_harmonics.normalization,
+        channel_convention=spherical_harmonics.channel_convention,
+        condon_shortley=spherical_harmonics.condon_shortley,
+    )
+
+    sh_freq_data_rotated = rot.apply(sh_freq_data)
+
+    rot_mat = rot.as_spherical_harmonic_matrix(sh_freq_data)
+
+    sh_data_rotated = rot_mat @ sh_freq_data._data
+
+    np.testing.assert_allclose(
+        sh_freq_data_rotated._data,
+        sh_data_rotated,
+        atol=1e-10)
+
+    sh_freq_data_rot_operator = rot * sh_freq_data
+
+    np.testing.assert_allclose(
+        sh_freq_data_rotated._data,
+        sh_freq_data_rot_operator._data,
         atol=1e-10)
 
 
