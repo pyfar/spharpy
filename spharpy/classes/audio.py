@@ -514,7 +514,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         sh_definition : SphericalHarmonicDefinition
             The spherical harmonic definition.
         data : ndarray, double
-            Raw data of the spherical harmonics signal in the time or
+            Raw data of the spherical harmonic signal in the time or
             frequency domain. The data should have at least 2 dimensions, with
             the last dimension representing the time domain
             samples/frequency domain bins, the second to last the spherical
