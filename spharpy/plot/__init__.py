@@ -2,7 +2,7 @@
 This module offers plotting functions for spherical data based on Matplotlib.
 
 Adjusting the Plot Layout
---------------------------------------
+-------------------------
 
 A common issue with matplotlib 3D axes objects is that layout-options like
 :func:`matplotlib.pyplot.tight_layout` or
