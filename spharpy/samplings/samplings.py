@@ -592,7 +592,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
     theta_angles = np.arccos(legendre)
 
-    phi_angles = np.arange(0, 2 * np.pi, 2 * np.pi / n_phi)
+    phi_angles = np.linspace(0, 2 * np.pi - (2 * np.pi / n_phi), n_phi)
     theta, phi = np.meshgrid(theta_angles, phi_angles)
 
     # compute the sampling weights
