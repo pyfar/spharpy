@@ -511,6 +511,7 @@ def test_hyperinterpolation_errors_radius(radius):
             ValueError, match='radius must be a single positive value'):
         samplings.hyperinterpolation(1, radius)
 
+
 def test_sph_gaussian_higher_order():
     s = samplings.gaussian(n_max=121)
     assert s.csize == (2 * (121 + 1)**2)
