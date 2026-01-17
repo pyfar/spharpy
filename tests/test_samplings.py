@@ -514,4 +514,4 @@ def test_hyperinterpolation_errors_radius(radius):
 def test_sph_gaussian_higher_order():
     s = samplings.sph_gaussian(sh_order=121)
     assert s.csize == (2 * (121 + 1)**2)
-    assert np.sum(s.weights) == 1
+    npt.assert_allclose(np.sum(s.weights), 1)
