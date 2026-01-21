@@ -592,7 +592,7 @@ def gaussian(n_points=None, n_max=None, radius=1.):
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
     theta_angles = np.arccos(legendre)
 
-    phi_angles = np.arange(0, 2 * np.pi, 2 * np.pi / n_phi)
+    phi_angles = np.linspace(0, 2 * np.pi - (2 * np.pi / n_phi), n_phi)
     theta, phi = np.meshgrid(theta_angles, phi_angles)
 
     # compute the sampling weights
@@ -1154,7 +1154,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
                              Valid orders are: {}.".format(
                              ', '.join(str_orders)))
 
-        n_points = int(degrees[orders == n_max])
+        n_points = int(degrees[orders == n_max].squeeze())
 
     # check if n_points is available
     if n_points not in degrees:
@@ -1163,7 +1163,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
                          are: {}.".format(', '.join(str_degrees)))
 
     # calculate n_max
-    n_max = int(orders[degrees == n_points])
+    n_max = int(orders[degrees == n_points].squeeze())
 
     # get the samlpling
     leb = lebedev_sphere(n_points)
@@ -1322,7 +1322,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
                               ', '.join(str_orders)))
 
         # assign n_points
-        n_points = int(points[orders == n_max])
+        n_points = int(points[orders == n_max].squeeze())
     else:
         # check if n_points is available
         if n_points not in points:
@@ -1331,7 +1331,7 @@ def fliege(n_points=None, n_max=None, radius=1.):
                             are: {}.".format(', '.join(str_points)))
 
         # assign n_max
-        n_max = int(orders[points == n_points])
+        n_max = int(orders[points == n_points].squeeze())
 
     # get the sampling points
     fliege = sio.loadmat(os.path.join(

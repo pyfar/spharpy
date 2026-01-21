@@ -239,6 +239,44 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         TimeData.__init__(self, data=data, times=times, comment=comment,
                           is_complex=is_complex)
 
+    @classmethod
+    def from_definition(
+            cls, sh_definition, data, times, comment="", is_complex=False):
+        r"""
+        Create a SphericalHarmonicTimeData class object from
+        SphericalHarmonicDefinition object, data, and times.
+
+        Parameters
+        ----------
+        sh_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
+        data : array, double
+            Raw data in the time domain. The data should have at least 2
+            dimensions, with the last dimension representing the time domain
+            samples, the second to last the spherical harmonic coefficients,
+            and any leading dimensions representing optional channels.
+            Accordingly, the data should follow the 'C' memory layout, e.g.
+            data of ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical
+            harmonic coefficients with 1024 samples each. The data can be
+            ``int``, ``float`` or ``complex``. Data of type ``int`` is
+            converted to ``float``.
+        times : array, double
+            Times in seconds at which the data is sampled. The number of times
+            must match the size of the last dimension of `data`, i.e.,
+            ``data.shape[-1]``.
+        comment : str
+            A comment related to `data`. The default is ``None``.
+        is_complex : bool, optional
+            A flag which indicates if the time data are real or complex-valued.
+            The default is ``False``.
+        """
+        return cls(data, times,
+                   basis_type=sh_definition.basis_type,
+                   normalization=sh_definition.normalization,
+                   channel_convention=sh_definition.channel_convention,
+                   condon_shortley=sh_definition.condon_shortley,
+                   comment=comment, is_complex=is_complex)
+
     @property
     def time(self):
         """Return or set the time data."""
@@ -311,6 +349,41 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
                                comment=comment)
 
+    @classmethod
+    def from_definition(
+            cls, sh_definition, data, frequencies, comment=""):
+        r"""
+        Create a SphericalHarmonicFrequencyData class object from
+        SphericalHarmonicDefinition object, data, and frequencies
+        rate.
+
+        Parameters
+        ----------
+        sh_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
+        data : ndarray, double
+            Raw data in the frequency domain. The data should have at least
+            2 dimensions, with the last dimension representing the frequency
+            domain bins, the second to last the spherical harmonic
+            coefficients, and any leading dimensions representing optional
+            channels. Accordingly, the data should follow the 'C' memory
+            layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4
+            spherical harmonic coefficients with 1024 frequency bins each. The
+            data can be ``int``, ``float`` or ``complex``. Data of type
+            ``int`` is converted to ``float``.
+        frequencies : array, double
+            Frequencies of the data in Hz. The number of frequencies must match
+            the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
+        comment : str
+            A comment related to `data`. The default is ``None``.
+        """
+        return cls(data, frequencies,
+                   basis_type=sh_definition.basis_type,
+                   normalization=sh_definition.normalization,
+                   channel_convention=sh_definition.channel_convention,
+                   condon_shortley=sh_definition.condon_shortley,
+                   comment=comment)
+
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
@@ -332,7 +405,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
 
 class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     """
-    Create audio object with spherical harmonics coefficients in time or
+    Create audio object with spherical harmonic coefficients in time or
     frequency domain.
 
     Objects of this class contain spherical harmonic coefficients which are
@@ -426,6 +499,57 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
                         comment=comment, is_complex=is_complex)
+
+    @classmethod
+    def from_definition(
+            cls, sh_definition, data, sampling_rate, domain='time',
+            fft_norm='none', comment="", is_complex=False):
+        r"""
+        Create a SphericalHarmonicSignal class object from
+        SphericalHarmonicDefinition object, data, and sampling
+        rate.
+
+        Parameters
+        ----------
+        sh_definition : SphericalHarmonicDefinition
+            The spherical harmonic definition.
+        data : ndarray, double
+            Raw data of the spherical harmonic signal in the time or
+            frequency domain. The data should have at least 2 dimensions, with
+            the last dimension representing the time domain
+            samples/frequency domain bins, the second to last the spherical
+            harmonic coefficients, and any leading dimensions representing
+            optional channels. Accordingly, the data should follow the 'C'
+            memory layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel
+            with 4 spherical harmonic coefficients with 1024 samples or
+            frequency bins each. Time data is converted to ``float``.
+            Frequency is converted to ``complex`` and must be provided as
+            single sided spectra, i.e., for all frequencies between 0 Hz and
+            half the sampling rate.
+        sampling_rate : double
+            Sampling rate in Hz
+        domain : ``'time'``, ``'freq'``, optional
+            Domain of data. The default is ``'time'``
+        fft_norm : str, optional
+            The normalization of the Discrete Fourier Transform (DFT). Can be
+            ``'none'``, ``'unitary'``, ``'amplitude'``, ``'rms'``, ``'power'``,
+            or ``'psd'``. See :py:func:`~pyfar.dsp.fft.normalization`
+            for more information. The default is ``'none'``, which is typically
+            used for energy signals, such as impulse responses.
+        comment : str
+            A comment related to `data`. The default is ``None``.
+        is_complex : bool, optional
+            Specifies if the underlying time domain data are complex
+            or real-valued. If ``True`` and `domain` is ``'time'``, the
+            input data will be cast to complex. The default is ``False``.
+        """
+        return cls(data, sampling_rate,
+                   basis_type=sh_definition.basis_type,
+                   normalization=sh_definition.normalization,
+                   channel_convention=sh_definition.channel_convention,
+                   condon_shortley=sh_definition.condon_shortley,
+                   domain=domain, fft_norm=fft_norm,
+                   comment=comment, is_complex=is_complex)
 
     @property
     def freq(self):

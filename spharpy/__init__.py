@@ -6,11 +6,16 @@ __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
 __version__ = '0.6.2'
 
-from .classes.sh import SphericalHarmonics
+from .classes.sh import (
+    SphericalHarmonics,
+    SphericalHarmonicDefinition,
+)
 from .classes.coordinates import SamplingSphere
-from .classes.audio import SphericalHarmonicSignal
-from .classes.audio import SphericalHarmonicTimeData
-from .classes.audio import SphericalHarmonicFrequencyData
+from .classes.audio import (
+    SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData,
+)
 from . import spherical
 from . import samplings
 from . import plot
@@ -24,6 +29,7 @@ from . import sht
 
 __all__ = [
     'SphericalHarmonics',
+    'SphericalHarmonicDefinition',
     'SphericalHarmonicSignal',
     'SphericalHarmonicTimeData',
     'SphericalHarmonicFrequencyData',

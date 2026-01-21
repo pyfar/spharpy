@@ -510,3 +510,9 @@ def test_hyperinterpolation_errors_radius(radius):
     with pytest.raises(
             ValueError, match='radius must be a single positive value'):
         samplings.hyperinterpolation(1, radius)
+
+
+def test_sph_gaussian_higher_order():
+    s = samplings.gaussian(n_max=121)
+    assert s.csize == (2 * (121 + 1)**2)
+    npt.assert_allclose(np.sum(s.weights), 4*np.pi)

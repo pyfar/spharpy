@@ -2,6 +2,7 @@ from spharpy.classes.audio import (
     SphericalHarmonicTimeData,
     SphericalHarmonicFrequencyData,
     _atleast_3d_first_dimension)
+from spharpy import SphericalHarmonicDefinition
 import numpy as np
 
 
@@ -32,6 +33,33 @@ def test_init_sh_time_data():
     np.testing.assert_allclose(sh_time_data.time, data)
 
 
+def test_sh_time_data_from_sh_definition():
+    """Test init SphericalHarmonicsSignal."""
+
+    shd = SphericalHarmonicDefinition(
+        n_max=0, basis_type="real",
+        channel_convention="ACN",
+        normalization="N3D",
+        condon_shortley=False)
+
+    data = np.ones((1, 4, 4))
+    times = [1, 2, 3, 4]
+
+    time_data_def = SphericalHarmonicTimeData.from_definition(
+        sh_definition=shd, data=data, times=times)
+
+    assert isinstance(time_data_def, SphericalHarmonicTimeData)
+
+    time_data = SphericalHarmonicTimeData(
+            data,
+            times, basis_type='real',
+            channel_convention='ACN',
+            normalization='N3D',
+            condon_shortley=False)
+
+    assert time_data == time_data_def
+
+
 def test_init_sh_frequency_data():
     data = np.ones((1, 4, 4), dtype=complex)
     frequencies = [1, 2, 3, 4]
@@ -41,3 +69,30 @@ def test_init_sh_frequency_data():
         comment="")
     assert isinstance(sh_freq_data, SphericalHarmonicFrequencyData)
     np.testing.assert_allclose(sh_freq_data.freq, data)
+
+
+def test_sh_freq_data_from_sh_definition():
+    """Test init SphericalHarmonicsSignal."""
+
+    shd = SphericalHarmonicDefinition(
+        n_max=0, basis_type="real",
+        channel_convention="ACN",
+        normalization="N3D",
+        condon_shortley=False)
+
+    data = np.ones((1, 4, 4))
+    freqs = [1, 2, 3, 4]
+
+    freq_data_def = SphericalHarmonicFrequencyData.from_definition(
+        sh_definition=shd, data=data, frequencies=freqs)
+
+    assert isinstance(freq_data_def, SphericalHarmonicFrequencyData)
+
+    freq_data = SphericalHarmonicFrequencyData(
+            data,
+            freqs, basis_type='real',
+            channel_convention='ACN',
+            normalization='N3D',
+            condon_shortley=False)
+
+    assert freq_data == freq_data_def
