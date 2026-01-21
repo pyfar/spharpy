@@ -130,15 +130,16 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'N3D'``, ``'NM'``,
-        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
-        to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'SN3D'``,
+        ``'SNM'``, or ``'maxN'``. ``'maxN'`` is only supported up to 3rd order.
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
-        (FuMa is only supported up to 3rd order)
+        ``'FuMa'`` is only supported up to 3rd order.
     condon_shortley : bool
-        Flag to indicate if the Condon-Shortley phase term is included
-        (``True``) or not (``False``).
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. ``'auto'`` corresponds to ``True`` for complex `basis_type`
+        and ``False`` for real `basis_type`.
     domain : ``'time'``, ``'freq'``, optional
         Domain of data. The default is ``'time'``
     comment : str
@@ -163,7 +164,7 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
     @_SphericalHarmonicBase.basis_type.setter
     def basis_type(self, value):
-        """Get or set the type of spherical harmonic basis."""
+        """Get or set the spherical harmonic basis type."""
 
         # Make sure that the basis type can only be set during initialization.
         # Changing it afterwards requires implementing the conversion between
@@ -210,9 +211,11 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
-    condon_shortley : bool
-        Flag to indicate if the Condon-Shortley phase term is included
-        (``True``) or not (``False``).
+    condon_shortley : bool or str
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. ``'auto'`` corresponds to ``True`` for complex `basis_type`
+        and ``False`` for real `basis_type`.
     comment : str
         A comment related to `data`. The default is ``""``.
     is_complex : bool, optional
@@ -323,15 +326,16 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'N3D'``, ``'NM'``,
-        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
-        to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'SN3D'``,
+        ``'SNM'``, or ``'maxN'``. ``'maxN'`` is only supported up to 3rd order.
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
-        (FuMa is only supported up to 3rd order)
-    condon_shortley : bool
-        Flag to indicate if the Condon-Shortley phase term is included
-        (``True``) or not (``False``).
+        ``'FuMa'`` is only supported up to 3rd order.
+    condon_shortley : bool or str
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. ``'auto'`` corresponds to ``True`` for complex `basis_type`
+        and ``False`` for real `basis_type`.
     comment : str
         A comment related to `data`. The default is ``""``.
     """
@@ -437,15 +441,16 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Type of spherical harmonic basis, either ``'complex'`` or
         ``'real'``.
     normalization : str
-        Normalization convention, either ``'N3D'``, ``'NM'``,
-        ``'maxN'``, ``'SN3D'`` or ``'SNM'``. (maxN is only supported up
-        to 3rd order)
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'SN3D'``,
+        ``'SNM'``, or ``'maxN'``. ``'maxN'`` is only supported up to 3rd order.
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
-        (FuMa is only supported up to 3rd order)
-    condon_shortley : bool
-        Flag to indicate if the Condon-Shortley phase term is included
-        (``True``) or not (``False``).
+        ``'FuMa'`` is only supported up to 3rd order.
+    condon_shortley : bool or str
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. ``'auto'`` corresponds to ``True`` for complex `basis_type`
+        and ``False`` for real `basis_type`.
     n_samples : int, optional
         Number of time domain samples. Required if domain is ``'freq'``.
         The default is ``None``, which assumes an even number of samples
