@@ -484,7 +484,7 @@ def balloon_wireframe(
         >>> import spharpy
         >>> import numpy as np
         >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
-        >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+        >>> data = np.sin(coords.azimuth) * np.cos(coords.elevation)
         >>> spharpy.plot.balloon_wireframe(coords, data, cmap_encoding='phase')
 
     """
@@ -651,7 +651,7 @@ def balloon(
         >>> import spharpy
         >>> import numpy as np
         >>> coords = spharpy.samplings.equal_area(n_max=0, n_points=500)
-        >>> data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+        >>> data = np.sin(coords.azimuth) * np.cos(coords.elevation)
         >>> spharpy.plot.balloon(coords, data, cmap_encoding='phase')
 
     """
