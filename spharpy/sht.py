@@ -1,6 +1,7 @@
 import numpy as np
 from pyfar import Signal, TimeData, FrequencyData
 from . import SphericalHarmonics
+from . import SphericalHarmonicDefinition
 from . import SphericalHarmonicSignal
 from . import SphericalHarmonicTimeData
 from . import SphericalHarmonicFrequencyData
@@ -79,35 +80,34 @@ def sht(signal, spherical_harmonics, axis='auto'):
     if len(data_nm.shape) < 3:
         data_nm = data_nm[np.newaxis, ...]
 
-    if isinstance(signal, Signal):
-        sh_signal = SphericalHarmonicSignal(
-                    data=data_nm,
+    # set up SH definition
+    shd = SphericalHarmonicDefinition(
+                    n_max=int(np.sqrt(data_nm.shape[-2])-1),
                     basis_type=spherical_harmonics.basis_type,
                     normalization=spherical_harmonics.normalization,
                     channel_convention=spherical_harmonics.channel_convention,
-                    condon_shortley=spherical_harmonics.condon_shortley,
-                    sampling_rate=signal.sampling_rate,
-                    fft_norm=signal.fft_norm,
-                    is_complex=signal.complex,
-                    comment=signal.comment)
+                    condon_shortley=spherical_harmonics.condon_shortley)
+
+    if isinstance(signal, Signal):
+        sh_signal = SphericalHarmonicSignal.from_definition(
+                        sh_definition=shd,
+                        data=data_nm,
+                        sampling_rate=signal.sampling_rate,
+                        fft_norm=signal.fft_norm,
+                        is_complex=signal.complex,
+                        comment=signal.comment)
     elif isinstance(signal, TimeData):
-        sh_signal = SphericalHarmonicTimeData(
+        sh_signal = SphericalHarmonicTimeData.from_definition(
+                    sh_definition=shd,
                     data=data_nm,
                     times=signal.times,
-                    basis_type=spherical_harmonics.basis_type,
-                    normalization=spherical_harmonics.normalization,
-                    channel_convention=spherical_harmonics.channel_convention,
-                    condon_shortley=spherical_harmonics.condon_shortley,
                     comment=signal.comment,
                     is_complex=False)
     elif isinstance(signal, FrequencyData):
-        sh_signal = SphericalHarmonicFrequencyData(
+        sh_signal = SphericalHarmonicFrequencyData.from_definition(
+                    sh_definition=shd,
                     data=data_nm,
                     frequencies=signal.frequencies,
-                    basis_type=spherical_harmonics.basis_type,
-                    normalization=spherical_harmonics.normalization,
-                    channel_convention=spherical_harmonics.channel_convention,
-                    condon_shortley=spherical_harmonics.condon_shortley,
                     comment=signal.comment)
 
     return sh_signal
