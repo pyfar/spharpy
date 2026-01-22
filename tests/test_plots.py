@@ -5,6 +5,7 @@ from pyfar.testing.plot_utils import create_figure, save_and_compare
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import re
 
 """
 For general information on testing plot functions see
@@ -48,6 +49,16 @@ for file in os.listdir(output_path):
 # <function_name>_<parameter_name>_<parameters>.png
 
 # testing ---------------------------------------------------------------------
+@pytest.fixture(autouse=True)
+def _close_all_figures():
+    """
+    Close all matplotlib figures after each test to prevent test
+    pollution.
+    """
+    yield
+    plt.close('all')
+
+
 @pytest.mark.parametrize('function', [
     (sp.plot.scatter),
     (sp.plot.voronoi_cells_sphere)])
@@ -139,6 +150,14 @@ def test_spherical_colorbar(function, colorbar):
     """Test all spherical plots with custom colorbar argument."""
     coords = sp.samplings.equal_area(n_max=0, n_points=500)
     data = np.sin(coords.colatitude) * np.cos(coords.azimuth)
+
+    out = function(coords, data, colorbar=colorbar)
+    if colorbar:
+        assert isinstance(out[2], mpl.colorbar.Colorbar)
+        assert isinstance(out[0], list)
+    if not colorbar:
+        assert out[2] is None
+        assert isinstance(out[0], plt.Axes)
 
     # do plotting
     filename = f'{function.__name__}_colorbar_{colorbar}'
@@ -325,15 +344,22 @@ def test_data_plots_projection_input_and_return(function, projection):
     create_figure()
     ax = plt.axes(projection=projection)
 
-    (ax_out, _) = function(coords, data, ax=ax)
-    # check if the returned axis is a 3D axis
-    assert ax_out.name == projection
+    ax_out = function(coords, data, ax=ax)[0]
+
+    # check if the returned axis has the correct projection
+    assert ax_out[0].name == projection
 
     # test error for invalid inputs
     match = f"The projection of the axis needs to be '{projection}'"
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=plt.axes(projection='polar'))
 
+    match = re.escape("If [ax1, ax2] is passed ax2 needs to be of"
+                      " 'rectilinear' projection")
+    with pytest.raises(ValueError, match=match):
+        function(coords, data, ax=[
+            plt.axes(projection=projection),
+            plt.axes(projection='3d')])
 
 @pytest.mark.parametrize('function', [
     (sp.plot.scatter),
@@ -382,3 +408,135 @@ def test_cmap_phase_twilight():
 
     with pytest.raises(ValueError, match=match):
         sp.plot.phase_twilight(0)
+
+
+@pytest.mark.parametrize(
+        ("function"),
+        [(sp.plot.balloon),
+         (sp.plot.balloon_wireframe),
+         (sp.plot.contour),
+         (sp.plot.contour_map),
+         (sp.plot.pcolor_sphere),
+         (sp.plot.pcolor_map)],
+)
+@pytest.mark.parametrize(
+    ("ax"), [(1), ([1, 2, 3]), np.array([1, 2, 3])],
+)
+def test_ax_parameter_errors(function, ax, equal_area_sampling):
+    """Test all warnings related to `ax` parameter."""
+    coords, data = equal_area_sampling
+    # Test case when `ax`` is wrong type
+    match = "ax can be ``None``, a single maplotlib.axes.Axes object or a " \
+            "list, tuple or array of two axes"
+    with pytest.raises(ValueError, match=match):
+        function(coords, data, ax=ax)
+
+
+@pytest.mark.parametrize(
+        ("function"),
+        [(sp.plot.balloon),
+         (sp.plot.balloon_wireframe),
+         (sp.plot.contour),
+         (sp.plot.contour_map),
+         (sp.plot.pcolor_sphere),
+         (sp.plot.pcolor_map)],
+)
+def test_colorbar_ax_error(function, equal_area_sampling):
+    """Test error raised by false colorbar / ax parameter combination."""
+    coords, data = equal_area_sampling
+    match = "A list of axes can not be used if colorbar is False"
+    with pytest.raises(
+        ValueError, match=match,
+    ):
+        function(coords, data, colorbar=False, ax=[plt.gca(), plt.gca()])
+
+
+@pytest.mark.parametrize(
+        ('function', 'projection'),
+        [(sp.plot.balloon, '3d'),
+         (sp.plot.balloon_wireframe, '3d'),
+         (sp.plot.contour, 'rectilinear'),
+         (sp.plot.contour_map, 'mollweide'),
+         (sp.plot.pcolor_sphere, '3d'),
+         (sp.plot.pcolor_map, 'mollweide')],
+)
+@pytest.mark.parametrize(
+    ('ax_option'),
+    [('none'), ('single'), ('two')],
+)
+def test_ax_input(function, projection, ax_option, equal_area_sampling):
+    """Test ax input for None, single axis and list of two axes."""
+    coords, data = equal_area_sampling
+
+    filename = f'{function.__name__}_ax_{ax_option}'
+
+    if ax_option == 'none':
+        function(coords, data)
+    if ax_option == 'single':
+        ax1 = plt.subplot(111, projection=projection)
+        function(coords, data, ax=ax1)
+    if ax_option == 'two':
+        ax1 = plt.subplot(121, projection=projection)
+        ax2 = plt.subplot(122, projection='rectilinear')
+
+        function(coords, data, ax=[ax1, ax2])
+
+        plt.tight_layout()
+        plt.subplots_adjust(wspace=0.2)
+
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+
+
+@pytest.mark.parametrize(
+        ('function', 'kind'),
+        [(sp.plot.scatter, 'coordinate_plot'),
+         (sp.plot.voronoi_cells_sphere, 'coordinate_plot'),
+         (sp.plot.pcolor_sphere, 'data_plot'),
+         (sp.plot.pcolor_map, 'data_plot'),
+         (sp.plot.balloon, 'data_plot'),
+         (sp.plot.balloon_wireframe, 'data_plot'),
+         (sp.plot.contour, 'data_plot'),
+         (sp.plot.contour_map, 'data_plot')],
+)
+@pytest.mark.parametrize(
+        'style',
+        [('light'), ('dark')],
+)
+def test_pyfar_styles(function, style, kind, equal_area_sampling):
+    """Test style-parameter with pyfar plot styles 'light' and 'dark'."""
+    coords, data = equal_area_sampling
+    filename = f'{function.__name__}_style_{style}'
+
+    if kind == 'coordinate_plot':
+        function(coords, style=style)
+    elif kind == 'data_plot':
+        function(coords, data, style=style)
+
+    save_and_compare(create_baseline, baseline_path, output_path, filename,
+                     file_type, compare_output)
+
+
+@pytest.mark.parametrize(
+        ('function', 'kind'),
+        [(sp.plot.scatter, 'coordinate_plot'),
+         (sp.plot.voronoi_cells_sphere, 'coordinate_plot'),
+         (sp.plot.pcolor_sphere, 'data_plot'),
+         (sp.plot.pcolor_map, 'data_plot'),
+         (sp.plot.balloon, 'data_plot'),
+         (sp.plot.balloon_wireframe, 'data_plot'),
+         (sp.plot.contour, 'data_plot'),
+         (sp.plot.contour_map, 'data_plot')],
+)
+def test_custom_style(function, kind, equal_area_sampling):
+    """Test style parameter with custom value."""
+    coords, data = equal_area_sampling
+    style = {'axes.facecolor': '#000000'}
+
+    if kind == 'coordinate_plot':
+        function(coords, style=style)
+    elif kind == 'data_plot':
+        function(coords, data, style=style)
+
+    facecolor = mpl.colors.to_hex(plt.gca().patch.get_facecolor())
+    assert facecolor == style['axes.facecolor']

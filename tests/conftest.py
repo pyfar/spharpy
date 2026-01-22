@@ -2,6 +2,7 @@ import pytest
 import pyfar as pf
 import numpy as np
 from spharpy import SamplingSphere
+from spharpy.samplings import equal_area
 
 
 @pytest.fixture
@@ -96,3 +97,11 @@ def download_sampling():
             return _sph_t_design_load_data(degree)
 
     return download_sampling
+
+
+@pytest.fixture
+def equal_area_sampling():
+    """Return 500 point equal area test data."""
+    coords = equal_area(n_max=0, n_points=500)
+    data = np.sin(coords.azimuth) * np.cos(coords.elevation)
+    return coords, data
