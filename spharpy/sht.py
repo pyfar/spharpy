@@ -1,5 +1,6 @@
 import numpy as np
 from pyfar import Signal, TimeData, FrequencyData
+from pyfar import matrix_multiplication
 from . import SphericalHarmonics
 from . import SphericalHarmonicDefinition
 from . import SphericalHarmonicSignal
@@ -71,10 +72,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
     data = np.moveaxis(data, axis, -2)
 
     # perform transform
-    data_nm = np.tensordot(Y_inv, data, [1, -2])
-
-    # move SH channels to -2
-    data_nm = np.moveaxis(data_nm, 0, -2)
+    data_nm = matrix_multiplication((Y_inv, data))
 
     # ensure result has 3 dimensions
     if len(data_nm.shape) < 3:
@@ -156,11 +154,7 @@ def isht(sh_signal, coordinates):
         inverse_method="pseudo_inverse",
         condon_shortley=sh_signal.condon_shortley)
 
-    # perform inverse transform
-    data = np.tensordot(spherical_harmonics.basis, data, [1, -2])
-
-    # and ensure that spherical samples are at second to last axis
-    data = np.moveaxis(data, 0, -2)
+    data = matrix_multiplication((spherical_harmonics.basis, data))
 
     if isinstance(sh_signal, SphericalHarmonicSignal):
         signal = Signal(data,
