@@ -276,3 +276,52 @@ def test_spherical_harmonic_gradient_phi_real():
         desired = desired_all[:, acn]
 
         npt.assert_allclose(actual, desired, rtol=1e-10, atol=1e-10)
+
+
+@pytest.mark.parametrize('condon_shortley', [(True, ), (False, )])
+@pytest.mark.parametrize(('n', 'm'), [
+    (1, -1), (1, 0), (1, 1), (2, -2), (2, -1), (2, 0), (2, 1), (2, 2)])
+def test_legendre(condon_shortley, n, m):
+    """
+    Test values of the Legendre functions for first order and all degrees.
+    """
+    z = np.linspace(-1, 1, 11)
+
+    # Manually computed desired values according to
+    # Rafaely (2019), Fundamentals of Spherical Array Processing, Table 1.3
+    if n == 1:
+        if m == -1:
+            desired = .5 * np.sqrt(1 - z**2)
+        if m == 0:
+            desired = z.copy()
+        if m == 1:
+            desired =  -np.sqrt(1 - z**2)
+    if n == 2:
+        if m == -2:
+            desired = .125 * (1 - z**2)
+        if m == -1:
+            desired = .5 * z * np.sqrt(1 - z**2)
+        if m == 0:
+            desired = .5 * (3 * z**2 - 1)
+        if m == 1:
+            desired = -3 * z * np.sqrt(1 - z**2)
+        if m == 2:
+            desired = 3 * (1 - z**2)
+
+    # remove Condon-Shortley phase
+    if not condon_shortley and m % 2:
+        desired *= -1
+
+    # compute and compare actual values
+    actual = special.legendre_function(n, m, z, condon_shortley)
+    npt.assert_almost_equal(actual, desired, 10)
+
+
+@pytest.mark.parametrize('m', [(-2, ), (2, )])
+def test_legendre_degree_out_of_range(m):
+    """Test if zero is returned if the degree m is larger than the order n."""
+    n = 1
+    z = np.linspace(-1, 1, 11)
+
+    npt.assert_equal(special.legendre_function(n, m, z),
+                     np.zeros_like(z))
