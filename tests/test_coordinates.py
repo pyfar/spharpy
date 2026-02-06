@@ -211,3 +211,28 @@ def test_quadrature_getter_changing_points():
         np.ones((sampling.csize, 1)),
         np.ones((sampling.csize, 1))], axis=1)
     assert not sampling.quadrature
+
+
+def test_repr_n_max(icosahedron_sampling):
+    repr_str = icosahedron_sampling.__repr__()
+    assert 'n_max: 2' in repr_str
+
+
+def test_repr_radius_tolerance(icosahedron_sampling):
+    repr_str = icosahedron_sampling.__repr__()
+    assert 'radius_tolerance: 1e-06' in repr_str
+
+
+def test_repr_quadrature_tolerance(icosahedron_sampling):
+    repr_str = icosahedron_sampling.__repr__()
+    assert 'quadrature_tolerance: 1e-10' in repr_str
+
+
+def test_repr_quadrature(icosahedron_sampling):
+    repr_str = icosahedron_sampling.__repr__()
+    assert 'quadrature: not calculated' in repr_str
+    _ = icosahedron_sampling.quadrature
+    repr_str = icosahedron_sampling.__repr__()
+    assert 'quadrature: True' in repr_str
+
+

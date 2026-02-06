@@ -667,3 +667,19 @@ class SamplingSphere(pf.Coordinates):
             self._quadrature = self._check_quadrature()
 
         return self._quadrature
+
+
+    def __repr__(self):
+        """Get info about SamplingSphere object."""
+        if self.csize == 0:
+            return 'Empty SamplingSphere object'
+
+        _repr =  super().__repr__()
+        _repr += f"\n  n_max: {self.n_max}"
+        _repr += f"\n  radius_tolerance: {self.radius_tolerance:.3g}"
+        _repr += f"\n  quadrature_tolerance: {self.quadrature_tolerance:.3g}"
+        if self._quadrature is None:
+            _repr += "\n  quadrature: not calculated"
+        else:
+            _repr += f"\n  quadrature: {self.quadrature}"
+        return _repr
