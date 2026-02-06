@@ -457,35 +457,39 @@ def test_lebedev_orthogonality(degree):
     npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-14)
 
 
-def test_fliege():
-    # test without parameters
-    assert samplings.fliege() is None
-
+@pytest.mark.parametrize(
+        "n_max",
+        [
+            1, 2, 3, 4, 5, 6, 7, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29,
+        ])
+def test_fliege_for_each_order(n_max):
     # test with degree
-    c = samplings.fliege(16)
+    c = samplings.fliege(n_max)
     assert type(c) is SamplingSphere
-    assert c.csize == 16
-
-    # test with spherical harmonic order
-    c = samplings.fliege(n_max=3)
-    assert c.csize == 16
-
+    assert c.csize == (n_max+1)**2
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
+    npt.assert_almost_equal(np.sum(c.weights), 4*np.pi)
 
+
+def test_fliege_radius():
     # test user radius
-    c = samplings.fliege(4, radius=1.5)
+    c = samplings.fliege(1, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert not c.quadrature
 
+def test_fliege_errors():
     # test exceptions
-    with pytest.raises(ValueError, match='n_points or n_max must be None'):
-        c = samplings.fliege(9, 2)
-    with pytest.raises(ValueError, match='Invalid number of points n_points'):
-        c = samplings.fliege(30)
+    with pytest.raises(TypeError, match='n_max must be an integer.'):
+        samplings.fliege(0.5)
+    with pytest.raises(TypeError, match='n_max must be between 1 and 29'):
+        samplings.fliege(0)
+    with pytest.raises(TypeError, match='radius must be a positive number.'):
+        samplings.fliege(1, radius='one')
+    with pytest.raises(TypeError, match='n_max must be between 1 and 29'):
+        samplings.fliege(0)
 
 
 def test_em64():
