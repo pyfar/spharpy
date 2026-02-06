@@ -10,7 +10,7 @@ def _prepare_plot(ax=None, projection=None):
 
     Parameters
     ----------
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on. The default is None in which case the axes are
         obtained from the current figure. A new figure is created if it does
         not exist.
