@@ -284,7 +284,7 @@ def pcolor_sphere(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
@@ -298,7 +298,8 @@ def pcolor_sphere(
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
             `colorbar` must be ``True`` and the projection of the second axis
-            ``'rectilinear'``.
+            must be ``'rectilinear'``. The first axis must meet the same
+            conditions as for the case when a single axis is passed.
 
         The default is ``None``.
     style : str
@@ -434,7 +435,7 @@ def balloon_wireframe(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
@@ -448,7 +449,8 @@ def balloon_wireframe(
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
             `colorbar` must be ``True`` and the projection of the second axis
-            ``'rectilinear'``.
+            must be ``'rectilinear'``. The first axis must meet the same
+            conditions as for the case when a single axis is passed.
 
         The default is ``None``.
     style : str
@@ -601,7 +603,7 @@ def balloon(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
@@ -615,7 +617,8 @@ def balloon(
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
             `colorbar` must be ``True`` and the projection of the second axis
-            ``'rectilinear'``.
+            must be ``'rectilinear'``. The first axis must meet the same
+            conditions as for the case when a single axis is passed.
 
         The default is ``None``.
     style : str
@@ -899,7 +902,7 @@ def pcolor_map(
     refine : bool, optional
         Whether to refine the triangulation before plotting.
         Default is ``False``.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
@@ -914,7 +917,8 @@ def pcolor_map(
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
             `colorbar` must be ``True`` and the projection of the second axis
-            ``'rectilinear'``.
+            must be ``'rectilinear'``. The first axis must meet the same
+            conditions as for the case when a single axis is passed.
 
         The default is ``None``.
     style : str
@@ -1061,7 +1065,7 @@ def contour_map(
         the specified levels. The values must be in increasing order.
         Default is ``None``, the levels are chosen automatically by
         Matplotlib.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
@@ -1076,7 +1080,8 @@ def contour_map(
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
             `colorbar` must be ``True`` and the projection of the second axis
-            ``'rectilinear'``.
+            must be ``'rectilinear'``. The first axis must meet the same
+            conditions as for the case when a single axis is passed.
 
         The default is ``None``.
     style : str
@@ -1195,7 +1200,7 @@ def contour(
         the specified levels. The values must be in increasing order.
         Default is ``None``, the levels are chosen automatically by
         Matplotlib.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
         ``None``
@@ -1209,7 +1214,8 @@ def contour(
             If a list, tuple or array of two axes is passed, the first is used
             to plot the data and the second to plot the colorbar. In this case
             `colorbar` must be ``True`` and the projection of the second axis
-            ``'rectilinear'``.
+            must be ``'rectilinear'``. The first axis must meet the same
+            conditions as for the case when a single axis is passed.
 
         The default is ``None``.
     style : str
@@ -1370,7 +1376,7 @@ def _check_input_parameters(coordinates, data, cmap, colorbar, limits,
         Tuple or list containing the maximum and minimum to which the colormap
         needs to be clipped. If `None`, the limits are set to the minimum and
         maximum of the data.
-    ax : matplotlib.axes.Axes or list, tuple or ndarray of maplotlib.axes.Axes
+    ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
     """
     if not isinstance(colorbar, bool):
@@ -1401,7 +1407,7 @@ def _check_input_parameters(coordinates, data, cmap, colorbar, limits,
         or (isinstance(ax, (list, tuple, np.ndarray))
             and np.asarray(ax).shape != (2,)):
         raise ValueError(
-            "ax can be ``None``, a single maplotlib.axes.Axes object or a "
+            "ax can be ``None``, a single matplotlib.axes.Axes object or a "
             "list, tuple or array of two axes",
         )
     if isinstance(ax, (tuple, list, np.ndarray)) \
