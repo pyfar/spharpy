@@ -1139,7 +1139,7 @@ def fliege(n_max, radius=1.):
     Parameters
     ----------
     n_max : int
-        Maximum applicable spherical harmonic order, must be less or equal 29.
+        Maximum applicable spherical harmonic order. It must be between 1 and 29.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
