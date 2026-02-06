@@ -674,7 +674,7 @@ class SamplingSphere(pf.Coordinates):
         if self.csize == 0:
             return 'Empty SamplingSphere object'
 
-        _repr =  super().__repr__()
+        _repr = super().__repr__()
         _repr += f"\n  n_max: {self.n_max}"
         _repr += f"\n  radius_tolerance: {self.radius_tolerance:.3g}"
         _repr += f"\n  quadrature_tolerance: {self.quadrature_tolerance:.3g}"
