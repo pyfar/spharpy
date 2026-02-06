@@ -146,6 +146,10 @@ def test_sph_t_design(download_sampling):
     # test exceptions
     with pytest.raises(ValueError, match='Invalid design criterion'):
         c = samplings.t_design(2, criterion='const_thread')
+    with pytest.raises(ValueError, match='radius must be a positive number'):
+        c = samplings.t_design(2, radius=-1)
+    with pytest.raises(ValueError, match='radius must be a positive number'):
+        c = samplings.t_design(2, radius='test')
 
 
 def test_dodecahedron():

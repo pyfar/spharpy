@@ -250,7 +250,8 @@ def t_design(n_max, criterion='const_energy', radius=1.):
                          or 'const_angular_spread'.")
     if not isinstance(n_max, (int)):
         raise ValueError("n_max must be an integer.")
-
+    if not isinstance(radius, (int, float)) or radius <= 0:
+        raise ValueError("radius must be a positive number.")
 
     # get the degree
     if criterion == 'const_energy':
