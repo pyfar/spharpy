@@ -100,7 +100,7 @@ def test_t_design_limits_const_energy(download_sampling):
 
 def test_t_design_limits_const_angular_spread(download_sampling):
     download_sampling('t-design', [179, 180])
-    samplings.t_design(89)
+    samplings.t_design(89, criterion='const_angular_spread')
     with pytest.raises(
             ValueError,
             match='n_max must be between 1 and 89 for const_angular_spread'):
@@ -124,7 +124,7 @@ def test_sph_t_design(download_sampling):
     # load test data
     download_sampling('t-design', np.arange(1, 11))
 
-    # test with degree
+    # test with n_max
     c = samplings.t_design(1)
     isinstance(c, SamplingSphere)
     assert type(c) is SamplingSphere
@@ -145,11 +145,11 @@ def test_sph_t_design(download_sampling):
 
     # test exceptions
     with pytest.raises(ValueError, match='Invalid design criterion'):
-        c = samplings.t_design(2, criterion='const_thread')
+        samplings.t_design(2, criterion='const_thread')
     with pytest.raises(ValueError, match='radius must be a positive number'):
-        c = samplings.t_design(2, radius=-1)
+        samplings.t_design(2, radius=-1)
     with pytest.raises(ValueError, match='radius must be a positive number'):
-        c = samplings.t_design(2, radius='test')
+        samplings.t_design(2, radius='test')
 
 
 def test_dodecahedron():

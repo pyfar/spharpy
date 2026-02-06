@@ -202,8 +202,8 @@ def t_design(n_max, criterion='const_energy', radius=1.):
         Maximum applicable spherical harmonic order. Related to the degree
         by ``degree = 2 * n_max`` (``const_energy``) and
         ``degree = 2 * n_max + 1`` (``const_angular_spread``).
-        Must be between ``1`` and ``89`` for ``const_energy`` and between
-        ``1`` and ``88`` for ``const_angular_spread``.
+        Must be between ``1`` and ``90`` for ``const_energy`` and between
+        ``1`` and ``89`` for ``const_angular_spread``.
     criterion : ``const_energy``, ``const_angular_spread``
         Design criterion ensuring only a constant energy or additionally
         constant angular spread of energy. The default is ``const_energy``.
