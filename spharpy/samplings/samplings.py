@@ -1173,11 +1173,11 @@ def fliege(n_max, radius=1.):
 
     """
     if not isinstance(n_max, int):
-        raise TypeError("n_max must be an integer.")
+        raise ValueError("n_max must be an integer.")
     if n_max < 1 or n_max > 29:
-        raise TypeError("n_max must be between 1 and 29.")
+        raise ValueError("n_max must be between 1 and 29.")
     if not isinstance(radius, (int, float)) or radius <= 0:
-        raise TypeError("radius must be a positive number.")
+        raise ValueError("radius must be a positive number.")
 
     n_points = (n_max + 1)**2
 
@@ -1187,7 +1187,7 @@ def fliege(n_max, radius=1.):
         variable_names=f"Fliege_{int(n_points)}")
     fliege = fliege[f"Fliege_{int(n_points)}"]
 
-    # normlize weights
+    # normalize weights
     weights = fliege[:, 2] * 4 * np.pi
 
     # generate Coordinates object

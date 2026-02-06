@@ -460,7 +460,7 @@ def test_lebedev_orthogonality(degree):
 @pytest.mark.parametrize(
         "n_max",
         [
-            1, 2, 3, 4, 5, 6, 7, 9, 10,
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
             21, 22, 23, 24, 25, 26, 27, 28, 29,
         ])
@@ -482,14 +482,14 @@ def test_fliege_radius():
 
 def test_fliege_errors():
     # test exceptions
-    with pytest.raises(TypeError, match='n_max must be an integer.'):
+    with pytest.raises(ValueError, match='n_max must be an integer.'):
         samplings.fliege(0.5)
-    with pytest.raises(TypeError, match='n_max must be between 1 and 29'):
+    with pytest.raises(ValueError, match='n_max must be between 1 and 29'):
         samplings.fliege(0)
-    with pytest.raises(TypeError, match='radius must be a positive number.'):
-        samplings.fliege(1, radius='one')
-    with pytest.raises(TypeError, match='n_max must be between 1 and 29'):
-        samplings.fliege(0)
+    with pytest.raises(ValueError, match='radius must be a positive number.'):
+        samplings.fliege(1, radius=-1)
+    with pytest.raises(ValueError, match='n_max must be between 1 and 29'):
+        samplings.fliege(30)
 
 
 def test_em64():
