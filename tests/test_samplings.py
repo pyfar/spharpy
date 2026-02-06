@@ -60,47 +60,75 @@ def test_equidistant_cuboid_sampling_invalid():
 
 
 def test_t_design_const_e(download_sampling):
-    order = 2
+    n_max = 2
+    degree = 2 * n_max
     download_sampling('t-design', np.arange(1, 11))
     coords = samplings.t_design(
-        n_max=order, criterion='const_energy')
+        n_max, criterion='const_energy')
     assert type(coords) is SamplingSphere
+    assert coords.n_max == 2
+    assert coords.csize == int(np.ceil((degree + 1)**2 / 2) + 1)
 
 
 def test_t_design_const_angle(download_sampling):
-    order = 2
+    n_max = 2
     download_sampling('t-design', np.arange(1, 11))
     coords = samplings.t_design(
-        n_max=order, criterion='const_angular_spread')
+        n_max, criterion='const_angular_spread')
     assert type(coords) is SamplingSphere
+    assert coords.csize == 18
 
 
 def test_t_design_invalid(download_sampling):
-    order = 2
     download_sampling('t-design', np.arange(1, 11))
     with pytest.raises(ValueError, match='Invalid design'):
-        samplings.t_design(n_max=order, criterion='bla')
+        samplings.t_design(2, criterion='bla')
+
+
+def test_t_design_limits_const_energy(download_sampling):
+    download_sampling('t-design', [179, 180])
+    samplings.t_design(90, criterion='const_energy')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 90 for const_energy'):
+        samplings.t_design(91, criterion='const_energy')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 90 for const_energy'):
+        samplings.t_design(0, criterion='const_energy')
+
+
+def test_t_design_limits_const_angular_spread(download_sampling):
+    download_sampling('t-design', [179, 180])
+    samplings.t_design(89)
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 89 for const_angular_spread'):
+        samplings.t_design(90, criterion='const_angular_spread')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 89 for const_angular_spread'):
+        samplings.t_design(0, criterion='const_angular_spread')
+
+
+def test_t_design_n_max_error(download_sampling):
+    download_sampling('t-design', np.arange(1, 11))
+    samplings.t_design(89)
+    with pytest.raises(
+            ValueError,
+            match='n_max must be an integer'):
+        samplings.t_design(1.5)
 
 
 def test_sph_t_design(download_sampling):
     # load test data
     download_sampling('t-design', np.arange(1, 11))
 
-    # test without parameters
-    assert samplings.t_design() is None
-
     # test with degree
-    c = samplings.t_design(2)
+    c = samplings.t_design(1)
     isinstance(c, SamplingSphere)
     assert type(c) is SamplingSphere
     assert c.csize == 6
-
-    # test with spherical harmonic order
-    c = samplings.t_design(n_max=1)
-    assert c.csize == 6
-    c = samplings.t_design(
-        n_max=1, criterion='const_angular_spread')
-    assert c.csize == 8
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -116,12 +144,6 @@ def test_sph_t_design(download_sampling):
     assert not c.quadrature
 
     # test exceptions
-    with pytest.raises(ValueError, match='n_points or n_max must be None'):
-        c = samplings.t_design(4, 1)
-    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
-        c = samplings.t_design(degree=0)
-    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
-        c = samplings.t_design(n_max=0)
     with pytest.raises(ValueError, match='Invalid design criterion'):
         c = samplings.t_design(2, criterion='const_thread')
 

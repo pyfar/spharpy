@@ -176,8 +176,7 @@ def hyperinterpolation(n_max, radius=1.):
     return sampling
 
 
-def t_design(degree=None, n_max=None, criterion='const_energy',
-             radius=1.):
+def t_design(n_max, criterion='const_energy', radius=1.):
     r"""
     Return spherical t-design sampling grid.
 
@@ -199,14 +198,12 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
 
     Parameters
     ----------
-    degree : int
-        T-design degree between ``1`` and ``180``. Either `degree` or
-        `n_max` must be provided. The default is ``None``.
     n_max : int
         Maximum applicable spherical harmonic order. Related to the degree
         by ``degree = 2 * n_max`` (``const_energy``) and
-        ``degree = 2 * n_max + 1`` (``const_angular_spread``). Either
-        `degree` or `n_max` must be provided. The default is ``None``.
+        ``degree = 2 * n_max + 1`` (``const_angular_spread``).
+        Must be between ``1`` and ``89`` for ``const_energy`` and between
+        ``1`` and ``88`` for ``const_angular_spread``.
     criterion : ``const_energy``, ``const_angular_spread``
         Design criterion ensuring only a constant energy or additionally
         constant angular spread of energy. The default is ``const_energy``.
@@ -247,34 +244,26 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
         >>> spharpy.plot.scatter(coords)
 
     """
-
-    # check input
-    if (degree is None) and (n_max is None):
-        print('Possible input values:')
-        for d in range(1, 181):
-            print(f"degree {d}, n_max {int(d / 2)} ('const_energy'), \
-                {int((d - 1) / 2)} ('const_angular_spread')")
-        return None
-
+    # check inputs
     if criterion not in ['const_energy', 'const_angular_spread']:
         raise ValueError("Invalid design criterion. Must be 'const_energy' \
                          or 'const_angular_spread'.")
+    if not isinstance(n_max, (int)):
+        raise ValueError("n_max must be an integer.")
 
-    if degree is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
 
     # get the degree
-    if degree is None:
-        if criterion == 'const_energy':
-            degree = 2 * n_max
-        else:
-            degree = 2 * n_max + 1
-    # get the SH order for the meta data entry in the Coordinates object
+    if criterion == 'const_energy':
+        if n_max < 1 or n_max > 90:
+            raise ValueError(
+                'n_max must be between 1 and 90 for const_energy criterion.')
+        degree = 2 * n_max
     else:
-        if criterion == 'const_energy':
-            n_max = int(degree / 2)
-        else:
-            n_max = int((degree - 1) / 2)
+        if n_max < 1 or n_max > 89:
+            raise ValueError(
+                'n_max must be between 1 and 89 for const_angular_spread '
+                'criterion.')
+        degree = 2 * n_max + 1
 
     if degree < 1 or degree > 180:
         raise ValueError('degree must be between 1 and 180.')
