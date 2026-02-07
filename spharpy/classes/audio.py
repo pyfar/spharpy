@@ -153,8 +153,8 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         _SphericalHarmonicBase.__init__(
             self,
             basis_type,
-            channel_convention,
             normalization,
+            channel_convention,
             condon_shortley)
 
     @property
