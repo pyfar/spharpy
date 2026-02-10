@@ -426,7 +426,7 @@ def test_ax_parameter_errors(function, ax, equal_area_sampling):
     """Test all warnings related to `ax` parameter."""
     coords, data = equal_area_sampling
     # Test case when `ax`` is wrong type
-    match = "ax can be ``None``, a single maplotlib.axes.Axes object or a " \
+    match = "ax can be ``None``, a single matplotlib.axes.Axes object or a " \
             "list, tuple or array of two axes"
     with pytest.raises(ValueError, match=match):
         function(coords, data, ax=ax)
