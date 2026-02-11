@@ -1036,32 +1036,42 @@ def great_circle(
     return sampling
 
 
-def lebedev(n_points=None, n_max=None, radius=1.):
+def lebedev(n_max=None, n_points=None, radius=1.):
     r"""
     Return Lebedev spherical sampling grid.
 
-    For detailed information, see [#]_. For a list of available values
-    for `n_points` and `n_max` call :py:func:`sph_lebedev`. This is a
-    quadrature  sampling with the sum of the sampling weights in
-    `sampling.weights` being :math:`4\pi`.
+    There is not strict relation between tha maximum spherical harmonic order
+    :math:`N` (parameter `n_max`) and the number of sampling points :math:`Q`
+    (parameter `n_points`). :math:`N` can be computed from :math:`Q` with
+
+    :math:`N = \lfloor \sqrt{Q / 1.3} - 1 \rfloor`
+
+    but :math:`Q` can not be computed from :math:`N` due to the floor
+    operation :math:`\lfloor \cdot \rfloor` that round down to the closest
+    integer. For a list of available values for `n_points` and `n_max` call
+    :py:func:`lebedev` without any arguments. This will print available
+    orders and number of points to the console.
+
+    .. note::
+        This is intended to be a quadrature sampling with positive sampling
+        weights weights summing to :math:`4\pi`. Because this is not the case
+        orders 6, 12, and 13, the weights are not returned [#]_ [#]_.
 
     Parameters
     ----------
-    n_points : int, optional
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int, optional
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
+        Maximum applicable spherical harmonic order. Either `n_points` or
         `n_max` must be provided. The default is ``None``.
+    n_points : int, optional
+        Number of sampling points in the grid. Either `n_points`
+        or `n_max` must be provided. The default is ``None``.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
+        Sampling positions without sampling weights (see note above).
 
     Notes
     -----
@@ -1073,6 +1083,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
            "A quadrature formula for the sphere of the 131st
            algebraic order of accuracy"
            Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.
+    .. [#] https://people.sc.fsu.edu/~jburkardt/datasets/sphere_lebedev_rule/sphere_lebedev_rule.html
     .. [#] https://de.mathworks.com/matlabcentral/fileexchange/27097-getlebedevsphere
 
 
@@ -1130,15 +1141,12 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     # get the samlpling
     leb = lebedev_sphere(n_points)
 
-    # normalize the weights
-    weights = leb["w"]
-
     # generate Coordinates object
     sampling = spharpy.SamplingSphere(
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
-        n_max=n_max, weights=weights,
+        n_max=n_max,
         comment='spherical Lebedev sampling grid')
 
     return sampling

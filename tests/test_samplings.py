@@ -413,24 +413,20 @@ def test_lebedev():
     assert samplings.lebedev() is None
 
     # test with degree
-    c = samplings.lebedev(14)
+    c = samplings.lebedev(n_points=14)
     assert type(c) is SamplingSphere
     assert c.csize == 14
 
     # test with spherical harmonic order
-    c = samplings.lebedev(n_max=3)
+    c = samplings.lebedev(3)
     assert c.csize == 26
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test user radius
-    c = samplings.lebedev(6, radius=1.5)
+    c = samplings.lebedev(n_points=6, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
-
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert c.quadrature
 
 
 def test_fliege():
