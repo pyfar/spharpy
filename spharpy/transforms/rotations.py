@@ -93,7 +93,8 @@ class RotationSH(Rotation):
         if degrees:
             rotvec = np.deg2rad(rotvec)
 
-        cls = super(RotationSH, cls).from_rotvec(rotvec, *args, **kwargs)
+        rot = super(RotationSH, cls).from_rotvec(rotvec, *args, **kwargs)
+        cls = cls(rot.as_quat())
         cls.n_max = n_max
         return cls
 
@@ -162,8 +163,9 @@ class RotationSH(Rotation):
 
 
         """
-        cls = super(RotationSH, cls).from_euler(
+        rot = super(RotationSH, cls).from_euler(
             seq, angles, degrees=degrees, **kwargs)
+        cls = cls(rot.as_quat())
         cls.n_max = n_max
         return cls
 
@@ -201,7 +203,8 @@ class RotationSH(Rotation):
         >>> rot.as_spherical_harmonic()
 
         """
-        cls = super(RotationSH, cls).from_quat(quat, **kwargs)
+        rot = super(RotationSH, cls).from_quat(quat, **kwargs)
+        cls = cls(rot.as_quat())
         cls.n_max = n_max
         return cls
 
@@ -246,7 +249,8 @@ class RotationSH(Rotation):
         ...     [0,  0, 1]])
         >>> rot.as_spherical_harmonic()
         """
-        cls = super(RotationSH, cls).from_matrix(matrix, **kwargs)
+        rot = super(RotationSH, cls).from_matrix(matrix, **kwargs)
+        cls = cls(rot.as_quat())
         cls.n_max = n_max
         return cls
 
