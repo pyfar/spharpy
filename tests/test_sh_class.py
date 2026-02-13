@@ -277,35 +277,53 @@ def test_compute_basis_caching(icosahedron_sampling):
 
     sh.n_max = n_max  # Setting to the same value should not reset cache
     # Call the method again and check that the result is the same (cache hit)
-    assert sh.basis is last_result
+    np.testing.assert_array_equal(sh.basis, last_result)
 
     # Change a property that affects the output of _compute_basis()
     sh.n_max = 3
-
     new_result = sh.basis
 
-    # Call the method again and check that the result is different (cache miss)
-    assert new_result is not last_result
+    # Call the method again and check that the result is different
+    np.testing.assert_raises(
+        AssertionError,
+        np.testing.assert_array_equal,
+        new_result, last_result)
     last_result = new_result
 
+    # check if changing the normalization triggers a cache reset
     sh.normalization = 'SN3D'
     new_result = sh.basis
-    assert new_result is not last_result
+    np.testing.assert_raises(
+        AssertionError,
+        np.testing.assert_array_equal,
+        new_result, last_result)
     last_result = new_result
 
+    # check if changing the channel ordering triggers a cache reset
     sh.channel_convention = 'FuMa'
     new_result = sh.basis
-    assert new_result is not last_result
+    np.testing.assert_raises(
+        AssertionError,
+        np.testing.assert_array_equal,
+        new_result, last_result)
     last_result = new_result
 
+    # check if changing the basis type triggers a cache reset
     sh.basis_type = 'complex'
     new_result = sh.basis
-    assert new_result is not last_result
+    np.testing.assert_raises(
+        AssertionError,
+        np.testing.assert_array_equal,
+        new_result, last_result)
     last_result = new_result
 
+    # check if changing the Condon-Shortley phase convention triggers a reset
     sh.condon_shortley = True
     new_result = sh.basis
-    assert new_result is not last_result
+    np.testing.assert_raises(
+        AssertionError,
+        np.testing.assert_array_equal,
+        new_result, last_result)
 
 
 def test_setter_inverse_method(icosahedron_sampling):

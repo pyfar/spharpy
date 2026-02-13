@@ -454,8 +454,12 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
             raise ValueError(
                 "Invalid basis type, should be either 'complex' or 'real'")
         self._basis = function(
-            self.n_max, self.coordinates,
-            self.normalization, self.channel_convention)
+            n_max=self.n_max,
+            coordinates=self.coordinates,
+            normalization=self.normalization,
+            channel_convention=self.channel_convention,
+            condon_shortley=self.condon_shortley,
+        )
 
     def _compute_basis_gradient(self):
         """
