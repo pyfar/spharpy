@@ -408,14 +408,13 @@ def test_great_circle():
         samplings.great_circle(azimuth_res=.5, match=11.25)
 
 
-def test_lebedev():
+def test_lebedev(capfd):
     # test without parameters
     assert samplings.lebedev() is None
-
-    # test with degree
-    c = samplings.lebedev(n_points=14)
-    assert type(c) is SamplingSphere
-    assert c.csize == 14
+    # test command line output
+    out, _ = capfd.readouterr()
+    assert 'Possible input values' in out
+    assert 'SH order 1, number of points 6' in out
 
     # test with spherical harmonic order
     c = samplings.lebedev(3)
@@ -425,7 +424,7 @@ def test_lebedev():
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test user radius
-    c = samplings.lebedev(n_points=6, radius=1.5)
+    c = samplings.lebedev(1, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
 
