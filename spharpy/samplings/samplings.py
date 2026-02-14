@@ -417,7 +417,7 @@ def icosahedron(radius=1.):
         phi, theta, radius)
 
 
-def equiangular(n_points=None, n_max=None, radius=1.):
+def equiangular(n_max=None, n_points=None, radius=1.):
     r"""
     Generate an equiangular sampling of the sphere.
 
@@ -433,13 +433,13 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
     Parameters
     ----------
-    n_points : int, tuple of two ints
-        Number of sampling points in azimuth and elevation. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int
         Maximum applicable spherical harmonic order. If this is provided,
         'n_points' is set to ``2 * n_max + 1``. Either `n_points` or
         `n_max` must be provided. The default is ``None``.
+    n_points : int, tuple of two ints
+        Number of sampling points in azimuth and elevation. Either `n_points`
+        or `n_max` must be provided. The default is ``None``.
     radius : number, optional
         Radius of the sampling grid. The default is ``1``.
 
