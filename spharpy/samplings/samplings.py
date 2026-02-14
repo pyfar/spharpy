@@ -514,7 +514,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     return sampling
 
 
-def gaussian(n_points=None, n_max=None, radius=1.):
+def gaussian(n_max, radius=1.):
     r"""
     Generate sampling of the sphere based on the Gaussian quadrature.
 
@@ -528,14 +528,9 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 
     Parameters
     ----------
-    n_points : int
-        Number of sampling points in elevation. The number of points in
-        azimuth is always ``2*n_points``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int
-        Maximum applicable spherical harmonic order. If this is provided,
-        `n_points` is set to ``(2 * (n_max + 1), n_max + 1)``. Either
-        `n_points` or `n_max` must be provided. The default is ``None``.
+        Maximum applicable spherical harmonic order. Results in
+        ``2 * (n_max + 1)`` in azimuth and ``n_max + 1`` points in elevation.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
@@ -559,34 +554,11 @@ def gaussian(n_points=None, n_max=None, radius=1.):
         >>> spharpy.plot.scatter(coords)
 
     """
-    if (n_points is None) and (n_max is None):
-        raise ValueError(
-            "Either the n_points or n_max needs to be specified.")
-
-    elif (n_points is not None) and (n_max is None):
-        if (
-            not isinstance(n_points, (int, np.integer)) or
-            (np.asarray(n_points).size > 1)
-        ):
-            raise ValueError(
-                "The number of points needs to be a positive natural number. ",
-                f"Instead it is {n_points}",
-            )
 
     # get number of points from required spherical harmonic order
     # ([1], chapter 3.3)
-    if n_max is not None:
-        n_phi = int(n_max+1)*2
-        n_theta = int(n_max) + 1
-    else:
-        n_theta = n_points
-        n_phi = 2*n_points
-
-    # compute the maximum applicable spherical harmonic order
-    if n_max is None:
-        n_max = int(np.min([n_phi / 2 - 1, n_theta - 1]))
-    else:
-        n_max = int(n_max)
+    n_max = int(n_max)
+    n_phi = (n_max+1)*2
 
     # construct the sampling grid
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
