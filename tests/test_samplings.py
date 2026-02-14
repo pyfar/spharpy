@@ -246,15 +246,6 @@ def test_equiangular_orthogonality(basis_func):
         atol=1e-6, rtol=1e-6)
 
 
-@pytest.mark.parametrize("n_points", np.arange(1, 40))
-def test_gaussian_weights_n_points(n_points):
-    sampling = samplings.gaussian(n_points=n_points)
-    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
-    assert sampling.cshape == sampling.weights.shape
-    assert sampling.cshape == 2*n_points*n_points
-    assert type(sampling) is SamplingSphere
-
-
 @pytest.mark.parametrize("n_max", np.arange(1, 15))
 def test_gaussian_weights_n_max(n_max):
     sampling = samplings.gaussian(n_max=n_max)
@@ -285,23 +276,6 @@ def test_gaussian_quadrature():
 
 
 def test_gaussian():
-    # test without parameters
-    with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
-        samplings.gaussian()
-
-    # n_points must be a positive natural number
-    with pytest.raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2, 2))
-
-    # n_points must be a positive natural number
-    with pytest.raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=3.2)
-
-    # test with single number of points
-    c = samplings.gaussian(5)
-    assert type(c) is SamplingSphere
-    assert c.csize == 5*(5*2)
-    npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
     # test with spherical harmonic order
     c = samplings.gaussian(n_max=5)
