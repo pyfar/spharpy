@@ -1040,8 +1040,8 @@ def lebedev(n_max=None, radius=1.):
     r"""
     Return Lebedev spherical sampling grid.
 
-    The number of points :math:`Q` can be approximated by the spherical
-    harmonic order :math:`N` (parameter `n_max`)
+    For the Lebedev grid [#]_, the number of points :math:`Q` can be
+    approximated by the spherical harmonic order :math:`N` (parameter `n_max`)
 
     :math:`Q \approx 1.3 \, (N+1)^2`
 
@@ -1052,8 +1052,9 @@ def lebedev(n_max=None, radius=1.):
     .. note::
         This is intended to be a quadrature sampling with positive sampling
         weights summing to :math:`4\pi`. For unknown reasons, this is not the
-        case in the original sources for orders 6, 12, and 13 (see [#]_ [#]_).
-        The respective weights are not returned regardless of the order.
+        case in the original sources [#]_ and the Matlab code [#]_ on which
+        this Python version is based for orders 6, 12, and 13. For this reason,
+        the respective weights are not returned regardless of the order.
 
     Parameters
     ----------
@@ -1068,10 +1069,6 @@ def lebedev(n_max=None, radius=1.):
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
         Sampling positions without sampling weights (see note above).
-
-    Notes
-    -----
-    This is a Python port of the Matlab Code written by Rob Parrish [#]_.
 
     References
     ----------
