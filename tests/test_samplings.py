@@ -196,16 +196,16 @@ def test_equiangular():
         samplings.equiangular()
 
     # test with single number of points
-    c = samplings.equiangular(5)
+    c = samplings.equiangular(n_points=5)
     assert type(c) is SamplingSphere
     assert c.csize == 5**2
 
     # test with tuple
-    c = samplings.equiangular((3, 5))
+    c = samplings.equiangular(n_points=(3, 5))
     assert c.csize == 3*5
 
     # test with spherical harmonic order
-    c = samplings.equiangular(n_max=5)
+    c = samplings.equiangular(5)
     assert c.csize == 4 * (5 + 1)**2
     npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
