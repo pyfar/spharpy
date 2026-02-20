@@ -419,6 +419,7 @@ def test_lebedev(capfd):
     # test with spherical harmonic order
     c = samplings.lebedev(3)
     assert c.csize == 26
+    assert type(c) is SamplingSphere
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)

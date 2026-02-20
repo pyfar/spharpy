@@ -1058,7 +1058,7 @@ def lebedev(n_max=None, radius=1.):
     ----------
     n_max : int, optional
         Maximum applicable spherical harmonic order between 1 and 65. Because
-        not all orders are available, the default is ``None`` prints possible
+        not all orders are available, the default ``None`` prints possible
         orders to the console.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
