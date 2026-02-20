@@ -1,6 +1,6 @@
 """
-Subpackage implementing or wrapping special functions required in the
-spharpy package.
+Module implementing or wrapping special functions required for higher level
+classes and functions of the spharpy package.
 """
 
 from itertools import count
@@ -11,18 +11,22 @@ from scipy.optimize import brentq
 
 def spherical_bessel(n, z, derivative=False):
     r"""
-    Spherical bessel function of order n evaluated at z.
+    Spherical Bessel function of order n evaluated at z.
+
+    The spherical Bessel function is defined as ([#]_, Eq. 2.29)
 
     .. math::
 
         j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)
 
+    with the Bessel function :math:`J_\alpha`.
+
     Parameters
     ----------
     n : int, ndarray
-        Order of the spherical bessel function
+        Order of the spherical Bessel function
     z : double, ndarray
-        Argument of the spherical bessel function. Has to be real valued.
+        Argument of the spherical Bessel function. Has to be real valued.
     derivative : bool
         Return the derivative of the spherical Bessel function. Default is
         ``False``.
@@ -31,7 +35,7 @@ def spherical_bessel(n, z, derivative=False):
     Returns
     -------
     jn : double, ndarray
-        Spherical bessel function. Array with dimensions [N x Z], where N is
+        Spherical Bessel function. Array with dimensions [N x Z], where N is
         the number of elements in n and Z is the number of elements in z.
 
     Note
@@ -39,6 +43,10 @@ def spherical_bessel(n, z, derivative=False):
     This is a wrapper around the Scipy implementation of the spherical Bessel
     function.
 
+    References
+    ----------
+    .. [#] Rafaely, B. (2019). Fundamentals of spherical array processing
+           (2nd ed.). Springer. https://doi.org/10.1007/978-3-319-99561-8
     """
 
     ufunc = _spspecial.spherical_jn
@@ -61,9 +69,11 @@ def spherical_bessel(n, z, derivative=False):
 
 def spherical_bessel_zeros(n_max, n_zeros):
     r"""Compute the zeros of the spherical Bessel function.
+
     This function will always start at order zero which is equal
-    to :math:`\sin(x)/x` and iteratively compute the roots for higher orders.
-    The roots are computed using Brents algorithm from the scipy package.
+    to :math:`\sin(z)/z` and iteratively compute the roots for higher orders.
+    The roots are computed using Brents algorithm from the scipy package. See
+    :py:func:`~spherical_bessel` for more information.
 
     Parameters
     ----------
@@ -99,9 +109,13 @@ def spherical_hankel(n, z, kind=2, derivative=False):
     r"""
     Spherical Hankel function of order n evaluated at z.
 
+    The spherical Hankel function is defined as ([#]_, Eq. 2.30)
+
     .. math::
 
-        j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)
+        j_n(z) = \sqrt{\frac{\pi}{2z}} H_{n+\frac{1}{2}} (z)
+
+    with the Bessel function :math:`H_\alpha`.
 
     Parameters
     ----------
@@ -121,6 +135,11 @@ def spherical_hankel(n, z, kind=2, derivative=False):
     hn : double, ndarray
         Spherical bessel function. Array with dimensions [N x Z], where N is
         the number of elements in n and Z is the number of elements in z.
+
+    References
+    ----------
+    .. [#] Rafaely, B. (2019). Fundamentals of spherical array processing
+           (2nd ed.). Springer. https://doi.org/10.1007/978-3-319-99561-8
 
     Note
     ----
@@ -234,7 +253,6 @@ def spherical_harmonic_real(n, m, theta, phi):
     -------
     spherical_harmonic : ndarray, double
         The real valued spherial harmonic of order n and degree m
-
     """
     # careful here, scipy uses phi as the elevation angle and
     # theta as the azimuth angle
@@ -271,7 +289,6 @@ def spherical_harmonic_derivative_phi(n, m, theta, phi):
     -------
     sh_diff : complex double
         Spherical harmonic derivative
-
     """
     if m == 0 or n == 0:
         res = np.zeros(phi.shape, dtype=complex)
@@ -300,7 +317,6 @@ def spherical_harmonic_gradient_phi(n, m, theta, phi):
     -------
     sh_diff : complex double
         Spherical harmonic derivative
-
     """
     if m == 0:
         return np.zeros(theta.shape, dtype=complex)
@@ -335,7 +351,6 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
     -------
     sh_diff : complex double
         Spherical harmonic derivative
-
     """
     if n == 0:
         return np.zeros(theta.shape, dtype=complex)
@@ -349,14 +364,17 @@ def spherical_harmonic_derivative_theta(n, m, theta, phi):
 
 
 def legendre_function(n, m, z, cs_phase=True):
-    r"""Legendre function of order n and degree m with argument z.
+    r"""
+    Legendre function of order n and degree m with argument z.
+
+    The Legendre function is defined as ([#]_ Eq. 1.30, 1.33, and 1.34)
 
     .. math::
 
-        P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n{z}
+        P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n(z), \quad x\in[-1,1]
 
     where the Condon-Shotley phase term :math:`(-1)^m` is dropped when
-    cs_phase=False is used.
+    ``cs_phase = False`` and the Legendre Polynomial :math:`P_n`.
 
     Parameters
     ----------
@@ -375,13 +393,17 @@ def legendre_function(n, m, z, cs_phase=True):
     legendre : ndarray, double
         The Legendre function. This will return zeros if :math:`|m| > n`.
 
+    References
+    ----------
+    .. [#] Rafaely, B. (2019). Fundamentals of spherical array processing
+           (2nd ed.). Springer. https://doi.org/10.1007/978-3-319-99561-8
+
     Note
     ----
     This is a wrapper for the Legendre function implementation from scipy. The
     scipy implementation uses the Condon-Shotley phase. Therefore, the sign
     needs to be flipped here for uneven degrees when dropping the
     Condon-Shotley phase.
-
     """
     z = np.atleast_1d(z)
 
@@ -418,8 +440,6 @@ def spherical_harmonic_normalization(n, m, norm='full'):
     -------
     norm : double
         The normalization factor.
-
-
     """
     if np.abs(m) > n:
         factor = 0.0
@@ -466,7 +486,6 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
     Note
     ----
     This implementation does not include the Condon-Shotley phase term.
-
     """
 
     m_abs = np.abs(m)
@@ -517,7 +536,6 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
     Note
     ----
     This implementation does not include the Condon-Shotley phase term.
-
     """
     m_abs = np.abs(m)
     if m == 0:
@@ -567,7 +585,6 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
             harmonic expressions of geomagnetic vector and gradient tensor
             fields in the local north-oriented reference frame,” Geoscientific
             Model Development, vol. 8, no. 7, pp. 1979–1990, Jul. 2015.
-
     """
     m_abs = np.abs(m)
 
@@ -606,6 +623,9 @@ def legendre_coefficients(order):
     coefficients : ndarray, double
         The coefficients of the polynomial
 
+    Note
+    ----
+    This uses `numpy.polynomial.legendre` to compute the coefficients.
     """
     leg = np.polynomial.legendre.Legendre.basis(order)
     return np.polynomial.legendre.leg2poly(leg.coef)
@@ -625,6 +645,9 @@ def chebyshev_coefficients(order):
     coefficients : ndarray, double
         The coefficients of the polynomial
 
+    Note
+    ----
+    This uses `numpy.polynomial.chebyshev` to compute the coefficients.
     """
     cheb = np.polynomial.chebyshev.Chebyshev.basis(order)
     return np.polynomial.chebyshev.cheb2poly(cheb.coef)
