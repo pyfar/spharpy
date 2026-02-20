@@ -113,7 +113,7 @@ def spherical_hankel(n, z, kind=2, derivative=False):
 
     .. math::
 
-        j_n(z) = \sqrt{\frac{\pi}{2z}} H_{n+\frac{1}{2}} (z)
+        h_n(z) = \sqrt{\frac{\pi}{2z}} H_{n+\frac{1}{2}} (z)
 
     with the Bessel function :math:`H_\alpha`.
 
@@ -371,10 +371,10 @@ def legendre_function(n, m, z, cs_phase=True):
 
     .. math::
 
-        P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n(z), \quad x\in[-1,1]
+        P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n(z),
 
     where the Condon-Shotley phase term :math:`(-1)^m` is dropped when
-    ``cs_phase = False`` and the Legendre Polynomial :math:`P_n`.
+    ``cs_phase = False`` and the Legendre Polynomial :math:`P_n(z)`.
 
     Parameters
     ----------
