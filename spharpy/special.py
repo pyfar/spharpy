@@ -11,7 +11,7 @@ from scipy.optimize import brentq
 
 def spherical_bessel(n, z, derivative=False):
     r"""
-    Spherical Bessel function of order n evaluated at z.
+    Spherical Bessel function of the first kind and of order n evaluated at z.
 
     The spherical Bessel function is defined as ([#]_, Eq. 2.29)
 
@@ -40,8 +40,8 @@ def spherical_bessel(n, z, derivative=False):
 
     Note
     ----
-    This is a wrapper around the Scipy implementation of the spherical Bessel
-    function.
+    This is a wrapper around the Scipy implementation of the
+    :py:func:`spherical Bessel function <scipy.special.spherical_jn>`.
 
     References
     ----------
@@ -107,7 +107,7 @@ def spherical_bessel_zeros(n_max, n_zeros):
 
 def spherical_hankel(n, z, kind=2, derivative=False):
     r"""
-    Spherical Hankel function of order n evaluated at z.
+    Spherical Hankel function of the first kind and order n evaluated at z.
 
     The spherical Hankel function is defined as ([#]_, Eq. 2.30)
 
@@ -625,7 +625,7 @@ def legendre_coefficients(order):
 
     Note
     ----
-    This uses `numpy.polynomial.legendre` to compute the coefficients.
+    This uses :py:mod:`numpy.polynomial.legendre` to compute the coefficients.
     """
     leg = np.polynomial.legendre.Legendre.basis(order)
     return np.polynomial.legendre.leg2poly(leg.coef)
@@ -647,7 +647,7 @@ def chebyshev_coefficients(order):
 
     Note
     ----
-    This uses `numpy.polynomial.chebyshev` to compute the coefficients.
+    This uses :py:mod:`numpy.polynomial.chebyshev` to compute the coefficients.
     """
     cheb = np.polynomial.chebyshev.Chebyshev.basis(order)
     return np.polynomial.chebyshev.cheb2poly(cheb.coef)
