@@ -13,7 +13,8 @@ def spherical_bessel(n, z, derivative=False):
     r"""
     Spherical Bessel function of the first kind and of order n evaluated at z.
 
-    The spherical Bessel function is defined as ([#]_, Eq. 2.29)
+    The spherical Bessel function of the first kind is defined as
+    ([#]_, Eq. 2.29)
 
     .. math::
 
@@ -109,13 +110,14 @@ def spherical_hankel(n, z, kind=2, derivative=False):
     r"""
     Spherical Hankel function of the first kind and order n evaluated at z.
 
-    The spherical Hankel function is defined as ([#]_, Eq. 2.30)
+    The spherical Hankel function of the first kind is defined as
+    ([#]_, Eq. 2.30)
 
     .. math::
 
         h_n(z) = \sqrt{\frac{\pi}{2z}} H_{n+\frac{1}{2}} (z)
 
-    with the Bessel function :math:`H_\alpha`.
+    with the Hankel function :math:`H_\alpha`.
 
     Parameters
     ----------
@@ -373,7 +375,7 @@ def legendre_function(n, m, z, cs_phase=True):
 
         P_n^m(z) = (-1)^m(1-z^2)^{m/2}\frac{d^m}{dz^m}P_n(z),
 
-    where the Condon-Shotley phase term :math:`(-1)^m` is dropped when
+    where the Condon-Shortley phase term :math:`(-1)^m` is dropped when
     ``cs_phase = False`` and the Legendre Polynomial :math:`P_n(z)`.
 
     Parameters
@@ -385,7 +387,7 @@ def legendre_function(n, m, z, cs_phase=True):
     z : ndarray, double
         The argument as an array
     cs_phase : bool, optional
-        Whether to use include the Condon-Shotley phase term :math:`(-1)^m`
+        Whether to use include the Condon-Shortley phase term :math:`(-1)^m`
         or not. Default is ``True``.
 
     Returns
@@ -401,9 +403,9 @@ def legendre_function(n, m, z, cs_phase=True):
     Note
     ----
     This is a wrapper for the Legendre function implementation from scipy. The
-    scipy implementation uses the Condon-Shotley phase. Therefore, the sign
+    scipy implementation uses the Condon-Shortley phase. Therefore, the sign
     needs to be flipped here for uneven degrees when dropping the
-    Condon-Shotley phase.
+    Condon-Shortley phase.
     """
     z = np.atleast_1d(z)
 
@@ -485,7 +487,7 @@ def spherical_harmonic_derivative_theta_real(n, m, theta, phi):
 
     Note
     ----
-    This implementation does not include the Condon-Shotley phase term.
+    This implementation does not include the Condon-Shortley phase term.
     """
 
     m_abs = np.abs(m)
@@ -535,7 +537,7 @@ def spherical_harmonic_derivative_phi_real(n, m, theta, phi):
 
     Note
     ----
-    This implementation does not include the Condon-Shotley phase term.
+    This implementation does not include the Condon-Shortley phase term.
     """
     m_abs = np.abs(m)
     if m == 0:
@@ -577,7 +579,7 @@ def spherical_harmonic_gradient_phi_real(n, m, theta, phi):
 
     Note
     ----
-    This implementation does not include the Condon-Shotley phase term.
+    This implementation does not include the Condon-Shortley phase term.
 
     References
     ----------
