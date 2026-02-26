@@ -20,7 +20,7 @@ def spherical_bessel(n, z, derivative=False):
 
         j_n(z) = \sqrt{\frac{\pi}{2z}} J_{n+\frac{1}{2}} (z)
 
-    with the Bessel function :math:`J_\alpha`.
+    with the Bessel function of the first kind :math:`J_\alpha`.
 
     Parameters
     ----------
@@ -117,7 +117,7 @@ def spherical_hankel(n, z, kind=2, derivative=False):
 
         h_n(z) = \sqrt{\frac{\pi}{2z}} H_{n+\frac{1}{2}} (z)
 
-    with the Hankel function :math:`H_\alpha`.
+    with the Hankel function of the first kind :math:`H_\alpha`.
 
     Parameters
     ----------
