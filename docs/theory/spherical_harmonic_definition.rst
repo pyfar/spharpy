@@ -62,6 +62,15 @@ In contrast for fully normalized and semi normalized spherical harmonics, the
 magnitude of the spherical harmonic of order :math:`n=0` is normalized to
 :math:`\sqrt{1/4\pi}`.
 
+Note that in some literature, the normalization and Legendre functions are
+expressed using the absolute value of the degree :math:`|m|` instead of :math:`m`.
+This has however no effect on the resulting spherical harmonics as long as the
+absolute value is used consistently for the normalization and associated Legendre
+function, since
+
+.. math::
+    N_n^{|m|}P_n^{|m|} = N_n^{m}P_n^{m}.
+
 **Phase convention**
 
 Spharpy implements two different phase conventions, also referred to as the
