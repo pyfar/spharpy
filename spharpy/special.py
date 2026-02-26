@@ -387,7 +387,7 @@ def legendre_function(n, m, z, cs_phase=True):
     z : ndarray, double
         The argument as an array
     cs_phase : bool, optional
-        Whether to use include the Condon-Shortley phase term :math:`(-1)^m`
+        Whether to include the Condon-Shortley phase term :math:`(-1)^m`
         or not. Default is ``True``.
 
     Returns
