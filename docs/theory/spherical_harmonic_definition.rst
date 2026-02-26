@@ -226,3 +226,15 @@ compared to the plot above.
         basis_type='real', condon_shortley=True).basis
 
     axs, gs = plot_basis_functions(Y_nm, sampling)
+
+
+References
+----------
+
+.. [1] E. G. Williams, Fourier Acoustics, 1st ed. Academic Press, 1999.
+.. [2] B. Rafaely, Fundamentals of Spherical Array Processing, 2st ed.,
+       vol. 8. in Springer Topics in Signal Processing, vol. 8. Springer-Verlag GmbH Berlin Heidelberg, 2015.
+.. [3] F. Zotter, “Analysis and synthesis of sound-radiation with spherical arrays,” 2009.
+.. [4] F. Zotter and M. Frank, Ambisonics: A Practical 3D Audio Theory for Recording, Studio Production,
+       Sound Reinforcement, and Virtual Reality, vol. 19. in Springer Topics in Signal Processing, vol. 19.
+       Springer International Publishing, 2019.
