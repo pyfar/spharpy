@@ -429,6 +429,34 @@ def test_lebedev(capfd):
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
 
+@pytest.mark.parametrize("degree", np.array([
+    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302], dtype=int))
+def test_lebedev_orthogonality(degree):
+    """
+    Test orthogonality of the transform.
+
+    This was done after discovering https://github.com/pyfar/spharpy/issues/276
+    to make sure that the sampling can be used for SH transforms using the
+    pseudo inverse.
+
+    The test for all degrees takes too long and was only done once. If required
+    replace the above with
+
+    @pytest.mark.parametrize("degree", np.array([
+    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302, 350, 434,
+    590, 770, 974, 1202, 1454, 1730, 2030, 2354, 2702, 3074, 3470, 3890, 4334,
+    4802, 5294, 5810], dtype=int))
+    """
+
+    n_max = int(np.sqrt(degree / 1.3) - 1)
+    sampling = samplings.lebedev(n_max)
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-14)
+
+
 def test_fliege():
     # test without parameters
     assert samplings.fliege() is None
