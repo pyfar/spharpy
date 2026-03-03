@@ -1036,36 +1036,39 @@ def great_circle(
     return sampling
 
 
-def lebedev(n_points=None, n_max=None, radius=1.):
+def lebedev(n_max=None, radius=1.):
     r"""
     Return Lebedev spherical sampling grid.
 
-    For detailed information, see [#]_. For a list of available values
-    for `n_points` and `n_max` call :py:func:`sph_lebedev`. This is a
-    quadrature  sampling with the sum of the sampling weights in
-    `sampling.weights` being :math:`4\pi`.
+    For the Lebedev grid [#]_, the number of points :math:`Q` can be
+    approximated by the spherical harmonic order :math:`N` (parameter `n_max`)
+
+    :math:`Q \approx 1.3 \, (N+1)^2`
+
+    For a list of available orders `n_max` and the exact number of points call
+    :py:func:`lebedev` without any arguments. This will print available
+    orders and number of points to the console.
+
+    .. note::
+        This is intended to be a quadrature sampling with positive sampling
+        weights summing to :math:`4\pi`. For unknown reasons, this is not the
+        case in the original sources [#]_ and the Matlab code [#]_ on which
+        this Python version is based for orders 6, 12, and 13. For this reason,
+        the respective weights are not returned regardless of the order.
 
     Parameters
     ----------
-    n_points : int, optional
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int, optional
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
-        `n_max` must be provided. The default is ``None``.
+        Maximum applicable spherical harmonic order between 1 and 65. Because
+        not all orders are available, the default ``None`` prints possible
+        orders to the console.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
-
-    Notes
-    -----
-    This is a Python port of the Matlab Code written by Rob Parrish [#]_.
+        Sampling positions without sampling weights (see note above).
 
     References
     ----------
@@ -1073,6 +1076,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
            "A quadrature formula for the sphere of the 131st
            algebraic order of accuracy"
            Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.
+    .. [#] https://people.sc.fsu.edu/~jburkardt/datasets/sphere_lebedev_rule/sphere_lebedev_rule.html
     .. [#] https://de.mathworks.com/matlabcentral/fileexchange/27097-getlebedevsphere
 
 
@@ -1097,48 +1101,28 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     orders = np.array((np.floor(np.sqrt(degrees / 1.3) - 1)), dtype=int)
 
     # list possible sh orders and degrees
-    if n_points is None and n_max is None:
+    if n_max is None:
         print('Possible input values:')
         for o, d in zip(orders, degrees, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
 
-    # check input
-    if n_points is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
-
     # check if the order is available
-    if n_max is not None:
-        if n_max not in orders:
-            str_orders = [f"{o}" for o in orders]
-            raise ValueError("Invalid spherical harmonic order 'n_max'. \
-                             Valid orders are: {}.".format(
-                             ', '.join(str_orders)))
-
-        n_points = int(degrees[orders == n_max].squeeze())
-
-    # check if n_points is available
-    if n_points not in degrees:
-        str_degrees = [f"{d}" for d in degrees]
-        raise ValueError("Invalid number of points n_points. Valid degrees \
-                         are: {}.".format(', '.join(str_degrees)))
-
-    # calculate n_max
-    n_max = int(orders[degrees == n_points].squeeze())
+    if n_max not in orders:
+        str_orders = [f"{o}" for o in orders]
+        raise ValueError("Invalid spherical harmonic order 'n_max'. \
+                         Valid orders are: {}.".format(', '.join(str_orders)))
 
     # get the samlpling
-    leb = lebedev_sphere(n_points)
-
-    # normalize the weights
-    weights = leb["w"]
+    leb = lebedev_sphere(degrees[n_max == orders])
 
     # generate Coordinates object
     sampling = spharpy.SamplingSphere(
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
-        n_max=n_max, weights=weights,
+        n_max=n_max,
         comment='spherical Lebedev sampling grid')
 
     return sampling

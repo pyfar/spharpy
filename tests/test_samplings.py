@@ -408,29 +408,53 @@ def test_great_circle():
         samplings.great_circle(azimuth_res=.5, match=11.25)
 
 
-def test_lebedev():
+def test_lebedev(capfd):
     # test without parameters
     assert samplings.lebedev() is None
-
-    # test with degree
-    c = samplings.lebedev(14)
-    assert type(c) is SamplingSphere
-    assert c.csize == 14
+    # test command line output
+    out, _ = capfd.readouterr()
+    assert 'Possible input values' in out
+    assert 'SH order 1, number of points 6' in out
 
     # test with spherical harmonic order
-    c = samplings.lebedev(n_max=3)
+    c = samplings.lebedev(3)
     assert c.csize == 26
+    assert type(c) is SamplingSphere
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test user radius
-    c = samplings.lebedev(6, radius=1.5)
+    c = samplings.lebedev(1, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert c.quadrature
+
+@pytest.mark.parametrize("degree", np.array([
+    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302], dtype=int))
+def test_lebedev_orthogonality(degree):
+    """
+    Test orthogonality of the transform.
+
+    This was done after discovering https://github.com/pyfar/spharpy/issues/276
+    to make sure that the sampling can be used for SH transforms using the
+    pseudo inverse.
+
+    The test for all degrees takes too long and was only done once. If required
+    replace the above with
+
+    @pytest.mark.parametrize("degree", np.array([
+    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302, 350, 434,
+    590, 770, 974, 1202, 1454, 1730, 2030, 2354, 2702, 3074, 3470, 3890, 4334,
+    4802, 5294, 5810], dtype=int))
+    """
+
+    n_max = int(np.sqrt(degree / 1.3) - 1)
+    sampling = samplings.lebedev(n_max)
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-14)
 
 
 def test_fliege():
