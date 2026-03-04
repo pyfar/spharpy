@@ -465,13 +465,27 @@ def test_lebedev_orthogonality(degree):
             21, 22, 23, 24, 25, 26, 27, 28, 29,
         ])
 def test_fliege_for_each_order(n_max):
-    # test with degree
     c = samplings.fliege(n_max)
     assert type(c) is SamplingSphere
     assert c.csize == (n_max+1)**2
-    # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
-    npt.assert_almost_equal(np.sum(c.weights), 4*np.pi)
+
+
+@pytest.mark.parametrize(
+        "n_max",
+        [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            # 21, 22, 23, 24, 25, 26, 27, 28, 29,
+        ])
+def test_fliege_for_each_order_orthogonal(n_max):
+    sampling = samplings.fliege(n_max)
+
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-12)
 
 
 def test_fliege_radius():

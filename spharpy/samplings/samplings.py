@@ -1139,7 +1139,8 @@ def fliege(n_max, radius=1.):
     Parameters
     ----------
     n_max : int
-        Maximum applicable spherical harmonic order. It must be between 1 and 29.
+        Maximum applicable spherical harmonic order.
+        It must be between 1 and 29.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
@@ -1187,15 +1188,12 @@ def fliege(n_max, radius=1.):
         variable_names=f"Fliege_{int(n_points)}")
     fliege = fliege[f"Fliege_{int(n_points)}"]
 
-    # normalize weights
-    weights = fliege[:, 2] * 4 * np.pi
-
     # generate Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights)
+        n_max=n_max)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]
