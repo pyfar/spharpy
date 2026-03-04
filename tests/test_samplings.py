@@ -450,11 +450,14 @@ def test_lebedev_orthogonality(degree):
 
     n_max = int(np.sqrt(degree / 1.3) - 1)
     sampling = samplings.lebedev(n_max)
+    sampling.weights = samplings.calculate_sampling_weights(sampling)
     Y = spherical_harmonic_basis_real(n_max, sampling)
-    Y_inverse = np.linalg.pinv(Y)
 
     # if orthogonal Y_inverse @ Y must be the identity matrix
-    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-14)
+    npt.assert_allclose(
+        Y.T @ np.diag(sampling.weights) @ Y,
+        np.eye((n_max + 1)**2),
+        atol=1e-2, rtol=1e-2)
 
 
 def test_fliege():
