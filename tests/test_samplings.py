@@ -7,7 +7,7 @@ from pyfar import Coordinates
 import numpy.testing as npt
 from spharpy.spherical import (
     spherical_harmonic_basis_real, spherical_harmonic_basis)
-
+import scipy
 
 @pytest.mark.parametrize("flatten_output", [True, False])
 def test_equidistant_cuboid_sampling_int(flatten_output):
@@ -429,9 +429,12 @@ def test_lebedev(capfd):
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
 
-@pytest.mark.parametrize("degree", np.array([
-    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302], dtype=int))
-def test_lebedev_orthogonality(degree):
+@pytest.mark.parametrize("n_max", [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+    11, 12, 13, 14, 15, 17, 20, 23, 26,
+    29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65,
+])
+def test_lebedev_orthogonality(n_max):
     """
     Test orthogonality of the transform.
 
@@ -448,8 +451,29 @@ def test_lebedev_orthogonality(degree):
     4802, 5294, 5810], dtype=int))
     """
 
-    n_max = int(np.sqrt(degree / 1.3) - 1)
     sampling = samplings.lebedev(n_max)
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-14)
+
+
+@pytest.mark.parametrize("n", np.array([
+    3, 5, 7, 9, 11, 13, 15, 17,
+    19, 21, 23, 25, 27, 29, 31, 35,
+    41, 47, 53, 59, 65, 71, 77, 83,
+    89, 95, 101, 107, 113, 119, 125, 131,
+], dtype=int))
+def test_lebedev_orthogonality_scipy(n):
+
+    xyz, w = scipy.integrate.lebedev_rule(n)
+
+    n_max = int((n-1)/2)
+
+    sampling = SamplingSphere(xyz[0], xyz[1], xyz[2])
+    weights = samplings.calculate_sampling_weights(sampling) /(4*np.pi)
+
     Y = spherical_harmonic_basis_real(n_max, sampling)
     Y_inverse = np.linalg.pinv(Y)
 

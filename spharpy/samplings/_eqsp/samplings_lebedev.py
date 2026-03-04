@@ -144,17 +144,17 @@ def _lebedevSphere(degree):
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
 
     elif degree == 74:
-        v = 0.5130671797338464E-3
+        v = 0.00848616994323701
         leb_tmp, start = _lebedevReccurencePoints(1, start, a, b, v, leb_tmp)
-        v = 0.1660406956574204E-1
+        v = 0.017642175977659064
         leb_tmp, start = _lebedevReccurencePoints(2, start, a, b, v, leb_tmp)
-        v = -0.2958603896103896E-1
+        v = 0.004488073876089335
         leb_tmp, start = _lebedevReccurencePoints(3, start, a, b, v, leb_tmp)
         a = 0.4803844614152614E+0
-        v = 0.2657620708215946E-1
+        v = 0.013978906293305933
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
         a = 0.3207726489807764E+0
-        v = 0.1652217099371571E-1
+        v = 0.015249105273358828
         leb_tmp, start = _lebedevReccurencePoints(5, start, a, b, v, leb_tmp)
 
     elif degree == 86:
@@ -263,34 +263,34 @@ def _lebedevSphere(degree):
         leb_tmp, start = _lebedevReccurencePoints(6, start, a, b, v, leb_tmp)
 
     elif degree == 230:
-        v = -0.5522639919727325E-1
+        v = 0.00026214963737164150882341662196495235548354685306549072265625
         leb_tmp, start = _lebedevReccurencePoints(1, start, a, b, v, leb_tmp)
-        v = 0.4450274607445226E-2
+        v = 0.0027672356071008169346725491521965523133985698223114013671875
         leb_tmp, start = _lebedevReccurencePoints(3, start, a, b, v, leb_tmp)
         a = 0.4492044687397611E+0
-        v = 0.4496841067921404E-2
+        v = 0.004117463487163327932882861404095820034854114055633544921875
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
         a = 0.2520419490210201E+0
-        v = 0.5049153450478750E-2
+        v = 0.004234584603185674589465037342961295507848262786865234375
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
         a = 0.6981906658447242E+0
-        v = 0.3976408018051883E-2
+        v = 0.0044122796226640330352619656650858814828097820281982421875
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
         a = 0.6587405243460960E+0
-        v = 0.4401400650381014E-2
+        v = 0.004458378957501600396706731288531955215148627758026123046875
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
         a = 0.4038544050097660E-1
-        v = 0.1724544350544401E-1
+        v = 0.004519844737285024123540910778729084995575249195098876953125
         leb_tmp, start = _lebedevReccurencePoints(4, start, a, b, v, leb_tmp)
         a = 0.5823842309715585E+0
-        v = 0.4231083095357343E-2
+        v = 0.004683311685843782705418458789381475071422755718231201171875
         leb_tmp, start = _lebedevReccurencePoints(5, start, a, b, v, leb_tmp)
         a = 0.3545877390518688E+0
-        v = 0.5198069864064399E-2
+        v = 0.005301419374031584273720962841025539091788232326507568359375
         leb_tmp, start = _lebedevReccurencePoints(5, start, a, b, v, leb_tmp)
         a = 0.2272181808998187E+0
         b = 0.4864661535886647E+0
-        v = 0.4695720972568883E-2
+        v = 0.005417478494683284663546718462612261646427214145660400390625
         leb_tmp, start = _lebedevReccurencePoints(6, start, a, b, v, leb_tmp)
 
     elif degree == 266:
@@ -4828,7 +4828,7 @@ def _lebedevReccurencePoints(kind, start, a, b, v, leb):
         start = start+8
 
     elif kind == 4:
-        # In this case A is inputed
+        # In this case A is inputted
         b = np.sqrt(1.0 - 2.0 * a * a)
 
         leb["x"][start] = a

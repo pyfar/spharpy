@@ -1122,6 +1122,7 @@ def lebedev(n_max=None, radius=1.):
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
+        # weights=leb["w"],
         n_max=n_max,
         comment='spherical Lebedev sampling grid')
 
