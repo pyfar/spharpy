@@ -453,7 +453,6 @@ def test_lebedev_orthogonality(degree):
     sampling.weights = samplings.calculate_sampling_weights(sampling)
     Y = spherical_harmonic_basis_real(n_max, sampling)
 
-    # if orthogonal Y_inverse @ Y must be the identity matrix
     npt.assert_allclose(
         Y.T @ np.diag(sampling.weights) @ Y,
         np.eye((n_max + 1)**2),
