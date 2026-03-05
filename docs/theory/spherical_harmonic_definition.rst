@@ -23,7 +23,8 @@ where :math:`N_n^m` is the magnitude normalization, :math:`S^m` is the phase
 convention, :math:`P_n^{m}(\cos\theta)` are the associated Legendre functions,
 and :math:`A^m(\phi)` is the azimuthal function.
 
-**Magnitude normalization**
+Magnitude normalization
+^^^^^^^^^^^^^^^^^^^^^^^
 
 All implementations form an orthogonal basis on the sphere.
 Accordingly, the inner product of two spherical harmonics yields the weighted
@@ -71,7 +72,8 @@ function, since
 .. math::
     N_n^{|m|}P_n^{|m|} = N_n^{m}P_n^{m}.
 
-**Phase convention**
+Phase convention
+^^^^^^^^^^^^^^^^
 
 Spharpy implements two different phase conventions, also referred to as the
 Condon-Shortley phase term
@@ -86,7 +88,8 @@ Note that the Condon-Shortley phase term is included in the definition of the
 associated Legendre functions in the :py:mod:`scipy.special` module, which is used
 for the computation of the spherical harmonics in spharpy.
 
-**Real and complex valued definition of the azimuthal function**
+Real and complex valued definition of the azimuthal function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The azimuthal function :math:`A^m(\phi)` can be defined in a real or complex-valued
 form, which leads to the real and complex spherical harmonics.
@@ -106,7 +109,7 @@ For real valued spherical harmonics, the azimuthal function is defined as
 
 
 Examples
---------
+========
 
 For reference, the following plots show the spherical harmonics up to third order.
 The color map encodes the phase of the spherical harmonics and the radius encodes
@@ -238,7 +241,7 @@ compared to the plot above.
 
 
 References
-----------
+==========
 
 .. [1] E. G. Williams, Fourier Acoustics, 1st ed. Academic Press, 1999.
 .. [2] B. Rafaely, Fundamentals of Spherical Array Processing, 2st ed.,
