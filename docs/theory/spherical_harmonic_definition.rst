@@ -187,7 +187,7 @@ downloaded using the link below.
 
 
 The default definition of the complex valued spherical harmonics corresponds to
-the 'N3D' normalization, the inclusion of the Condon-Shortley phase term.
+the ``'N3D'`` normalization, the inclusion of the Condon-Shortley phase term.
 
 
 .. plot::
@@ -244,12 +244,12 @@ compared to the plot above.
     axs, gs = plot_basis_functions(Y_nm, sampling)
 
 
-Notes on commonly used conventions
-----------------------------------
+Common conventions
+------------------
 
 Within the fields of acoustics and audio reproduction, several different definitions of
 the spherical harmonics are commonly used, which differ in their choice of real or
-complex valued functions and in the magnitude normalization and phase convention.
+complex valued functions, the magnitude normalization, and phase convention.
 They can primarily be distinguished into complex and real valued definitions.
 For each of these two types, the most commonly used definitions are described in the following.
 
