@@ -244,8 +244,105 @@ compared to the plot above.
     axs, gs = plot_basis_functions(Y_nm, sampling)
 
 
+Notes on commonly used conventions
+----------------------------------
+
+Within the fields of acoustics and audio reproduction, several different definitions of
+the spherical harmonics are commonly used, which differ in their choice of real or
+complex valued functions and in the magnitude normalization and phase convention.
+They can primarily be distinguished into complex and real valued definitions.
+For each of these two types, the most commonly used definitions are described in the following.
+
+Complex valued spherical harmonics
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The most commonly used definition of complex valued spherical harmonics used in the fields
+of acoustics corresponds the ``'N3D'`` normalization and the inclusion of the
+Condon-Shortley phase term. This definition is found in Ref. [1]_ and [2]_ and
+serves as the default parametrization used in spharpy for complex valued spherical harmonics.
+
+.. plot::
+    :include-source: true
+    :context: close-figs
+
+    spherical_harmonics = spharpy.SphericalHarmonics(
+        n_max=n_max, coordinates=sampling,
+        basis_type='complex', normalization='N3D', condon_shortley=True
+    )
+
+Real valued spherical harmonics
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When considering real valued spherical harmonics, a larger number of different
+definitions are commonly used in the literature or implement in software packages.
+Note that especially, in software packages for music production, the normalization
+used in the implementation is often not explicitly stated or even inconsistent
+with the normalization stated in the documentation.
+
+Fully normalized spherical harmonics
+++++++++++++++++++++++++++++++++++++
+
+This convention is the real valued equivalent of the complex valued spherical harmonics
+from the previous section, i.e., it corresponds to the ``'N3D'`` normalization and the
+exclusion of the Condon-Shortley phase term.
+This convention is found in Ref. [3]_ and  Sec. 5.9.1. of Ref. [4]_ and implemented as
+the default parametrization for real valued spherical harmonics in spharpy.
+
+.. plot::
+    :include-source: true
+    :context: close-figs
+
+    spherical_harmonics = spharpy.SphericalHarmonics(
+        n_max=n_max, coordinates=sampling,
+        basis_type='real', normalization='N3D', condon_shortley=False
+    )
+
+
+AmbiX
++++++
+
+The most commonly used definition of the real valued spherical harmonics used in
+audio reproduction via Ambisonics corresponds to the AmbiX convention.
+The AmbiX convention corresponds to the ``'SN3D'`` normalization and the exclusion
+of the Condon-Shortley phase term for real valued spherical harmonics,
+see Sec. 5.9.1. of Ref. [4]_.
+In spharpy, this definition is implemented using the following parametrization.
+
+.. plot::
+    :include-source: true
+    :context: close-figs
+
+    spherical_harmonics = spharpy.SphericalHarmonics(
+        n_max=n_max, coordinates=sampling,
+        basis_type='real', normalization='SN3D', condon_shortley=False
+    )
+
+Note that especially in software plug-ins for music production, the normalization
+used in the implementation corresponds to spharpy's ``'SNM'`` normalization without
+explicitly stating this in the documentation.
+This normalization results in an undistorted magnitude of the mono-channel when
+encoding to Ambisonics, which is often desirable for music production.
+
+AES69-2022
+++++++++++
+
+The convention used in the AES69-2022 [5]_ standard corresponds to the ``'NM'`` normalization
+and the exclusion of the Condon-Shortley phase term.
+This convention is implemented in spharpy using the following parametrization
+
+
+.. plot::
+    :include-source: true
+    :context: close-figs
+
+    spherical_harmonics = spharpy.SphericalHarmonics(
+        n_max=n_max, coordinates=sampling,
+        basis_type='real', normalization='NM', condon_shortley=False
+    )
+
+
 References
-==========
+----------
 
 .. [1] E. G. Williams, Fourier Acoustics, 1st ed. Academic Press, 1999.
 .. [2] B. Rafaely, Fundamentals of Spherical Array Processing, 2st ed.,
@@ -254,3 +351,4 @@ References
 .. [4] F. Zotter and M. Frank, Ambisonics: A Practical 3D Audio Theory for Recording, Studio Production,
        Sound Reinforcement, and Virtual Reality, vol. 19. in Springer Topics in Signal Processing, vol. 19.
        Springer International Publishing, 2019.
+.. [5] AES69-2022, “AES Standard for File Exchange - Spatial Acoustic Data File Format,” Audio Engineering Society, Inc., New York, NY, USA, 2022.
