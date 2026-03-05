@@ -13,6 +13,10 @@ Spharpy supports multiple definitions of the spherical harmonics also
 referred to as conventions.
 These definitions differ in their choice of real or complex valued functions
 and in the magnitude normalization and phase convention.
+
+General definition
+------------------
+
 In a general form, the spherical harmonics can be expressed as
 
 .. math::
@@ -109,7 +113,7 @@ For real valued spherical harmonics, the azimuthal function is defined as
 
 
 Examples
-========
+--------
 
 For reference, the following plots show the spherical harmonics up to third order.
 The color map encodes the phase of the spherical harmonics and the radius encodes
