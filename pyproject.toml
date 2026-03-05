@@ -57,6 +57,7 @@ docs = [
     "sphinx-design",
     "sphinx-favicon",
     "sphinx-reredirects",
+    "sphinx-copybutton",
 ]
 dev = ["spharpy[deploy,tests,docs]"]
 
