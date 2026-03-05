@@ -58,7 +58,7 @@ i.e., :math:`\max_{\theta, \phi} |Y_n^m(\theta, \phi)| = 1`.
 
 The name monopole moment normalization refers to the fact that the magnitude of the
 spherical harmonic of order :math:`n=0` is normalized to 1 for this convention.
-In contrast for fully normalized and semi normalized spherical harmonics, the
+In contrast, for fully normalized and semi normalized spherical harmonics, the
 magnitude of the spherical harmonic of order :math:`n=0` is normalized to
 :math:`\sqrt{1/4\pi}`.
 
@@ -83,13 +83,13 @@ By default, the Condon-Shortley phase term is included for complex spherical
 harmonics and not included for real spherical harmonics, which corresponds to
 the common convention in the fields of acoustics.
 Note that the Condon-Shortley phase term is included in the definition of the
-associated Legendre functions in the `scipy.special` module, which is used
+associated Legendre functions in the :py:mod:`scipy.special` module, which is used
 for the computation of the spherical harmonics in spharpy.
 
 **Real and complex valued definition of the azimuthal function**
 
-The azimuthal function :math:`A^m(\phi)` can be defined in a real or complex
-valued form, which leads to the real and complex spherical harmonics.
+The azimuthal function :math:`A^m(\phi)` can be defined in a real or complex-valued
+form, which leads to the real and complex spherical harmonics.
 For complex valued spherical harmonics, the azimuthal function is defined as
 
 .. math::
@@ -204,7 +204,7 @@ the 'N3D' normalization, the inclusion of the Condon-Shortley phase term.
 
 
 The default definition of the real valued spherical harmonics corresponds
-to the 'N3D' normalization and the exclusion of the Condon-Shortley phase term.
+to the ``'N3D'`` normalization and the exclusion of the Condon-Shortley phase term.
 
 .. plot::
     :include-source: true
@@ -243,7 +243,7 @@ References
 .. [1] E. G. Williams, Fourier Acoustics, 1st ed. Academic Press, 1999.
 .. [2] B. Rafaely, Fundamentals of Spherical Array Processing, 2st ed.,
        vol. 8. in Springer Topics in Signal Processing, vol. 8. Springer-Verlag GmbH Berlin Heidelberg, 2015.
-.. [3] F. Zotter, “Analysis and synthesis of sound-radiation with spherical arrays,” 2009.
+.. [3] F. Zotter, “Analysis and synthesis of sound-radiation with spherical arrays,” Doctoral Disseration, KUG, Graz, 2009.
 .. [4] F. Zotter and M. Frank, Ambisonics: A Practical 3D Audio Theory for Recording, Studio Production,
        Sound Reinforcement, and Virtual Reality, vol. 19. in Springer Topics in Signal Processing, vol. 19.
        Springer International Publishing, 2019.
