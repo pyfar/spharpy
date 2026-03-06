@@ -61,7 +61,7 @@ for the constant :math:`C` exists. The constant is chosen such that the
 maximum magnitude of the spherical harmonics on the sphere is equal to 1,
 i.e., :math:`\max_{\theta, \phi} |Y_n^m(\theta, \phi)| = 1`.
 
-The name monopole moment normalization refers to the fact that the magnitude of the
+The name *monopole moment normalization* refers to the fact that the magnitude of the
 spherical harmonic of order :math:`n=0` is normalized to 1 for this convention.
 In contrast, for fully normalized and semi normalized spherical harmonics, the
 magnitude of the spherical harmonic of order :math:`n=0` is normalized to
@@ -83,7 +83,7 @@ Spharpy implements two different phase conventions, also referred to as the
 Condon-Shortley phase term
 
 .. math::
-    S_n^m = (-1)^m.
+    S^m = (-1)^m.
 
 By default, the Condon-Shortley phase term is included for complex spherical
 harmonics and not included for real spherical harmonics, which corresponds to
@@ -274,8 +274,8 @@ Real valued spherical harmonics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When considering real valued spherical harmonics, a larger number of different
-definitions are commonly used in the literature or implement in software packages.
-Note that especially, in software packages for music production, the normalization
+definitions are commonly used in the literature or implemented in software packages.
+Note that especially in software packages for music production, the normalization
 used in the implementation is often not explicitly stated or even inconsistent
 with the normalization stated in the documentation.
 
