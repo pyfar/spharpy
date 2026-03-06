@@ -1,5 +1,7 @@
 """
 Rotation/Translation operations for data in the spherical harmonic domains.
+Please refer to the :doc:`/theory/spherical_harmonic_definition` page for
+background information on spherical harmonics.
 """
 
 import numpy as np
