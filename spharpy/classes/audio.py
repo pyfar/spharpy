@@ -25,6 +25,7 @@ def _assert_valid_number_of_sh_channels(shape):
     ----------
     shape : tuple, int
         Shape of the data array.
+
     Raises
     ------
     ValueError
