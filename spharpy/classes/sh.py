@@ -1,5 +1,8 @@
 """
-Documentation for the SphericalHarmonics class, will be added in an other PR.
+The spherical harmonic SH classes store SH definitions and SH basis functions,
+as well as there derivative and inverse. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for more general information
+on spherical harmonics.
 """
 import numpy as np
 import pyfar as pf
@@ -226,9 +229,7 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     Compute spherical harmonic basis matrices, their inverses, and gradients.
 
     The the basis functions that are used to build the matrices can be
-    configured with the parameters described below. See the
-    :py:mod:`spherical harmonic documentation<spharpy.classes.sh>` for a
-    detailed description.
+    configured with the parameters described below.
 
     Parameters
     ----------
