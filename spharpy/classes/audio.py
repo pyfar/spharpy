@@ -1,6 +1,39 @@
 """
-Documentation for all SphericalHarmonics Audio classes will be provided in
-another PR.
+The spherical harmonic (SH) audio classes store audio data in the SH domain,
+also referred as Ambisonics. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for more general information.
+
+The spherical harmonic audio classes are build upon the
+:py:mod:`pyfar audio classes<pyfar.classes.audio>` and we recommend to get
+familiar with these classes before continuing.
+
+There are two key differences to the pyfar audio classes. First, the number of
+channels in spherical harmonic audio classes depends on the SH order :math:`N`
+and must be :math:`(N+1)^2`. Second, spherical harmonic audio classes
+additionally store the``basis_type``, ``normalization``,
+``channel_convention`` and the ``condon_shortley`` phase convention to define
+the spherical harmonics convention.
+
+A SH signal can be created either directly
+
+>>> import spharpy
+>>> data = [[0, 0],  # data of first SH channel
+...         [1, 1],  # data of second SH channel
+...         [2, 2],  # data of third SH channel
+...         [3, 4]]  # data of fourth SH channel
+>>> sh_signal = spharpy.SphericalHarmonicSignal(
+...     data, 44100, basis_type='real', normalization='N3D',
+...     channel_convention='ACN', condon_shortley=False)
+
+or from an SH definition
+
+>>> # create a SH definition with default parameters
+>>> definition = spharpy.SphericalHarmonicDefinition()
+>>> sh_signal = spharpy.SphericalHarmonicSignal.from_definition(
+...     definition, data, 44100)
+
+Both examples create a first order SH signal with four SH channels and two time
+samples at a sampling rate of 44.1 kHz.
 """
 from pyfar import Signal, TimeData, FrequencyData
 from pyfar.classes.audio import _Audio
