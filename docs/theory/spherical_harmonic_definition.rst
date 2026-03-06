@@ -56,7 +56,7 @@ Magnitude normalizations implemented in spharpy are:
     ``'maxN'``   maximum magnitude normalization            N/A                        N/A
     ===========  =========================================  =========================  ===============================================================
 
-Note that for the ``maxN`` normalization, no general closed-form expression
+Note that for the ``'maxN'`` normalization, no general closed-form expression
 for the constant :math:`C` exists. The constant is chosen such that the
 maximum magnitude of the spherical harmonics on the sphere is equal to 1,
 i.e., :math:`\max_{\theta, \phi} |Y_n^m(\theta, \phi)| = 1`.
