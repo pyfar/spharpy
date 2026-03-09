@@ -1,6 +1,6 @@
 """
 The spherical harmonic SH classes store SH definitions and SH basis functions,
-as well as there derivative and inverse. Please refer to the
+as well as their derivative and inverse. Please refer to the
 :doc:`/theory/spherical_harmonic_definition` page for more general information
 on spherical harmonics.
 """
