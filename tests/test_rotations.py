@@ -160,12 +160,12 @@ def test_SphericalHarmonicRotation():
 
     np.testing.assert_allclose(D_Rot, reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_rotvec([0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
     np.testing.assert_allclose(
         rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
-    rot = SphericalHarmonicRotation.from_euler('zyz', [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_euler('zyz', [0, 0, np.pi/2])
     np.testing.assert_allclose(
         rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)

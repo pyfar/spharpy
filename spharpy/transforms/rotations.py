@@ -5,7 +5,7 @@ Rotation/Translation operations for data in the spherical harmonic domains.
 import numpy as np
 import spharpy
 from scipy.special import eval_jacobi, factorial
-from scipy.spatial.transform import Rotation as ScipyRotation
+from pyfar import Rotation
 from spharpy import (
     SphericalHarmonicSignal,
     SphericalHarmonicTimeData,
@@ -16,7 +16,7 @@ from spharpy.classes.audio import _SphericalHarmonicAudio
 from typing import Union
 
 
-class SphericalHarmonicRotation(ScipyRotation):
+class SphericalHarmonicRotation(Rotation):
     """Class for rotations of coordinates and spherical harmonic expansions.
 
     The class extends the :py:class:`scipy.spatial.transform.Rotation` class
@@ -294,7 +294,7 @@ class SphericalHarmonicRotation(ScipyRotation):
 
     def __mul__(self, other):
         """Multiplication with rotations or application to signals."""
-        if isinstance(other, ScipyRotation):
+        if isinstance(other, Rotation):
             result = super().__mul__(other)
             return SphericalHarmonicRotation.from_quat(result.as_quat())
         elif isinstance(other, _SphericalHarmonicAudio):
