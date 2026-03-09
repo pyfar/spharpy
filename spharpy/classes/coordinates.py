@@ -11,10 +11,8 @@ defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance`. If the
 equal the integral over the unit sphere, which is :math:`4\pi`.
 
 The property :py:attr:`~spharpy.SamplingSphere.quadrature` is relevant for
-spherical harmonic processing (see the
-:doc:`/theory/spherical_harmonic_definition` page for background information).
-It specifies if the
-points belong to a quadrature, which requires valid weights, that the maximum
+spherical harmonic processing. It specifies if the points form a
+quadrature rule, which requires valid weights, that the maximum
 spherical harmonic order of the sampling
 grid :py:attr:`~spharpy.SamplingSphere.n_max` is specified, and the inner
 product of the weighted spherical harmonics matrix :math:`\mathrm{Y}`
