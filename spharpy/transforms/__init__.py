@@ -1,4 +1,8 @@
-"""Rotations for spherical harmonics."""
+"""
+Rotation for data in the spherical harmonic domains. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for background information
+on spherical harmonics.
+"""
 
 from .rotations import (
     rotation_z_axis,
