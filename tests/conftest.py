@@ -7,18 +7,19 @@ from spharpy.samplings import equal_area
 
 @pytest.fixture
 def make_coordinates():
+    """Fixture factory which can be used to return coordinate storing objects.
 
+    Works with every child class of pyfar.Coordinates which supports the
+    from_spherical_colatitude method. The default implementation is
+    pyfar.Coordinates.
+    """
     class Factory:
         @staticmethod
         def create_coordinates(
-                implementation='spharpy', rad=1, theta=np.pi/2, phi=np.pi/2):
-
-            if implementation == 'pyfar':
-                return pf.Coordinates(
-                    phi, theta, rad, domain='sph', convention='top_colat')
-            elif implementation == 'spharpy':
-                return SamplingSphere.from_spherical_colatitude(
-                    phi, theta, rad)
+                implementation=pf.Coordinates,
+                phi=np.pi/2, theta=np.pi/2, rad=1,
+            ):
+            return implementation.from_spherical_colatitude(phi, theta, rad)
     return Factory
 
 
