@@ -159,7 +159,7 @@ class SphericalHarmonicDefinition(_SphericalHarmonicBase):
     spherical harmonic basis matrices for given sampling points, transforms,
     or other spherical harmonic related data and computations.
 
-    Attributes
+    Parameters
     ----------
     n_max : int, optional
         Maximum spherical harmonic order. Must be an integer greater or equal
@@ -176,7 +176,7 @@ class SphericalHarmonicDefinition(_SphericalHarmonicBase):
         ``'FuMa'`` is only supported up to 3rd order.
         The default is ``'ACN'``.
     condon_shortley : bool, str, optional
-         Whether to include the Condon-Shortley phase term. If ``True``,
+        Whether to include the Condon-Shortley phase term. If ``True``,
         Condon-Shortley is included, if ``False`` it is not
         included. The default is ``'auto'``, which corresponds to
         ``True`` for complex `basis_type` and ``False`` for real `basis_type`.
