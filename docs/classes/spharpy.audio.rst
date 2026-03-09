@@ -7,8 +7,8 @@ Audio (Signal, TimeData, FrequencyData)
 .. autosummary::
 
    SphericalHarmonicFrequencyData
-   SphericalHarmonicSignal
    SphericalHarmonicTimeData
+   SphericalHarmonicSignal
 
 .. autoclass:: spharpy.SphericalHarmonicSignal
    :members:

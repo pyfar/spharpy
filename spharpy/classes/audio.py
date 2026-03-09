@@ -1,18 +1,21 @@
 """
-The spherical harmonic (SH) audio classes store audio data in the SH domain,
-also referred as Ambisonics. Please refer to the
+The spherical harmonic (SH) audio classes store audio data in the SH domain.
+Please refer to the
 :doc:`/theory/spherical_harmonic_definition` page for more general information.
 
 The spherical harmonic audio classes are build upon the
 :py:mod:`pyfar audio classes<pyfar.classes.audio>` and we recommend to get
 familiar with these classes before continuing.
 
-There are two key differences to the pyfar audio classes. First, the number of
-channels in spherical harmonic audio classes depends on the SH order :math:`N`
-and must be :math:`(N+1)^2`. Second, spherical harmonic audio classes
-additionally store the``basis_type``, ``normalization``,
-``channel_convention`` and the ``condon_shortley`` phase convention to define
-the spherical harmonics convention.
+In addition to all functionality provided by the pyfar audio classes, the
+spherical harmonic audio classes allow to store parameters defining the
+spherical harmonics, these are the ``basis_type``, ``normalization``,
+``channel_convention`` and the ``condon_shortley`` phase convention.
+The last dimension of the channel shape must always match a valid number of
+spherical harmonics, i.e. :math:`(N+1)^2`, where  :math:`N` is the spherical
+harmonic order for which the audio data is created. The spherical harmonic
+order of the data contained in the signal can be accessed through the property
+``n_max``.
 
 A SH signal can be created either directly
 
