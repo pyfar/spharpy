@@ -1,8 +1,8 @@
 """
-The spherical harmonic SH classes store SH definitions and SH basis functions,
-as well as their derivative and inverse. Please refer to the
-:doc:`/theory/spherical_harmonic_definition` page for more general information
-on spherical harmonics.
+The spherical harmonic classes store the respective definitions and basis
+functions, as well as their derivative and inverse. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for more specific information
+on the mathematical definitions of spherical harmonics.
 """
 import numpy as np
 import pyfar as pf
