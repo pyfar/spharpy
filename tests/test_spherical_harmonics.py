@@ -22,7 +22,7 @@ def test_spherical_harmonic(make_coordinates, coordinate_object,
     rad = np.ones(3, dtype=float)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, rad, theta, phi)
+        coordinate_object, phi, theta, rad)
 
     phase_conv_id = 'None' if not condon_shortley else 'Condon-Shortley'
 
@@ -60,7 +60,7 @@ def test_spherical_harmonics_real(make_coordinates, coordinate_object,
     rad = np.ones(3, dtype=float)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, rad, theta, phi)
+        coordinate_object, phi, theta, rad)
 
     phase_conv_id = 'Condon-Shortley' if condon_shortley is True else 'None'
 
@@ -93,7 +93,7 @@ def test_spherical_harmonics_invalid_nmax(make_coordinates, coordinate_object):
     rad = np.ones(3, dtype=float)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, rad, theta, phi)
+        coordinate_object, phi, theta, rad)
 
     with pytest.raises(ValueError,
                        match='MaxN normalization is only'
@@ -115,7 +115,7 @@ def test_spherical_harmonics_invalid_fuma(make_coordinates, coordinate_object):
     rad = np.ones(3, dtype=float)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, rad, theta, phi)
+        coordinate_object, phi, theta, rad)
 
     with pytest.raises(ValueError,
                        match='FuMa channel convention is only'
@@ -139,7 +139,7 @@ def test_spherical_harmonics_invalid_condon_shortley(
     rad = np.ones(3, dtype=float)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, rad, theta, phi)
+        coordinate_object, phi, theta, rad)
 
     with pytest.raises(ValueError,
                        match="Condon_shortley has to be a bool, or 'auto'."):
@@ -162,7 +162,7 @@ def test_spherical_harmonic_default_n10(make_coordinates, coordinate_object):
     phi = np.array([0, np.pi/2, 0], dtype=float)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
 
     Y = np.genfromtxt(
         './tests/data/sh_basis_cplx_n10.csv',
@@ -188,7 +188,7 @@ def test_spherical_harmonics_real_n10_default(
     rad = np.ones(4)
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, rad, theta, phi)
+        coordinate_object, phi, theta, rad)
 
     Y = np.genfromtxt('./tests/data/sh_basis_real.csv',
                       dtype=float,
@@ -209,7 +209,7 @@ def test_orthogonality(make_coordinates, coordinate_object):
     n_points = phi.size
     n_points = len(theta)
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
     basis = sh.spherical_harmonic_basis(n_max, coords)
 
     inner = (basis @ np.conjugate(basis.T))
@@ -231,7 +231,7 @@ def test_orthogonality_real(make_coordinates, coordinate_object):
     n_points = phi.size
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
 
     basis = sh.spherical_harmonic_basis_real(n_max, coords)
 
@@ -250,7 +250,7 @@ def test_spherical_harmonic_basis_gradient(
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
 
     grad_ele, grad_azi = \
         sh.spherical_harmonic_basis_gradient(n_max, coords)
@@ -277,7 +277,7 @@ def test_spherical_harmonic_basis_gradient_real(
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
 
     grad_ele, grad_azi = \
         sh.spherical_harmonic_basis_gradient_real(n_max, coords)
@@ -304,7 +304,7 @@ def test_spherical_harmonics_gradient_invalid_nmax(
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
 
     with pytest.raises(ValueError,
                        match='MaxN normalization is only'
@@ -327,7 +327,7 @@ def test_spherical_harmonics_gradient_invalid_fuma(
     phi = np.array([0, np.pi/2, 0, np.pi/4, np.pi/4])
 
     coords = make_coordinates.create_coordinates(
-        coordinate_object, np.ones_like(theta), theta, phi)
+        coordinate_object, phi, theta, np.ones_like(theta))
 
     with pytest.raises(ValueError,
                        match='FuMa channel convention is only'

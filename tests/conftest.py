@@ -17,7 +17,7 @@ def make_coordinates():
         @staticmethod
         def create_coordinates(
                 implementation=pf.Coordinates,
-                rad=1, theta=np.pi/2, phi=np.pi/2,
+                phi=np.pi/2, theta=np.pi/2, rad=1,
             ):
             return implementation.from_spherical_colatitude(phi, theta, rad)
     return Factory
