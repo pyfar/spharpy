@@ -29,7 +29,7 @@ dependencies = [
     'scipy>=1.17',
     'urllib3',
     'matplotlib>=3.10.3',
-    'pyfar>=0.7.3,<0.8.0',
+    'pyfar @ git+https://github.com/pyfar/pyfar@develop',
     'pytz',
 ]
 
