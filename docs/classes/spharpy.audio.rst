@@ -2,6 +2,14 @@ Audio (Signal, TimeData, FrequencyData)
 ---------------------------------------
 .. automodule:: spharpy.classes.audio
 
+**Classes:**
+
+.. autosummary::
+
+   SphericalHarmonicFrequencyData
+   SphericalHarmonicTimeData
+   SphericalHarmonicSignal
+
 .. autoclass:: spharpy.SphericalHarmonicSignal
    :members:
    :undoc-members:
