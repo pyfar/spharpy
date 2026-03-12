@@ -247,6 +247,27 @@ def test_SphericalHarmonicRotation_mul_rotations():
         atol=1e-10)
 
 
+def test_SphericalHarmonicRotation_mul_pyfar_Rotation():
+    """Test multiplying a SphericalHarmonicRotation with a pyfar.Rotation.
+    """
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+
+    pyfar_rot = pyfar.Rotation.from_rotvec(rot_vec)
+
+    result = rot*pyfar_rot
+
+    assert isinstance(result, SphericalHarmonicRotation)
+
+    ref = rot.as_matrix() @ pyfar_rot.as_matrix()
+
+    np.testing.assert_allclose(
+        result.as_matrix(),
+        ref,
+        atol=1e-10)
+
+
 def test_SphericalHarmonicRotation_mul_invalid():
     """Test if invalid multiplication operations raise errors."""
     rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
