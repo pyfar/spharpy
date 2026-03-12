@@ -6,15 +6,171 @@ Note: Docstring not included in the docs. See init.py for the public docstring.
 import numpy as np
 import spharpy
 from scipy.special import eval_jacobi, factorial
-from scipy.spatial.transform import Rotation
+from pyfar import Rotation
+from spharpy import (
+    SphericalHarmonicSignal,
+    SphericalHarmonicTimeData,
+    SphericalHarmonicFrequencyData,
+    SphericalHarmonicDefinition,
+)
+from spharpy.classes.audio import _SphericalHarmonicAudio
+from typing import Union
 
 
-class RotationSH(Rotation):
-    """Class for rotations of coordinates and data.
+class SphericalHarmonicRotation(Rotation):
+    """Class for rotations of coordinates and spherical harmonic expansions.
+
+    The class extends the :py:class:`scipy.spatial.transform.Rotation` class
+    and provides methods to express the rotation as spherical harmonic rotation
+    matrices as well as to apply the rotation to spherical harmonic data
+    objects.
+    The spherical harmonic rotation matrices are computed based on the Wigner-D
+    functions as described in [#]_ and [#]_ for complex and real-valued
+    spherical harmonics, respectively.
+
+    To create a rotation object, use one of the available
+    :py:meth:`~scipy.spatial.transform.Rotation.from_*` methods, e.g.,
+    :py:meth:`scipy.spatial.transform.Rotation.from_euler` or
+    :py:meth:`scipy.spatial.transform.Rotation.from_quat` for creation using
+    Euler angles or quaternions, respectively. Also see the examples below.
+
+
+    Examples
+    --------
+    The following examples demonstrate how to create a rotation and apply it
+    to spherical harmonic coefficients and corresponding spherical harmonic
+    data containers using the implemented methods and operators.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import numpy as np
+        >>> import matplotlib.pyplot as plt
+        >>> import spharpy
+
+        Define the convention and order of the spherical harmonics and a set of
+        coefficients. Note that the generated coefficients correspond to a
+        dipole oriented along the y-axis.
+
+        >>> definition = spharpy.SphericalHarmonicDefinition(n_max=1)
+        >>> coefficients = np.array([0, 1, 0, 0])
+
+        Define a rotation by 45 degrees around the z-axis based on the Euler
+        angles.
+
+        >>> angle = np.pi / 4
+        >>> R = spharpy.transforms.SphericalHarmonicRotation.from_euler(
+        >>>     'z', angle)
+
+        The spherical harmonic rotation matrix can be obtained and applied
+        to the spherical harmonic coefficients using the following:
+
+        >>> D = R.as_spherical_harmonic_matrix(definition)
+        >>> rotated_coefficients = D @ coefficients
+        >>> print(f"Rotated coefficients: {np.round(rotated_coefficients, 2)}")
+        ... # Rotated coefficients: [ 0.   0.71 0.   -0.71]
+
+        To visualize the effect of the rotation, we can expand the series
+        expansion on the unit sphere and plot the original and rotated
+        data:
+
+        >>> sampling = spharpy.samplings.equal_area(0, n_points=250)
+        >>> Y = spharpy.SphericalHarmonics.from_definition(
+        >>>     definition, coordinates=sampling)
+        ...
+        >>> _, axs = plt.subplots(
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5),
+        >>>     layout='constrained')
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, Y.basis @ coefficients, ax=axs[0], colorbar=False)
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, Y.basis @ rotated_coefficients, ax=axs[1],
+        >>>     colorbar=False)
+
+    .. plot::
+        :context: close-figs
+
+        The rotation can also be applied to spherical harmonic data objects
+        using the overloaded multiplication operator. This includes the
+        class object itself as well as
+        :class:`~spharpy.SphericalHarmonicFrequencyData`,
+        :class:`~spharpy.SphericalHarmonicTimeData`, and
+        :class:`~spharpy.SphericalHarmonicSignal`.
+
+        The following example demonstrates the application to an arbitrary
+        :class:`~spharpy.SphericalHarmonicFrequencyData` object containing the
+        same series expansion in `frequency_data.freq` as above:
+
+        >>> frequency_data = spharpy.SphericalHarmonicFrequencyData(
+        >>>     np.atleast_2d(coefficients).T, frequencies=1e3,
+        >>>     basis_type=definition.basis_type,
+        >>>     normalization=definition.normalization,
+        >>>     channel_convention=definition.channel_convention,
+        >>>     condon_shortley=definition.condon_shortley)
+
+        The rotation can now be applied using the `apply` method
+
+        >>> rotated_frequency_data = R.apply(frequency_data)
+
+        or the `*` operator
+
+        >>> rotated_frequency_data = R * frequency_data
+
+        The effect of the rotation can again be visualized by evaluating the
+        series expansion on the unit sphere:
+
+        >>> _, axs = plt.subplots(
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5),
+        >>>     layout='constrained')
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ frequency_data.freq),
+        >>>     ax=axs[0], colorbar=False)
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ rotated_frequency_data.freq),
+        >>>     ax=axs[1], colorbar=False)
+
+    .. plot::
+        :context: close-figs
+
+        Multiple rotations can be combined by multiplying the respective
+        :class:`~spharpy.transforms.SphericalHarmonicRotation` objects.
+
+        >>> rotated_frequency_data = R * R * frequency_data
+
+        This corresponds to a rotation of 90 degrees around the z-axis.
+
+        >>> _, axs = plt.subplots(
+        >>>     1, 2, subplot_kw={'projection': '3d'}, figsize=(5, 2.5),
+        >>>     layout='constrained')
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ frequency_data.freq),
+        >>>     ax=axs[0], colorbar=False)
+        >>> spharpy.plot.balloon_wireframe(
+        >>>     sampling, np.squeeze(Y.basis @ rotated_frequency_data.freq),
+        >>>     ax=axs[1], colorbar=False)
+
+
+    Note
+    ----
+    Currently, only spherical harmonic rotations matrices following the
+    ``ACN`` indexing and ``N3D`` normalization are supported.
+
+    References
+    ----------
+
+    .. [#] B. Rafaely, Fundamentals of Spherical Array Processing, 2nd ed.,
+           vol. 8. Springer-Verlag GmbH Berlin Heidelberg, 2019.
+    .. [#] M. A. Blanco, M. Flórez, and M. Bermejo, “Evaluation of the
+           rotation matrices in the basis of real spherical harmonics,”
+           Journal of Molecular Structure: THEOCHEM,  vol. 419, no. 1-3,
+           pp. 19-27, Dec. 1997, doi: 10.1016/S0166-1280(97)00185-1.
 
     """
 
-    def __init__(self, quat, n_max=0, *args, **kwargs):
+    def __init__(
+            self,
+            quat,
+            *args, **kwargs):
         """Initialize.
 
         Parameters
@@ -23,8 +179,6 @@ class RotationSH(Rotation):
             Each row is a (possibly non-unit norm) quaternion in scalar-last
             (x, y, z, w) format. Each quaternion will be normalized to unit
             norm.
-        n_max : int
-            The spherical harmonic order. Default is ``0``.
         *args : optional
             Arguments are passed to
             :py:class:`~scipy.spatial.transform.Rotation`
@@ -34,8 +188,8 @@ class RotationSH(Rotation):
 
         Returns
         -------
-        RotationSH
-            The rotation object with spherical harmonic order n_max.
+        SphericalHarmonicRotation
+            The rotation object.
 
         Note
         ----
@@ -44,300 +198,113 @@ class RotationSH(Rotation):
 
         """
         super().__init__(quat, *args, **kwargs)
-        if n_max < 0:
-            raise ValueError("The order needs to be a positive value.")
-        self._n_max = int(n_max)
 
-    @classmethod
-    def from_rotvec(cls, n_max, rotvec, degrees=False, *args, **kwargs):
-        """Initialize from rotation vectors.
-        A rotation vector is a 3 dimensional vector which is co-directional to
-        the axis of rotation and whose norm gives the angle of rotation [#]_.
+    def as_spherical_harmonic_matrix(
+            self,
+            spherical_harmonic_definition: SphericalHarmonicDefinition,
+        ) -> np.ndarray:
+        """Express the rotation as spherical harmonic rotation matrices.
+
+        Supports complex and real-valued spherical harmonics.
 
         Parameters
         ----------
-        n_max : int
-            Spherical harmonic order
-        rotvec : array_like, float, shape (L, 3) or (3,)
-            A single vector or a stack of vectors, where rot_vec[i] gives the
-            ith rotation vector.
-        degrees : bool, optional
-            Specify if rotation angles are defined in degrees instead of
-            radians, by default ``False``.
-        *args : optional
-            Arguments are passed to
-            :py:meth:`Rotation.from_rotvec
-            <scipy.spatial.transform.Rotation.from_rotvec>`
-        **kwargs : optional
-            Keyword arguments are passed to
-            :py:meth:`Rotation.from_rotvec
-            <scipy.spatial.transform.Rotation.from_rotvec>`
+        spherical_harmonic_definition : SphericalHarmonicDefinition
+            Definition of the spherical harmonics.
 
         Returns
         -------
-        RotationSH
-            Object containing the rotations represented by input rotation
-            vectors.
+        np.ndarray, complex or float
+            Stack of block-diagonal rotation matrices with individual shapes
+            :math:`[(n_{max}+1)^2, (n_{max}+1)^2]`.
 
-        References
-        ----------
-        .. [#] https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation\
-#Rotation_vector
-
-        Examples
-        --------
-        >>> from spharpy.transforms import Rotation as R
-        >>> rot = R.from_rotvec(np.pi/2 * np.array([0, 0, 1]))
-        >>> rot.as_spherical_harmonic()
+        Note
+        ----
+        At the moment, only spherical harmonic rotations matrices following
+        the ``ACN`` indexing and ``N3D`` normalization are supported.
 
         """
-        if degrees:
-            rotvec = np.deg2rad(rotvec)
+        if spherical_harmonic_definition.normalization != 'N3D':
+            raise NotImplementedError(
+                "Only 'N3D' normalization is supported for spherical "
+                "harmonic rotations.")
+        if spherical_harmonic_definition.channel_convention != 'ACN':
+            raise NotImplementedError(
+                "Only 'ACN' channel convention is supported for spherical "
+                "harmonic rotations.")
 
-        cls = super(RotationSH, cls).from_rotvec(rotvec, *args, **kwargs)
-        cls.n_max = n_max
-        return cls
-
-    @classmethod
-    def from_euler(cls, n_max, seq, angles, degrees=False, **kwargs):
-        """Initialize from Euler angles.
-
-        Rotations in 3-D can be represented by a sequence of 3 rotations
-        around a sequence of axes. In theory, any three axes spanning the 3-D
-        Euclidean space are enough. In practice, the axes of rotation are
-        chosen to be the basis vectors.
-        The three rotations can either be in a global frame of reference
-        (extrinsic) or in a body centred frame of reference (intrinsic), which
-        is attached to, and moves with, the object under rotation [#]_.
-
-        Parameters
-        ----------
-        n_max : int
-            Spherical harmonic order.
-        seq : str
-            Specifies sequence of axes for rotations. Up to 3 characters
-            belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic rotations,
-            or {‘x’, ‘y’, ‘z’} for extrinsic rotations. Extrinsic and intrinsic
-            rotations cannot be mixed in one function call.
-
-        angles : (float or array_like, shape (N,) or (N, [1 or 2 or 3]))
-            Euler angles specified in radians (degrees is False) or degrees
-            (degrees is True). For a single character seq, angles can be:
-
-            - a single value
-            - array_like with shape (N,), where each ``angle[i]`` corresponds
-              to a single rotation
-            - array_like with shape (N, 1), where each ``angle[i, 0]``
-              corresponds to a single rotation
-
-            For 2- and 3-character wide seq, angles can be:
-
-            - array_like with shape (W,) where W is the width of ``seq``, which
-              corresponds to a single rotation with W axes
-            - array_like with shape (N, W) where each ``angle[i]`` corresponds
-              to a sequence of Euler angles describing a single rotation
-
-        degrees : bool, optional
-            If True, then the given angles are assumed to be in degrees.
-            Default is ``False``.
-        **kwargs : optional
-            Keyword arguments are passed to
-            :py:meth:`Rotation.from_euler
-            <scipy.spatial.transform.Rotation.from_euler>`
-
-        Returns
-        -------
-        RotationSH
-            Object containing the rotation represented by the sequence of
-            rotations around given axes with given angles.
-
-        References
-        ----------
-        .. [#] https://en.wikipedia.org/wiki/Euler_angles
-
-        Examples
-        --------
-        >>> from spharpy.transforms import Rotation as R
-        >>> rot = R.from_euler('z', 90, degrees=True)
-        >>> rot.as_spherical_harmonic()
-
-
-        """
-        cls = super(RotationSH, cls).from_euler(
-            seq, angles, degrees=degrees, **kwargs)
-        cls.n_max = n_max
-        return cls
-
-    @classmethod
-    def from_quat(cls, n_max, quat, **kwargs):
-        """Initialize from quaternions.
-        3D rotations can be represented using unit-norm quaternions [#]_.
-
-        Parameters
-        ----------
-        n_max : int
-            Spherical harmonic order
-        quat : (array_like, shape (N, 4) or (4,))
-            Each row is a (possibly non-unit norm) quaternion in scalar-last
-            (x, y, z, w) format. Each quaternion will be normalized to unit
-            norm.
-        **kwargs : optional
-            Keyword arguments are passed to
-            :py:meth:`Rotation.from_quat
-            <scipy.spatial.transform.Rotation.from_quat>`
-
-        Returns
-        -------
-        RotationSH
-            Object containing the rotations represented by input quaternions.
-
-        References
-        ----------
-        .. [#] https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
-
-        Examples
-        --------
-        >>> from spharpy.transforms import Rotation as R
-        >>> rot = R.from_quat([1, 0, 0, 0])
-        >>> rot.as_spherical_harmonic()
-
-        """
-        cls = super(RotationSH, cls).from_quat(quat, **kwargs)
-        cls.n_max = n_max
-        return cls
-
-    @classmethod
-    def from_matrix(cls, n_max, matrix, **kwargs):
-        """Initialize from rotation matrix.
-        Rotations in 3 dimensions can be represented with 3 x 3 proper
-        orthogonal matrices [1]_. If the input is not proper orthogonal,
-        an approximation is created using the method described in [2]_.
-
-        Parameters
-        ----------
-        n_max : int
-            Spherical harmonic order
-        matrix : (array_like, shape (N, 3, 3) or (3, 3))
-            A single matrix or a stack of matrices, where ``matrix[i]`` is
-            the i-th matrix.
-        **kwargs : optional
-            Keyword arguments are passed to
-            :py:meth:`Rotation.from_matrix
-            <scipy.spatial.transform.Rotation.from_matrix>`
-
-        Returns
-        -------
-        RotationSH
-            Object containing the rotations represented by the rotation
-            matrices.
-
-        References
-        ----------
-        .. [1] https://en.wikipedia.org/wiki/Rotation_matrix
-        .. [2] F. Landis Markley, “Unit Quaternion from Rotation Matrix”,
-               Journal of guidance, control, and dynamics vol. 31.2,
-               pp. 440-442, 2008.
-
-        Examples
-        --------
-        >>> from spharpy.transforms import Rotation as R
-        >>> rot = R.from_matrix([
-        ...     [0, -1, 0],
-        ...     [1,  0, 0],
-        ...     [0,  0, 1]])
-        >>> rot.as_spherical_harmonic()
-        """
-        cls = super(RotationSH, cls).from_matrix(matrix, **kwargs)
-        cls.n_max = n_max
-        return cls
-
-    @property
-    def n_max(self):
-        """The spherical harmonic order used for spherical harmonic rotation
-        matrices.
-        """
-        return self._n_max
-
-    @n_max.setter
-    def n_max(self, value):
-        """Set the spherical harmonic order.
-
-        Parameters
-        ----------
-        value : int
-            The spherical harmonic order used for spherical harmonic rotation
-        matrices.
-        """
-        if value < 0:
-            raise ValueError("The order needs to be a positive value.")
-        self._n_max = value
-
-    def as_spherical_harmonic(self, basis_type='real'):
-        """Export the rotation operations as a spherical harmonic rotation
-        matrices. Supports complex and real-valued spherical harmonics.
-
-        Parameters
-        ----------
-        basis_type : string, optional
-            Spherical harmonic definition. Can either be 'complex' or 'real',
-            by default 'real' is used.
-        type : str, optional
-            Type of spherical harmonic basis, either ``'complex'`` or
-            ``'real'``. The default is ``'real'``.
-
-        Returns
-        -------
-        array, complex or float
-            Stack of block-diagonal rotation matrices.
-        """
         euler_angles = np.atleast_2d(self.as_euler('zyz'))
         n_matrices = euler_angles.shape[0]
 
-        n_sh = (self.n_max+1)**2
-        if basis_type == 'real':
+        n_sh = (spherical_harmonic_definition.n_max + 1)**2
+        if spherical_harmonic_definition.basis_type == 'real':
             dtype = float
-            rot_func = wigner_d_rotation_real
-        elif basis_type == 'complex':
+            rotation_function = wigner_d_rotation_real
+        elif spherical_harmonic_definition.basis_type == 'complex':
             dtype = complex
-            rot_func = wigner_d_rotation
-        else:
-            raise ValueError(
-                "Invalid spherical harmonic type {}".format(basis_type))
+            rotation_function = wigner_d_rotation
 
         D = np.zeros((n_matrices, n_sh, n_sh), dtype=dtype)
 
         for idx, angles in enumerate(euler_angles):
-            D[idx, :, :] = rot_func(
-                self.n_max, angles[0], angles[1], angles[2])
+            D[idx, :, :] = rotation_function(
+                spherical_harmonic_definition.n_max,
+                angles[0], angles[1], angles[2])
 
         return np.squeeze(D)
 
-    def apply(self, coefficients, basis_type='real'):
-        """Apply the rotation to L sets of spherical harmonic coefficients.
+    def apply(
+            self,
+            target: Union[
+                SphericalHarmonicTimeData,
+                SphericalHarmonicFrequencyData,
+                SphericalHarmonicSignal],
+        ) -> Union[
+            SphericalHarmonicTimeData,
+            SphericalHarmonicFrequencyData,
+            SphericalHarmonicSignal]:
+        """Apply the rotation to spherical harmonic data object.
+
+        Note that the spherical harmonic definition of the target object is
+        used to generate a fitting spherical harmonic rotation matrix.
 
         Parameters
         ----------
-        coefficients : array, complex, shape :math:`((n_max+1)^2, L)`
-            L sets of spherical harmonic coefficients with a respective order
-            :math:`((n_max+1)^2`
-        basis_type : string, optional
-            Spherical harmonic definition. Can either be ``'complex'`` or
-            ``'real'``, by default ``'real'`` is used.
+        target : SphericalHarmonicTimeData, SphericalHarmonicFrequencyData, SphericalHarmonicSignal
+            Spherical harmonic series expansion to be rotated.
 
         Returns
         -------
-        array, complex
-            The rotated data
-        """
-        D = self.as_spherical_harmonic(basis_type=basis_type)
-        if D.ndim > 2:
-            M = np.diag(np.ones((self.n_max+1)**2))
-            for d in D:
-                M = M @ d
-        else:
-            M = D
+        SphericalHarmonicTimeData, SphericalHarmonicFrequencyData, SphericalHarmonicSignal
+            The rotated signal.
+        """  # noqa: E501
+        # Audio objects use ACN/N3D internally
+        target_definition = SphericalHarmonicDefinition(
+            n_max=target.n_max,
+            basis_type=target.basis_type,
+            normalization='N3D',
+            channel_convention='ACN',
+        )
+        D = self.as_spherical_harmonic_matrix(target_definition)
+        M = np.linalg.multi_dot(list(D)) if D.ndim > 2 else D
 
-        return M @ coefficients
+        rotated_data = np.einsum('ij, ljt -> lit', M, target._data)
+        rotated = target.copy()
+        rotated._data = rotated_data
+        return rotated
+
+    def __mul__(self, other):
+        """Multiplication with rotations or application to signals."""
+        if isinstance(other, Rotation):
+            result = super().__mul__(other)
+            return SphericalHarmonicRotation.from_quat(result.as_quat())
+        elif isinstance(other, _SphericalHarmonicAudio):
+            return self.apply(other)
+        else:
+            raise ValueError(
+                "Multiplication is only supported for "
+                "SphericalHarmonicRotation and SphericalHarmonic audio "
+                "objects.")
 
 
 def rotation_z_axis(n_max, angle):
