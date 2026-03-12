@@ -471,6 +471,26 @@ def test_fliege_for_each_order(n_max):
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
 
+@pytest.mark.parametrize("n_max", [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29])
+def test_fliege_orthogonality(n_max):
+    """
+    Test orthogonality of the transform.
+
+    This was done after discovering https://github.com/pyfar/spharpy/issues/202
+    to make sure that the sampling can be used for SH transforms using the
+    pseudo inverse.
+    """
+
+    sampling = samplings.fliege(n_max)
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-12)
+
+
 def test_fliege_radius():
     # test user radius
     c = samplings.fliege(1, radius=1.5)

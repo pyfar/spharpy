@@ -1132,9 +1132,13 @@ def fliege(n_max, radius=1.):
     r"""
     Return Fliege-Maier spherical sampling grid.
 
-    For detailed information, see [#]_. This is a
-    quadrature sampling with the sum of the sampling weights in
-    `sampling.weights` being :math:`4\pi`.
+    For detailed information, see [#]_.
+
+    .. note::
+        This is intended to be a quadrature sampling with positive sampling
+        weights summing to :math:`4\pi`. For unknown reasons, this is not the
+        case for orders 10, 12, 18, 20, 24, 26, 27, and 29. For this reason,
+        the respective weights are not returned regardless of the order.
 
     Parameters
     ----------
@@ -1147,8 +1151,8 @@ def fliege(n_max, radius=1.):
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights of csize
-        ``(n_max + 1)**2``.
+        ``(n_max + 1)**2`` sampling positions without sampling weights
+        (see note above).
 
     Notes
     -----
