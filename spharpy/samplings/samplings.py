@@ -1128,99 +1128,36 @@ def lebedev(n_max=None, radius=1.):
     return sampling
 
 
-def fliege(n_points=None, n_max=None, radius=1.):
+def fliege(n_max, radius=1.):
     r"""
     Return Fliege-Maier spherical sampling grid.
 
-    For detailed information, see [#]_. Call :py:func:`sph_fliege`
-    for a list of possible values for `n_points` and `n_max`. This is a
-    quadrature sampling with the sum of the sampling weights in
-    `sampling.weights` being :math:`4\pi`.
+    For detailed information, see [#]_.
+
+    .. note::
+        This is intended to be a quadrature sampling with positive sampling
+        weights summing to :math:`4\pi`. For unknown reasons, this is not the
+        case for orders 10, 12, 18, 20, 24, 26, 27, and 29. For this reason,
+        the respective weights are not returned regardless of the order.
 
     Parameters
     ----------
-    n_points : int, optional
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
-    n_max : int, optional
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
-        `n_max` must be provided. The default is ``None``.
+    n_max : int
+        Maximum applicable spherical harmonic order.
+        It must be between 1 and 29.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
+        ``(n_max + 1)**2`` sampling positions without sampling weights
+        (see note above).
 
     Notes
     -----
     This implementation uses pre-calculated points from the SOFiA
-    toolbox [#]_. Possible combinations of `n_points` and `n_max` are:
-
-    +------------+------------+
-    | `n_points` | `n_max`    |
-    +============+============+
-    | 4          | 1          |
-    +------------+------------+
-    | 9          | 2          |
-    +------------+------------+
-    | 16         | 3          |
-    +------------+------------+
-    | 25         | 4          |
-    +------------+------------+
-    | 36         | 5          |
-    +------------+------------+
-    | 49         | 6          |
-    +------------+------------+
-    | 64         | 7          |
-    +------------+------------+
-    | 81         | 8          |
-    +------------+------------+
-    | 100        | 9          |
-    +------------+------------+
-    | 121        | 10         |
-    +------------+------------+
-    | 144        | 11         |
-    +------------+------------+
-    | 169        | 12         |
-    +------------+------------+
-    | 196        | 13         |
-    +------------+------------+
-    | 225        | 14         |
-    +------------+------------+
-    | 256        | 15         |
-    +------------+------------+
-    | 289        | 16         |
-    +------------+------------+
-    | 324        | 17         |
-    +------------+------------+
-    | 361        | 18         |
-    +------------+------------+
-    | 400        | 19         |
-    +------------+------------+
-    | 441        | 20         |
-    +------------+------------+
-    | 484        | 21         |
-    +------------+------------+
-    | 529        | 22         |
-    +------------+------------+
-    | 576        | 23         |
-    +------------+------------+
-    | 625        | 24         |
-    +------------+------------+
-    | 676        | 25         |
-    +------------+------------+
-    | 729        | 26         |
-    +------------+------------+
-    | 784        | 27         |
-    +------------+------------+
-    | 841        | 28         |
-    +------------+------------+
-    | 900        | 29         |
-    +------------+------------+
+    toolbox [#]_.
 
     References
     ----------
@@ -1240,44 +1177,14 @@ def fliege(n_points=None, n_max=None, radius=1.):
         >>> spharpy.plot.scatter(coords)
 
     """
+    if not isinstance(n_max, int):
+        raise ValueError("n_max must be an integer.")
+    if n_max < 1 or n_max > 29:
+        raise ValueError("n_max must be between 1 and 29.")
+    if not isinstance(radius, (int, float)) or radius <= 0:
+        raise ValueError("radius must be a positive number.")
 
-    # possible values for n_points and n_max
-    points = np.array([4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196,
-                       225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
-                       676, 729, 784, 841, 900], dtype=int)
-
-    orders = np.array(np.floor(np.sqrt(points) - 1), dtype=int)
-
-    # list possible sh orders and number of points
-    if n_points is None and n_max is None:
-        for o, d in zip(orders, points, strict=True):
-            print(f"SH order {o}, number of points {d}")
-
-        return None
-
-    # check input
-    if n_points is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
-
-    if n_max is not None:
-        # check if the order is available
-        if n_max not in orders:
-            str_orders = [f"{o}" for o in orders]
-            raise ValueError("Invalid spherical harmonic order 'n_max'. \
-                              Valid orders are: {}.".format(
-                              ', '.join(str_orders)))
-
-        # assign n_points
-        n_points = int(points[orders == n_max].squeeze())
-    else:
-        # check if n_points is available
-        if n_points not in points:
-            str_points = [f"{d}" for d in points]
-            raise ValueError("Invalid number of points n_points. Valid points \
-                            are: {}.".format(', '.join(str_points)))
-
-        # assign n_max
-        n_max = int(orders[points == n_points].squeeze())
+    n_points = (n_max + 1)**2
 
     # get the sampling points
     fliege = sio.loadmat(os.path.join(
@@ -1285,15 +1192,12 @@ def fliege(n_points=None, n_max=None, radius=1.):
         variable_names=f"Fliege_{int(n_points)}")
     fliege = fliege[f"Fliege_{int(n_points)}"]
 
-    # normlize weights
-    weights = fliege[:, 2] * 4 * np.pi
-
     # generate Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights)
+        n_max=n_max)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]
