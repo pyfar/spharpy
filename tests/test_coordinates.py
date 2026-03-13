@@ -4,7 +4,6 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from spharpy.samplings import gaussian
-import re
 
 
 def test_sampling_sphere_init():
