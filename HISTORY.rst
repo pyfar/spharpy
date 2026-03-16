@@ -5,12 +5,14 @@ History
 1.0.0 (2026-03-16)
 ------------------
 
-Note: ``spharpy`` version 1.0.0 introduces several breaking changes which are not backwards compatible with prior versions.
-These changes harmonize the package with the pyfar ecosystem. Basic functionality such as the ``Coordinates`` class are fully moved to the ``pyfar`` package which serves as a common base for all packages of the ecosystem.
+.. warning::
+
+    ``spharpy`` version 1.0.0 introduces several breaking changes which are not backwards compatible with prior versions.
+    These changes harmonize the package with the pyfar ecosystem. Basic functionality such as the ``Coordinates`` class are fully moved to the ``pyfar`` package which serves as a common base for all packages of the ecosystem.
 
 
 Breaking changes
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 - ``RotationSH`` has been re-designed. Changes include
 
