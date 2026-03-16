@@ -214,7 +214,7 @@ def test_quadrature_getter_changing_points():
 
 
 def test_repr():
-    """Test representation string"""
+    """Test representation string."""
 
     sampling = SamplingSphere([1, -1], 0, 0)
     repr_str = sampling.__repr__()
