@@ -46,7 +46,7 @@ Breaking changes
   - ``equalarea`` has been renamed to ``equal_area``
   - All functions now return a refactored ``spharpy.SamplingSphere`` object.
   - In the ``spharpy.samplings.utils`` module, the helper functions ``cart2sph``, ``latlon2cart``, and ``sph2cart`` have been removed, since they were moved to ``pyfar``.
-  - The function ``spharpy.samplings.utils.cart2latlon`` has been refactored to use a ``pyfar.Coordiantes`` (or child class) object as input instead of an array containing cartesian coordinates.
+  - The function ``spharpy.samplings.utils.cart2latlon`` has been refactored to use a ``pyfar.Coordinates`` (or child class) object as input instead of an array containing cartesian coordinates.
 
 Changed:
 ^^^^^^^^
@@ -86,6 +86,8 @@ Added:
   - ``spharpy.samplings.equal_angle``
   - ``spharpy.samplings.great_circle``
   - ``spharpy.samplings.fliege``
+
+- Added a read-only property ``spharpy.SamplingSphere.quadrature`` which can be used to check if the sampling is a valid quadrature grid.
 
 Documentation
 ^^^^^^^^^^^^^
