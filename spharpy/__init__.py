@@ -4,7 +4,7 @@
 
 __author__ = """The pyfar developers"""
 __email__ = 'info@pyfar.org'
-__version__ = '0.6.3'
+__version__ = '1.0.0'
 
 from .classes.sh import (
     SphericalHarmonics,
