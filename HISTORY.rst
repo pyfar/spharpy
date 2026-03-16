@@ -10,7 +10,7 @@ These changes harmonize the package with the pyfar ecosystem. Basic functionalit
 
 
 Breaking changes
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 - ``RotationSH`` has been re-designed. Changes include
 
