@@ -5,36 +5,47 @@ History
 1.0.0 (2026-03-16)
 ------------------
 
-Note: `spharpy` version 1.0.0 introduces several breaking changes which are not backwards compatible with prior versions.
-These changes harmonize the package with the pyfar ecosystem. Basic functionality such as the `Coordinate` class are fully moved to the `pyfar` package which serves as a common base for all packages of the ecosystem.
+Note: ``spharpy`` version 1.0.0 introduces several breaking changes which are not backwards compatible with prior versions.
+These changes harmonize the package with the pyfar ecosystem. Basic functionality such as the ``Coordinates`` class are fully moved to the ``pyfar`` package which serves as a common base for all packages of the ecosystem.
 
 
 These are:
 
-- `RotationSH` has been re-designed. Changes include
-  - `RotationSH` has been renamed to `SphericalHarmonicRotation`
-  - The class no longer inherits from `scipy.spatial.transform.Rotation`, instead it inherits from `pyfar.Rotation`, which is based on `scipy.spatial.transform.Rotation` using composition. This was necessary due to the re-write of `scipy.spatial.transform.Rotation` in scipy v1.17.0.
-  - The class no longer stores spherical harmonic orders, instead a `SphericalHarmonicDefinition` object is required when calling the respective class method to calculate the spherical harmonic rotation matrix.
-- Removed the class `spharpy.samplings.Coordinates`. Instead, refer to `pyfar.Coordinates` for storing coordinates. All functions which previously used `spharpy.samplings.Coordinates` now use `pyfar.Coordinates`.
-- `spharpy.SamplingSphere` has been rewritten and now implements checks if
+- ``RotationSH`` has been re-designed. Changes include
+
+  - ``RotationSH`` has been renamed to ``SphericalHarmonicRotation``
+  - The class no longer inherits from ``scipy.spatial.transform.Rotation``, instead it inherits from ``pyfar.Rotation``, which is based on ``scipy.spatial.transform.Rotation`` using composition. This was necessary due to the re-write of ``scipy.spatial.transform.Rotation`` in scipy v1.17.0.
+  - The class no longer stores spherical harmonic orders, instead a ``SphericalHarmonicDefinition`` object is required when calling the respective class method to calculate the spherical harmonic rotation matrix.
+
+- Removed the class ``spharpy.samplings.Coordinates``. Instead, refer to ``pyfar.Coordinates`` for storing coordinates. All functions which previously used ``spharpy.samplings.Coordinates`` now use ``pyfar.Coordinates``.
+- ``spharpy.SamplingSphere`` has been rewritten and now implements checks if
+
   - all points are placed on the same radius, given a specified tolerance,
   - the area weights sum correctly to the integral of the unit sphere.
-- The `indexing` module has been removed, and the functionality has been moved to the `spherical` module.
-  - In `spharpy.spherical.sph_identity_matrix` the argument `type` has been renamed to `matrix_type` to avoid conflict with the built-in `type` function.
-- In the `spherical` module, the functions
-  - `acn2nm` and `nm2acn` have been renamed to `acn_to_nm` and `nm_to_acn`, respectively.
-- The `spharpy.plot` module has been re-written and now has a more consistent API with the `pyfar.plot` module
+
+- The ``indexing`` module has been removed, and the functionality has been moved to the ``spherical`` module.
+
+  - In ``spharpy.spherical.sph_identity_matrix`` the argument ``type`` has been renamed to ``matrix_type`` to avoid conflict with the built-in ``type`` function.
+
+- In the ``spherical`` module, the functions
+
+  - ``acn2nm`` and ``nm2acn`` have been renamed to ``acn_to_nm`` and ``nm_to_acn``, respectively.
+
+- The ``spharpy.plot`` module has been re-written and now has a more consistent API with the ``pyfar.plot`` module
+
   - Added support for pyfar's plot styles.
-  - Add support for always passing and returning `matplotlib.axes.Axes` objects to all plotting functions, which allows for more flexible plotting and composition of plots.
-  - Always return matplotlib `Colorbar` and mappables for each plot, which is consistent with the `pyfar.plot` module.
-  - Omit the implicit interpolation of data in the map projection plots. Users should now explicitly interpolate the data to a regular grid using `spharpy.interpolate.griddata` or similar functions before plotting if necessary.
-- The `spharpy.samplings` module has been re-written
-  - `spharpy.samplings.cube_equidistand` has been renamed to `spharpy.samplings.equidistant_cuboid`
-  - `spherical_t_design` has been renamed to `t_design`
-  - `equalarea` has been renamed to `equal_area`
-  - All functions now return a refactored `spharpy.SamplingSphere` object.
-  - In the `spharpy.samplings.utils` module, the helper functions `cart2sph`, `latlon2cart`, and `sph2cart` have been removed, since they were moved to `pyfar`.
-  - The function `spharpy.samplings.utils.cart2latlon` has been refactored to use a `pyfar.Coordiantes` (or child class) object as input instead of an array containing cartesian coordinates.
+  - Add support for always passing and returning ``matplotlib.axes.Axes`` objects to all plotting functions, which allows for more flexible plotting and composition of plots.
+  - Always return matplotlib ``Colorbar`` and mappables for each plot, which is consistent with the ``pyfar.plot`` module.
+  - Omit the implicit interpolation of data in the map projection plots. Users should now explicitly interpolate the data to a regular grid using ``spharpy.interpolate.griddata`` or similar functions before plotting if necessary.
+
+- The ``spharpy.samplings`` module has been re-written
+
+  - ``spharpy.samplings.cube_equidistand`` has been renamed to ``spharpy.samplings.equidistant_cuboid``
+  - ``spherical_t_design`` has been renamed to ``t_design``
+  - ``equalarea`` has been renamed to ``equal_area``
+  - All functions now return a refactored ``spharpy.SamplingSphere`` object.
+  - In the ``spharpy.samplings.utils`` module, the helper functions ``cart2sph``, ``latlon2cart``, and ``sph2cart`` have been removed, since they were moved to ``pyfar``.
+  - The function ``spharpy.samplings.utils.cart2latlon`` has been refactored to use a ``pyfar.Coordiantes`` (or child class) object as input instead of an array containing cartesian coordinates.
 
 Changed:
 ^^^^^^^^
@@ -42,34 +53,38 @@ Changed:
 - Removed support for Python 3.10 and earlier.
 - Require pyfar >= 0.8.0.
 - Require scipy >= 1.17.0.
-- The `special` and `spatial` sub-modules are now directly imported as `spharpy.special` and `spharpy.spatial`.
-- Extended documentation and added examples for all functions in the following modules:
-  - `beamforming`,
-  - `spatial`,
-  - `interpolate`,
-  - `special`,
-  - `spherical`,
+- The ``special`` and ``spatial`` sub-modules are now directly imported as ``spharpy.special`` and ``spharpy.spatial``.
+- Extended documentation and added examples for all functions in the following modules
+
+  - ``beamforming``
+  - ``spatial``
+  - ``interpolate``
+  - ``special``
+  - ``spherical``
 
 Added:
 ^^^^^^
 
-- `spharpy.SphericalHarmonicDefintion`: A class encapsulating parameters for the definition of spherical harmonics:
-- `spharpy.SphericalHarmonics`: A class to lazily compute the spherical harmonics for a given definition. For `spharpy.SamplingSphere` the class also calculates inverse basis matrices.
-- `spharpy.SphericalHarmonicSignal`, `spharpy.SphericalHarmonicFrequencyData`, and `spharpy.SphericalHarmonicTimeData`: classes to store audio data in the spherical harmonic domain. These classes are derived from `pyfar.Signal`, `pyfar.FrequencyData`, and `pyfar.TimeData` respectively, and thus support all methods implemented for these classes. (PR #166)
-- Added support for the following parametrization of the functions for calculation of spherical harmonics defined in the `spharpy.spherical` module:
+- ``spharpy.SphericalHarmonicDefintion``: A class encapsulating parameters for the definition of spherical harmonics:
+- ``spharpy.SphericalHarmonics``: A class to lazily compute the spherical harmonics for a given definition. For ``spharpy.SamplingSphere`` the class also calculates inverse basis matrices.
+- ``spharpy.SphericalHarmonicSignal``, ``spharpy.SphericalHarmonicFrequencyData``, and ``spharpy.SphericalHarmonicTimeData``: classes to store audio data in the spherical harmonic domain. These classes are derived from ``pyfar.Signal``, ``pyfar.FrequencyData``, and ``pyfar.TimeData`` respectively, and thus support all methods implemented for these classes.
+- Added support for the following parametrization of the functions for calculation of spherical harmonics defined in the ``spharpy.spherical`` module:
+
   - normalizations (N3D, SN3D, NM, SNM, and  maxN),
   - the Condon-Shortley phase convention,
   - the FuMa channel ordering convention.
-- Added `spharpy.spherical.renormalize` function to convert between different spherical harmonic normalization schemes.
-- Added `spharpy.spherical.change_channel_convention` to convert between different channel ordering conventions.
-- Added functions `nm_to_fuma` and `fuma_to_nm` to convert to and from FuMa channel ordering
-- Shared plot preparation in the `spharpy.plot` module, which is used by all plot functions.
+
+- Added ``spharpy.spherical.renormalize`` function to convert between different spherical harmonic normalization schemes.
+- Added ``spharpy.spherical.change_channel_convention`` to convert between different channel ordering conventions.
+- Added functions ``nm_to_fuma`` and ``fuma_to_nm`` to convert to and from FuMa channel ordering
+- Shared plot preparation in the ``spharpy.plot`` module, which is used by all plot functions.
 - Tests for all plots and baseline images for manual comparison of the plots in the test suite.
 - Added the following spherical sampling grids:
-  - `spharpy.samplings.lebedev`
-  - `spharpy.samplings.equal_angle`
-  - `spharpy.samplings.great_circle`
-  - `spharpy.samplings.fliege`
+
+  - ``spharpy.samplings.lebedev``
+  - ``spharpy.samplings.equal_angle``
+  - ``spharpy.samplings.great_circle``
+  - ``spharpy.samplings.fliege``
 
 Documentation
 ^^^^^^^^^^^^^
