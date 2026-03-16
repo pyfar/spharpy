@@ -2,6 +2,13 @@
 History
 =======
 
+0.6.3 (2026-03-16)
+------------------
+- Remove support for Python 3.8. (PR #111)
+- Require matplotlib >= v3.10.3 for properly working contour map plots. (PR #117)
+- Require scipy < v1.17.0 due to the deprecations of `scipy.special.sph_harm`  and related functions. (PR #180)
+- Minor updates to documentation and package info. (PRs #112, #130, #144)
+
 0.6.2 (2025-03-16)
 ------------------
 - Added sampling for the eigenmike em64 (PR #84)
