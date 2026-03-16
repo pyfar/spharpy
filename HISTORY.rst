@@ -36,6 +36,14 @@ These are:
   - In the `spharpy.samplings.utils` module, the helper functions `cart2sph`, `latlon2cart`, and `sph2cart` have been removed, since they were moved to `pyfar`.
   - The function `spharpy.samplings.utils.cart2latlon` has been refactored to use a `pyfar.Coordiantes` (or child class) object as input instead of an array containing cartesian coordinates.
 
+Changed:
+^^^^^^^^
+
+- Removed support for Python 3.10 and earlier.
+- Require pyfar >= 0.8.0.
+- Require scipy >= 1.17.0.
+- The `special` and `spatial` sub-modules are now directly imported as `spharpy.special` and `spharpy.spatial`.
+
 
 Added:
 ^^^^^^
@@ -47,11 +55,16 @@ Added:
   - normalizations (N3D, SN3D, NM, SNM, and  maxN),
   - the Condon-Shortley phase convention,
   - the FuMa channel ordering convention.
-- Added function to convert between different spherical harmonic normalization schemes.
+- Added `spharpy.spherical.renormalize` function to convert between different spherical harmonic normalization schemes.
+- Added `spharpy.spherical.change_channel_convention` to convert between different channel ordering conventions.
 - Added functions `nm_to_fuma` and `fuma_to_nm` to convert to and from FuMa channel ordering
 - Shared plot preparation in the `spharpy.plot` module, which is used by all plot functions.
 - Tests for all plots and baseline images for manual comparison of the plots in the test suite.
-- Added the following spherical sampling grids
+- Added the following spherical sampling grids:
+  - `spharpy.samplings.lebedev`
+  - `spharpy.samplings.equal_angle`
+  - `spharpy.samplings.great_circle`
+  - `spharpy.samplings.fliege`
 
 Documentation
 ^^^^^^^^^^^^^
