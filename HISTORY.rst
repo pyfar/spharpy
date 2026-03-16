@@ -9,7 +9,8 @@ Note: ``spharpy`` version 1.0.0 introduces several breaking changes which are no
 These changes harmonize the package with the pyfar ecosystem. Basic functionality such as the ``Coordinates`` class are fully moved to the ``pyfar`` package which serves as a common base for all packages of the ecosystem.
 
 
-These are:
+Breaking changes
+~~~~~~~~~~~~~~
 
 - ``RotationSH`` has been re-designed. Changes include
 
@@ -21,7 +22,7 @@ These are:
 - ``spharpy.SamplingSphere`` has been rewritten and now implements checks if
 
   - all points are placed on the same radius, given a specified tolerance,
-  - the area weights sum correctly to the integral of the unit sphere.
+  - the area weights sum correctly to the integral of the unit sphere, if they are not ``None``.
 
 - The ``indexing`` module has been removed, and the functionality has been moved to the ``spherical`` module.
 
@@ -65,14 +66,14 @@ Changed:
 Added:
 ^^^^^^
 
-- ``spharpy.SphericalHarmonicDefintion``: A class encapsulating parameters for the definition of spherical harmonics:
-- ``spharpy.SphericalHarmonics``: A class to lazily compute the spherical harmonics for a given definition. For ``spharpy.SamplingSphere`` the class also calculates inverse basis matrices.
+- ``spharpy.SphericalHarmonicDefintion``: A class encapsulating parameters for the definition of spherical harmonics.
+- ``spharpy.SphericalHarmonics``: A class to lazily compute the spherical harmonics for a given definition and coordinates. For ``spharpy.SamplingSphere`` the class also calculates inverse basis matrices.
 - ``spharpy.SphericalHarmonicSignal``, ``spharpy.SphericalHarmonicFrequencyData``, and ``spharpy.SphericalHarmonicTimeData``: classes to store audio data in the spherical harmonic domain. These classes are derived from ``pyfar.Signal``, ``pyfar.FrequencyData``, and ``pyfar.TimeData`` respectively, and thus support all methods implemented for these classes.
 - Added support for the following parametrization of the functions for calculation of spherical harmonics defined in the ``spharpy.spherical`` module:
 
   - normalizations (N3D, SN3D, NM, SNM, and  maxN),
   - the Condon-Shortley phase convention,
-  - the FuMa channel ordering convention.
+  - the ACN and FuMa channel ordering convention.
 
 - Added ``spharpy.spherical.renormalize`` function to convert between different spherical harmonic normalization schemes.
 - Added ``spharpy.spherical.change_channel_convention`` to convert between different channel ordering conventions.
