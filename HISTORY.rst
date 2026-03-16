@@ -11,7 +11,7 @@ These changes harmonize the package with the pyfar ecosystem. Basic functionalit
 
 These are:
 
-- `RotationSH` has been re-designed (PR #226). Changes include
+- `RotationSH` has been re-designed. Changes include
   - `RotationSH` has been renamed to `SphericalHarmonicRotation`
   - The class no longer inherits from `scipy.spatial.transform.Rotation`, instead it inherits from `pyfar.Rotation`, which is based on `scipy.spatial.transform.Rotation` using composition. This was necessary due to the re-write of `scipy.spatial.transform.Rotation` in scipy v1.17.0.
   - The class no longer stores spherical harmonic orders, instead a `SphericalHarmonicDefinition` object is required when calling the respective class method to calculate the spherical harmonic rotation matrix.
@@ -43,12 +43,17 @@ Changed:
 - Require pyfar >= 0.8.0.
 - Require scipy >= 1.17.0.
 - The `special` and `spatial` sub-modules are now directly imported as `spharpy.special` and `spharpy.spatial`.
-
+- Extended documentation and added examples for all functions in the following modules:
+  - `beamforming`,
+  - `spatial`,
+  - `interpolate`,
+  - `special`,
+  - `spherical`,
 
 Added:
 ^^^^^^
 
-- `spharpy.SphericalHarmonicDefintion`: A class encapsulating parameters for the definition of spherical harmonics:  (#)
+- `spharpy.SphericalHarmonicDefintion`: A class encapsulating parameters for the definition of spherical harmonics:
 - `spharpy.SphericalHarmonics`: A class to lazily compute the spherical harmonics for a given definition. For `spharpy.SamplingSphere` the class also calculates inverse basis matrices.
 - `spharpy.SphericalHarmonicSignal`, `spharpy.SphericalHarmonicFrequencyData`, and `spharpy.SphericalHarmonicTimeData`: classes to store audio data in the spherical harmonic domain. These classes are derived from `pyfar.Signal`, `pyfar.FrequencyData`, and `pyfar.TimeData` respectively, and thus support all methods implemented for these classes. (PR #166)
 - Added support for the following parametrization of the functions for calculation of spherical harmonics defined in the `spharpy.spherical` module:
