@@ -667,3 +667,11 @@ class SamplingSphere(pf.Coordinates):
             self._quadrature = self._check_quadrature()
 
         return self._quadrature
+
+
+    def __repr__(self):
+        """Get info about SamplingSphere object."""
+        if self.csize == 0:
+            return 'SamplingSphere: empty'
+
+        return f'SamplingSphere: n_max={self.n_max}, cshape={self.cshape}'

@@ -211,3 +211,15 @@ def test_quadrature_getter_changing_points():
         np.ones((sampling.csize, 1)),
         np.ones((sampling.csize, 1))], axis=1)
     assert not sampling.quadrature
+
+
+def test_repr():
+    """Test representation string."""
+
+    sampling = SamplingSphere([1, -1], 0, 0)
+    repr_str = sampling.__repr__()
+    assert repr_str == 'SamplingSphere: n_max=None, cshape=(2,)'
+
+    sampling = SamplingSphere([1, -1], 0, 0, n_max=0)
+    repr_str = sampling.__repr__()
+    assert repr_str == 'SamplingSphere: n_max=0, cshape=(2,)'
