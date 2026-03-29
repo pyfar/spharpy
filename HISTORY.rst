@@ -2,9 +2,17 @@
 History
 =======
 
+unreleased
+----------
+
 Changed
 ^^^^^^^
 - Updated radius for eigenmike em32 sampling to 42 mm (PR #323)
+
+Fixed
+^^^^^
+
+- Some samplings from the `spharpy.samplings` module could not be used because the files containing the data were not included in the wheel. This is now fixed.
 
 1.0.0 (2026-03-16)
 ------------------
