@@ -121,9 +121,6 @@ jobs:
       version: <<parameters.version>>
     steps:
       - checkout
-   #    - run:
-   #        name: Install System Dependencies
-   #        command: sudo apt-get update && sudo apt-get install -y libsndfile1 texlive-latex-extra dvipng
       - run:
           name: Sphinx
           command: |
@@ -142,9 +139,6 @@ jobs:
       version: <<parameters.version>>
     steps:
       - checkout
-   #    - run:
-   #        name: Install System Dependencies
-   #        command: sudo apt-get update && sudo apt-get install -y libsndfile1 texlive-latex-extra dvipng
       - run:
           name: install dependencies
           command: pip install ".[tests]"
@@ -167,9 +161,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-    #  - run:
-    #      name: Install System Dependencies
-    #      command: sudo apt-get update && sudo apt-get install -y libsndfile1
       - run:
           name: install dependencies
           command: pip install ".[deploy]"
