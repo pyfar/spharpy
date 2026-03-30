@@ -46,6 +46,40 @@ jobs:
           name: Run tests
           command: pytest
 
+  test_wheel:
+    parameters:
+      version:
+        description: "version tag"
+        default: "latest"
+        type: string
+    executor:
+      name: python-docker
+      version: <<parameters.version>>
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: pip install ".[tests]"
+      - run:
+          name: Build wheel
+          command: |
+            python -m build --wheel
+      - run:
+          name: Install wheel in isolated venv and remove all source files from the test environment
+          command: |
+            python -m venv .wheeltest
+            WHEEL=$(ls -1 dist/*.whl | head -n 1)
+            .wheeltest/bin/python -m pip install "$WHEEL"
+            .wheeltest/bin/python -c "import pathlib, spharpy; p = pathlib.Path(spharpy.__file__).resolve(); print(p); assert 'site-packages' in str(p), p"
+            TEST_PYTHON="$(pwd)/.wheeltest/bin/python"
+            rm -rf /tmp/spharpy-wheel-tests
+      - run:
+          name: Run tests with wheel installation
+          command: |
+            cp -r tests /tmp/spharpy-wheel-tests
+            cd /tmp/spharpy-wheel-tests
+            "$TEST_PYTHON" -m pytest tests
+
   ruff:
     parameters:
       version:
@@ -178,6 +212,17 @@ workflows:
           requires:
             - build_and_test
 
+      - test_wheel:
+          matrix:
+            parameters:
+              version:
+                - "3.11"
+                - "3.12"
+                - "3.13"
+                - "3.14"
+          requires:
+            - build_and_test
+
       - test_documentation_build:
           matrix:
             parameters:
@@ -201,6 +246,7 @@ workflows:
                 - "3.14"
           requires:
             - build_and_test
+            - test_wheel
 
 
   test_and_publish:
@@ -227,6 +273,23 @@ workflows:
           matrix:
             parameters:
               version:
+                - "3.14"
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              ignore: /.*/
+            # only act on version tags
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*$/
+
+      - test_wheel:
+          matrix:
+            parameters:
+              version:
+                - "3.11"
+                - "3.12"
+                - "3.13"
                 - "3.14"
           requires:
             - build_and_test
@@ -272,6 +335,7 @@ workflows:
                 - "3.14"
           requires:
             - build_and_test
+            - test_wheel
             - ruff
             - test_documentation_build
           filters:
