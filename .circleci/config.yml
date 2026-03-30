@@ -287,14 +287,14 @@ workflows:
             parameters:
               version:
                 - "3.14"
+          requires:
+            - test_source
           filters:
             branches:
               ignore: /.*/
             # only act on version tags
             tags:
               only: /^v[0-9]+(\.[0-9]+)*$/
-            requires:
-              - test_source
 
       - ruff:
           matrix:
