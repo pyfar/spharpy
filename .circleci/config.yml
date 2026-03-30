@@ -25,7 +25,7 @@ executors:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build_and_test:
+  test_source:
     parameters:
       version:
         description: "version tag"
@@ -36,9 +36,6 @@ jobs:
       version: <<parameters.version>>
     steps:
       - checkout
-    #   - run:
-    #       name: Install System Dependencies
-    #       command: sudo apt-get update && sudo apt-get install -y libsndfile1
       - run:
           name: install dependencies
           command: pip install ".[tests]"
@@ -195,7 +192,7 @@ workflows:
   test: # Test workflow
     jobs:
       # Run tests for all python versions
-      - build_and_test:
+      - test_source:
           matrix:
             parameters:
               version:
@@ -210,7 +207,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
 
       - test_wheel:
           matrix:
@@ -221,7 +218,7 @@ workflows:
                 - "3.13"
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
 
       - test_documentation_build:
           matrix:
@@ -229,7 +226,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
 
       - test_deprecation_warnings:
           matrix:
@@ -237,7 +234,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
 
       - test_pypi_publish:
           matrix:
@@ -245,15 +242,14 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
-            - test_wheel
+            - test_source
 
 
   test_and_publish:
     # Test and publish on new git version tags
     # This requires its own workflow to successfully trigger the test and build
     jobs:
-      - build_and_test:
+      - test_source:
           matrix:
             parameters:
               version:
@@ -275,7 +271,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
           filters:
             branches:
               ignore: /.*/
@@ -292,7 +288,7 @@ workflows:
                 - "3.13"
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
           filters:
             branches:
               ignore: /.*/
@@ -306,7 +302,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
           filters:
             branches:
               ignore: /.*/
@@ -320,7 +316,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
           filters:
             branches:
               ignore: /.*/
@@ -334,7 +330,7 @@ workflows:
               version:
                 - "3.14"
           requires:
-            - build_and_test
+            - test_source
             - test_wheel
             - ruff
             - test_documentation_build
