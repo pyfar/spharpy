@@ -69,7 +69,7 @@ jobs:
             .wheeltest/bin/python -m pip install "$WHEEL"[tests]
             TEST_PYTHON="$(pwd)/.wheeltest/bin/python"
             rm -rf /tmp/spharpy-wheel-tests
-            cp -r tests /tmp/spharpy-wheel-tests
+            cp -r tests /tmp/spharpy-wheel-tests/tests/
             cd /tmp/spharpy-wheel-tests
             "$TEST_PYTHON" -m pytest .
 
