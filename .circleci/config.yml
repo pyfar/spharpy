@@ -59,7 +59,7 @@ jobs:
       - checkout
       - run:
           name: install dependencies
-          command: pip install ".[tests]"
+          command: pip install ".[deploy,tests]"
       - run:
           name: Build wheel
           command: |
