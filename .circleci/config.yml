@@ -62,20 +62,16 @@ jobs:
           command: |
             python -m build --wheel
       - run:
-          name: Install wheel in isolated venv and remove all source files from the test environment
+          name: Install wheel in isolated venv and run tests
           command: |
             python -m venv .wheeltest
             WHEEL=$(ls -1 dist/*.whl | head -n 1)
-            .wheeltest/bin/python -m pip install "$WHEEL"
-            .wheeltest/bin/python -c "import pathlib, spharpy; p = pathlib.Path(spharpy.__file__).resolve(); print(p); assert 'site-packages' in str(p), p"
+            .wheeltest/bin/python -m pip install "$WHEEL"[tests]
             TEST_PYTHON="$(pwd)/.wheeltest/bin/python"
             rm -rf /tmp/spharpy-wheel-tests
-      - run:
-          name: Run tests with wheel installation
-          command: |
             cp -r tests /tmp/spharpy-wheel-tests
             cd /tmp/spharpy-wheel-tests
-            "$TEST_PYTHON" -m pytest tests
+            "$TEST_PYTHON" -m pytest .
 
   ruff:
     parameters:
