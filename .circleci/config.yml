@@ -80,17 +80,21 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Install wheel in isolated venv and run tests
+          name: Install wheel from workspace
           command: |
-            python -m venv .wheeltest
             WHEEL=$(ls -1 /tmp/workspace/dist/*.whl | head -n 1)
-            .wheeltest/bin/python -m pip install "${WHEEL}[tests]"
-            TEST_PYTHON="$(pwd)/.wheeltest/bin/python"
+            python -m pip install "${WHEEL}[tests]"
+      - run:
+          name: Move the tests to isolated folder
+          command: |
             rm -rf /tmp/spharpy-wheel-tests
             mkdir -p /tmp/spharpy-wheel-tests
             cp -r tests /tmp/spharpy-wheel-tests/
             cd /tmp/spharpy-wheel-tests
-            "$TEST_PYTHON" -m pytest tests
+      - run:
+          name: Run the tests
+          command: |
+            python -m pytest tests
 
   ruff:
     parameters:
