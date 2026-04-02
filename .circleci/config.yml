@@ -264,6 +264,11 @@ workflows:
           requires:
             - test_source
             - build_distribution
+          filters:
+            branches:
+              only:
+                - main
+                - develop
 
 
   test_and_publish:
