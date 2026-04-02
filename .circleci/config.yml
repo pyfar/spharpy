@@ -86,8 +86,6 @@ jobs:
             # Find the wheel file in the workspace and save it to an environment variable
             WHEEL=$(ls -1 /tmp/workspace/dist/*.whl | head -n 1)
             .wheeltest/bin/python -m pip install "${WHEEL}[tests]"
-            # Create an environment variable for the path to the python executable of the isolated venv
-            TEST_PYTHON="$(pwd)/.wheeltest/bin/python"
       - run:
           name: Move test files to isolated location
           command: |
@@ -97,6 +95,8 @@ jobs:
       - run:
           name: Run tests against wheel installation (i.e. in isolated environment)
           command: |
+            # Create an environment variable for the path to the python executable of the isolated venv
+            TEST_PYTHON="$(pwd)/.wheeltest/bin/python"
             cd /tmp/spharpy-wheel-tests
             "$TEST_PYTHON" -m pytest tests
 
