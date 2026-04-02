@@ -4,9 +4,13 @@ import numpy as np
 import spharpy.transforms as transforms
 from spharpy.spherical import spherical_harmonic_basis
 import spharpy
-from spharpy.transforms import RotationSH
+from spharpy.transforms import SphericalHarmonicRotation
+from spharpy.classes.sh import (
+    SphericalHarmonicDefinition, SphericalHarmonics)
 import pytest
 from pyfar import Coordinates
+from spharpy.classes.audio import SphericalHarmonicSignal
+import pyfar
 
 
 def test_rotation_matrix_z_axis_complex():
@@ -131,23 +135,17 @@ def test_wigner_d_rot():
     np.testing.assert_allclose(D, rot_mat, atol=1e-7)
 
 
-def test_RotationSH():
-    n_max = 4
+def test_SphericalHarmonicRotation():
+    """Test SphericalHarmonicRotation creation and check against reference
+    for a 90 deg rotation around the z-axis.
+    """
+    n_max = 2
+    definition = SphericalHarmonicDefinition(n_max=n_max)
     rot_angle_z = np.pi/2
     rot_vec = [0, 0, rot_angle_z]
-    rot = RotationSH.from_rotvec(n_max, rot_vec)
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
 
-    assert rot._n_max == n_max
-
-    n_max = 2
-    rot.n_max = n_max
-    assert rot._n_max == n_max
-    assert rot.n_max == n_max
-
-    with pytest.raises(ValueError, match='order needs to be a positive value'):
-        rot.n_max = -1
-
-    D_Rot = rot.as_spherical_harmonic(basis_type='real')
+    D_Rot = rot.as_spherical_harmonic_matrix(definition)
 
     reference = np.array([
         [1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -162,26 +160,139 @@ def test_RotationSH():
 
     np.testing.assert_allclose(D_Rot, reference, atol=1e-10)
 
-    rot = RotationSH.from_rotvec(n_max, [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
-    rot = RotationSH.from_euler(n_max, 'zyz', [0, 0, 90], degrees=True)
+    rot = SphericalHarmonicRotation.from_euler('zyz', [0, 0, np.pi/2])
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
-    rot = RotationSH.from_quat(n_max, [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
+    rot = SphericalHarmonicRotation.from_quat(
+        [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-10)
 
     rot_mat_z_spat = np.array([
         [0, -1, 0],
         [1, 0, 0],
         [0, 0, 1]])
-    rot = RotationSH.from_matrix(n_max, rot_mat_z_spat)
+    rot = SphericalHarmonicRotation.from_matrix(rot_mat_z_spat)
     np.testing.assert_allclose(
-        rot.as_spherical_harmonic(basis_type='real'),
+        rot.as_spherical_harmonic_matrix(definition),
         reference, atol=1e-7)
+
+
+def test_SphericalHarmonicRotation_apply():
+    """
+    Test application of SphericalHarmonicRotation to SphericalHarmonicSignal
+    using the apply method, the multiplication operator, and the rotation
+    matrix.
+    """
+    n_max = 2
+    spherical_harmonics = SphericalHarmonics(
+        n_max=n_max, coordinates=Coordinates(1, 0, 0), inverse_method=None)
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+
+    noise = pyfar.signals.noise(512)
+
+    sh_signal = SphericalHarmonicSignal(
+        np.atleast_3d(
+            spherical_harmonics.basis.T * noise.time).transpose(1, 0, 2),
+        noise.sampling_rate,
+        basis_type=spherical_harmonics.basis_type,
+        normalization=spherical_harmonics.normalization,
+        channel_convention=spherical_harmonics.channel_convention,
+        condon_shortley=spherical_harmonics.condon_shortley,
+    )
+
+    sh_signal_rotated = rot.apply(sh_signal)
+
+    rot_mat = rot.as_spherical_harmonic_matrix(sh_signal)
+
+    sh_data_rotated = rot_mat @ sh_signal._data
+
+    np.testing.assert_allclose(
+        sh_signal_rotated._data,
+        sh_data_rotated,
+        atol=1e-10)
+
+    sh_signal_rot_operator = rot * sh_signal
+
+    np.testing.assert_allclose(
+        sh_signal_rotated._data,
+        sh_signal_rot_operator._data,
+        atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_mul_rotations():
+    """Test multiplication of two SphericalHarmonicRotation objects."""
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+
+    result = rot * rot
+    result_matrix = result.as_matrix()
+
+    ref = rot.as_matrix() @ rot.as_matrix()
+
+    np.testing.assert_allclose(
+        result_matrix,
+        ref,
+        atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_mul_pyfar_Rotation():
+    """Test multiplying a SphericalHarmonicRotation with a pyfar.Rotation.
+    """
+    rot_angle_z = np.pi/2
+    rot_vec = [0, 0, rot_angle_z]
+    rot = SphericalHarmonicRotation.from_rotvec(rot_vec)
+
+    pyfar_rot = pyfar.Rotation.from_rotvec(rot_vec)
+
+    result = rot*pyfar_rot
+
+    assert isinstance(result, SphericalHarmonicRotation)
+
+    ref = rot.as_matrix() @ pyfar_rot.as_matrix()
+
+    np.testing.assert_allclose(
+        result.as_matrix(),
+        ref,
+        atol=1e-10)
+
+
+def test_SphericalHarmonicRotation_mul_invalid():
+    """Test if invalid multiplication operations raise errors."""
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
+
+    with pytest.raises(ValueError, match="Multiplication is only supported"):
+        rot * 42 # type: ignore
+
+
+def test_SphericalHarmonicRotation_invalid_definition():
+    """Test if invalid spherical harmonic definitions raise errors."""
+    rot = SphericalHarmonicRotation.from_rotvec([0, 0, np.pi/2])
+
+    definition = SphericalHarmonicDefinition(
+        n_max=2, normalization='N3D', channel_convention='FuMa')
+    with pytest.raises(
+            NotImplementedError,
+            match="Only 'ACN' channel convention is supported",
+        ):
+        rot.as_spherical_harmonic_matrix(definition)
+
+    definition = SphericalHarmonicDefinition(
+        n_max=2, normalization='SN3D', channel_convention='ACN')
+    with pytest.raises(
+            NotImplementedError,
+            match="Only 'N3D' normalization is supported",
+        ):
+        rot.as_spherical_harmonic_matrix(definition)
+

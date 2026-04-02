@@ -4,22 +4,33 @@ from spharpy.classes.audio import (
     _atleast_3d_first_dimension)
 from spharpy import SphericalHarmonicDefinition
 import numpy as np
+import numpy.testing as npt
 
 
 def test_atleast_3d_data():
+    """Test extending the shape of 1D and 2D array likes."""
+
+    # Prepend dimension for 2D array
     data = np.ones((4, 4))
     data_3d = _atleast_3d_first_dimension(data)
     assert data_3d.ndim == 3
     assert data_3d.shape == (1, 4, 4)
 
+    # Do not change 3D array
     data_3d = _atleast_3d_first_dimension(np.ones((2, 4, 4)))
 
     assert data_3d.ndim == 3
     assert data_3d.shape == (2, 4, 4)
 
-    data_3d = _atleast_3d_first_dimension(np.array(1))
+    # Prepend two dimensions for 1D array
+    data_3d = _atleast_3d_first_dimension(np.array([1, 2, 3, 4]))
     assert data_3d.ndim == 3
-    assert data_3d.shape == (1, 1, 1)
+    assert data_3d.shape == (1, 1, 4)
+
+    # Convert lists to numpy array
+    data = [1, 2, 3, 4]
+    data_3d_list = _atleast_3d_first_dimension(data)
+    npt.assert_equal(data_3d_list, data_3d)
 
 
 def test_init_sh_time_data():

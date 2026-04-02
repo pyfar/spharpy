@@ -10,11 +10,11 @@ defined by :py:attr:`~spharpy.SamplingSphere.radius_tolerance`. If the
 :py:attr:`~spharpy.SamplingSphere.weights` are not None, their sum must
 equal the integral over the unit sphere, which is :math:`4\pi`.
 
-The property :py:attr:`~spharpy.SamplingSphere.quadrature` specifies if the
-points belong to a quadrature, which requires that the
-valid weights, the maximum
+The property :py:attr:`~spharpy.SamplingSphere.quadrature` is relevant for
+spherical harmonic processing. It specifies if the points form a
+quadrature rule, which requires valid weights, that the maximum
 spherical harmonic order of the sampling
-grid :py:attr:`~spharpy.SamplingSphere.n_max` is specified and the inner
+grid :py:attr:`~spharpy.SamplingSphere.n_max` is specified, and the inner
 product of the weighted spherical harmonics matrix :math:`\mathrm{Y}`
 yields the identity matrix
 :math:`\mathrm{Y}^\mathrm{T} \text{diag}\{w\}\mathrm{Y}=\mathrm{I}`,
@@ -64,7 +64,8 @@ class SamplingSphere(pf.Coordinates):
             Z coordinate of a right handed Cartesian coordinate system in
             meters (-\infty < z < \infty).
         n_max : int, optional
-            Maximum spherical harmonic order of the sampling grid.
+            Maximum spherical harmonic order of the sampling grid. If
+            provided, it must be an integer greater or equal to 0.
             The default is ``None``.
         weights: array like, number, optional
             Weighting factors for coordinate points. Their sum must equal to
@@ -509,12 +510,12 @@ class SamplingSphere(pf.Coordinates):
 
     @property
     def n_max(self):
-        """Get the maximum spherical harmonic order."""
+        """Get or set the spherical harmonic order."""
         return self._n_max
 
     @n_max.setter
     def n_max(self, value):
-        """Set the maximum spherical harmonic order."""
+        """Get or set the spherical harmonic order."""
         assert value >= 0
 
         if value is None:
@@ -666,3 +667,11 @@ class SamplingSphere(pf.Coordinates):
             self._quadrature = self._check_quadrature()
 
         return self._quadrature
+
+
+    def __repr__(self):
+        """Get info about SamplingSphere object."""
+        if self.csize == 0:
+            return 'SamplingSphere: empty'
+
+        return f'SamplingSphere: n_max={self.n_max}, cshape={self.cshape}'

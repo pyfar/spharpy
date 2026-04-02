@@ -1,4 +1,8 @@
-"""Rotations for spherical harmonics."""
+"""
+Rotation for data in the spherical harmonic domain. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for background information
+on spherical harmonics.
+"""
 
 from .rotations import (
     rotation_z_axis,
@@ -6,7 +10,8 @@ from .rotations import (
     wigner_d_function,
     wigner_d_rotation,
     wigner_d_rotation_real,
-    RotationSH)
+    SphericalHarmonicRotation,
+)
 
 
 __all__ = [
@@ -15,4 +20,5 @@ __all__ = [
     'wigner_d_rotation',
     'wigner_d_rotation_real',
     'wigner_d_function',
-    'RotationSH']
+    'SphericalHarmonicRotation',
+]

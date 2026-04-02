@@ -1,5 +1,8 @@
 """
-Documentation for the SphericalHarmonics class, will be added in an other PR.
+The spherical harmonic classes store the respective definitions and basis
+functions, as well as their derivative and inverse. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for more specific information
+on the mathematical definitions of spherical harmonics.
 """
 import numpy as np
 import pyfar as pf
@@ -21,14 +24,14 @@ class _SphericalHarmonicBase(ABC):
     basis_type : str
         Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
         The default is ``'real'``.
-    channel_convention : str, optional
-        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
-        The default is ``'ACN'``. Note that ``'FuMa'`` is only supported up to
-        3rd order.
     normalization : str, optional
         Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
         ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``. Note that
         ``'maxN'`` is only supported up to 3rd order.
+    channel_convention : str, optional
+        Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
+        The default is ``'ACN'``. Note that ``'FuMa'`` is only supported up to
+        3rd order.
     condon_shortley : bool, str, optional
         Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
         if ``False`` it is not included. The default is ``'auto'``, which
@@ -39,8 +42,8 @@ class _SphericalHarmonicBase(ABC):
     def __init__(
             self,
             basis_type="real",
-            channel_convention="ACN",
             normalization="N3D",
+            channel_convention="ACN",
             condon_shortley="auto",
         ):
         self._basis_type = None
@@ -159,41 +162,42 @@ class SphericalHarmonicDefinition(_SphericalHarmonicBase):
     spherical harmonic basis matrices for given sampling points, transforms,
     or other spherical harmonic related data and computations.
 
-    Attributes
+    Parameters
     ----------
     n_max : int, optional
-        Maximum spherical harmonic order. The default is ``0``.
+        Maximum spherical harmonic order. Must be an integer greater or equal
+        to 0. The default is ``0``.
     basis_type : str
-        Type of spherical harmonic basis, either ``'real'`` or ``'complex'``.
-        The default is ``'real'``.
+        Type of spherical harmonic basis, either ``'complex'`` or
+        ``'real'``. The default is ``'real'``.
+    normalization : str, optional
+        Normalization convention, either ``'N3D'``, ``'NM'``, ``'SN3D'``,
+        ``'SNM'``, or ``'maxN'``. ``'maxN'`` is only supported up to 3rd order.
+        The default is ``'N3D'``.
     channel_convention : str, optional
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
-        The default is ``'ACN'``. Note that ``'FuMa'`` is only supported up to
-        3rd order.
-    normalization : str, optional
-        Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
-        ``'SN3D'``, or ``'SNM'``. The default is ``'N3D'``. Note that
-        ``'maxN'`` is only supported up to 3rd order.
+        ``'FuMa'`` is only supported up to 3rd order.
+        The default is ``'ACN'``.
     condon_shortley : bool, str, optional
-        Condon-Shortley phase term. If ``True``, Condon-Shortley is included,
-        if ``False`` it is not included. The default is ``'auto'``, which
-        corresponds to ``True`` for type ``complex`` and ``False`` for type
-        ``real``.
+        Whether to include the Condon-Shortley phase term. If ``True``,
+        Condon-Shortley is included, if ``False`` it is not
+        included. The default is ``'auto'``, which corresponds to
+        ``True`` for complex `basis_type` and ``False`` for real `basis_type`.
     """
 
     def __init__(
             self,
             n_max=0,
             basis_type="real",
-            channel_convention="ACN",
             normalization="N3D",
+            channel_convention="ACN",
             condon_shortley="auto",
         ):
         self._n_max = 0
         super().__init__(
             basis_type=basis_type,
-            channel_convention=channel_convention,
             normalization=normalization,
+            channel_convention=channel_convention,
             condon_shortley=condon_shortley,
         )
         self.n_max = n_max
@@ -225,9 +229,7 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
     Compute spherical harmonic basis matrices, their inverses, and gradients.
 
     The the basis functions that are used to build the matrices can be
-    configured with the parameters described below. See the
-    :py:mod:`spherical harmonic documentation<spharpy.classes.sh>` for a
-    detailed description.
+    configured with the parameters described below.
 
     Parameters
     ----------
@@ -285,8 +287,8 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
         super().__init__(
             n_max=n_max,
             basis_type=basis_type,
-            channel_convention=channel_convention,
             normalization=normalization,
+            channel_convention=channel_convention,
             condon_shortley=condon_shortley,
         )
 
@@ -300,7 +302,7 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
 
     @classmethod
     def from_definition(cls, definition, coordinates, inverse_method="auto"):
-        """
+        r"""
         Create SphericalHarmonics instance from SphericalHarmonicDefinition.
 
         Parameters
@@ -453,8 +455,12 @@ class SphericalHarmonics(SphericalHarmonicDefinition):
             raise ValueError(
                 "Invalid basis type, should be either 'complex' or 'real'")
         self._basis = function(
-            self.n_max, self.coordinates,
-            self.normalization, self.channel_convention)
+            n_max=self.n_max,
+            coordinates=self.coordinates,
+            normalization=self.normalization,
+            channel_convention=self.channel_convention,
+            condon_shortley=self.condon_shortley,
+        )
 
     def _compute_basis_gradient(self):
         """

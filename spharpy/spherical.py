@@ -1,4 +1,8 @@
-"""Spherical harmonics and Ambisonics functions."""
+"""
+Spherical harmonics and Ambisonics functions. Please refer to the
+:doc:`/theory/spherical_harmonic_definition` page for background information
+on spherical harmonics.
+"""
 
 import numpy as np
 import scipy.special as special

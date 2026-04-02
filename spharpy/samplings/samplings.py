@@ -176,8 +176,7 @@ def hyperinterpolation(n_max, radius=1.):
     return sampling
 
 
-def t_design(degree=None, n_max=None, criterion='const_energy',
-             radius=1.):
+def t_design(n_max, criterion='const_energy', radius=1.):
     r"""
     Return spherical t-design sampling grid.
 
@@ -199,14 +198,12 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
 
     Parameters
     ----------
-    degree : int
-        T-design degree between ``1`` and ``180``. Either `degree` or
-        `n_max` must be provided. The default is ``None``.
     n_max : int
         Maximum applicable spherical harmonic order. Related to the degree
         by ``degree = 2 * n_max`` (``const_energy``) and
-        ``degree = 2 * n_max + 1`` (``const_angular_spread``). Either
-        `degree` or `n_max` must be provided. The default is ``None``.
+        ``degree = 2 * n_max + 1`` (``const_angular_spread``).
+        Must be between ``1`` and ``90`` for ``const_energy`` and between
+        ``1`` and ``89`` for ``const_angular_spread``.
     criterion : ``const_energy``, ``const_angular_spread``
         Design criterion ensuring only a constant energy or additionally
         constant angular spread of energy. The default is ``const_energy``.
@@ -247,34 +244,27 @@ def t_design(degree=None, n_max=None, criterion='const_energy',
         >>> spharpy.plot.scatter(coords)
 
     """
-
-    # check input
-    if (degree is None) and (n_max is None):
-        print('Possible input values:')
-        for d in range(1, 181):
-            print(f"degree {d}, n_max {int(d / 2)} ('const_energy'), \
-                {int((d - 1) / 2)} ('const_angular_spread')")
-        return None
-
+    # check inputs
     if criterion not in ['const_energy', 'const_angular_spread']:
         raise ValueError("Invalid design criterion. Must be 'const_energy' \
                          or 'const_angular_spread'.")
-
-    if degree is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
+    if not isinstance(n_max, (int)):
+        raise ValueError("n_max must be an integer.")
+    if not isinstance(radius, (int, float)) or radius <= 0:
+        raise ValueError("radius must be a positive number.")
 
     # get the degree
-    if degree is None:
-        if criterion == 'const_energy':
-            degree = 2 * n_max
-        else:
-            degree = 2 * n_max + 1
-    # get the SH order for the meta data entry in the Coordinates object
+    if criterion == 'const_energy':
+        if n_max < 1 or n_max > 90:
+            raise ValueError(
+                'n_max must be between 1 and 90 for const_energy criterion.')
+        degree = 2 * n_max
     else:
-        if criterion == 'const_energy':
-            n_max = int(degree / 2)
-        else:
-            n_max = int((degree - 1) / 2)
+        if n_max < 1 or n_max > 89:
+            raise ValueError(
+                'n_max must be between 1 and 89 for const_angular_spread '
+                'criterion.')
+        degree = 2 * n_max + 1
 
     if degree < 1 or degree > 180:
         raise ValueError('degree must be between 1 and 180.')
@@ -417,7 +407,7 @@ def icosahedron(radius=1.):
         phi, theta, radius)
 
 
-def equiangular(n_points=None, n_max=None, radius=1.):
+def equiangular(n_max=None, n_points=None, radius=1.):
     r"""
     Generate an equiangular sampling of the sphere.
 
@@ -433,13 +423,13 @@ def equiangular(n_points=None, n_max=None, radius=1.):
 
     Parameters
     ----------
-    n_points : int, tuple of two ints
-        Number of sampling points in azimuth and elevation. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int
         Maximum applicable spherical harmonic order. If this is provided,
         'n_points' is set to ``2 * n_max + 1``. Either `n_points` or
         `n_max` must be provided. The default is ``None``.
+    n_points : int, tuple of two ints
+        Number of sampling points in azimuth and elevation. Either `n_points`
+        or `n_max` must be provided. The default is ``None``.
     radius : number, optional
         Radius of the sampling grid. The default is ``1``.
 
@@ -514,7 +504,7 @@ def equiangular(n_points=None, n_max=None, radius=1.):
     return sampling
 
 
-def gaussian(n_points=None, n_max=None, radius=1.):
+def gaussian(n_max, radius=1.):
     r"""
     Generate sampling of the sphere based on the Gaussian quadrature.
 
@@ -528,14 +518,9 @@ def gaussian(n_points=None, n_max=None, radius=1.):
 
     Parameters
     ----------
-    n_points : int
-        Number of sampling points in elevation. The number of points in
-        azimuth is always ``2*n_points``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int
-        Maximum applicable spherical harmonic order. If this is provided,
-        `n_points` is set to ``(2 * (n_max + 1), n_max + 1)``. Either
-        `n_points` or `n_max` must be provided. The default is ``None``.
+        Maximum applicable spherical harmonic order. Results in
+        ``2 * (n_max + 1)`` in azimuth and ``n_max + 1`` points in elevation.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
@@ -559,34 +544,11 @@ def gaussian(n_points=None, n_max=None, radius=1.):
         >>> spharpy.plot.scatter(coords)
 
     """
-    if (n_points is None) and (n_max is None):
-        raise ValueError(
-            "Either the n_points or n_max needs to be specified.")
-
-    elif (n_points is not None) and (n_max is None):
-        if (
-            not isinstance(n_points, (int, np.integer)) or
-            (np.asarray(n_points).size > 1)
-        ):
-            raise ValueError(
-                "The number of points needs to be a positive natural number. ",
-                f"Instead it is {n_points}",
-            )
 
     # get number of points from required spherical harmonic order
     # ([1], chapter 3.3)
-    if n_max is not None:
-        n_phi = int(n_max+1)*2
-        n_theta = int(n_max) + 1
-    else:
-        n_theta = n_points
-        n_phi = 2*n_points
-
-    # compute the maximum applicable spherical harmonic order
-    if n_max is None:
-        n_max = int(np.min([n_phi / 2 - 1, n_theta - 1]))
-    else:
-        n_max = int(n_max)
+    n_max = int(n_max)
+    n_phi = (n_max+1)*2
 
     # construct the sampling grid
     legendre, weights = np.polynomial.legendre.leggauss(n_max+1)
@@ -1074,36 +1036,39 @@ def great_circle(
     return sampling
 
 
-def lebedev(n_points=None, n_max=None, radius=1.):
+def lebedev(n_max=None, radius=1.):
     r"""
     Return Lebedev spherical sampling grid.
 
-    For detailed information, see [#]_. For a list of available values
-    for `n_points` and `n_max` call :py:func:`sph_lebedev`. This is a
-    quadrature  sampling with the sum of the sampling weights in
-    `sampling.weights` being :math:`4\pi`.
+    For the Lebedev grid [#]_, the number of points :math:`Q` can be
+    approximated by the spherical harmonic order :math:`N` (parameter `n_max`)
+
+    :math:`Q \approx 1.3 \, (N+1)^2`
+
+    For a list of available orders `n_max` and the exact number of points call
+    :py:func:`lebedev` without any arguments. This will print available
+    orders and number of points to the console.
+
+    .. note::
+        This is intended to be a quadrature sampling with positive sampling
+        weights summing to :math:`4\pi`. For unknown reasons, this is not the
+        case in the original sources [#]_ and the Matlab code [#]_ on which
+        this Python version is based for orders 6, 12, and 13. For this reason,
+        the respective weights are not returned regardless of the order.
 
     Parameters
     ----------
-    n_points : int, optional
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
     n_max : int, optional
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
-        `n_max` must be provided. The default is ``None``.
+        Maximum applicable spherical harmonic order between 1 and 65. Because
+        not all orders are available, the default ``None`` prints possible
+        orders to the console.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
-
-    Notes
-    -----
-    This is a Python port of the Matlab Code written by Rob Parrish [#]_.
+        Sampling positions without sampling weights (see note above).
 
     References
     ----------
@@ -1111,6 +1076,7 @@ def lebedev(n_points=None, n_max=None, radius=1.):
            "A quadrature formula for the sphere of the 131st
            algebraic order of accuracy"
            Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.
+    .. [#] https://people.sc.fsu.edu/~jburkardt/datasets/sphere_lebedev_rule/sphere_lebedev_rule.html
     .. [#] https://de.mathworks.com/matlabcentral/fileexchange/27097-getlebedevsphere
 
 
@@ -1135,146 +1101,63 @@ def lebedev(n_points=None, n_max=None, radius=1.):
     orders = np.array((np.floor(np.sqrt(degrees / 1.3) - 1)), dtype=int)
 
     # list possible sh orders and degrees
-    if n_points is None and n_max is None:
+    if n_max is None:
         print('Possible input values:')
         for o, d in zip(orders, degrees, strict=True):
             print(f"SH order {o}, number of points {d}")
 
         return None
 
-    # check input
-    if n_points is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
-
     # check if the order is available
-    if n_max is not None:
-        if n_max not in orders:
-            str_orders = [f"{o}" for o in orders]
-            raise ValueError("Invalid spherical harmonic order 'n_max'. \
-                             Valid orders are: {}.".format(
-                             ', '.join(str_orders)))
-
-        n_points = int(degrees[orders == n_max].squeeze())
-
-    # check if n_points is available
-    if n_points not in degrees:
-        str_degrees = [f"{d}" for d in degrees]
-        raise ValueError("Invalid number of points n_points. Valid degrees \
-                         are: {}.".format(', '.join(str_degrees)))
-
-    # calculate n_max
-    n_max = int(orders[degrees == n_points].squeeze())
+    if n_max not in orders:
+        str_orders = [f"{o}" for o in orders]
+        raise ValueError("Invalid spherical harmonic order 'n_max'. \
+                         Valid orders are: {}.".format(', '.join(str_orders)))
 
     # get the samlpling
-    leb = lebedev_sphere(n_points)
-
-    # normalize the weights
-    weights = leb["w"]
+    leb = lebedev_sphere(degrees[n_max == orders])
 
     # generate Coordinates object
     sampling = spharpy.SamplingSphere(
         leb["x"] * radius,
         leb["y"] * radius,
         leb["z"] * radius,
-        n_max=n_max, weights=weights,
+        n_max=n_max,
         comment='spherical Lebedev sampling grid')
 
     return sampling
 
 
-def fliege(n_points=None, n_max=None, radius=1.):
+def fliege(n_max, radius=1.):
     r"""
     Return Fliege-Maier spherical sampling grid.
 
-    For detailed information, see [#]_. Call :py:func:`sph_fliege`
-    for a list of possible values for `n_points` and `n_max`. This is a
-    quadrature sampling with the sum of the sampling weights in
-    `sampling.weights` being :math:`4\pi`.
+    For detailed information, see [#]_.
+
+    .. note::
+        This is intended to be a quadrature sampling with positive sampling
+        weights summing to :math:`4\pi`. For unknown reasons, this is not the
+        case for orders 10, 12, 18, 20, 24, 26, 27, and 29. For this reason,
+        the respective weights are not returned regardless of the order.
 
     Parameters
     ----------
-    n_points : int, optional
-        Number of sampling points in the grid. Related to the spherical
-        harmonic order by ``n_points = (n_max + 1)**2``. Either `n_points`
-        or `n_max` must be provided. The default is ``None``.
-    n_max : int, optional
-        Maximum applicable spherical harmonic order. Related to the number of
-        points by ``n_max = np.sqrt(n_points) - 1``. Either `n_points` or
-        `n_max` must be provided. The default is ``None``.
+    n_max : int
+        Maximum applicable spherical harmonic order.
+        It must be between 1 and 29.
     radius : number, optional
         Radius of the sampling grid in meters. The default is ``1``.
 
     Returns
     -------
     sampling : :py:class:`spharpy.SamplingSphere`
-        Sampling positions including sampling weights.
+        ``(n_max + 1)**2`` sampling positions without sampling weights
+        (see note above).
 
     Notes
     -----
     This implementation uses pre-calculated points from the SOFiA
-    toolbox [#]_. Possible combinations of `n_points` and `n_max` are:
-
-    +------------+------------+
-    | `n_points` | `n_max`    |
-    +============+============+
-    | 4          | 1          |
-    +------------+------------+
-    | 9          | 2          |
-    +------------+------------+
-    | 16         | 3          |
-    +------------+------------+
-    | 25         | 4          |
-    +------------+------------+
-    | 36         | 5          |
-    +------------+------------+
-    | 49         | 6          |
-    +------------+------------+
-    | 64         | 7          |
-    +------------+------------+
-    | 81         | 8          |
-    +------------+------------+
-    | 100        | 9          |
-    +------------+------------+
-    | 121        | 10         |
-    +------------+------------+
-    | 144        | 11         |
-    +------------+------------+
-    | 169        | 12         |
-    +------------+------------+
-    | 196        | 13         |
-    +------------+------------+
-    | 225        | 14         |
-    +------------+------------+
-    | 256        | 15         |
-    +------------+------------+
-    | 289        | 16         |
-    +------------+------------+
-    | 324        | 17         |
-    +------------+------------+
-    | 361        | 18         |
-    +------------+------------+
-    | 400        | 19         |
-    +------------+------------+
-    | 441        | 20         |
-    +------------+------------+
-    | 484        | 21         |
-    +------------+------------+
-    | 529        | 22         |
-    +------------+------------+
-    | 576        | 23         |
-    +------------+------------+
-    | 625        | 24         |
-    +------------+------------+
-    | 676        | 25         |
-    +------------+------------+
-    | 729        | 26         |
-    +------------+------------+
-    | 784        | 27         |
-    +------------+------------+
-    | 841        | 28         |
-    +------------+------------+
-    | 900        | 29         |
-    +------------+------------+
+    toolbox [#]_.
 
     References
     ----------
@@ -1294,44 +1177,14 @@ def fliege(n_points=None, n_max=None, radius=1.):
         >>> spharpy.plot.scatter(coords)
 
     """
+    if not isinstance(n_max, int):
+        raise ValueError("n_max must be an integer.")
+    if n_max < 1 or n_max > 29:
+        raise ValueError("n_max must be between 1 and 29.")
+    if not isinstance(radius, (int, float)) or radius <= 0:
+        raise ValueError("radius must be a positive number.")
 
-    # possible values for n_points and n_max
-    points = np.array([4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196,
-                       225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
-                       676, 729, 784, 841, 900], dtype=int)
-
-    orders = np.array(np.floor(np.sqrt(points) - 1), dtype=int)
-
-    # list possible sh orders and number of points
-    if n_points is None and n_max is None:
-        for o, d in zip(orders, points, strict=True):
-            print(f"SH order {o}, number of points {d}")
-
-        return None
-
-    # check input
-    if n_points is not None and n_max is not None:
-        raise ValueError("Either n_points or n_max must be None.")
-
-    if n_max is not None:
-        # check if the order is available
-        if n_max not in orders:
-            str_orders = [f"{o}" for o in orders]
-            raise ValueError("Invalid spherical harmonic order 'n_max'. \
-                              Valid orders are: {}.".format(
-                              ', '.join(str_orders)))
-
-        # assign n_points
-        n_points = int(points[orders == n_max].squeeze())
-    else:
-        # check if n_points is available
-        if n_points not in points:
-            str_points = [f"{d}" for d in points]
-            raise ValueError("Invalid number of points n_points. Valid points \
-                            are: {}.".format(', '.join(str_points)))
-
-        # assign n_max
-        n_max = int(orders[points == n_points].squeeze())
+    n_points = (n_max + 1)**2
 
     # get the sampling points
     fliege = sio.loadmat(os.path.join(
@@ -1339,15 +1192,12 @@ def fliege(n_points=None, n_max=None, radius=1.):
         variable_names=f"Fliege_{int(n_points)}")
     fliege = fliege[f"Fliege_{int(n_points)}"]
 
-    # normlize weights
-    weights = fliege[:, 2] * 4 * np.pi
-
     # generate Coordinates object
     sampling = spharpy.SamplingSphere.from_spherical_colatitude(
         fliege[:, 0],
         fliege[:, 1],
         radius,
-        n_max=n_max, weights=weights)
+        n_max=n_max)
 
     # switch and invert Coordinates in Cartesian representation to be
     # consistent with [1]

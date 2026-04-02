@@ -60,47 +60,75 @@ def test_equidistant_cuboid_sampling_invalid():
 
 
 def test_t_design_const_e(download_sampling):
-    order = 2
+    n_max = 2
+    degree = 2 * n_max
     download_sampling('t-design', np.arange(1, 11))
     coords = samplings.t_design(
-        n_max=order, criterion='const_energy')
+        n_max, criterion='const_energy')
     assert type(coords) is SamplingSphere
+    assert coords.n_max == 2
+    assert coords.csize == int(np.ceil((degree + 1)**2 / 2) + 1)
 
 
 def test_t_design_const_angle(download_sampling):
-    order = 2
+    n_max = 2
     download_sampling('t-design', np.arange(1, 11))
     coords = samplings.t_design(
-        n_max=order, criterion='const_angular_spread')
+        n_max, criterion='const_angular_spread')
     assert type(coords) is SamplingSphere
+    assert coords.csize == 18
 
 
 def test_t_design_invalid(download_sampling):
-    order = 2
     download_sampling('t-design', np.arange(1, 11))
     with pytest.raises(ValueError, match='Invalid design'):
-        samplings.t_design(n_max=order, criterion='bla')
+        samplings.t_design(2, criterion='bla')
+
+
+def test_t_design_limits_const_energy(download_sampling):
+    download_sampling('t-design', [179, 180])
+    samplings.t_design(90, criterion='const_energy')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 90 for const_energy'):
+        samplings.t_design(91, criterion='const_energy')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 90 for const_energy'):
+        samplings.t_design(0, criterion='const_energy')
+
+
+def test_t_design_limits_const_angular_spread(download_sampling):
+    download_sampling('t-design', [179, 180])
+    samplings.t_design(89, criterion='const_angular_spread')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 89 for const_angular_spread'):
+        samplings.t_design(90, criterion='const_angular_spread')
+    with pytest.raises(
+            ValueError,
+            match='n_max must be between 1 and 89 for const_angular_spread'):
+        samplings.t_design(0, criterion='const_angular_spread')
+
+
+def test_t_design_n_max_error(download_sampling):
+    download_sampling('t-design', np.arange(1, 11))
+    samplings.t_design(89)
+    with pytest.raises(
+            ValueError,
+            match='n_max must be an integer'):
+        samplings.t_design(1.5)
 
 
 def test_sph_t_design(download_sampling):
     # load test data
     download_sampling('t-design', np.arange(1, 11))
 
-    # test without parameters
-    assert samplings.t_design() is None
-
-    # test with degree
-    c = samplings.t_design(2)
+    # test with n_max
+    c = samplings.t_design(1)
     isinstance(c, SamplingSphere)
     assert type(c) is SamplingSphere
     assert c.csize == 6
-
-    # test with spherical harmonic order
-    c = samplings.t_design(n_max=1)
-    assert c.csize == 6
-    c = samplings.t_design(
-        n_max=1, criterion='const_angular_spread')
-    assert c.csize == 8
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
@@ -116,14 +144,12 @@ def test_sph_t_design(download_sampling):
     assert not c.quadrature
 
     # test exceptions
-    with pytest.raises(ValueError, match='n_points or n_max must be None'):
-        c = samplings.t_design(4, 1)
-    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
-        c = samplings.t_design(degree=0)
-    with pytest.raises(ValueError, match='degree must be between 1 and 180'):
-        c = samplings.t_design(n_max=0)
     with pytest.raises(ValueError, match='Invalid design criterion'):
-        c = samplings.t_design(2, criterion='const_thread')
+        samplings.t_design(2, criterion='const_thread')
+    with pytest.raises(ValueError, match='radius must be a positive number'):
+        samplings.t_design(2, radius=-1)
+    with pytest.raises(ValueError, match='radius must be a positive number'):
+        samplings.t_design(2, radius='test')
 
 
 def test_dodecahedron():
@@ -170,16 +196,16 @@ def test_equiangular():
         samplings.equiangular()
 
     # test with single number of points
-    c = samplings.equiangular(5)
+    c = samplings.equiangular(n_points=5)
     assert type(c) is SamplingSphere
     assert c.csize == 5**2
 
     # test with tuple
-    c = samplings.equiangular((3, 5))
+    c = samplings.equiangular(n_points=(3, 5))
     assert c.csize == 3*5
 
     # test with spherical harmonic order
-    c = samplings.equiangular(n_max=5)
+    c = samplings.equiangular(5)
     assert c.csize == 4 * (5 + 1)**2
     npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
@@ -246,15 +272,6 @@ def test_equiangular_orthogonality(basis_func):
         atol=1e-6, rtol=1e-6)
 
 
-@pytest.mark.parametrize("n_points", np.arange(1, 40))
-def test_gaussian_weights_n_points(n_points):
-    sampling = samplings.gaussian(n_points=n_points)
-    npt.assert_almost_equal(np.sum(sampling.weights), 4*np.pi)
-    assert sampling.cshape == sampling.weights.shape
-    assert sampling.cshape == 2*n_points*n_points
-    assert type(sampling) is SamplingSphere
-
-
 @pytest.mark.parametrize("n_max", np.arange(1, 15))
 def test_gaussian_weights_n_max(n_max):
     sampling = samplings.gaussian(n_max=n_max)
@@ -285,23 +302,6 @@ def test_gaussian_quadrature():
 
 
 def test_gaussian():
-    # test without parameters
-    with pytest.raises(ValueError, match='Either the n_points or n_max needs'):
-        samplings.gaussian()
-
-    # n_points must be a positive natural number
-    with pytest.raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=(2, 2))
-
-    # n_points must be a positive natural number
-    with pytest.raises(ValueError, match='positive natural number'):
-        samplings.gaussian(n_points=3.2)
-
-    # test with single number of points
-    c = samplings.gaussian(5)
-    assert type(c) is SamplingSphere
-    assert c.csize == 5*(5*2)
-    npt.assert_allclose(np.sum(c.weights), 4*np.pi)
 
     # test with spherical harmonic order
     c = samplings.gaussian(n_max=5)
@@ -408,60 +408,105 @@ def test_great_circle():
         samplings.great_circle(azimuth_res=.5, match=11.25)
 
 
-def test_lebedev():
+def test_lebedev(capfd):
     # test without parameters
     assert samplings.lebedev() is None
-
-    # test with degree
-    c = samplings.lebedev(14)
-    assert type(c) is SamplingSphere
-    assert c.csize == 14
+    # test command line output
+    out, _ = capfd.readouterr()
+    assert 'Possible input values' in out
+    assert 'SH order 1, number of points 6' in out
 
     # test with spherical harmonic order
-    c = samplings.lebedev(n_max=3)
+    c = samplings.lebedev(3)
     assert c.csize == 26
-
-    # test default radius
-    npt.assert_allclose(c.radius, 1, atol=1e-15)
-
-    # test user radius
-    c = samplings.lebedev(6, radius=1.5)
-    npt.assert_allclose(c.radius, 1.5, atol=1e-15)
-
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert c.quadrature
-
-
-def test_fliege():
-    # test without parameters
-    assert samplings.fliege() is None
-
-    # test with degree
-    c = samplings.fliege(16)
     assert type(c) is SamplingSphere
-    assert c.csize == 16
-
-    # test with spherical harmonic order
-    c = samplings.fliege(n_max=3)
-    assert c.csize == 16
 
     # test default radius
     npt.assert_allclose(c.radius, 1, atol=1e-15)
 
     # test user radius
-    c = samplings.fliege(4, radius=1.5)
+    c = samplings.lebedev(1, radius=1.5)
     npt.assert_allclose(c.radius, 1.5, atol=1e-15)
 
-    # test quadrature
-    npt.assert_allclose(np.sum(c.weights), 4 * np.pi)
-    assert not c.quadrature
 
+@pytest.mark.parametrize("degree", np.array([
+    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302], dtype=int))
+def test_lebedev_orthogonality(degree):
+    """
+    Test orthogonality of the transform.
+
+    This was done after discovering https://github.com/pyfar/spharpy/issues/276
+    to make sure that the sampling can be used for SH transforms using the
+    pseudo inverse.
+
+    The test for all degrees takes too long and was only done once. If required
+    replace the above with
+
+    @pytest.mark.parametrize("degree", np.array([
+    6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230, 266, 302, 350, 434,
+    590, 770, 974, 1202, 1454, 1730, 2030, 2354, 2702, 3074, 3470, 3890, 4334,
+    4802, 5294, 5810], dtype=int))
+    """
+
+    n_max = int(np.sqrt(degree / 1.3) - 1)
+    sampling = samplings.lebedev(n_max)
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-14)
+
+
+@pytest.mark.parametrize(
+        "n_max",
+        [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29,
+        ])
+def test_fliege_for_each_order(n_max):
+    c = samplings.fliege(n_max)
+    assert type(c) is SamplingSphere
+    assert c.csize == (n_max+1)**2
+    npt.assert_allclose(c.radius, 1, atol=1e-15)
+
+
+@pytest.mark.parametrize("n_max", [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29])
+def test_fliege_orthogonality(n_max):
+    """
+    Test orthogonality of the transform.
+
+    This was done after discovering https://github.com/pyfar/spharpy/issues/202
+    to make sure that the sampling can be used for SH transforms using the
+    pseudo inverse.
+    """
+
+    sampling = samplings.fliege(n_max)
+    Y = spherical_harmonic_basis_real(n_max, sampling)
+    Y_inverse = np.linalg.pinv(Y)
+
+    # if orthogonal Y_inverse @ Y must be the identity matrix
+    npt.assert_allclose(Y_inverse @ Y, np.eye((n_max + 1)**2), atol=1e-12)
+
+
+def test_fliege_radius():
+    # test user radius
+    c = samplings.fliege(1, radius=1.5)
+    npt.assert_allclose(c.radius, 1.5, atol=1e-15)
+
+
+def test_fliege_errors():
     # test exceptions
-    with pytest.raises(ValueError, match='n_points or n_max must be None'):
-        c = samplings.fliege(9, 2)
-    with pytest.raises(ValueError, match='Invalid number of points n_points'):
-        c = samplings.fliege(30)
+    with pytest.raises(ValueError, match='n_max must be an integer.'):
+        samplings.fliege(0.5)
+    with pytest.raises(ValueError, match='n_max must be between 1 and 29'):
+        samplings.fliege(0)
+    with pytest.raises(ValueError, match='radius must be a positive number.'):
+        samplings.fliege(1, radius=-1)
+    with pytest.raises(ValueError, match='n_max must be between 1 and 29'):
+        samplings.fliege(30)
 
 
 def test_em64():
