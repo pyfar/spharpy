@@ -1,0 +1,25 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: dc7658e
+_src_path: C:\Users\User\Documents\pyfar_contribution\template-pyfar-package
+apt_packages: libsndfile1,
+author: The pyfar developers
+copyright_statement: 2026, The pyfar developers
+dependencies: numpy>=1.22,scipy>=1.17,urlib3,matplotlib>=3.10.3,pyfar>=0.8.0
+file_creation: true
+git_username: pyfar
+gitignore_custom: tests/test_plot_data/output/,
+keywords: acoustics,pyfar
+license: MIT
+logo_path_gallery: resources/logos/pyfar_logos_fixed_size_spharpy.png
+minimum_python_version: '3.11'
+project_getting_started: 'Check out the [example notebooks](https://github.com/pyfar/pyfar/blob/main/examples)
+    - also available on [mybinder.org](https://mybinder.org/v2/gh/pyfar/spharpy/main?filepath=examples/)
+    - for a tour of basic functionality and
+
+    [read the docs](https://spharpy.readthedocs.io/en/stable) for the complete documentation.'
+project_long_description: Python package for spherical array processing.
+project_short_description: Project for data formats in acoustics.
+project_slug: spharpy
+ruff_ignore: .git,docs
+use_pypi_deployment_with_ci: true
+version: 1.0.0
