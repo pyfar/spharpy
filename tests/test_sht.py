@@ -16,7 +16,7 @@ def test_sht_input_parameter():
     sampling = samplings.equiangular(n_max=n_max)                                            
     sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
     with pytest.raises(ValueError, match="Input signal must be a Signal, "
-                                         "TimeData, or FrequencyData but"
+                                         "TimeData, or FrequencyData but "
                                          f"is {type(input_signal)}"):
         _ = sht(signal=input_signal, spherical_harmonics=sh)
 
@@ -183,10 +183,10 @@ def test_in_out_dimensions():
     assert sh_signal.cshape[2] == 3
 
 
-@mark.parametrize("n_max", [1, 3, 12, 20])
-@mark.parametrize("basis_type", ["real", "complex"])
-@mark.parametrize("normalization", ["N3D", "SN3D"])
-@mark.parametrize("condon_shortley", [True, False])
+@pytest.mark.parametrize("n_max", [1, 3, 12, 20])
+@pytest.mark.parametrize("basis_type", ["real", "complex"])
+@pytest.mark.parametrize("normalization", ["N3D", "SN3D"])
+@pytest.mark.parametrize("condon_shortley", [True, False])
 def test_back_and_forth(n_max, basis_type, normalization, condon_shortley):
 
     sampling = samplings.gaussian(n_max=n_max)
