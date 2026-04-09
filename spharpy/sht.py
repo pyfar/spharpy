@@ -129,7 +129,7 @@ def isht(sh_signal, coordinates):
     signal : Signal, TimeData, or FrequencyData
              inverse transformed signal in space domain. The spherical
              samples are always in the second to last dimension. All other
-             channels remain unchaged.
+             channels remain unchanged.
 
     """
     if isinstance(sh_signal, (SphericalHarmonicSignal,
