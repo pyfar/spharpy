@@ -27,7 +27,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
     -------
     sh_signal : SphericalHarmonicSignal, SphericalHarmonicsTimeData,
                 or SphericalHarmonicsFrequencyData
-                signal with spherical harmonic coefficients. According to 
+                signal with spherical harmonic coefficients. According to
                 SphericalHarmonicsAudio definitions, the spherical harmonic
                 coefficients are always in the second to last dimension. The
                 order of all other channels remains unchanged.

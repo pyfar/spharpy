@@ -1,9 +1,9 @@
 import numpy as np
 import numpy.testing as npt
 import pyfar as pf
-from pytest import raises, warns, mark
+import pytest
 from spharpy.sht import sht, isht
-from spharpy.classes.sh import SphericalHarmonicDefinition, SphericalHarmonics
+from spharpy.classes.sh import SphericalHarmonics
 from spharpy import SphericalHarmonicSignal
 from spharpy import SphericalHarmonicTimeData
 from spharpy import SphericalHarmonicFrequencyData
@@ -15,8 +15,9 @@ def test_sht_input_parameter():
     n_max = 2
     sampling = samplings.equiangular(n_max=n_max)                                            
     sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
-    with raises(ValueError, match="Input signal must be a Signal, TimeData, "
-                f"or FrequencyData but is {type(input_signal)}"):
+    with pytest.raises(ValueError, match="Input signal must be a Signal, "
+                                         "TimeData, or FrequencyData but"
+                                         f"is {type(input_signal)}"):
         _ = sht(signal=input_signal, spherical_harmonics=sh)
 
     # test if SH in SphericalHarmonics object
@@ -46,15 +47,16 @@ def test_sht_output_parameter():
 
 
 def test_sht_assert_num_channels():
-    "test assert match of number of channels and number of sampling positions"
+    """test assert match of number of channels and number of sampling positions"""
     n_max = 3
     signal = pf.Signal(data=np.zeros((7, 512)), sampling_rate=48000)
     sampling = samplings.equiangular(n_max=n_max)
     sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
 
-    with raises(ValueError, match="Spherical samples of provided axis does "
-                                  "not match the number of spherical "
-                                  "harmonics basis functions."):
+    with pytest.raises(ValueError,
+                       match="Spherical samples of provided axis does "
+                             "not match the number of spherical "
+                             "harmonics basis functions."):
         _ = sht(signal, sh, axis=0)
 
 
@@ -62,11 +64,11 @@ def test_isht_input_parameter():
     n_max = 1
     data = np.zeros((1, (n_max+1) ** 2, 16))
     sampling = samplings.gaussian(n_max=n_max)
-    with raises(ValueError,
-                match="Input signal has to be SphericalHarmonicSignal, "
-                      "SphericalHarmonicTimeData, or "
-                      "SphericalHarmonicFrequencyData "
-                      f"but is {type(data)}"):
+    with pytest.raises(ValueError, match="Input signal has to be "
+                                         "SphericalHarmonicSignal, "
+                                         "SphericalHarmonicTimeData, or "
+                                         "SphericalHarmonicFrequencyData "
+                                         f"but is {type(data)}"):
         _ = isht(sh_signal=data, coordinates=sampling)
 
 
@@ -109,19 +111,21 @@ def test_isht_output_parameter():
 
 
 def test_sht_auto_axis():
-    "test warning wrong axis"
+    """test warning wrong axis"""
     n_max = 3
     signal = pf.Signal(data=np.zeros((7, 1, 32)), sampling_rate=48000)
     sampling = samplings.equiangular(n_max=n_max)
     sh = SphericalHarmonics(n_max=n_max, coordinates=sampling)
 
-    with raises(ValueError, match="No axes matches the number of spherical "
-                                  "harmonics basis functions"):
+    with pytest.raises(ValueError,
+                       match="No axes matches the number of spherical "
+                             "harmonics basis functions"):
         _ = sht(signal, sh, axis='auto')
 
     signal = pf.Signal(data=np.zeros((64, 64, 64)), sampling_rate=48000)
-    with raises(ValueError, match="Too many axis match the number of "
-                                  "spherical harmonics basis functions"):
+    with pytest.raises(ValueError,
+                       match="Too many axis match the number of "
+                             "spherical harmonics basis functions"):
         _ = sht(signal, sh, axis='auto')
 
 
