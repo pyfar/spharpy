@@ -42,5 +42,5 @@ __all__ = [
     'spatial',
     'special',
     'SamplingSphere',
-    'sht'
+    'sht',
 ]

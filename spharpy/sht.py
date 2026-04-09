@@ -1,3 +1,4 @@
+"""Spherical harmonic transform and inverse transform."""
 import numpy as np
 from pyfar import Signal, TimeData, FrequencyData
 from pyfar import matrix_multiplication
@@ -9,7 +10,7 @@ from . import SphericalHarmonicFrequencyData
 
 
 def sht(signal, spherical_harmonics, axis='auto'):
-    """Compute the spherical harmonic transform
+    """Compute the spherical harmonic transform.
 
     Parameters
     ----------
@@ -18,21 +19,21 @@ def sht(signal, spherical_harmonics, axis='auto'):
     spherical_harmonics : :class:`spharpy.SphericalHarmonics`
         Spherical harmonics object
     axis : integer or 'auto'
-        Axis along which the spherical harmonic transform is computed. If 'auto' the
-        transformation is computed along the axis which matches the number
-        of spherical samples of the spherical_harmonics basis
+        Axis along which the spherical harmonic transform is computed. If
+        'auto' the transformation is computed along the axis which matches
+        the number of spherical samples of the spherical_harmonics basis
 
     Returns
-    ----------
+    -------
     sh_signal : SphericalHarmonicSignal, SphericalHarmonicsTimeData,
                 or SphericalHarmonicsFrequencyData
                 signal with spherical harmonic coefficients. According to 
                 SphericalHarmonicsAudio definitions, the spherical harmonic
                 coefficients are always in the second to last dimension. The
                 order of all other channels remains unchanged.
+
     References
     ----------
-
         [#] Rafaely, B. (2015). Fundamentals of Spherical Array Processing,
             (J. Benesty and W. Kellermann, Eds.) Springer Berlin Heidelberg,
             2nd ed., 196 pages. doi:10.1007/978-3-319-99561-8
@@ -112,7 +113,7 @@ def sht(signal, spherical_harmonics, axis='auto'):
 
 
 def isht(sh_signal, coordinates):
-    """Compute the inverse spherical harmonic transform
+    """Compute the inverse spherical harmonic transform.
 
     Parameters
     ----------
@@ -125,7 +126,7 @@ def isht(sh_signal, coordinates):
                  Coordinates for which the inverse SH transform is computed
 
     Returns
-    ----------
+    -------
     signal : Signal, TimeData, or FrequencyData
              inverse transformed signal in space domain. The spherical
              samples are always in the second to last dimension. All other
