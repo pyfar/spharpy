@@ -38,7 +38,6 @@ jobs:
         with:
             commit-message: apply copier template
             title: "[Bot]: apply copier template version ${{ env.latest_version }}"
-            base: main
             body: |
               - apply latest changes from copier template version ${{ env.latest_version }}
             branch: template/copier-${{ env.latest_version }}
