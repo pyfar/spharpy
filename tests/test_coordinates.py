@@ -226,13 +226,11 @@ def test_repr():
 
 
 def test_repr_empty():
-    """Test if empty sampling is handled correctly."""
     sampling = SamplingSphere()
     assert sampling.__repr__() == 'SamplingSphere: empty'
 
 
-def test_empty_sampling_():
-    """Test if empty sampling is handled correctly."""
+def test_empty_object():
     sampling = SamplingSphere()
     assert sampling.cshape == (0,)
     with pytest.raises(ValueError, match='Object is empty.'):
