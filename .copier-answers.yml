@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 02783c3
+_commit: ecd48bd
 _src_path: https://github.com/pyfar/template-pyfar-package
 apt_packages: libsndfile1,
 author: The pyfar developers

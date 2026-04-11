@@ -124,6 +124,7 @@ docs/_static/js/custom.js
 docs/resources/logos/pyfar_logos_fixed_size_pyfar.png
 docs/resources/logos/pyfar_logos_fixed_size_spharpy.png
 
-# custom
+# custom 
+License :: OSI Approved :: MIT License
 tests/test_plot_data/output/
 
