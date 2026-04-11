@@ -225,6 +225,12 @@ def test_repr():
     assert repr_str == 'SamplingSphere: n_max=0, cshape=(2,)'
 
 
+def test_repr_empty():
+    """Test if empty sampling is handled correctly."""
+    sampling = SamplingSphere()
+    assert sampling.__repr__() == 'SamplingSphere: empty'
+
+
 def test_empty_sampling_():
     """Test if empty sampling is handled correctly."""
     sampling = SamplingSphere()
