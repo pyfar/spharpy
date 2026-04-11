@@ -32,7 +32,7 @@ jobs:
           latest_version="v0.1.0"
 
           # update copier
-          copier update --overwrite yes
+          copier update --skip-answered --defaults
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

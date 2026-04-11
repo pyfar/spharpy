@@ -1,11 +1,10 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: dc7658e
-_src_path: C:\Users\User\Documents\pyfar_contribution\template-pyfar-package
+_commit: 010229d
+_src_path: https://github.com/pyfar/template-pyfar-package
 apt_packages: libsndfile1,
 author: The pyfar developers
 copyright_statement: 2026, The pyfar developers
 dependencies: numpy>=1.22,scipy>=1.17,urlib3,matplotlib>=3.10.3,pyfar>=0.8.0
-file_creation: true
 git_username: pyfar
 gitignore_custom: tests/test_plot_data/output/,
 keywords: acoustics,pyfar
