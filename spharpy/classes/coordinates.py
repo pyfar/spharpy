@@ -586,10 +586,11 @@ class SamplingSphere(pf.Coordinates):
             if radius_delta > self.radius_tolerance:
                 raise ValueError(
                     'All points must have the same radius but the difference '
-                    f'between the minimum and maximum radius is {radius_delta:.3g}'
+                    f'between the minimum and maximum radius is '
+                    f'{radius_delta:.3g}'
                     ' m, which exceeds the tolerance of '
-                    f'{self.radius_tolerance:.3g} m. The tolerance can be changed '
-                    'using SamplingSphere.radius_tolerance.')
+                    f'{self.radius_tolerance:.3g} m. The tolerance can be '
+                    'changed using SamplingSphere.radius_tolerance.')
 
         # reset the quadrature flag to make sure it is checked again after
         # adding or changing points in the SamplingSphere
