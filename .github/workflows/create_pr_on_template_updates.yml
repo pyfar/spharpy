@@ -28,8 +28,7 @@ jobs:
           # grab template version
           # update_info=$(copier check-update --output-format json)
           # latest_version=$(python -c "import json,sys; print(json.loads(sys.argv[1])['latest_version'])" "$update_info")
-          # echo "latest_version=$latest_version"
-          latest_version="v0.1.0"
+          latest_version="v0.1.0" # need to be removed once we have a version published
           echo "latest_version=$latest_version" >> $GITHUB_ENV
           # update copier
           copier update --skip-answered --defaults
