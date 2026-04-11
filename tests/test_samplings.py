@@ -325,6 +325,11 @@ def test_em32():
     assert type(sampling) is SamplingSphere
 
 
+def test_em32_radius():
+    sampling = samplings.eigenmike_em32()
+    npt.assert_almost_equal(sampling.radius, 0.042)
+
+
 def test_icosahedron_ke4():
     sampling = samplings.icosahedron_ke4()
     assert type(sampling) is SamplingSphere

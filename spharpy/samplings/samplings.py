@@ -591,7 +591,7 @@ def eigenmike_em32():
         >>> coords = spharpy.samplings.eigenmike_em32()
         >>> spharpy.plot.scatter(coords)
     """  # noqa: E501
-    rad = np.ones(32)
+    rad = np.ones(32)*.042
     theta = np.array([69.0, 90.0, 111.0, 90.0, 32.0, 55.0,
                       90.0, 125.0, 148.0, 125.0, 90.0, 55.0,
                       21.0, 58.0, 121.0, 159.0, 69.0, 90.0,
