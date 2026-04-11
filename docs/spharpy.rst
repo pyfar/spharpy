@@ -11,6 +11,8 @@ spharpy
    history
 
 
+Project for data formats in acoustics.
+
 Python package for spherical array processing.
 
 .. grid:: 1 2 2 2

@@ -12,7 +12,8 @@ import urllib3
 import shutil
 import numpy as np
 sys.path.insert(0, os.path.abspath('..'))
-import spharpy  # noqa: E402
+
+import spharpy  # noqa
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -37,6 +38,10 @@ extensions = [
 # package
 autodoc_default_options = {'autosummary': True}
 
+# show the code of plots that follows the command .. plot:: based on the
+# package matplotlib.sphinxext.plot_directive
+plot_include_source = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -52,7 +57,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'spharpy'
-copyright = "2020 - 2023, Marco Berzborn; 2023, The pyfar developers"
+copyright = "2026, The pyfar developers"
 author = "The pyfar developers"
 
 # The version info for the project you're documenting, acts as replacement
@@ -80,18 +85,11 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = False
 
-# If true, '()' will be appended to :func: etc. cross-reference text.
-add_function_parentheses = False
-
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 # default language for highlighting in source code
 highlight_language = "python3"
-
-# show the code of plots that follows the command .. plot:: based on the
-# package matplotlib.sphinxext.plot_directive
-plot_include_source = True
 
 # intersphinx mapping
 intersphinx_mapping = {
@@ -108,7 +106,7 @@ intersphinx_mapping = {
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
-html_js_files = ["js/custom.js"]
+html_js_files = ['js/custom.js']
 html_logo = 'resources/logos/pyfar_logos_fixed_size_spharpy.png'
 html_title = "spharpy"
 html_favicon = '_static/favicon.ico'
@@ -180,24 +178,52 @@ if not os.path.exists(html_logo):
     shutil.copyfile(
         'resources/logos/pyfar_logos_fixed_size_pyfar.png', html_logo)
 
-# replace spharpy hard link to internal link
+
+# -- modify downloaded header file from the gallery to   ----------------------
+# -- aline with the local toctree ---------------------------------------------
+
+# read the header file from the gallery
 with open("_static/header.rst", "rt") as fin:
-    with open("header.rst", "wt") as fout:
-        lines = [line.replace(f'https://{project}.readthedocs.io', project) for line in fin]
-        contains_project = any(project in line for line in lines)
+    lines = [line for line in fin]
 
-        fout.writelines(lines)
+# replace readthedocs link with internal link to this documentation
+lines_mod = [
+    line.replace(f'https://{project}.readthedocs.io', project) for line in lines]
 
-        # add project to the list of projects if not in header
-        if not contains_project:
-            fout.write(f'   {project} <{project}>\n')
+# if not found, add this documentation link to the end of the list, so that
+# it is in the doc tree
+contains_project = any(project in line for line in lines_mod)
+if not contains_project:
+    lines_mod.append(f'   {project} <{project}>\n')
 
-        # count the number of gallery headings
-        count_gallery_headings = np.sum(
-            ['https://pyfar-gallery.readthedocs.io' in line for line in lines])
+# write the modified header file
+# to the doc\header.rst folder, so that it can be used in the documentation
+with open("header.rst", "wt") as fout:
+    fout.writelines(lines_mod)
 
 
-# set dropdown header after gallery headings
-html_theme_options['header_links_before_dropdown'] = count_gallery_headings+1
+# -- find position of pyfar package in toctree --------------------------------
+# -- this is required to define the dropdown of Packages in the header --------
 
+# find line where pyfar package is mentioned, to determine the start of 
+# the packages list in the header
+n_line_pyfar = 0
+for i, line in enumerate(lines):
+    if 'https://pyfar.readthedocs.io' in line:
+        n_line_pyfar = i
+        break
 
+# the first 4 lines of the header file are defining the settings and a empty
+# line of the toctree, therefore we need to subtract 4 from the line number
+# of the pyfar package to get the correct position in the toctree
+n_toctree_pyfar = n_line_pyfar - 4
+
+if n_toctree_pyfar < 1:	
+    raise ValueError(
+        "Could not find the line where pyfar package is mentioned. "
+        "Please check the header.rst file in the gallery."
+    )
+
+# set dropdown header at pyfar appearance, so that pyfar is the first item in
+# the dropdown called Packages
+html_theme_options['header_links_before_dropdown'] = n_toctree_pyfar
