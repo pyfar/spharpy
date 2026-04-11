@@ -591,9 +591,9 @@ class SamplingSphere(pf.Coordinates):
                     f'{self.radius_tolerance:.3g} m. The tolerance can be changed '
                     'using SamplingSphere.radius_tolerance.')
 
-            # reset the quadrature flag to make sure it is checked again after
-            # adding or changing points in the SamplingSphere
-            self._quadrature = None
+        # reset the quadrature flag to make sure it is checked again after
+        # adding or changing points in the SamplingSphere
+        self._quadrature = None
 
         return x, y, z
 
