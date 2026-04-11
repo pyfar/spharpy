@@ -223,3 +223,11 @@ def test_repr():
     sampling = SamplingSphere([1, -1], 0, 0, n_max=0)
     repr_str = sampling.__repr__()
     assert repr_str == 'SamplingSphere: n_max=0, cshape=(2,)'
+
+
+def test_empty_sampling_():
+    """Test if empty sampling is handled correctly."""
+    sampling = SamplingSphere()
+    assert sampling.cshape == (0,)
+    with pytest.raises(ValueError, match='Object is empty.'):
+        _ = sampling.cartesian
