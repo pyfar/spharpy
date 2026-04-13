@@ -392,35 +392,15 @@ def spherical_harmonic_basis(
     r"""
     Calculates the complex valued spherical harmonic basis matrix.
 
-    See [#]_ and [#]_ for details.
-    See also :py:func:`spherical_harmonic_basis_real`.
-
-    .. math::
-        Y_n^m(\theta, \phi) =  CS_m N_{nm} P_{nm}(cos(\theta)) e^{im\phi}
-
-    where:
-
-    - :math:`n` is the degree
-    - :math:`m` is the order
-    - :math:`P_{nm}` is the associated Legendre function
-    - :math:`N_{nm}` is the normalization term
-    - :math:`CS_m` is the Condon-Shortley phase term
-    - :math:`\theta` is the colatitude (angle from the positive z-axis)
-    - :math:`\phi` is the azimuth (angle from the positive x-axis in the
-      xy-plane), see :py:mod:`~pyfar.classes.coordinates`
-
-    References
-    ----------
-    .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
-    .. [#]  B. Rafaely, Fundamentals of Spherical Array Processing, vol. 8.
-            Springer, 2015.
+    Please refer to the :doc:`/theory/spherical_harmonic_definition` page
+    for more detailed information on the definition of spherical harmonics.
 
     Parameters
     ----------
     n_max : integer
-        Spherical harmonic order
+        Maximum spherical harmonic order.
     coordinates : :py:class:`pyfar.Coordinates`, :py:class:`spharpy.SamplingSphere`
-        objects with sampling points for which the basis matrix is calculated
+        objects with sampling points for which the basis matrix is calculated.
     normalization : str, optional
         Normalization convention, either ``'N3D'``, ``'NM'``, ``'maxN'``,
         ``'SN3D'``, or ``'SNM'``.
@@ -438,6 +418,10 @@ def spherical_harmonic_basis(
     -------
     Y : ndarray, complex
         Complex spherical harmonic basis matrix
+
+    See Also
+    --------
+    :py:func:`spherical_harmonic_basis_real`
 
     Examples
     --------
@@ -613,16 +597,9 @@ def spherical_harmonic_basis_real(
         condon_shortley='auto'):
     r"""
     Calculates the real valued spherical harmonic basis matrix.
-    See also :py:func:`spherical_harmonic_basis`.
 
-    .. math::
-
-        Y_n^m(\theta, \phi) = \sqrt{\frac{2n+1}{4\pi}
-        \frac{(n-|m|)!}{(n+|m|)!}} P_n^{|m|}(\cos \theta)
-        \begin{cases}
-            \displaystyle \cos(|m|\phi),  & \text{if $m \ge 0$} \newline
-            \displaystyle \sin(|m|\phi) ,  & \text{if $m < 0$}
-        \end{cases}
+    Please refer to the :doc:`/theory/spherical_harmonic_definition` page
+    for more detailed information on the definition of spherical harmonics.
 
     Parameters
     ----------
@@ -648,6 +625,10 @@ def spherical_harmonic_basis_real(
     -------
     Y : ndarray, float
         Real valued spherical harmonic basis matrix.
+
+    See Also
+    --------
+    :py:func:`spherical_harmonic_basis`
 
     """  # noqa: E501
     if channel_convention == "FuMa" and n_max > 3:
