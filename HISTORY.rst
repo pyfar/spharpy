@@ -2,6 +2,10 @@
 History
 =======
 
+Changed
+^^^^^^^
+- Updated radius for eigenmike em32 sampling to 42 mm (PR #323)
+
 1.0.0 (2026-03-16)
 ------------------
 
