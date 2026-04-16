@@ -2,6 +2,10 @@
 History
 =======
 
+
+Fixed
+^^^^
+
 - SamplingSphere can now be empty, similar to the pyfar.Coordinates class (PR #322)
 
 1.0.0 (2026-03-16)
