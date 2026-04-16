@@ -45,10 +45,11 @@ class SamplingSphere(pf.Coordinates):
 
     def __init__(
             self,
-            x=np.asarray([]),
-            y=np.asarray([]),
-            z=np.asarray([]),
-            n_max=None, weights: np.array = None,
+            x : np.array = np.asarray([]),
+            y : np.array = np.asarray([]),
+            z : np.array = np.asarray([]),
+            n_max : int = None, 
+            weights: np.array = None,
             comment: str = "", radius_tolerance=1e-6,
             quadrature_tolerance=1e-10):
         r"""
