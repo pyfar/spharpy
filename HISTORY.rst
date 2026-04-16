@@ -19,6 +19,11 @@ Documentation
 - Update documentation for ``spharpy.spherical.spherical_harmonic_basis`` and ``spharpy.spherical.spherical_harmonic_basis_real`` and add link to spherical harmonic definitions page (PR #317)
 
 
+Fixed
+^^^^
+
+- SamplingSphere can now be empty, similar to the pyfar.Coordinates class (PR #322)
+
 1.0.0 (2026-03-16)
 ------------------
 
