@@ -20,7 +20,7 @@ introduction_path: docs/gallery/interactive/pyfar_introduction.ipynb
 keywords: acoustics,pyfar
 license: MIT
 logo_path_gallery: resources/logos/pyfar_logos_fixed_size_spharpy.png
-manifest_custom: ''
+manifest_custom: recursive-include spharpy/samplings/_eqsp *
 minimum_python_version: '3.11'
 project_getting_started: 'Check out the [example notebooks](https://github.com/pyfar/pyfar/blob/main/examples)
     - also available on [mybinder.org](https://mybinder.org/v2/gh/pyfar/spharpy/main?filepath=examples/)
