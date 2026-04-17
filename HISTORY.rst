@@ -6,7 +6,7 @@ History
 Fixed
 ^^^^^
 
-- SamplingSphere can now be empty, similar to the pyfar.Coordinates class (PR #322)
+- Creating a SamplingSphere without passing arguments now returns an empty object instead of an object containing NaN values, similar to the pyfar.Coordinates class (PR #322)
 
 1.0.0 (2026-03-16)
 ------------------
