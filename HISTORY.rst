@@ -16,7 +16,7 @@ Fixed
 
 Documentation
 ^^^^^^^^^^^^^
-- Remove spherical harmonics definition in ``spharpy.spherical.spherical_harmonic_basis`` and ``spharpy.spherical.spherical_harmonic_basis_real`` and add link to spherical harmonic definitions page (PR #317)
+- Update documentation for ``spharpy.spherical.spherical_harmonic_basis`` and ``spharpy.spherical.spherical_harmonic_basis_real`` and add link to spherical harmonic definitions page (PR #317)
 
 
 1.0.0 (2026-03-16)
