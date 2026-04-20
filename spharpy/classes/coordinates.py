@@ -44,7 +44,12 @@ class SamplingSphere(pf.Coordinates):
     """Class for samplings on a sphere."""
 
     def __init__(
-            self, x=None, y=None, z=None, n_max=None, weights: np.array = None,
+            self,
+            x : np.array = np.asarray([]),
+            y : np.array = np.asarray([]),
+            z : np.array = np.asarray([]),
+            n_max : int = None,
+            weights: np.array = None,
             comment: str = "", radius_tolerance=1e-6,
             quadrature_tolerance=1e-10):
         r"""
@@ -576,15 +581,17 @@ class SamplingSphere(pf.Coordinates):
         x, y, z = super()._check_points(x, y, z)
 
         # check for equal radius
-        radius = np.sqrt(x.flatten()**2 + y.flatten()**2 + z.flatten()**2)
-        radius_delta = np.max(radius) - np.min(radius)
-        if radius_delta > self.radius_tolerance:
-            raise ValueError(
-                'All points must have the same radius but the difference '
-                f'between the minimum and maximum radius is {radius_delta:.3g}'
-                ' m, which exceeds the tolerance of '
-                f'{self.radius_tolerance:.3g} m. The tolerance can be changed '
-                'using SamplingSphere.radius_tolerance.')
+        if x.size > 0:
+            radius = np.sqrt(x.flatten()**2 + y.flatten()**2 + z.flatten()**2)
+            radius_delta = np.max(radius) - np.min(radius)
+            if radius_delta > self.radius_tolerance:
+                raise ValueError(
+                    'All points must have the same radius but the difference '
+                    f'between the minimum and maximum radius is '
+                    f'{radius_delta:.3g}'
+                    ' m, which exceeds the tolerance of '
+                    f'{self.radius_tolerance:.3g} m. The tolerance can be '
+                    'changed using SamplingSphere.radius_tolerance.')
 
         # reset the quadrature flag to make sure it is checked again after
         # adding or changing points in the SamplingSphere
