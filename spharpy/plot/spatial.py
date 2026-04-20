@@ -99,10 +99,28 @@ def scatter(coordinates, ax=None, style='light', **kwargs):
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
 
-        ax.set_box_aspect([
-            np.ptp(coordinates.x),
-            np.ptp(coordinates.y),
-            np.ptp(coordinates.z)])
+        # calculate centroid of sampling
+        cartesian = coordinates.cartesian
+        centroid = np.mean(cartesian, axis=tuple(range(cartesian.ndim - 1)))
+
+        # get maximum span over x, y and z coordinates
+        max_span = np.max([np.ptp(coordinates.x),
+                           np.ptp(coordinates.y),
+                           np.ptp(coordinates.z)])
+
+        # define ax limits
+        lower, upper = centroid - max_span/2, centroid + max_span/2
+
+        # exception: single point
+        if coordinates.cshape == (1,):
+            lower = centroid * 0.9
+            upper = centroid * 1.1
+
+        ax.set_xlim(lower[0], upper[0])
+        ax.set_ylim(lower[1], upper[1])
+        ax.set_zlim(lower[2], upper[2])
+
+        ax.set_box_aspect((1, 1, 1))
 
     return ax
 
