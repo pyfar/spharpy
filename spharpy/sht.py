@@ -16,7 +16,8 @@ where:
 - :math:`\mathbf{Y}^H` is the Hermitian transpose of the spherical harmonic
   basis
 - the transform is implemented via matrix multiplication using the inverse
-  basis (:pyattr:`SphericalHarmonics.basis_inv`)
+  basis provided by the spherical harmonics class
+  (:py:attr:`spharpy.SphericalHarmonics.basis_inv`).
 
 Inverse spherical harmonic transform (ISHT)
 -------------------------------------------
@@ -27,6 +28,9 @@ from spherical harmonic coefficients:
 .. math::
 
     \mathbf{x} = \mathbf{Y} \mathbf{x}_{nm}
+
+For detailed information on the spherical harmonic conventions implemented in
+spharpy please refer to the :doc:`/theory/spherical_harmonic_definition` page.
 
 """
 import numpy as np
