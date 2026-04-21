@@ -1,4 +1,30 @@
-"""Spherical harmonic transform and inverse transform."""
+"""Module containing the spherical harmonic transform and inverse transform. 
+
+    Forward spherical harmonic transform (sht)
+    ------------------------------------------
+
+    Given a signal :math:`x(\theta, \phi)`, the spherical harmonic
+    coefficients are computed as:
+
+    .. math::
+
+        \mathbf{x}_{nm} = \mathbf{Y}^H \mathbf{x}
+
+    where:
+    - :math:`\mathbf{Y}^H` is the Hermitian transpose of the SH basis
+    - the transform is implemented via matrix multiplication with the inverse
+      basis (:pyattr:`SphericalHarmonics.basis_inv`)
+
+    Inverse spherical harmonic transform (isht)
+    ------------------------------------------
+    The inverse spherical harmonic transform reconstructs the space domain
+    signal from SH coefficients:
+
+    .. math::
+
+        \mathbf{x} = \mathbf{Y} \mathbf{x}_{nm}
+
+   """
 import numpy as np
 from pyfar import Signal, TimeData, FrequencyData
 from pyfar import matrix_multiplication
