@@ -83,7 +83,8 @@ def _assert_valid_number_of_sh_channels(shape, sh_axis):
 def _convert_to_standard_definition(
         data,
         normalization,
-        channel_convention):
+        channel_convention,
+        sh_axis=-2):
     """Convert data to the standard spherical harmonic definition.
 
     Parameters
@@ -106,10 +107,10 @@ def _convert_to_standard_definition(
 
     data = renormalize(
         data, channel_convention, normalization,
-        "N3D", axis=-2)
+        "N3D", axis=sh_axis)
 
     data = change_channel_convention(
-        data, channel_convention, "ACN", axis=-2)
+        data, channel_convention, "ACN", axis=sh_axis)
 
     return data
 
@@ -117,7 +118,8 @@ def _convert_to_standard_definition(
 def _convert_from_standard_definition(
         data,
         normalization,
-        channel_convention):
+        channel_convention,
+        sh_axis=-2):
     """Convert data from standard definition to the desired one.
 
     Parameters
@@ -139,10 +141,10 @@ def _convert_from_standard_definition(
     """
 
     data = renormalize(
-        data, "ACN", "N3D", normalization, axis=-2)
+        data, "ACN", "N3D", normalization, axis=sh_axis)
 
     data = change_channel_convention(
-        data, "ACN", channel_convention, axis=-2)
+        data, "ACN", channel_convention, axis=sh_axis)
 
     return data
 
@@ -441,7 +443,8 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         """Return or set the data in the frequency domain."""
         return _convert_from_standard_definition(FrequencyData.freq.fget(self),
                                                  self.normalization,
-                                                 self.channel_convention)
+                                                 self.channel_convention,
+                                                 self._sh_caxis)
 
     @freq.setter
     def freq(self, value):
@@ -610,7 +613,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         """Return or set the data in the frequency domain."""
         return _convert_from_standard_definition(Signal.freq.fget(self),
                                                  self.normalization,
-                                                 self.channel_convention)
+                                                 self.channel_convention,
+                                                 self._sh_caxis)
 
     @freq.setter
     def freq(self, value):
@@ -628,7 +632,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         """Return or set the frequency domain data without normalization."""
         return _convert_from_standard_definition(Signal.freq_raw.fget(self),
                                                  self.normalization,
-                                                 self.channel_convention)
+                                                 self.channel_convention,
+                                                 self._sh_caxis)
 
     @freq_raw.setter
     def freq_raw(self, value):
@@ -637,7 +642,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention, self._sh_caxis)
 
         Signal.freq_raw.fset(self, value)
 
@@ -646,7 +651,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         """Return or set the time data."""
         return _convert_from_standard_definition(Signal.time.fget(self),
                                                  self.normalization,
-                                                 self.channel_convention)
+                                                 self.channel_convention,
+                                                 self._sh_caxis)
 
     @time.setter
     def time(self, value):
@@ -655,5 +661,5 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention, self._sh_caxis)
         Signal.time.fset(self, value)
