@@ -111,19 +111,6 @@ def test_spherical_harmonic_signal_init_multichannel():
     assert isinstance(signal, SphericalHarmonicSignal)
 
 
-def test_spherical_harmonic_signal_init_non_default_axis():
-    """Test init SphercalHarmonicsSignal."""
-    sh_coeffs = np.zeros((4, 2, 16))
-    signal = SphericalHarmonicSignal(sh_coeffs,
-                                     44100, basis_type='real',
-                                     channel_convention='ACN',
-                                     normalization='N3D',
-                                     condon_shortley=False,
-                                     sh_caxis=-3)
-    assert isinstance(signal, SphericalHarmonicSignal)
-    assert signal.sh_caxis == -3
-
-
 def test_nmax_getter():
     """Test nmax getter."""
     data = np.array([[1., 2., 3.],
@@ -137,6 +124,19 @@ def test_nmax_getter():
                                      condon_shortley=False)
     assert signal.n_max == 1
     assert isinstance(signal.n_max, int)
+
+
+def test_spherical_harmonic_signal_init_non_default_axis():
+    """Test init SphercalHarmonicsSignal."""
+    sh_coeffs = np.zeros((4, 2, 16))
+    signal = SphericalHarmonicSignal(sh_coeffs,
+                                     44100, basis_type='real',
+                                     channel_convention='ACN',
+                                     normalization='N3D',
+                                     condon_shortley=False,
+                                     sh_caxis=-3)
+    assert isinstance(signal, SphericalHarmonicSignal)
+    assert signal.sh_caxis == -3
 
 
 def test_default_sh_caxis_getter():
