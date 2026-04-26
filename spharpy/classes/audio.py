@@ -63,7 +63,8 @@ def _assert_valid_number_of_sh_channels(shape, sh_axis):
     shape : tuple, int
         Shape of the data array.
     sh_axis : int
-        Axis which stores the spherical harmonic coefficients
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     Raises
     ------
@@ -98,6 +99,9 @@ def _convert_to_standard_definition(
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
+    sh_axis : int
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     Returns
     -------
@@ -133,6 +137,9 @@ def _convert_from_standard_definition(
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
+    sh_axis : int
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     Returns
     -------
@@ -186,6 +193,9 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         Domain of data. The default is ``'time'``
     comment : str
         A comment related to `data`. The default is ``None``.
+    sh_caxis : int
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     """
 
@@ -270,6 +280,10 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     is_complex : bool, optional
         A flag which indicates if the time data are real or complex-valued.
         The default is ``False``.
+    sh_caxis : int
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
+        default is second last axis (-2).
     """
 
     def __init__(self, data, times, basis_type, normalization,
@@ -322,6 +336,10 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         is_complex : bool, optional
             A flag which indicates if the time data are real or complex-valued.
             The default is ``False``.
+        sh_caxis : int
+            Specifies which axis of data holds the spherical harmonic
+            coefficients. Negative indexing, i.e., interpreted relative to the
+            end of the array. The default is second last axis (-2).
         """
         return cls(data, times,
                    basis_type=sh_definition.basis_type,
@@ -388,6 +406,10 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         and ``False`` for real `basis_type`.
     comment : str
         A comment related to `data`. The default is ``""``.
+    sh_caxis : int
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
+        The default is second last axis (-2).
     """
 
     def __init__(self, data, frequencies, basis_type, normalization,
@@ -430,6 +452,10 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
             the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
         comment : str
             A comment related to `data`. The default is ``None``.
+        sh_caxis : int
+            Specifies which axis of data holds the spherical harmonic
+            coefficients. Negative indexing, i.e., interpreted relative to the
+            end of the array. The default is second last axis (-2).
         """
         return cls(data, frequencies,
                    basis_type=sh_definition.basis_type,
@@ -520,6 +546,10 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Specifies if the underlying time domain data are complex
         or real-valued. If ``True`` and `domain` is ``'time'``, the
         input data will be cast to complex. The default is ``False``.
+    sh_caxis : int
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
+        The default is second last axis (-2).
 
     References
     ----------
@@ -599,6 +629,10 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             Specifies if the underlying time domain data are complex
             or real-valued. If ``True`` and `domain` is ``'time'``, the
             input data will be cast to complex. The default is ``False``.
+        sh_caxis : int
+            Specifies which axis of data holds the spherical harmonic
+            coefficients. Negative indexing, i.e., interpreted relative to the
+            end of the array. The default is second last axis (-2).
         """
         return cls(data, sampling_rate,
                    basis_type=sh_definition.basis_type,
