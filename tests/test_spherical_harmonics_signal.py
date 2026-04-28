@@ -300,3 +300,19 @@ def test_spherical_harmonic_signal_renormalize():
 
     np.testing.assert_equal(signal.time,
                             data_ref)
+
+
+def test_init_spherical_harmonic_signal_wrong_sh_caxis():
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+
+    with pytest.raises(ValueError,
+                       match="sh_caxis has to be a negative integer."):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='real',
+                                channel_convention='ACN',
+                                normalization='N3D',
+                                condon_shortley=False,
+                                sh_caxis=1)
