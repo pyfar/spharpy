@@ -299,7 +299,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         _assert_valid_number_of_sh_channels(data.shape, sh_caxis)
 
         if sh_caxis > 0:
-            raise AttributeError("sh_caxis has to be a negative integer.")
+            raise ValueError("sh_caxis has to be a negative integer.")
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -422,7 +422,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         _assert_valid_number_of_sh_channels(data.shape, sh_caxis)
 
         if sh_caxis > 0:
-            raise AttributeError("sh_caxis has to be a negative integer.")
+            raise ValueError("sh_caxis has to be a negative integer.")
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -586,7 +586,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         _assert_valid_number_of_sh_channels(data.shape, sh_caxis)
 
         if sh_caxis > 0:
-            raise AttributeError("sh_caxis has to be a negative integer.")
+            raise ValueError("sh_caxis has to be a negative integer.")
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,

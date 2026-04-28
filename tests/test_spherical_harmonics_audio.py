@@ -5,6 +5,7 @@ from spharpy.classes.audio import (
 from spharpy import SphericalHarmonicDefinition
 import numpy as np
 import numpy.testing as npt
+import pytest
 
 
 def test_atleast_3d_data():
@@ -109,3 +110,27 @@ def test_sh_freq_data_from_sh_definition():
             sh_caxis=-2)
 
     assert freq_data == freq_data_def
+
+
+def test_init_sh_time_data_wrong_sh_caxis():
+    data = np.ones((1, 4, 4))
+    times = [1, 2, 3, 4]
+
+    with pytest.raises(ValueError,
+                       match="sh_caxis has to be a negative integer."):
+        SphericalHarmonicTimeData(
+            data, times,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", sh_caxis=1)
+
+
+def test_init_sh_frequency_data_wrong_sh_caxis():
+    data = np.ones((1, 4, 4), dtype=complex)
+    frequencies = [1, 2, 3, 4]
+
+    with pytest.raises(ValueError,
+                       match="sh_caxis has to be a negative integer."):
+        SphericalHarmonicFrequencyData(
+            data, frequencies, basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", sh_caxis=1)
