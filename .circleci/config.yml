@@ -59,12 +59,13 @@ jobs:
       version: <<parameters.version>>
     steps:
       - checkout
+            
       - run:
           name: install dependencies
           command: pip install ".[tests]"
       - run:
           name: Run tests
-          command: pytest
+          command: pytest tests
 
   test_wheel:
     parameters:
@@ -128,6 +129,7 @@ jobs:
       version: <<parameters.version>>
     steps:
       - checkout
+      
       - run:
           name: Sphinx
           command: |
@@ -146,6 +148,7 @@ jobs:
       version: <<parameters.version>>
     steps:
       - checkout
+      
       - run:
           name: install dependencies
           command: pip install ".[tests]"
@@ -155,7 +158,7 @@ jobs:
           name: Run tests
           command: pytest tests -W error::DeprecationWarning
 
-  test_pypi_publish:
+  test_package_build:
     parameters:
       version:
         description: "version tag"
@@ -168,6 +171,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
+      
       - run:
           name: install dependencies
           command: pip install ".[deploy]"
@@ -189,6 +193,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
+      
       - run:
           name: install dependencies
           command: pip install ".[deploy]"
@@ -197,6 +202,7 @@ jobs:
           command: |
             twine check /tmp/workspace/dist/*
             twine upload /tmp/workspace/dist/*
+
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -256,7 +262,7 @@ workflows:
           requires:
             - test_source
 
-      - test_pypi_publish:
+      - test_package_build:
           matrix:
             parameters:
               version:
@@ -283,7 +289,6 @@ workflows:
                 - "3.12"
                 - "3.13"
                 - "3.14"
-
           filters:
             branches:
               ignore: /.*/
@@ -376,9 +381,11 @@ workflows:
             - build_distribution
             - ruff
             - test_documentation_build
+            - test_deprecation_warnings
           filters:
             branches:
               ignore: /.*/
             # only act on version tags
             tags:
               only: /^v[0-9]+(\.[0-9]+)*$/
+
