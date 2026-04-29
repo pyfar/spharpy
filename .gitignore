@@ -127,3 +127,4 @@ docs/resources/logos/pyfar_logos_fixed_size_spharpy.png
 # custom
 spharpy/samplings/_eqsp/samplings_extremal*
 spharpy/samplings/_eqsp/samplings_t_design*
+tests/test_plot_data/output/

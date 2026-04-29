@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: b73150b
+_commit: 15078cd
 _src_path: https://github.com/pyfar/template-pyfar-package
 add_submodules: false
 additional_section_readme: ''
@@ -9,7 +9,7 @@ copyright_statement: 2020 - 2023, Marco Berzborn; 2023, The pyfar developers
 dependencies: numpy>=1.22,scipy>=1.17,urllib3,matplotlib>=3.10.3,pyfar>=0.8.0
 docs_custom_import: ''
 git_username: pyfar
-gitignore_custom: spharpy/samplings/_eqsp/samplings_extremal*,spharpy/samplings/_eqsp/samplings_t_design*
+gitignore_custom: spharpy/samplings/_eqsp/samplings_extremal*,spharpy/samplings/_eqsp/samplings_t_design*,tests/test_plot_data/output/
 intersphinx_mapping:
 - numpy
 - scipy
