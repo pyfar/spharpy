@@ -301,6 +301,9 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
+        if abs(sh_caxis) >= data.ndim:
+            raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
+                             f"dimensions of data ({data.ndim})")
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -424,6 +427,9 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
+        if abs(sh_caxis) >= data.ndim:
+            raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
+                             f"dimensions of data ({data.ndim})")
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -588,6 +594,9 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
+        if abs(sh_caxis) >= data.ndim:
+            raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
+                             f"dimensions of data ({data.ndim})")
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
