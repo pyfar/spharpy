@@ -40,7 +40,7 @@ def test_init_sh_time_data():
     sh_time_data = SphericalHarmonicTimeData(
         data, times,  basis_type='real', normalization='SN3D',
         channel_convention="ACN", condon_shortley=False,
-        comment="", sh_caxis=-2)
+        comment="", sh_caxis=-1)
     assert isinstance(sh_time_data, SphericalHarmonicTimeData)
     np.testing.assert_allclose(sh_time_data.time, data)
 
@@ -58,7 +58,7 @@ def test_sh_time_data_from_sh_definition():
     times = [1, 2, 3, 4]
 
     time_data_def = SphericalHarmonicTimeData.from_definition(
-        sh_definition=shd, data=data, times=times, sh_caxis=-2)
+        sh_definition=shd, data=data, times=times, sh_caxis=-1)
 
     assert isinstance(time_data_def, SphericalHarmonicTimeData)
 
@@ -68,7 +68,7 @@ def test_sh_time_data_from_sh_definition():
             channel_convention='ACN',
             normalization='N3D',
             condon_shortley=False,
-            sh_caxis=-2)
+            sh_caxis=-1)
 
     assert time_data == time_data_def
 
@@ -79,7 +79,7 @@ def test_init_sh_frequency_data():
     sh_freq_data = SphericalHarmonicFrequencyData(
         data, frequencies, basis_type='real', normalization='SN3D',
         channel_convention="ACN", condon_shortley=False,
-        comment="", sh_caxis=-2)
+        comment="", sh_caxis=-1)
     assert isinstance(sh_freq_data, SphericalHarmonicFrequencyData)
     np.testing.assert_allclose(sh_freq_data.freq, data)
 
@@ -107,7 +107,7 @@ def test_sh_freq_data_from_sh_definition():
             channel_convention='ACN',
             normalization='N3D',
             condon_shortley=False,
-            sh_caxis=-2)
+            sh_caxis=-1)
 
     assert freq_data == freq_data_def
 
