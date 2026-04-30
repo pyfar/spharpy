@@ -194,8 +194,9 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     comment : str
         A comment related to `data`. The default is ``None``.
     sh_caxis : int
-        Specifies which axis of data holds the spherical harmonic coefficients.
-        Negative indexing, i.e., interpreted relative to the end of the array.
+        Specifies which channel axis of data holds the spherical harmonic
+        coefficients. Negative indexing, i.e., interpreted relative to the end
+        of the array.
 
     """
 
@@ -281,14 +282,14 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         A flag which indicates if the time data are real or complex-valued.
         The default is ``False``.
     sh_caxis : int
-        Specifies which axis of data holds the spherical harmonic coefficients.
-        Negative indexing, i.e., interpreted relative to the end of the array.
-        default is second last axis (-2).
+        Specifies which channel axis of data holds the spherical harmonic
+        coefficients. Negative indexing, i.e., interpreted relative to the end
+        of the array. The default is -1.
     """
 
     def __init__(self, data, times, basis_type, normalization,
                  channel_convention, condon_shortley, comment="",
-                 is_complex=False, sh_caxis=-2):
+                 is_complex=False, sh_caxis=-1):
 
         if not is_complex and basis_type == 'complex':
             raise ValueError(
@@ -296,7 +297,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
                 "complex time data. Set is_complex=True.")
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape, sh_caxis)
+        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
@@ -311,7 +312,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     @classmethod
     def from_definition(
             cls, sh_definition, data, times, comment="", is_complex=False,
-            sh_caxis=-2):
+            sh_caxis=-1):
         r"""
         Create a SphericalHarmonicTimeData class object from
         SphericalHarmonicDefinition object, data, and times.
@@ -342,7 +343,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         sh_caxis : int
             Specifies which axis of data holds the spherical harmonic
             coefficients. Negative indexing, i.e., interpreted relative to the
-            end of the array. The default is second last axis (-2).
+            end of the array. The default is second last axis (-1).
         """
         return cls(data, times,
                    basis_type=sh_definition.basis_type,
@@ -362,7 +363,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
+        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention)
@@ -412,14 +413,14 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     sh_caxis : int
         Specifies which axis of data holds the spherical harmonic coefficients.
         Negative indexing, i.e., interpreted relative to the end of the array.
-        The default is second last axis (-2).
+        The default is -1.
     """
 
     def __init__(self, data, frequencies, basis_type, normalization,
-                 channel_convention, condon_shortley, comment="", sh_caxis=-2):
+                 channel_convention, condon_shortley, comment="", sh_caxis=-1):
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape, sh_caxis)
+        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
@@ -433,7 +434,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
 
     @classmethod
     def from_definition(
-            cls, sh_definition, data, frequencies, comment="", sh_caxis=-2):
+            cls, sh_definition, data, frequencies, comment="", sh_caxis=-1):
         r"""
         Create a SphericalHarmonicFrequencyData class object from
         SphericalHarmonicDefinition object, data, and frequencies
@@ -461,7 +462,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         sh_caxis : int
             Specifies which axis of data holds the spherical harmonic
             coefficients. Negative indexing, i.e., interpreted relative to the
-            end of the array. The default is second last axis (-2).
+            end of the array. The default is -1.
         """
         return cls(data, frequencies,
                    basis_type=sh_definition.basis_type,
@@ -476,13 +477,13 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         return _convert_from_standard_definition(FrequencyData.freq.fget(self),
                                                  self.normalization,
                                                  self.channel_convention,
-                                                 self._sh_caxis)
+                                                 self._sh_caxis-1)
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
+        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention)
@@ -555,7 +556,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     sh_caxis : int
         Specifies which axis of data holds the spherical harmonic coefficients.
         Negative indexing, i.e., interpreted relative to the end of the array.
-        The default is second last axis (-2).
+        The default is -1.
 
     References
     ----------
@@ -580,10 +581,10 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                  fft_norm='none',
                  comment="",
                  is_complex=False,
-                 sh_caxis=-2):
+                 sh_caxis=-1):
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape, sh_caxis)
+        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
@@ -599,7 +600,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     @classmethod
     def from_definition(
             cls, sh_definition, data, sampling_rate, domain='time',
-            fft_norm='none', comment="", is_complex=False, sh_caxis=-2):
+            fft_norm='none', comment="", is_complex=False, sh_caxis=-1):
         r"""
         Create a SphericalHarmonicSignal class object from
         SphericalHarmonicDefinition object, data, and sampling
@@ -641,7 +642,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         sh_caxis : int
             Specifies which axis of data holds the spherical harmonic
             coefficients. Negative indexing, i.e., interpreted relative to the
-            end of the array. The default is second last axis (-2).
+            end of the array. The default is -1.
         """
         return cls(data, sampling_rate,
                    basis_type=sh_definition.basis_type,
@@ -657,13 +658,13 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         return _convert_from_standard_definition(Signal.freq.fget(self),
                                                  self.normalization,
                                                  self.channel_convention,
-                                                 self._sh_caxis)
+                                                 self._sh_caxis-1)
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
+        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention)
@@ -676,16 +677,16 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         return _convert_from_standard_definition(Signal.freq_raw.fget(self),
                                                  self.normalization,
                                                  self.channel_convention,
-                                                 self._sh_caxis)
+                                                 self._sh_caxis-1)
 
     @freq_raw.setter
     def freq_raw(self, value):
         """Return or set the frequency domain data without normalization."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
+        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention, self._sh_caxis)
+            value, self.normalization, self.channel_convention, self._sh_caxis-1)
 
         Signal.freq_raw.fset(self, value)
 
@@ -695,14 +696,14 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         return _convert_from_standard_definition(Signal.time.fget(self),
                                                  self.normalization,
                                                  self.channel_convention,
-                                                 self._sh_caxis)
+                                                 self._sh_caxis-1)
 
     @time.setter
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis)
+        _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention, self._sh_caxis)
+            value, self.normalization, self.channel_convention, self._sh_caxis-1)
         Signal.time.fset(self, value)
