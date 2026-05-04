@@ -294,16 +294,16 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         if not is_complex and basis_type == 'complex':
             raise ValueError(
                 "Complex spherical harmonic basis requires "
-                "complex time data. Set is_complex=True.")
-
-        data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
+                "complex time data. Set is_complex=True.")        
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
         if abs(sh_caxis) >= data.ndim:
             raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
                              f"dimensions of data ({data.ndim})")
+
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -422,14 +422,14 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     def __init__(self, data, frequencies, basis_type, normalization,
                  channel_convention, condon_shortley, comment="", sh_caxis=-1):
 
-        data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
-
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
         if abs(sh_caxis) >= data.ndim:
             raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
                              f"dimensions of data ({data.ndim})")
+
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -589,14 +589,14 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                  is_complex=False,
                  sh_caxis=-1):
 
-        data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
-
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
         if abs(sh_caxis) >= data.ndim:
             raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
                              f"dimensions of data ({data.ndim})")
+
+        data = _atleast_3d_first_dimension(data)
+        _assert_valid_number_of_sh_channels(data.shape, sh_caxis-1)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -695,7 +695,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention, self._sh_caxis-1)
+            value, self.normalization, self.channel_convention,
+            self._sh_caxis-1)
 
         Signal.freq_raw.fset(self, value)
 
@@ -714,5 +715,6 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         _assert_valid_number_of_sh_channels(value.shape, self._sh_caxis-1)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention, self._sh_caxis-1)
+            value, self.normalization, self.channel_convention,
+            self._sh_caxis-1)
         Signal.time.fset(self, value)

@@ -6,6 +6,7 @@ from spharpy import SphericalHarmonicDefinition
 import numpy as np
 import numpy.testing as npt
 import pytest
+import re
 
 
 def test_atleast_3d_data():
@@ -122,6 +123,13 @@ def test_init_sh_time_data_wrong_sh_caxis():
             data, times,  basis_type='real', normalization='SN3D',
             channel_convention="ACN", condon_shortley=False,
             comment="", sh_caxis=1)
+    with pytest.raises(ValueError,
+                       match=re.escape("sh_caxis (-4) exceeds the number of "
+                                       "dimensions of data (3)")):
+        SphericalHarmonicTimeData(
+            data, times,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", sh_caxis=-4)
 
 
 def test_init_sh_frequency_data_wrong_sh_caxis():
@@ -134,3 +142,11 @@ def test_init_sh_frequency_data_wrong_sh_caxis():
             data, frequencies, basis_type='real', normalization='SN3D',
             channel_convention="ACN", condon_shortley=False,
             comment="", sh_caxis=1)
+
+    with pytest.raises(ValueError,
+                       match=re.escape("sh_caxis (-4) exceeds the number of "
+                                       "dimensions of data (3)")):
+        SphericalHarmonicFrequencyData(
+            data, frequencies, basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", sh_caxis=-4)
