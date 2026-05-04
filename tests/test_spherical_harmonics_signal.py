@@ -316,3 +316,13 @@ def test_init_spherical_harmonic_signal_wrong_sh_caxis():
                                 normalization='N3D',
                                 condon_shortley=False,
                                 sh_caxis=1)
+
+    with pytest.raises(ValueError,
+                       match=re.escape("sh_caxis (-4) exceeds the number of "
+                                       "dimensions of data (3)")):
+        SphericalHarmonicSignal(data,
+                                44100, basis_type='real',
+                                channel_convention='ACN',
+                                normalization='N3D',
+                                condon_shortley=False,
+                                sh_caxis=-4)
