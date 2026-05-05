@@ -195,8 +195,11 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         A comment related to `data`. The default is ``None``.
     sh_caxis : int
         Specifies which channel axis of data holds the spherical harmonic
-        coefficients. Negative indexing, i.e., interpreted relative to the end
-        of the array.
+        coefficients. Must be an integer smaller than or equal to -1.
+        The default -1 refers to the last channel axis; a value of -2
+        would refer to the second last channel axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis>
+        for more details.
 
     """
 
@@ -250,13 +253,15 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     data : array, double
         Raw data in the time domain. The data should have at least 2
         dimensions, with the last dimension representing the time domain
-        samples, the second to last the spherical harmonic coefficients,
-        and any leading dimensions representing optional channels. Accordingly,
-        the data should follow the 'C' memory layout, e.g. data of
+        samples and the second to last the spherical harmonic coefficients. If
+        the raw data have more then 3 dimensions `sh_caxis` defines the
+        axis holding the spherical harmonic coefficients. The default is
+        -1 (second to last channel axis). Accordingly, the default data
+        shape follows the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples each. The data can be ``int``,
-        ``float`` or ``complex``. Data of type ``int`` is converted to
-        ``float``.
+        coefficients with 1024 samples each, and `sh_caxis` = -1. The data
+        can be ``int``, ``float`` or ``complex``. Data of type ``int`` is
+        converted to ``float``.
     times : array, double
         Times in seconds at which the data is sampled. The number of times
         must match the size of the last dimension of `data`, i.e.,
@@ -283,8 +288,11 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         The default is ``False``.
     sh_caxis : int
         Specifies which channel axis of data holds the spherical harmonic
-        coefficients. Negative indexing, i.e., interpreted relative to the end
-        of the array. The default is -1.
+        coefficients. Must be an integer smaller than or equal to -1.
+        The default -1 refers to the last channel axis; a value of -2
+        would refer to the second last channel axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis>
+        for more details.
     """
 
     def __init__(self, data, times, basis_type, normalization,
@@ -294,11 +302,11 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         if not is_complex and basis_type == 'complex':
             raise ValueError(
                 "Complex spherical harmonic basis requires "
-                "complex time data. Set is_complex=True.")        
+                "complex time data. Set is_complex=True.")
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
-        if abs(sh_caxis) >= data.ndim:
+        if abs(sh_caxis) > data.ndim:
             raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
                              f"dimensions of data ({data.ndim})")
 
@@ -327,12 +335,14 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         data : array, double
             Raw data in the time domain. The data should have at least 2
             dimensions, with the last dimension representing the time domain
-            samples, the second to last the spherical harmonic coefficients,
-            and any leading dimensions representing optional channels.
-            Accordingly, the data should follow the 'C' memory layout, e.g.
-            data of ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical
-            harmonic coefficients with 1024 samples each. The data can be
-            ``int``, ``float`` or ``complex``. Data of type ``int`` is
+            samples and the second to last the spherical harmonic coefficients. If
+            the raw data have more then 3 dimensions `sh_caxis` defines the
+            axis holding the spherical harmonic coefficients. The default is
+            -1 (second to last channel axis). Accordingly, the default data
+            shape follows the 'C' memory layout, e.g. data of
+            ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+            coefficients with 1024 samples each, and `sh_caxis` = -1. The data
+            can be ``int``, ``float`` or ``complex``. Data of type ``int`` is
             converted to ``float``.
         times : array, double
             Times in seconds at which the data is sampled. The number of times
@@ -385,15 +395,17 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     Parameters
     ----------
     data : array, double
-        Raw data in the frequency domain. The data should have at least
-        2 dimensions, with the last dimension representing the frequency domain
-        bins, the second to last the spherical harmonic coefficients,
-        and any leading dimensions representing optional channels. Accordingly,
-        the data should follow the 'C' memory layout, e.g. data of
+        Raw data in the frequency domain. The data should have at least 2
+        dimensions, with the last dimension representing the frequency domain
+        bins and the second to last the spherical harmonic coefficients. If
+        the raw data have more then 3 dimensions `sh_caxis` defines the
+        axis holding the spherical harmonic coefficients. The default is
+        -1 (second to last channel axis). Accordingly, the default data
+        shape follows the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 frequency bins each. The data can be ``int``,
-        ``float`` or ``complex``. Data of type ``int`` is converted to
-        ``float``.
+        coefficients with 1024 frequency bins each, and `sh_caxis` = -1. The
+        data can be ``int``, ``float`` or ``complex``. Data of type ``int`` is
+        converted to ``float``.
     frequencies : array, double
         Frequencies of the data in Hz. The number of frequencies must match
         the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
@@ -414,9 +426,12 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     comment : str
         A comment related to `data`. The default is ``""``.
     sh_caxis : int
-        Specifies which axis of data holds the spherical harmonic coefficients.
-        Negative indexing, i.e., interpreted relative to the end of the array.
-        The default is -1.
+        Specifies which channel axis of data holds the spherical harmonic
+        coefficients. Must be an integer smaller than or equal to -1.
+        The default -1 refers to the last channel axis; a value of -2
+        would refer to the second last channel axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis>
+        for more details.
     """
 
     def __init__(self, data, frequencies, basis_type, normalization,
@@ -424,7 +439,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
-        if abs(sh_caxis) >= data.ndim:
+        if abs(sh_caxis) > data.ndim:
             raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
                              f"dimensions of data ({data.ndim})")
 
@@ -451,24 +466,29 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         sh_definition : SphericalHarmonicDefinition
             The spherical harmonic definition.
         data : ndarray, double
-            Raw data in the frequency domain. The data should have at least
-            2 dimensions, with the last dimension representing the frequency
-            domain bins, the second to last the spherical harmonic
-            coefficients, and any leading dimensions representing optional
-            channels. Accordingly, the data should follow the 'C' memory
-            layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4
-            spherical harmonic coefficients with 1024 frequency bins each. The
-            data can be ``int``, ``float`` or ``complex``. Data of type
-            ``int`` is converted to ``float``.
+            Raw data in the frequency domain. The data should have at least 2
+            dimensions, with the last dimension representing the frequency domain
+            bins and the second to last the spherical harmonic coefficients. If
+            the raw data have more then 3 dimensions `sh_caxis` defines the
+            axis holding the spherical harmonic coefficients. The default is
+            -1 (second to last channel axis). Accordingly, the default data
+            shape follows the 'C' memory layout, e.g. data of
+            ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
+            coefficients with 1024 frequency bins each, and `sh_caxis` = -1. The
+            data can be ``int``, ``float`` or ``complex``. Data of type ``int`` is
+            converted to ``float``.
         frequencies : array, double
             Frequencies of the data in Hz. The number of frequencies must match
             the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
         comment : str
             A comment related to `data`. The default is ``None``.
         sh_caxis : int
-            Specifies which axis of data holds the spherical harmonic
-            coefficients. Negative indexing, i.e., interpreted relative to the
-            end of the array. The default is -1.
+            Specifies which channel axis of data holds the spherical harmonic
+            coefficients. Must be an integer smaller than or equal to -1.
+            The default -1 refers to the last channel axis; a value of -2
+            would refer to the second last channel axis. See
+            https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis>
+            for more details.
         """
         return cls(data, frequencies,
                    basis_type=sh_definition.basis_type,
@@ -516,15 +536,17 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Raw data of the spherical harmonics signal in the time or
         frequency domain. The data should have at least 2 dimensions, with
         the last dimension representing the time domain
-        samples/frequency domain bins, the second to last the spherical
-        harmonic coefficients, and any leading dimensions representing
-        optional channels. Accordingly, the data should follow the 'C'
-        memory layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel
-        with 4 spherical harmonic coefficients with 1024 samples or frequency
-        bins each. Time data is converted to ``float``. Frequency is
-        converted to ``complex`` and must be provided as single
-        sided spectra, i.e., for all frequencies between 0 Hz and
-        half the sampling rate.
+        samples/frequency domain bins and the second to last the spherical
+        harmonic coefficients. If the raw data have more then 3 dimensions
+        `sh_caxis` defines the axis holding the spherical harmonic
+        coefficients. The default is -1 (second to last channel axis).
+        Accordingly, the default data shape follows the 'C' memory layout,
+        e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical
+        harmonic coefficients with 1024 samples or frequency bins each, and
+        `sh_caxis` = -1. The data can be ``int``, ``float`` or ``complex``.
+        Data of type ``int`` is converted to ``float``. Frequency is converted
+        to ``complex`` and must be provided as single sided spectra, i.e., for
+        all frequencies between 0 Hz and half the sampling rate.
     sampling_rate : double
         Sampling rate in Hz
     basis_type : str
@@ -560,9 +582,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         or real-valued. If ``True`` and `domain` is ``'time'``, the
         input data will be cast to complex. The default is ``False``.
     sh_caxis : int
-        Specifies which axis of data holds the spherical harmonic coefficients.
-        Negative indexing, i.e., interpreted relative to the end of the array.
-        The default is -1.
+        Specifies which channel axis of data holds the spherical harmonic
+        coefficients. Must be an integer smaller than or equal to -1.
+        The default -1 refers to the last channel axis; a value of -2
+        would refer to the second last channel axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis>
+        for more details.
 
     References
     ----------
@@ -591,7 +616,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
 
         if sh_caxis > 0:
             raise ValueError("sh_caxis has to be a negative integer.")
-        if abs(sh_caxis) >= data.ndim:
+        if abs(sh_caxis) > data.ndim:
             raise ValueError(f"sh_caxis ({sh_caxis}) exceeds the number of "
                              f"dimensions of data ({data.ndim})")
 
@@ -649,9 +674,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             or real-valued. If ``True`` and `domain` is ``'time'``, the
             input data will be cast to complex. The default is ``False``.
         sh_caxis : int
-            Specifies which axis of data holds the spherical harmonic
-            coefficients. Negative indexing, i.e., interpreted relative to the
-            end of the array. The default is -1.
+            Specifies which channel axis of data holds the spherical harmonic
+            coefficients. Must be an integer smaller than or equal to -1.
+            The default -1 refers to the last channel axis; a value of -2
+            would refer to the second last channel axis. See
+            https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis>
+            for more details.
         """
         return cls(data, sampling_rate,
                    basis_type=sh_definition.basis_type,
