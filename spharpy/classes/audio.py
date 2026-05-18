@@ -72,13 +72,16 @@ def _assert_valid_number_of_sh_channels(shape, sh_axis):
         Raised if the number of spherical harmonic channels does not match
         (n_max + 1)^2 for an integer n_max.
     """
+    # convert to tuple
+    sh_axes = (sh_axis,) if isinstance(sh_axis, int) else tuple(sh_axis)
 
-    sh_channels = shape[sh_axis]
-    n_max = np.sqrt(sh_channels)-1
-    if n_max - int(n_max) != 0:
-        raise ValueError(
-            "Invalid number of spherical harmonic channels: "
-            f"{sh_channels}. It must match (n_max + 1)^2.")
+    for sh_axis in sh_axes:
+        sh_channels = shape[sh_axis]
+        n_max = np.sqrt(sh_channels)-1
+        if n_max - int(n_max) != 0:
+            raise ValueError(
+                "Invalid number of spherical harmonic channels: "
+                f"{sh_channels}. It must match (n_max + 1)^2.")
 
 
 def _convert_to_standard_definition(
@@ -308,22 +311,20 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
                 "Complex spherical harmonic basis requires "
                 "complex time data. Set is_complex=True.")
 
-        if isinstance(caxis_spherical_harmonics, tuple):
-            for caxis in caxis_spherical_harmonics:
-                if abs(caxis) > data.ndim:
-                    raise ValueError(
-                        f"caxis_spherical_harmonics "
-                        f"({caxis_spherical_harmonics}) exceeds the number "
-                        f"of dimensions of data ({data.ndim})")
-        else:
-            if abs(caxis_spherical_harmonics) > data.ndim:
+        if isinstance(caxis_spherical_harmonics, int):
+            caxis_spherical_harmonics = (caxis_spherical_harmonics, )
+
+        for caxis in caxis_spherical_harmonics:
+            if abs(caxis) > data.ndim:
                 raise ValueError(
-                    f"caxis_spherical_harmonics ({caxis_spherical_harmonics}) "
-                    f"exceeds the number of dimensions of data ({data.ndim})")
+                    f"caxis_spherical_harmonics "
+                    f"({caxis_spherical_harmonics}) exceeds the number "
+                    f"of dimensions of data ({data.ndim})")
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape,
-                                            caxis_spherical_harmonics-1)
+
+        axes_sh = tuple(x - 1 for x in caxis_spherical_harmonics)
+        _assert_valid_number_of_sh_channels(data.shape, axes_sh)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -396,8 +397,9 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape,
-                                            self._caxis_spherical_harmonics-1)
+
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
+        _assert_valid_number_of_sh_channels(value.shape, axes_sh)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention)
@@ -461,22 +463,20 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
                  channel_convention, condon_shortley, comment="",
                  caxis_spherical_harmonics=-1):
 
-        if isinstance(caxis_spherical_harmonics, tuple):
-            for caxis in caxis_spherical_harmonics:
-                if abs(caxis) > data.ndim:
-                    raise ValueError(
-                        f"caxis_spherical_harmonics "
-                        f"({caxis_spherical_harmonics}) exceeds the number "
-                        f"of dimensions of data ({data.ndim})")
-        else:
-            if abs(caxis_spherical_harmonics) > data.ndim:
+        if isinstance(caxis_spherical_harmonics, int):
+            caxis_spherical_harmonics = (caxis_spherical_harmonics, )
+
+        for caxis in caxis_spherical_harmonics:
+            if abs(caxis) > data.ndim:
                 raise ValueError(
-                    f"caxis_spherical_harmonics ({caxis_spherical_harmonics}) "
-                    f"exceeds the number of dimensions of data ({data.ndim})")
+                    f"caxis_spherical_harmonics "
+                    f"({caxis_spherical_harmonics}) exceeds the number "
+                    f"of dimensions of data ({data.ndim})")
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape,
-                                            caxis_spherical_harmonics-1)
+
+        axes_sh = tuple(x - 1 for x in caxis_spherical_harmonics)
+        _assert_valid_number_of_sh_channels(data.shape, axes_sh)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -548,11 +548,12 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape,
-                                            self._caxis_spherical_harmonics-1)
 
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
+
+        _assert_valid_number_of_sh_channels(value.shape, axes_sh)
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention, axes_sh)
 
         FrequencyData.freq.fset(self, value)
 
@@ -657,22 +658,20 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                  is_complex=False,
                  caxis_spherical_harmonics=-1):
 
-        if isinstance(caxis_spherical_harmonics, tuple):
-            for caxis in caxis_spherical_harmonics:
-                if abs(caxis) > data.ndim:
-                    raise ValueError(
-                        f"caxis_spherical_harmonics "
-                        f"({caxis_spherical_harmonics}) exceeds the number "
-                        f"of dimensions of data ({data.ndim})")
-        else:
-            if abs(caxis_spherical_harmonics) > data.ndim:
+        if isinstance(caxis_spherical_harmonics, int):
+            caxis_spherical_harmonics = (caxis_spherical_harmonics, )
+
+        for caxis in caxis_spherical_harmonics:
+            if abs(caxis) > data.ndim:
                 raise ValueError(
-                    f"caxis_spherical_harmonics ({caxis_spherical_harmonics}) "
-                    f"exceeds the number of dimensions of data ({data.ndim})")
+                    f"caxis_spherical_harmonics "
+                    f"({caxis_spherical_harmonics}) exceeds the number "
+                    f"of dimensions of data ({data.ndim})")
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape,
-                                            caxis_spherical_harmonics-1)
+
+        axes_sh = tuple(x - 1 for x in caxis_spherical_harmonics)
+        _assert_valid_number_of_sh_channels(data.shape, axes_sh)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
@@ -761,11 +760,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape,
-                                            self._caxis_spherical_harmonics-1)
 
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
+
+        _assert_valid_number_of_sh_channels(value.shape, axes_sh)
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention, axes_sh)
 
         Signal.freq.fset(self, value)
 
@@ -782,12 +782,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     def freq_raw(self, value):
         """Return or set the frequency domain data without normalization."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape,
-                                            self._caxis_spherical_harmonics-1)
 
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
+
+        _assert_valid_number_of_sh_channels(value.shape, axes_sh)
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics-1)
+            value, self.normalization, self.channel_convention, axes_sh)
 
         Signal.freq_raw.fset(self, value)
 
@@ -804,10 +804,11 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape,
-                                            self._caxis_spherical_harmonics-1)
 
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
+
+        _assert_valid_number_of_sh_channels(value.shape, axes_sh)
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics-1)
+            value, self.normalization, self.channel_convention, axes_sh)
+
         Signal.time.fset(self, value)
