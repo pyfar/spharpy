@@ -538,11 +538,12 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
         return _convert_from_standard_definition(
                     FrequencyData.freq.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics-1)
+                    axes_sh)
 
     @freq.setter
     def freq(self, value):
@@ -750,11 +751,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
         return _convert_from_standard_definition(
                     Signal.freq.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics-1)
+                    axes_sh)
 
     @freq.setter
     def freq(self, value):
@@ -772,11 +774,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     @property
     def freq_raw(self):
         """Return or set the frequency domain data without normalization."""
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
         return _convert_from_standard_definition(
                     Signal.freq_raw.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics-1)
+                    axes_sh)
 
     @freq_raw.setter
     def freq_raw(self, value):
@@ -794,11 +797,12 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     @property
     def time(self):
         """Return or set the time data."""
+        axes_sh = tuple(x - 1 for x in self._caxis_spherical_harmonics)
         return _convert_from_standard_definition(
                     Signal.time.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics-1)
+                    axes_sh)
 
     @time.setter
     def time(self, value):
