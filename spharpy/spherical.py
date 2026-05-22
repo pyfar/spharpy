@@ -285,20 +285,11 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     if isinstance(axis, int):
         axis = (axis,)
 
-    # check if all sh_channels match
-    sh_channels = [data.shape[a] for a in axis]
-
-    if len(set(sh_channels)) != 1:
-        raise ValueError(
-            "All SH axes must have the same number of channels, "
-            f"but got {sh_channels}"
-        )
-
-    sh_channels = sh_channels[0]
+    sh_channels = data.shape[axis[0]]
 
     if np.sqrt(sh_channels) % 1:
         raise ValueError("Invalid number of SH channels: "
-                         f"{data.shape[-2]}. It must match (n_max + 1)^2.")
+                         f"{sh_channels}. It must match (n_max + 1)^2.")
 
     if channel_convention not in ["ACN", "FuMa"]:
         raise ValueError("Invalid channel convention. Has to be 'ACN' "
@@ -316,7 +307,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     if current_norm == target_norm:
         return data
 
-    acn = np.arange(data.shape[axis])
+    acn = np.arange(data.shape[axis[0]])
 
     if channel_convention == "FuMa":
         orders, _ = fuma_to_nm(acn)
@@ -392,16 +383,7 @@ def change_channel_convention(data, current, target, axis):
     if current == target:
         return data
 
-    # check if all sh_channels match
-    sh_channels = [data.shape[a] for a in axis]
-
-    if len(set(sh_channels)) != 1:
-        raise ValueError(
-            "All SH axes must have the same number of channels, "
-            f"but got {sh_channels}"
-        )
-
-    sh_channels = sh_channels[0]
+    sh_channels = data.shape[axis[0]]
     acn = np.arange(sh_channels)
 
     if current == 'ACN':

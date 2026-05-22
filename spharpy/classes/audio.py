@@ -75,13 +75,19 @@ def _assert_valid_number_of_sh_channels(shape, sh_axis):
     # convert to tuple
     sh_axes = (sh_axis,) if isinstance(sh_axis, int) else tuple(sh_axis)
 
-    for sh_axis in sh_axes:
-        sh_channels = shape[sh_axis]
-        n_max = np.sqrt(sh_channels)-1
-        if n_max - int(n_max) != 0:
-            raise ValueError(
-                "Invalid number of spherical harmonic channels: "
-                f"{sh_channels}. It must match (n_max + 1)^2.")
+    # check if all spherical harmonic channels have same length
+    sh_channels = [shape[a] for a in sh_axes]
+    if len(set(sh_channels)) != 1:
+        raise ValueError("All SH axes must have the same number of channels, "
+                         f"but got {sh_channels}.")
+
+    # check if all spherical harmonic channels match n_max
+    sh_channels = sh_channels[0]
+    n_max = np.sqrt(sh_channels)-1
+    if n_max - int(n_max) != 0:
+        raise ValueError(
+            "Invalid number of spherical harmonic channels: "
+            f"{sh_channels}. It must match (n_max + 1)^2.")
 
 
 def _convert_to_standard_definition(
