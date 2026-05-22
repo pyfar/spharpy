@@ -153,6 +153,19 @@ def test_default_sh_caxis_getter():
     assert signal.caxis_spherical_harmonics == -1
 
 
+def test_multichannel_spherical_harmonic_caxis_sh_getter():
+    """Test init SphercalHarmonicsSignal."""
+    sh_coeffs = np.zeros((4, 4, 2, 16))
+    signal = SphericalHarmonicSignal(sh_coeffs,
+                                     44100, basis_type='real',
+                                     channel_convention='ACN',
+                                     normalization='N3D',
+                                     condon_shortley=False,
+                                     caxis_spherical_harmonics=(-3, -2))
+    assert isinstance(signal, SphericalHarmonicSignal)
+    assert signal.caxis_spherical_harmonics == (-3, -2)
+
+
 def test_init_wrong_basis_type():
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],

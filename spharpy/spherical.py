@@ -282,10 +282,14 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     data : ndarray
         Renormalized data
     """
-    sh_channels = data.shape[axis]
+    if isinstance(axis, int):
+        axis = (axis,)
+
+    sh_channels = data.shape[axis[0]]
+
     if np.sqrt(sh_channels) % 1:
         raise ValueError("Invalid number of SH channels: "
-                         f"{data.shape[-2]}. It must match (n_max + 1)^2.")
+                         f"{sh_channels}. It must match (n_max + 1)^2.")
 
     if channel_convention not in ["ACN", "FuMa"]:
         raise ValueError("Invalid channel convention. Has to be 'ACN' "
@@ -303,7 +307,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     if current_norm == target_norm:
         return data
 
-    acn = np.arange(data.shape[axis])
+    acn = np.arange(data.shape[axis[0]])
 
     if channel_convention == "FuMa":
         orders, _ = fuma_to_nm(acn)
@@ -314,10 +318,12 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     # sure that the factors can be applied, new axes must be added. This is
     # done by reshaping to the following shape
     shape = [1] * data.ndim
-    shape[axis] = data.shape[axis]
+    # for a in axis:
+    #     shape[a] = sh_channels
+    shape[axis[0]] = sh_channels
 
     data_renorm = data.copy()
-    # normalize to 'n3d'
+    # normalize to 'N3D'
     if current_norm == 'NM':
         data_renorm /= np.sqrt(4*np.pi)
     if current_norm == 'SN3D':
@@ -364,6 +370,9 @@ def change_channel_convention(data, current, target, axis):
     data : ndarray
         Data with changed channel convention
     """
+    if isinstance(axis, int):
+        axis = (axis,)
+
     if current not in ["ACN", "FuMa"]:
         raise ValueError("Invalid current channel convention. Has to be "
                          f"'ACN' or 'FuMa', but is {current}")
@@ -375,7 +384,9 @@ def change_channel_convention(data, current, target, axis):
     if current == target:
         return data
 
-    acn = np.arange(data.shape[axis])
+    sh_channels = data.shape[axis[0]]
+    acn = np.arange(sh_channels)
+
     if current == 'ACN':
         n, m = acn_to_nm(acn)
         idx = nm_to_fuma(n, m)
@@ -383,7 +394,13 @@ def change_channel_convention(data, current, target, axis):
         n, m = fuma_to_nm(acn)
         idx = nm_to_acn(n, m)
 
-    return np.take(data, idx, axis=axis)
+    # return np.take(data, idx, axis=axis)
+    data_out = data.copy()
+
+    for a in axis:
+        data_out = np.take(data_out, idx, axis=a)
+
+    return data_out
 
 
 def spherical_harmonic_basis(
