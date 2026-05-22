@@ -8,6 +8,7 @@ import numpy as np
 import scipy.spatial as sspat
 import pyfar as pf
 from matplotlib import colors
+from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.mplot3d import Axes3D
 __all__ = [Axes3D]
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -99,28 +100,29 @@ def scatter(coordinates, ax=None, style='light', **kwargs):
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
 
-        # calculate centroid of sampling
-        cartesian = coordinates.cartesian
-        centroid = np.mean(cartesian, axis=tuple(range(cartesian.ndim - 1)))
+        if coordinates.csize != 1:
+            x_range = np.ptp(coordinates.x)
+            y_range = np.ptp(coordinates.y)
+            z_range = np.ptp(coordinates.z)
 
-        # get maximum span over x, y and z coordinates
-        max_span = np.max([np.ptp(coordinates.x),
-                           np.ptp(coordinates.y),
-                           np.ptp(coordinates.z)])
+            ax.set_box_aspect([x_range, y_range, z_range])
 
-        # define ax limits
-        lower, upper = centroid - max_span/2, centroid + max_span/2
+            max_range = max(x_range, y_range, z_range)
 
-        # exception: single point
-        if coordinates.cshape == (1,):
-            lower = centroid * 0.9
-            upper = centroid * 1.1
+            target_tick_spacing = max_range / 10
 
-        ax.set_xlim(lower[0], upper[0])
-        ax.set_ylim(lower[1], upper[1])
-        ax.set_zlim(lower[2], upper[2])
+            x_nbins = max(1, int(np.ceil(x_range / target_tick_spacing)))
+            y_nbins = max(1, int(np.ceil(y_range / target_tick_spacing)))
+            z_nbins = max(1, int(np.ceil(z_range / target_tick_spacing)))
 
-        ax.set_box_aspect((1, 1, 1))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=x_nbins,
+                                                   min_n_ticks=1))
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=y_nbins,
+                                                   min_n_ticks=1))
+            ax.zaxis.set_major_locator(MaxNLocator(nbins=z_nbins,
+                                                   min_n_ticks=1))
+        else:
+            ax.set_box_aspect([1, 1, 1])
 
     return ax
 
