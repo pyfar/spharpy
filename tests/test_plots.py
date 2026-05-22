@@ -79,6 +79,27 @@ def test_sampling_scatter(function):
         function('coords')
 
 
+@pytest.mark.parametrize('slice_',
+                         [slice(0, 1),
+                          slice(0, 2),
+                          slice(0, 250)])
+def test_subsampling_scatter(slice_):
+    """Test scatter plot for subsampling and single point."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    function = sp.plot.scatter
+
+    start = slice_.start
+    stop = slice_.stop
+
+    # do plotting
+    filename = f'{function.__name__}_slice_{start}_{stop}'
+    create_figure()
+    function(coords[slice_])
+    save_and_compare(
+        create_baseline, baseline_path, output_path, filename,
+        file_type, compare_output)
+
+
 @pytest.mark.parametrize('function', [
     (sp.plot.balloon),
     (sp.plot.balloon_wireframe),
