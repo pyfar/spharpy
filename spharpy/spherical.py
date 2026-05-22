@@ -318,8 +318,9 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     # sure that the factors can be applied, new axes must be added. This is
     # done by reshaping to the following shape
     shape = [1] * data.ndim
-    for a in axis:
-        shape[a] = sh_channels
+    # for a in axis:
+    #     shape[a] = sh_channels
+    shape[axis[0]] = sh_channels
 
     data_renorm = data.copy()
     # normalize to 'N3D'
