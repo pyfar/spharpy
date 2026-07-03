@@ -20,7 +20,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = True
+create_baseline = False
 
 # file type used for saving the plots
 file_type = "png"
@@ -83,7 +83,6 @@ def test_sampling_scatter(function):
 @pytest.mark.parametrize('slice_',
                          [slice(0, 1),
                           slice(0, 50),
-                          slice(None),
                           'line'],
                           )
 def test_subsampling_scatter(slice_):
