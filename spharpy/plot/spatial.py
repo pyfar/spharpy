@@ -114,15 +114,18 @@ def scatter(coordinates, ax=None, style='light', **kwargs):
 
             ax.set_box_aspect(aspect)
 
-            target_tick_spacing = max_range / 10 if max_range > 0 else 1
+            target_tick_spacing = max_range / 10
 
-            x_nbins = max(1, int(np.ceil(x_range / target_tick_spacing))) if target_tick_spacing else 1
-            y_nbins = max(1, int(np.ceil(y_range / target_tick_spacing))) if target_tick_spacing else 1
-            z_nbins = max(1, int(np.ceil(z_range / target_tick_spacing))) if target_tick_spacing else 1
+            x_nbins = max(1, int(np.ceil(x_range / target_tick_spacing)))
+            y_nbins = max(1, int(np.ceil(y_range / target_tick_spacing)))
+            z_nbins = max(1, int(np.ceil(z_range / target_tick_spacing)))
 
-            ax.xaxis.set_major_locator(MaxNLocator(nbins=x_nbins, min_n_ticks=1))
-            ax.yaxis.set_major_locator(MaxNLocator(nbins=y_nbins, min_n_ticks=1))
-            ax.zaxis.set_major_locator(MaxNLocator(nbins=z_nbins, min_n_ticks=1))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=x_nbins,
+                                                   min_n_ticks=1))
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=y_nbins,
+                                                   min_n_ticks=1))
+            ax.zaxis.set_major_locator(MaxNLocator(nbins=z_nbins,
+                                                   min_n_ticks=1))
         else:
             ax.set_box_aspect([1, 1, 1])
 
