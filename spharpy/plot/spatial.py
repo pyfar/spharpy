@@ -105,26 +105,28 @@ def scatter(coordinates, ax=None, style='light', **kwargs):
             y_range = np.ptp(coordinates.y)
             z_range = np.ptp(coordinates.z)
 
-            ax.set_box_aspect([x_range, y_range, z_range])
-
             max_range = max(x_range, y_range, z_range)
 
-            target_tick_spacing = max_range / 10
+            # avoid zero-length aspect components (degenerate axes)
+            min_extent = max_range * 0.05
+            aspect = [r if r > 0 else min_extent
+                    for r in (x_range, y_range, z_range)]
 
-            x_nbins = max(1, int(np.ceil(x_range / target_tick_spacing)))
-            y_nbins = max(1, int(np.ceil(y_range / target_tick_spacing)))
-            z_nbins = max(1, int(np.ceil(z_range / target_tick_spacing)))
+            ax.set_box_aspect(aspect)
 
-            ax.xaxis.set_major_locator(MaxNLocator(nbins=x_nbins,
-                                                   min_n_ticks=1))
-            ax.yaxis.set_major_locator(MaxNLocator(nbins=y_nbins,
-                                                   min_n_ticks=1))
-            ax.zaxis.set_major_locator(MaxNLocator(nbins=z_nbins,
-                                                   min_n_ticks=1))
+            target_tick_spacing = max_range / 10 if max_range > 0 else 1
+
+            x_nbins = max(1, int(np.ceil(x_range / target_tick_spacing))) if target_tick_spacing else 1
+            y_nbins = max(1, int(np.ceil(y_range / target_tick_spacing))) if target_tick_spacing else 1
+            z_nbins = max(1, int(np.ceil(z_range / target_tick_spacing))) if target_tick_spacing else 1
+
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=x_nbins, min_n_ticks=1))
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=y_nbins, min_n_ticks=1))
+            ax.zaxis.set_major_locator(MaxNLocator(nbins=z_nbins, min_n_ticks=1))
         else:
             ax.set_box_aspect([1, 1, 1])
 
-    return ax
+        return ax
 
 
 def _triangulation_sphere(sampling, data):

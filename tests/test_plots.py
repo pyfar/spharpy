@@ -2,6 +2,7 @@ import os
 import pytest
 import spharpy as sp
 from pyfar.testing.plot_utils import create_figure, save_and_compare
+from pyfar import Coordinates
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -19,7 +20,7 @@ Important:
   of the plot function (plot behavior) that changed.
 """
 # global parameters -----------------------------------------------------------
-create_baseline = False
+create_baseline = True
 
 # file type used for saving the plots
 file_type = "png"
@@ -81,20 +82,35 @@ def test_sampling_scatter(function):
 
 @pytest.mark.parametrize('slice_',
                          [slice(0, 1),
-                          slice(0, 2),
-                          slice(0, 250)])
+                          slice(0, 50),
+                          slice(None),
+                          'line'],
+                          )
 def test_subsampling_scatter(slice_):
     """Test scatter plot for subsampling and single point."""
-    coords = sp.samplings.equal_area(n_max=0, n_points=500)
+    coords = sp.samplings.equal_area(0, n_points=100)
     function = sp.plot.scatter
 
-    start = slice_.start
-    stop = slice_.stop
+    if slice_ == 'line':
+        x = np.arange(0, 20)
+        y = np.zeros_like(x)
+        z = y.copy()
 
-    # do plotting
-    filename = f'{function.__name__}_slice_{start}_{stop}'
-    create_figure()
-    function(coords[slice_])
+        line_array = Coordinates.from_cartesian(x, y, z)
+
+        # do plotting
+        filename = f'{function.__name__}_line_sampling'
+        create_figure()
+        function(line_array)
+    else:
+        start = slice_.start
+        stop = slice_.stop
+
+        # do plotting
+        filename = f'{function.__name__}_slice_{start}_{stop}'
+        create_figure()
+        function(coords[slice_])
+
     save_and_compare(
         create_baseline, baseline_path, output_path, filename,
         file_type, compare_output)
