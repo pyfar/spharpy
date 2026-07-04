@@ -14,6 +14,7 @@ Fixed
 
 - Some samplings from the `spharpy.samplings` module could not be used because the files containing the data were not included in the wheel. This is now fixed.
 - Creating a SamplingSphere without passing arguments now returns an empty object instead of an object containing NaN values, similar to the pyfar.Coordinates class (PR #322)
+- Fixed tick formatting in `spharpy.plot.scatter`, ticks are now adapting to sampling geometry. (PR #319)
 
 
 Documentation
