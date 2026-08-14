@@ -2,8 +2,8 @@
 History
 =======
 
-unreleased
-----------
+1.0.1 (2026-08-14)
+------------------
 
 Changed
 ^^^^^^^
@@ -21,6 +21,10 @@ Documentation
 ^^^^^^^^^^^^^
 - Update documentation for ``spharpy.spherical.spherical_harmonic_basis`` and ``spharpy.spherical.spherical_harmonic_basis_real`` and add link to spherical harmonic definitions page (PR #317)
 
+Maintenance
+^^^^^^^^^^^
+- Create CircleCI job for testing against the binary (wheel) distribution (PR #310)
+- Require Sphinx>=0.8.0,<9.0.0 for building the documentation (PR #325)
 
 1.0.0 (2026-03-16)
 ------------------
