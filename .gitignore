@@ -111,10 +111,6 @@ venv.bak/
 # macOS
 .DS_Store
 
-# external data that is loaded from the web
-spharpy/samplings/_eqsp/samplings_extremal*
-spharpy/samplings/_eqsp/samplings_t_design*
-
 # workaround for failing test discovery in vscode
 tests/*/__init__.py
 tests/private/
@@ -125,7 +121,10 @@ docs/_static/favicon.ico
 docs/_static/header.rst
 docs/_static/css/custom.css
 docs/_static/js/custom.js
+docs/resources/logos/pyfar_logos_fixed_size_pyfar.png
 docs/resources/logos/pyfar_logos_fixed_size_spharpy.png
 
-# ignore plot output
+# custom
+spharpy/samplings/_eqsp/samplings_extremal*
+spharpy/samplings/_eqsp/samplings_t_design*
 tests/test_plot_data/output/
