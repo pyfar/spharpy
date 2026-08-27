@@ -43,6 +43,7 @@ Modules
    modules/spharpy.special
    modules/spharpy.spherical
    modules/spharpy.transforms
+   modules/spharpy.sht
 
 
 .. _examples gallery: https://pyfar-gallery.readthedocs.io/en/latest/examples_gallery.html
