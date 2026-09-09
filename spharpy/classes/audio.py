@@ -234,6 +234,10 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     @property
     def caxis_spherical_harmonics(self):
         """Get the spherical harmonic axis"""
+
+        if len(self._caxis_spherical_harmonics) == 1:
+            return self._caxis_spherical_harmonics[0]
+
         return self._caxis_spherical_harmonics
 
     @_SphericalHarmonicBase.basis_type.setter
@@ -324,7 +328,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
             if abs(caxis) > data.ndim:
                 raise ValueError(
                     f"caxis_spherical_harmonics "
-                    f"({caxis_spherical_harmonics}) exceeds the number "
+                    f"({caxis}) exceeds the number "
                     f"of dimensions of data ({data.ndim})")
 
         data = _atleast_3d_first_dimension(data)
@@ -476,7 +480,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
             if abs(caxis) > data.ndim:
                 raise ValueError(
                     f"caxis_spherical_harmonics "
-                    f"({caxis_spherical_harmonics}) exceeds the number "
+                    f"({caxis}) exceeds the number "
                     f"of dimensions of data ({data.ndim})")
 
         data = _atleast_3d_first_dimension(data)
@@ -672,7 +676,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             if abs(caxis) > data.ndim:
                 raise ValueError(
                     f"caxis_spherical_harmonics "
-                    f"({caxis_spherical_harmonics}) exceeds the number "
+                    f"({caxis}) exceeds the number "
                     f"of dimensions of data ({data.ndim})")
 
         data = _atleast_3d_first_dimension(data)
