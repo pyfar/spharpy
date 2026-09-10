@@ -140,7 +140,7 @@ def test_spherical_harmonic_signal_init_non_default_axis():
 
 
 def test_default_sh_caxis_getter():
-    """Test sh_caxis getter"""
+    """Test sh_caxis getter."""
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],
                      [1., 2., 3.],

@@ -233,7 +233,7 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
     @property
     def caxis_spherical_harmonics(self):
-        """Get the spherical harmonic axis"""
+        """Get the spherical harmonic axis."""
 
         if len(self._caxis_spherical_harmonics) == 1:
             return self._caxis_spherical_harmonics[0]

@@ -293,7 +293,7 @@ class SphericalHarmonicRotation(Rotation):
 
         # move SH axis to front
         data = np.moveaxis(data, sh_caxis, 0)
-        
+
         # apply rotation
         rotated_data = np.tensordot(M, data, axes=(1, 0))
 

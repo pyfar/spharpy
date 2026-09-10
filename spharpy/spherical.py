@@ -318,8 +318,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     # sure that the factors can be applied, new axes must be added. This is
     # done by reshaping to the following shape
     shape = [1] * data.ndim
-    # for a in axis:
-    #     shape[a] = sh_channels
+
     shape[axis[0]] = sh_channels
 
     data_renorm = data.copy()
@@ -394,7 +393,6 @@ def change_channel_convention(data, current, target, axis):
         n, m = fuma_to_nm(acn)
         idx = nm_to_acn(n, m)
 
-    # return np.take(data, idx, axis=axis)
     data_out = data.copy()
 
     for a in axis:
