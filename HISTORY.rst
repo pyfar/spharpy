@@ -2,6 +2,30 @@
 History
 =======
 
+1.0.1 (2026-08-14)
+------------------
+
+Changed
+^^^^^^^
+- Updated radius for eigenmike em32 sampling to 42 mm (PR #323)
+
+Fixed
+^^^^^
+
+- Some samplings from the `spharpy.samplings` module could not be used because the files containing the data were not included in the wheel. This is now fixed.
+- Creating a SamplingSphere without passing arguments now returns an empty object instead of an object containing NaN values, similar to the pyfar.Coordinates class (PR #322)
+- Fixed tick formatting in `spharpy.plot.scatter`, ticks are now adapting to sampling geometry. (PR #319)
+
+
+Documentation
+^^^^^^^^^^^^^
+- Update documentation for ``spharpy.spherical.spherical_harmonic_basis`` and ``spharpy.spherical.spherical_harmonic_basis_real`` and add link to spherical harmonic definitions page (PR #317)
+
+Maintenance
+^^^^^^^^^^^
+- Create CircleCI job for testing against the binary (wheel) distribution (PR #310)
+- Require Sphinx>=0.8.0,<9.0.0 for building the documentation (PR #325)
+
 1.0.0 (2026-03-16)
 ------------------
 

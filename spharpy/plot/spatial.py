@@ -8,6 +8,7 @@ import numpy as np
 import scipy.spatial as sspat
 import pyfar as pf
 from matplotlib import colors
+from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.mplot3d import Axes3D
 __all__ = [Axes3D]
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -99,12 +100,36 @@ def scatter(coordinates, ax=None, style='light', **kwargs):
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
 
-        ax.set_box_aspect([
-            np.ptp(coordinates.x),
-            np.ptp(coordinates.y),
-            np.ptp(coordinates.z)])
+        if coordinates.csize != 1:
+            x_range = np.ptp(coordinates.x)
+            y_range = np.ptp(coordinates.y)
+            z_range = np.ptp(coordinates.z)
 
-    return ax
+            max_range = max(x_range, y_range, z_range)
+
+            # avoid zero-length aspect components (degenerate axes)
+            min_extent = max_range * 0.05
+            aspect = [r if r > 0 else min_extent
+                    for r in (x_range, y_range, z_range)]
+
+            ax.set_box_aspect(aspect)
+
+            target_tick_spacing = max_range / 10
+
+            x_nbins = max(1, int(np.ceil(x_range / target_tick_spacing)))
+            y_nbins = max(1, int(np.ceil(y_range / target_tick_spacing)))
+            z_nbins = max(1, int(np.ceil(z_range / target_tick_spacing)))
+
+            ax.xaxis.set_major_locator(
+                MaxNLocator(nbins=x_nbins, min_n_ticks=1))
+            ax.yaxis.set_major_locator(
+                MaxNLocator(nbins=y_nbins, min_n_ticks=1))
+            ax.zaxis.set_major_locator(
+                MaxNLocator(nbins=z_nbins, min_n_ticks=1))
+        else:
+            ax.set_box_aspect([1, 1, 1])
+
+        return ax
 
 
 def _triangulation_sphere(sampling, data):
