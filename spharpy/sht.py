@@ -155,8 +155,8 @@ def isht(sh_signal, coordinates):
                SphericalHarmonicsFrequencyData
                The spherical harmonic signal for which the inverse spherical
                harmonic transform is computed.
-    coordinates: :class:`spharpy.samplings.Coordinates`, :doc:`pf.Coordinates
-                 <pyfar:classes/pyfar.coordinates>`
+    coordinates: :class:`spharpy.samplings.Coordinates`,
+                 :doc:`pf.Coordinates <pyfar:classes/pyfar.coordinates>`
                  Coordinates for which the inverse SH transform is computed
 
     Returns
