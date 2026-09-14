@@ -320,6 +320,10 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
             raise ValueError(
                 "Complex spherical harmonic basis requires "
                 "complex time data. Set is_complex=True.")
+        if abs(caxis_spherical_harmonics) > data.ndim:
+            raise ValueError(
+                    f"caxis_spherical_harmonics ({caxis_spherical_harmonics}) "
+                    f"exceeds the number of dimensions of data ({data.ndim})")
 
         if isinstance(caxis_spherical_harmonics, int):
             caxis_spherical_harmonics = (caxis_spherical_harmonics, )
