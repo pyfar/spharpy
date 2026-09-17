@@ -226,3 +226,20 @@ def test_init_freq_data_caxis_spherical_harmonics(caxis_sh):
 
     expected = (caxis_sh,) if isinstance(caxis_sh, int) else caxis_sh
     assert freq_data.caxis_spherical_harmonics == expected
+
+
+def test_transpose_time_data():
+    data = np.ones((3, 4, 256))
+    times = range(256)
+    caxis_sh = (-1,)
+
+    time_data = SphericalHarmonicTimeData(
+            data, times,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", caxis_spherical_harmonics=caxis_sh)
+
+    time_data_transposed = time_data.transpose()
+    data_transposed = np.moveaxis(time_data.time, 0, 1)
+
+    assert np.allclose(data_transposed, time_data_transposed.time)
+    assert time_data_transposed.caxis_spherical_harmonics == (-2, )

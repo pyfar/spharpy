@@ -289,6 +289,53 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         else:
             _SphericalHarmonicBase.basis_type.fset(self, value)
 
+    def transpose(self, *axes):
+        """Transpose time/frequency data and return copy of the audio object.
+
+        Parameters
+        ----------
+        axes : empty, ``None``, iterable of ints, or n ints
+            Define how the
+            :doc:`caxes<gallery:gallery/interactive/pyfar_audio_objects>`
+            are ordered in the transposed audio object.
+            Note that the last dimension of the data in the audio object
+            always contains the time samples or frequency bins and can not
+            be transposed.
+
+            empty (default) or ``None``
+                reverses the order of ``self.caxes``.
+            iterable of ints
+                `i` in the `j`-th place of the interable means
+                that the `i`-th caxis becomes transposed object's `j`-th caxis.
+            n ints
+                same as 'iterable of ints'.
+        """
+        cdim = len(self.cshape)
+
+        # get transposed axes
+        axes_t = axes
+        if hasattr(axes_t, '__iter__'):
+            axes_t = axes_t[0] if len(axes_t) == 1 else axes_t
+        if axes_t is None or len(axes_t) == 0:
+            axes_t = tuple(range(cdim))[::-1]
+        else:
+            axes_t = tuple(a % cdim if a < 0 else a for a in axes_t)
+
+        transposed = super().transpose(*axes)
+
+        new_caxis_sh = []
+        for c in self._caxis_spherical_harmonics:
+            old_axis_positive = c % cdim
+            new_axis_positive = axes_t.index(old_axis_positive)
+            new_caxis_sh.append(new_axis_positive - cdim)
+
+        _assert_valid_caxis_spherical_harmonics(transposed._data, new_caxis_sh)
+        _assert_valid_number_of_sh_channels(
+            transposed._data.shape, new_caxis_sh)
+
+        transposed._caxis_spherical_harmonics = tuple(new_caxis_sh)
+        return transposed
+
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     """
@@ -432,7 +479,8 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
 
         return _convert_from_standard_definition(TimeData.time.fget(self),
                                                  self.normalization,
-                                                 self.channel_convention)
+                                                 self.channel_convention,
+                                                 self._caxis_spherical_harmonics)
 
     @time.setter
     def time(self, value):
@@ -443,7 +491,8 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
             value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention,
+            self._caxis_spherical_harmonics)
         TimeData.time.fset(self, value)
 
 
