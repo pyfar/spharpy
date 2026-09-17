@@ -289,6 +289,54 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         else:
             _SphericalHarmonicBase.basis_type.fset(self, value)
 
+    def reshape(self, newshape):
+        """
+        Return reshaped copy of the audio object. Axes containing the
+        spherical harmonics coefficients can not be reshaped.
+
+        Parameters
+        ----------
+        newshape : int, tuple
+            new `cshape` of the audio object. One entry of newshape
+            dimension can be ``-1``. In this case, the value is inferred
+            from the remaining dimensions.
+
+        Returns
+        -------
+        reshaped : Signal, FrequencyData, TimeData
+            reshaped copy of the audio object.
+
+        Notes
+        -----
+        The number of samples and frequency bins always remains the same.
+
+        """
+
+        old_cshape = self.cshape
+        reshaped = super().reshape(newshape)
+        new_cshape = reshaped.cshape
+
+        # check if there are axes with valid sh_channels
+        # and determine new caxis_spherical_harmonics
+        new_caxis_sh = []
+        for caxis in self._caxis_spherical_harmonics:
+            n_sh_channels = old_cshape[caxis]
+            if n_sh_channels not in new_cshape:
+                raise ValueError(
+                    "The requested new shape does not leave a "
+                    "channel axis to hold the spherical "
+                    "harmonic channels.")
+
+            # determine first matching new axis
+            new_axis = new_cshape.index(n_sh_channels)
+            new_caxis_sh.append(new_axis - len(new_cshape))
+
+        _assert_valid_number_of_sh_channels(
+            new_cshape + (1,), tuple(new_caxis_sh))
+
+        reshaped._caxis_spherical_harmonics = tuple(new_caxis_sh)
+        return reshaped
+
     def transpose(self, *axes):
         """Transpose time/frequency data and return copy of the audio object.
 
@@ -477,10 +525,9 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     def time(self):
         """Return or set the time data."""
 
-        return _convert_from_standard_definition(TimeData.time.fget(self),
-                                                 self.normalization,
-                                                 self.channel_convention,
-                                                 self._caxis_spherical_harmonics)
+        return _convert_from_standard_definition(
+            TimeData.time.fget(self), self.normalization,
+            self.channel_convention, self._caxis_spherical_harmonics)
 
     @time.setter
     def time(self, value):

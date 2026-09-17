@@ -288,17 +288,16 @@ class SphericalHarmonicRotation(Rotation):
         D = self.as_spherical_harmonic_matrix(target_definition)
         M = np.linalg.multi_dot(list(D)) if D.ndim > 2 else D
 
-        data = target._data
-        sh_caxis = tuple(x - 1 for x in target.caxis_spherical_harmonics)
+        sh_caxes = tuple(x - 1 for x in target.caxis_spherical_harmonics)
 
-        # move SH axis to front
-        data = np.moveaxis(data, sh_caxis, 0)
-
-        # apply rotation
-        rotated_data = np.tensordot(M, data, axes=(1, 0))
-
-        # move SH axis back to original position
-        rotated_data = np.moveaxis(rotated_data, 0, sh_caxis)
+        rotated_data = target._data.copy()
+        for axis in sh_caxes:
+            # move current SH axis to front
+            rotated_data = np.moveaxis(rotated_data, axis, 0)
+            # apply rotation
+            rotated_data = np.tensordot(M, rotated_data, axes=(1, 0))
+            # move SH axis back to its original position
+            rotated_data = np.moveaxis(rotated_data, 0, axis)
 
         rotated = target.copy()
         rotated._data = rotated_data

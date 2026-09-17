@@ -243,3 +243,43 @@ def test_transpose_time_data():
 
     assert np.allclose(data_transposed, time_data_transposed.time)
     assert time_data_transposed.caxis_spherical_harmonics == (-2, )
+
+
+def test_reshape_invalid_new_caxis():
+    data = np.ones((4, 3, 256))
+    times = range(256)
+    caxis_sh = (-2,)
+
+    time_data = SphericalHarmonicTimeData(
+        data, times, basis_type='real', normalization='SN3D',
+        channel_convention="ACN", condon_shortley=False,
+        comment="", caxis_spherical_harmonics=caxis_sh)
+
+    with pytest.raises(ValueError,
+                       match=re.escape("The requested new shape does not "
+                                       "leave a channel axis to hold the "
+                                       "spherical harmonic channels.")):
+        time_data.reshape((12,))
+
+
+def test_reshape_valid_new_caxis_sh():
+    data = np.ones((4, 2, 8, 256))
+    times = range(256)
+    caxis_sh = (-3,)
+
+    time_data = SphericalHarmonicTimeData(
+        data, times, basis_type='real', normalization='SN3D',
+        channel_convention="ACN", condon_shortley=False,
+        comment="", caxis_spherical_harmonics=caxis_sh)
+
+    # reshape such that the non sh axis got reshaped
+    reshaped = time_data.reshape((4, 16))
+
+    # check if caxis_sh was updated properly
+    assert reshaped.caxis_spherical_harmonics == (-2, )
+
+    # check if new cshape is as desired
+    assert reshaped.cshape == (4, 16)
+
+    # original object must stay untouched (reshape returns a copy)
+    assert time_data.cshape == (4, 2, 8)
