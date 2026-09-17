@@ -114,14 +114,44 @@ def test_sh_freq_data_from_sh_definition():
     assert freq_data == freq_data_def
 
 
+def test_init_sh_time_data_invalid_sh_caxis():
+    data = np.ones((1, 4, 4))
+    times = [1, 2, 3, 4]
+
+    caxis_sh = (1, 'b', 'c')
+    with pytest.raises(ValueError,
+                       match=re.escape("caxis_spherical_harmonics must "
+                                       "contain only integers, but "
+                                       f"got {type(caxis_sh[1]).__name__}.")):
+        SphericalHarmonicTimeData(
+            data, times,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", caxis_spherical_harmonics=caxis_sh)
+
+
+def test_sh_freq_data_invalid_sh_caxis():
+    data = np.ones((1, 4, 4), dtype=complex)
+    frequencies = [1, 2, 3, 4]
+
+    caxis_sh = (1, 'b', 'c')
+    with pytest.raises(ValueError,
+                       match=re.escape("caxis_spherical_harmonics must "
+                                       "contain only integers, but "
+                                       f"got {type(caxis_sh[1]).__name__}.")):
+        SphericalHarmonicFrequencyData(
+            data, frequencies,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", caxis_spherical_harmonics=caxis_sh)
+
+
 def test_init_sh_time_data_wrong_sh_caxis():
     data = np.ones((1, 4, 4))
     times = [1, 2, 3, 4]
 
     with pytest.raises(ValueError,
-                       match=re.escape("caxis_spherical_harmonics (-4) "
-                                       "exceeds the number of dimensions of "
-                                       "data (3)")):
+                       match=re.escape("caxis_spherical_harmonics contains "
+                                       "invalid axis. Axis must be in the "
+                                       "range [-3, 3], but is -4.")):
         SphericalHarmonicTimeData(
             data, times,  basis_type='real', normalization='SN3D',
             channel_convention="ACN", condon_shortley=False,
@@ -133,10 +163,66 @@ def test_init_sh_frequency_data_wrong_sh_caxis():
     frequencies = [1, 2, 3, 4]
 
     with pytest.raises(ValueError,
-                       match=re.escape("caxis_spherical_harmonics (-4) "
-                                       "exceeds the number of dimensions of "
-                                       "data (3)")):
+                       match=re.escape("caxis_spherical_harmonics contains "
+                                       "invalid axis. Axis must be in the "
+                                       "range [-3, 3], but is -4.")):
         SphericalHarmonicFrequencyData(
             data, frequencies, basis_type='real', normalization='SN3D',
             channel_convention="ACN", condon_shortley=False,
             comment="", caxis_spherical_harmonics=-4)
+
+
+def test_init_time_data_default_caxis_spherical_harmonics():
+    """Test default caxis_sh and getter."""
+    data = np.ones((1, 4, 4))
+    times = [1, 2, 3, 4]
+
+    time_data = SphericalHarmonicTimeData(
+            data, times,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="")
+    assert time_data.caxis_spherical_harmonics == (-1,)
+
+
+def test_init_freq_data_default_caxis_spherical_harmonics():
+    """Test default caxis_sh and getter."""
+    data = np.ones((1, 4, 4), dtype=complex)
+    frequencies = [1, 2, 3, 4]
+
+    freq_data = SphericalHarmonicFrequencyData(
+            data, frequencies, basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="")
+    assert freq_data.caxis_spherical_harmonics == (-1,)
+
+
+@pytest.mark.parametrize("caxis_sh", [-1, (-1,), (-2,)])
+def test_init_time_data_caxis_spherical_harmonics(caxis_sh):
+    """Test caxis_sh init and getter."""
+
+    data = np.ones((1, 4, 4))
+    times = [1, 2, 3, 4]
+
+    time_data = SphericalHarmonicTimeData(
+            data, times,  basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", caxis_spherical_harmonics=caxis_sh)
+
+    expected = (caxis_sh,) if isinstance(caxis_sh, int) else caxis_sh
+    assert time_data.caxis_spherical_harmonics == expected
+
+
+@pytest.mark.parametrize("caxis_sh", [-1, (-1,), (-2,)])
+def test_init_freq_data_caxis_spherical_harmonics(caxis_sh):
+    """Test caxis_sh init and getter."""
+
+    data = np.ones((1, 4, 4), dtype=complex)
+    frequencies = [1, 2, 3, 4]
+
+    freq_data = SphericalHarmonicFrequencyData(
+            data, frequencies, basis_type='real', normalization='SN3D',
+            channel_convention="ACN", condon_shortley=False,
+            comment="", caxis_spherical_harmonics=caxis_sh)
+
+    expected = (caxis_sh,) if isinstance(caxis_sh, int) else caxis_sh
+    assert freq_data.caxis_spherical_harmonics == expected

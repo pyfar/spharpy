@@ -126,31 +126,39 @@ def test_nmax_getter():
     assert isinstance(signal.n_max, int)
 
 
-def test_spherical_harmonic_signal_init_non_default_axis():
-    """Test init SphercalHarmonicsSignal."""
-    sh_coeffs = np.zeros((4, 2, 16))
-    signal = SphericalHarmonicSignal(sh_coeffs,
-                                     44100, basis_type='real',
-                                     channel_convention='ACN',
-                                     normalization='N3D',
-                                     condon_shortley=False,
-                                     caxis_spherical_harmonics=-2)
-    assert isinstance(signal, SphericalHarmonicSignal)
-    assert signal.caxis_spherical_harmonics == -2
-
-
-def test_default_sh_caxis_getter():
-    """Test sh_caxis getter."""
+def test_init_default_caxis_spherical_harmonics():
+    """Test default caxis_sh and getter."""
     data = np.array([[1., 2., 3.],
                      [1., 2., 3.],
                      [1., 2., 3.],
                      [1., 2., 3.]]).reshape(1, 4, 3)
+
     signal = SphericalHarmonicSignal(data,
                                      44100, basis_type='real',
                                      channel_convention='ACN',
                                      normalization='N3D',
                                      condon_shortley=False)
-    assert signal.caxis_spherical_harmonics == -1
+    assert signal.caxis_spherical_harmonics == (-1,)
+
+
+@pytest.mark.parametrize("caxis_sh", [-1, (-1,), (-2,)])
+def test_init_caxis_spherical_harmonics(caxis_sh):
+    """Test caxis_sh init and getter."""
+
+    data = np.array([[1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.],
+                     [1., 2., 3.]]).reshape(1, 4, 3)
+
+    signal = SphericalHarmonicSignal(data,
+                                     44100, basis_type="real",
+                                     channel_convention="ACN",
+                                     normalization="N3D",
+                                     condon_shortley=False,
+                                     caxis_spherical_harmonics=caxis_sh)
+
+    expected = (caxis_sh,) if isinstance(caxis_sh, int) else caxis_sh
+    assert signal.caxis_spherical_harmonics == expected
 
 
 def test_multichannel_spherical_harmonic_caxis_sh_getter():
@@ -322,9 +330,9 @@ def test_sh_signal_init_wrong_caxis_spherical_harmonics():
                      [1., 2., 3.]]).reshape(1, 4, 3)
 
     with pytest.raises(ValueError,
-                       match=re.escape("caxis_spherical_harmonics (-4) "
-                                       "exceeds the number of dimensions of "
-                                       "data (3)")):
+                       match=re.escape("caxis_spherical_harmonics contains "
+                                       "invalid axis. Axis must be in the "
+                                       "range [-3, 3], but is -4.")):
         SphericalHarmonicSignal(data,
                                 44100, basis_type='real',
                                 channel_convention='ACN',

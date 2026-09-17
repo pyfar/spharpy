@@ -271,7 +271,7 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     target_norm : str
         Desired normalization. Valid normalizations are `"N3D"`, `"NM"`
         `"maxN"`, `"SN3D"`, or `"SNM"`.
-    axis : integer
+    axis : int, tuple
         Axis along which the renormalization should be applied. The axis
         contains the spherical harmonics coefficients and must hence have
         :math:`Q = (N+1)^2` channels with :math:`N` being the spherical
@@ -307,42 +307,46 @@ def renormalize(data, channel_convention, current_norm, target_norm, axis):
     if current_norm == target_norm:
         return data
 
-    acn = np.arange(data.shape[axis[0]])
+    acn = np.arange(sh_channels)
 
     if channel_convention == "FuMa":
         orders, _ = fuma_to_nm(acn)
     else:
         orders, _ = acn_to_nm(acn)
 
-    # One (re)normalization factor is computed per Ambisonics channel. To make
-    # sure that the factors can be applied, new axes must be added. This is
-    # done by reshaping to the following shape
-    shape = [1] * data.ndim
+    # calculate one renormalization factor per sh channel
+    factor = np.ones(sh_channels, dtype=data.dtype)
 
-    shape[axis[0]] = sh_channels
-
-    data_renorm = data.copy()
     # normalize to 'N3D'
     if current_norm == 'NM':
-        data_renorm /= np.sqrt(4*np.pi)
+        factor /= np.sqrt(4*np.pi)
     if current_norm == 'SN3D':
-        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
+        factor /= n3d_to_sn3d_norm(orders)
     if current_norm == 'SNM':
-        data_renorm /= n3d_to_sn3d_norm(orders).reshape(shape)
-        data_renorm /= np.sqrt(4*np.pi)
+        factor /= n3d_to_sn3d_norm(orders)
+        factor /= np.sqrt(4*np.pi)
     if current_norm == 'maxN':
-        data_renorm /= n3d_to_maxn(acn).reshape(shape)
+        factor /= n3d_to_maxn(acn)
 
     # convert to target norm
     if target_norm == "NM":
-        data_renorm *= np.sqrt(4*np.pi)
+        factor *= np.sqrt(4*np.pi)
     if target_norm == "SN3D":
-        data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
+        factor *= n3d_to_sn3d_norm(orders)
     if target_norm == "SNM":
-        data_renorm *= n3d_to_sn3d_norm(orders).reshape(shape)
-        data_renorm *= np.sqrt(4*np.pi)
+        factor *= n3d_to_sn3d_norm(orders)
+        factor *= np.sqrt(4*np.pi)
     if target_norm == 'maxN':
-        data_renorm *= n3d_to_maxn(acn).reshape(shape)
+        factor *= n3d_to_maxn(acn)
+
+    data_renorm = data.copy()
+
+    # apply factor for each SH axis
+    for a in axis:
+        shape = [1] * data.ndim
+        shape[a] = sh_channels
+
+        data_renorm *= factor.reshape(shape)
 
     return data_renorm
 
@@ -361,7 +365,7 @@ def change_channel_convention(data, current, target, axis):
         Current channel convention. Valid conventions are `"ACN"` or `"FuMa"`.
     target : str
         Desired channel convention. Valid conventions are `"ACN"` or `"FuMa"`.
-    axis : integer
+    axis : int, tuple
         Axis along which the channel convention should be changed
 
     Returns

@@ -289,7 +289,7 @@ class SphericalHarmonicRotation(Rotation):
         M = np.linalg.multi_dot(list(D)) if D.ndim > 2 else D
 
         data = target._data
-        sh_caxis = target.caxis_spherical_harmonics - 1
+        sh_caxis = tuple(x - 1 for x in target.caxis_spherical_harmonics)
 
         # move SH axis to front
         data = np.moveaxis(data, sh_caxis, 0)
