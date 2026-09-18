@@ -55,13 +55,17 @@ def _atleast_3d_first_dimension(data):
     return data[np.newaxis, ...] if data.ndim < 3 else data
 
 
-def _assert_valid_number_of_sh_channels(shape):
-    """Check if the channel shape matches an integer spherical harmonic order.
+def _assert_valid_caxis_spherical_harmonics(data, caxis_spherical_harmonics):
+    """Check if the spherical harmonic channel axes are ``ìnt`` and do
+       not exceed the number of dimensions of the data.
 
     Parameters
     ----------
-    shape : tuple, int
-        Shape of the data array.
+    data : numpy.ndarray
+        Spherical harmonic data.
+    caxis_spherical_harmonics : tuple
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     Raises
     ------
@@ -70,7 +74,47 @@ def _assert_valid_number_of_sh_channels(shape):
         (n_max + 1)^2 for an integer n_max.
     """
 
-    sh_channels = shape[-2]
+    for caxis in caxis_spherical_harmonics:
+        if not isinstance(caxis, int):
+            raise ValueError(
+                "caxis_spherical_harmonics must contain only integers, "
+                f"but got {type(caxis).__name__}.")
+
+        if abs(caxis) > data.ndim:
+            raise ValueError(
+                "caxis_spherical_harmonics contains invalid axis. "
+                f"Axis must be in the range [{-data.ndim}, {data.ndim}], "
+                f"but is {caxis}.")
+
+
+def _assert_valid_number_of_sh_channels(shape, caxis_spherical_harmonics):
+    """Check if the channel shape matches an integer spherical harmonic order.
+
+    Parameters
+    ----------
+    shape : tuple, int
+        Shape of the data array.
+    caxis_spherical_harmonics : tuple
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
+
+    Raises
+    ------
+    ValueError
+        Raised if the number of spherical harmonic channels does not match
+        (n_max + 1)^2 for an integer n_max.
+    """
+    # convert channel axes to axes in data
+    axes = tuple(x - 1 for x in caxis_spherical_harmonics)
+
+    # check if all spherical harmonic channels have same length
+    sh_channels = [shape[a] for a in axes]
+    if len(set(sh_channels)) != 1:
+        raise ValueError("All SH axes must have the same number of channels, "
+                         f"but got {sh_channels}.")
+
+    # check if all spherical harmonic channels match n_max
+    sh_channels = sh_channels[0]
     n_max = np.sqrt(sh_channels)-1
     if n_max - int(n_max) != 0:
         raise ValueError(
@@ -81,7 +125,8 @@ def _assert_valid_number_of_sh_channels(shape):
 def _convert_to_standard_definition(
         data,
         normalization,
-        channel_convention):
+        channel_convention,
+        caxis_spherical_harmonics=(-1, )):
     """Convert data to the standard spherical harmonic definition.
 
     Parameters
@@ -95,6 +140,9 @@ def _convert_to_standard_definition(
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
+    caxis_spherical_harmonics : tuple
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     Returns
     -------
@@ -102,12 +150,15 @@ def _convert_to_standard_definition(
         Spherical harmonic data following the standard definition (N3D, ACN).
     """
 
+    # convert channel axes to axes in data
+    axes = tuple(x - 1 for x in caxis_spherical_harmonics)
+
     data = renormalize(
         data, channel_convention, normalization,
-        "N3D", axis=-2)
+        "N3D", axis=axes)
 
     data = change_channel_convention(
-        data, channel_convention, "ACN", axis=-2)
+        data, channel_convention, "ACN", axis=axes)
 
     return data
 
@@ -115,7 +166,8 @@ def _convert_to_standard_definition(
 def _convert_from_standard_definition(
         data,
         normalization,
-        channel_convention):
+        channel_convention,
+        caxis_spherical_harmonics=(-1, )):
     """Convert data from standard definition to the desired one.
 
     Parameters
@@ -129,6 +181,9 @@ def _convert_from_standard_definition(
     channel_convention : str
         Channel ordering convention, either ``'ACN'`` or ``'FuMa'``.
         (FuMa is only supported up to 3rd order)
+    caxis_spherical_harmonics : tuple
+        Specifies which axis of data holds the spherical harmonic coefficients.
+        Negative indexing, i.e., interpreted relative to the end of the array.
 
     Returns
     -------
@@ -136,11 +191,14 @@ def _convert_from_standard_definition(
         Spherical harmonic data according to the desired definition.
     """
 
+    # convert channel axes to axes in data
+    axes = tuple(x - 1 for x in caxis_spherical_harmonics)
+
     data = renormalize(
-        data, "ACN", "N3D", normalization, axis=-2)
+        data, "ACN", "N3D", normalization, axis=axes)
 
     data = change_channel_convention(
-        data, "ACN", channel_convention, axis=-2)
+        data, "ACN", channel_convention, axis=axes)
 
     return data
 
@@ -182,11 +240,20 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         Domain of data. The default is ``'time'``
     comment : str
         A comment related to `data`. The default is ``None``.
+    caxis_spherical_harmonics : int, tuple
+        Specifies which channel axis (or axes) of data holds the spherical
+        harmonic coefficients. A tuple of integers can be used to specify
+        multiple spherical harmonics channel axes. Each value must be an
+        integer smaller than or equal to -1. The default -1 refers to the last
+        channel axis; a value of -2 would refer to the second last channel
+        axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+        for more details.
 
     """
 
     def __init__(self, basis_type, normalization, channel_convention,
-                 condon_shortley):
+                 condon_shortley, caxis_spherical_harmonics):
 
         _SphericalHarmonicBase.__init__(
             self,
@@ -195,10 +262,18 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
             channel_convention,
             condon_shortley)
 
+        self._caxis_spherical_harmonics = caxis_spherical_harmonics
+
     @property
     def n_max(self):
         """Get or set the spherical harmonic order."""
         return int(np.sqrt(self.cshape[-1])-1)
+
+    @property
+    def caxis_spherical_harmonics(self):
+        """Get the spherical harmonic axis."""
+
+        return self._caxis_spherical_harmonics
 
     @_SphericalHarmonicBase.basis_type.setter
     def basis_type(self, value):
@@ -214,6 +289,122 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         else:
             _SphericalHarmonicBase.basis_type.fset(self, value)
 
+    def reshape(self, newshape):
+        """
+        Return reshaped copy of the SphericalHarmonicAudio object. Axes
+        containing the spherical harmonics coefficients can not be reshaped.
+
+        Parameters
+        ----------
+        newshape : int, tuple
+            new `cshape` of the audio object. One entry of newshape
+            dimension can be ``-1``. In this case, the value is inferred
+            from the remaining dimensions.
+
+        Returns
+        -------
+        reshaped : Signal, FrequencyData, TimeData
+            reshaped copy of the audio object.
+
+        Notes
+        -----
+        The number of samples and frequency bins always remains the same.
+
+        """
+
+        old_cshape = self.cshape
+        reshaped = super().reshape(newshape)
+        new_cshape = reshaped.cshape
+
+        # check if there are axes with valid sh_channels
+        # and determine new caxis_spherical_harmonics
+        new_caxis_sh = []
+        for caxis in self._caxis_spherical_harmonics:
+            n_sh_channels = old_cshape[caxis]
+            if n_sh_channels not in new_cshape:
+                raise ValueError(
+                    "The requested new shape does not leave a "
+                    "channel axis to hold the spherical "
+                    "harmonic channels.")
+
+            # determine first matching new axis
+            new_axis = new_cshape.index(n_sh_channels)
+            new_caxis_sh.append(new_axis - len(new_cshape))
+
+        _assert_valid_number_of_sh_channels(
+            new_cshape + (1,), tuple(new_caxis_sh))
+
+        reshaped._caxis_spherical_harmonics = tuple(new_caxis_sh)
+        return reshaped
+
+    def transpose(self, *axes):
+        """Transpose time/frequency data and return copy of the
+           SphericalHarmonicAudio object.
+
+        Parameters
+        ----------
+        axes : empty, ``None``, iterable of ints, or n ints
+            Define how the
+            :doc:`caxes<gallery:gallery/interactive/pyfar_audio_objects>`
+            are ordered in the transposed audio object.
+            Note that the last dimension of the data in the audio object
+            always contains the time samples or frequency bins and can not
+            be transposed.
+
+            empty (default) or ``None``
+                reverses the order of ``self.caxes``.
+            iterable of ints
+                `i` in the `j`-th place of the interable means
+                that the `i`-th caxis becomes transposed object's `j`-th caxis.
+            n ints
+                same as 'iterable of ints'.
+        """
+        cdim = len(self.cshape)
+
+        # get transposed axes
+        axes_t = axes
+        if hasattr(axes_t, '__iter__'):
+            axes_t = axes_t[0] if len(axes_t) == 1 else axes_t
+        if axes_t is None or len(axes_t) == 0:
+            axes_t = tuple(range(cdim))[::-1]
+        else:
+            axes_t = tuple(a % cdim if a < 0 else a for a in axes_t)
+
+        transposed = super().transpose(*axes)
+
+        new_caxis_sh = []
+        for c in self._caxis_spherical_harmonics:
+            old_axis_positive = c % cdim
+            new_axis_positive = axes_t.index(old_axis_positive)
+            new_caxis_sh.append(new_axis_positive - cdim)
+
+        _assert_valid_caxis_spherical_harmonics(transposed._data, new_caxis_sh)
+        _assert_valid_number_of_sh_channels(
+            transposed._data.shape, new_caxis_sh)
+
+        transposed._caxis_spherical_harmonics = tuple(new_caxis_sh)
+        return transposed
+
+    def flatten(self):
+        """Return flattened copy of the SphericalHarmonicAudio object.
+
+        Returns
+        -------
+        flat : SphericalHarmonicSignal, SphericalHarmonicFrequencyData,
+               SphericalHarmonicTimeData
+            Flattened copy of audio object with
+            ``flat.cshape = np.prod(audio.cshape)``
+
+        Notes
+        -----
+        The number of samples and frequency bins always remains the same, e.g.,
+        an audio object of ``cshape=(4,3)`` and ``n_samples=512`` will have
+        ``cshape=(12, )`` and ``n_samples=512`` after flattening.
+        """
+        raise NotImplementedError(
+            "flatten() is not allowed for SphericalHarmonicsAudio objects."
+        )
+
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     """
@@ -228,13 +419,15 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     data : array, double
         Raw data in the time domain. The data should have at least 2
         dimensions, with the last dimension representing the time domain
-        samples, the second to last the spherical harmonic coefficients,
-        and any leading dimensions representing optional channels. Accordingly,
-        the data should follow the 'C' memory layout, e.g. data of
+        samples and the second to last the spherical harmonic coefficients. If
+        the raw data have more then 3 dimensions `caxis_spherical_harmonics`
+        defines the axis holding the spherical harmonic coefficients. The
+        default is -1 (last channel axis). Accordingly, the default
+        data shape follows the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 samples each. The data can be ``int``,
-        ``float`` or ``complex``. Data of type ``int`` is converted to
-        ``float``.
+        coefficients with 1024 samples each, and
+        a `caxis_spherical_harmonics` of -1. The data can be ``int``, ``float``
+        or ``complex``. Data of type ``int`` is converted to ``float``.
     times : array, double
         Times in seconds at which the data is sampled. The number of times
         must match the size of the last dimension of `data`, i.e.,
@@ -259,30 +452,48 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
     is_complex : bool, optional
         A flag which indicates if the time data are real or complex-valued.
         The default is ``False``.
+    caxis_spherical_harmonics : int, tuple
+        Specifies which channel axis (or axes) of data holds the spherical
+        harmonic coefficients. A tuple of integers can be used to specify
+        multiple spherical harmonics channel axes. Each value must be an
+        integer smaller than or equal to -1. The default -1 refers to the last
+        channel axis; a value of -2 would refer to the second last channel
+        axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+        for more details.
     """
 
     def __init__(self, data, times, basis_type, normalization,
                  channel_convention, condon_shortley, comment="",
-                 is_complex=False):
+                 is_complex=False, caxis_spherical_harmonics=-1):
 
         if not is_complex and basis_type == 'complex':
             raise ValueError(
                 "Complex spherical harmonic basis requires "
                 "complex time data. Set is_complex=True.")
 
+        if isinstance(caxis_spherical_harmonics, int):
+            caxis_spherical_harmonics = (caxis_spherical_harmonics, )
+
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape)
+        _assert_valid_caxis_spherical_harmonics(
+            data, caxis_spherical_harmonics)
+
+        _assert_valid_number_of_sh_channels(
+            data.shape, caxis_spherical_harmonics)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley)
+            condon_shortley,
+            caxis_spherical_harmonics=caxis_spherical_harmonics)
 
         TimeData.__init__(self, data=data, times=times, comment=comment,
                           is_complex=is_complex)
 
     @classmethod
     def from_definition(
-            cls, sh_definition, data, times, comment="", is_complex=False):
+            cls, sh_definition, data, times, comment="", is_complex=False,
+            caxis_spherical_harmonics=-1):
         r"""
         Create a SphericalHarmonicTimeData class object from
         SphericalHarmonicDefinition object, data, and times.
@@ -294,13 +505,16 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         data : array, double
             Raw data in the time domain. The data should have at least 2
             dimensions, with the last dimension representing the time domain
-            samples, the second to last the spherical harmonic coefficients,
-            and any leading dimensions representing optional channels.
-            Accordingly, the data should follow the 'C' memory layout, e.g.
-            data of ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical
-            harmonic coefficients with 1024 samples each. The data can be
-            ``int``, ``float`` or ``complex``. Data of type ``int`` is
-            converted to ``float``.
+            samples and the second to last the spherical harmonic coefficients.
+            If the raw data have more then 3 dimensions
+            `caxis_spherical_harmonics` defines the axis holding the spherical
+            harmonic coefficients. The default is -1 (last channel axis).
+            Accordingly, the default data shape follows the 'C' memory
+            layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4
+            spherical harmonic coefficients with 1024 samples each, and a
+            `caxis_spherical_harmonics` of -1. The data can be ``int``,
+            ``float`` or ``complex``. Data of type ``int`` is converted to
+            ``float``.
         times : array, double
             Times in seconds at which the data is sampled. The number of times
             must match the size of the last dimension of `data`, i.e.,
@@ -310,29 +524,43 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         is_complex : bool, optional
             A flag which indicates if the time data are real or complex-valued.
             The default is ``False``.
+        caxis_spherical_harmonics : int, tuple
+            Specifies which channel axis (or axes) of data holds the spherical
+            harmonic coefficients. A tuple of integers can be used to specify
+            multiple spherical harmonics channel axes. Each value must be an
+            integer smaller than or equal to -1. The default -1 refers to the
+            last channel axis; a value of -2 would refer to the second last
+            channel axis. See
+            https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+            for more details.
         """
         return cls(data, times,
                    basis_type=sh_definition.basis_type,
                    normalization=sh_definition.normalization,
                    channel_convention=sh_definition.channel_convention,
                    condon_shortley=sh_definition.condon_shortley,
-                   comment=comment, is_complex=is_complex)
+                   comment=comment, is_complex=is_complex,
+                   caxis_spherical_harmonics=caxis_spherical_harmonics)
 
     @property
     def time(self):
         """Return or set the time data."""
-        return _convert_from_standard_definition(TimeData.time.fget(self),
-                                                 self.normalization,
-                                                 self.channel_convention)
+
+        return _convert_from_standard_definition(
+            TimeData.time.fget(self), self.normalization,
+            self.channel_convention, self._caxis_spherical_harmonics)
 
     @time.setter
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape)
+
+        _assert_valid_number_of_sh_channels(
+            value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention,
+            self._caxis_spherical_harmonics)
         TimeData.time.fset(self, value)
 
 
@@ -348,15 +576,17 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
     Parameters
     ----------
     data : array, double
-        Raw data in the frequency domain. The data should have at least
-        2 dimensions, with the last dimension representing the frequency domain
-        bins, the second to last the spherical harmonic coefficients,
-        and any leading dimensions representing optional channels. Accordingly,
-        the data should follow the 'C' memory layout, e.g. data of
+        Raw data in the frequency domain. The data should have at least 2
+        dimensions, with the last dimension representing the frequency domain
+        bins and the second to last the spherical harmonic coefficients. If
+        the raw data have more then 3 dimensions `caxis_spherical_harmonics`
+        defines the axis holding the spherical harmonic coefficients. The
+        default is -1 (last channel axis). Accordingly, the default
+        data shape follows the 'C' memory layout, e.g. data of
         ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical harmonic
-        coefficients with 1024 frequency bins each. The data can be ``int``,
-        ``float`` or ``complex``. Data of type ``int`` is converted to
-        ``float``.
+        coefficients with 1024 frequency bins each, and a
+        `caxis_spherical_harmonics` of -1. The data can be ``int``, ``float``
+        or ``complex``. Data of type ``int`` is converted to ``float``.
     frequencies : array, double
         Frequencies of the data in Hz. The number of frequencies must match
         the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
@@ -376,24 +606,44 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         and ``False`` for real `basis_type`.
     comment : str
         A comment related to `data`. The default is ``""``.
+    caxis_spherical_harmonics : int, tuple
+        Specifies which channel axis (or axes) of data holds the spherical
+        harmonic coefficients. A tuple of integers can be used to specify
+        multiple spherical harmonics channel axes. Each value must be an
+        integer smaller than or equal to -1. The default -1 refers to the last
+        channel axis; a value of -2 would refer to the second last channel
+        axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+        for more details.
     """
 
     def __init__(self, data, frequencies, basis_type, normalization,
-                 channel_convention, condon_shortley, comment=""):
+                 channel_convention, condon_shortley, comment="",
+                 caxis_spherical_harmonics=-1):
+
+        if isinstance(caxis_spherical_harmonics, int):
+            caxis_spherical_harmonics = (caxis_spherical_harmonics, )
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape)
+
+        _assert_valid_caxis_spherical_harmonics(
+            data, caxis_spherical_harmonics)
+
+        _assert_valid_number_of_sh_channels(
+            data.shape, caxis_spherical_harmonics)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley)
+            condon_shortley,
+            caxis_spherical_harmonics=caxis_spherical_harmonics)
 
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
                                comment=comment)
 
     @classmethod
     def from_definition(
-            cls, sh_definition, data, frequencies, comment=""):
+            cls, sh_definition, data, frequencies, comment="",
+            caxis_spherical_harmonics=-1):
         r"""
         Create a SphericalHarmonicFrequencyData class object from
         SphericalHarmonicDefinition object, data, and frequencies
@@ -404,43 +654,61 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         sh_definition : SphericalHarmonicDefinition
             The spherical harmonic definition.
         data : ndarray, double
-            Raw data in the frequency domain. The data should have at least
-            2 dimensions, with the last dimension representing the frequency
-            domain bins, the second to last the spherical harmonic
-            coefficients, and any leading dimensions representing optional
-            channels. Accordingly, the data should follow the 'C' memory
+            Raw data in the frequency domain. The data should have at least 2
+            dimensions, with the last dimension representing the frequency
+            domain bins and the second to last the spherical harmonic
+            coefficients. If the raw data have more then 3 dimensions
+            `caxis_spherical_harmonics` defines the axis holding the spherical
+            harmonic coefficients. The default is -1 (last channel axis).
+            Accordingly, the default data shape follows the 'C' memory
             layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4
-            spherical harmonic coefficients with 1024 frequency bins each. The
-            data can be ``int``, ``float`` or ``complex``. Data of type
-            ``int`` is converted to ``float``.
+            spherical harmonic coefficients with 1024 frequency bins each, and
+            a `caxis_spherical_harmonics` of -1. The data can be ``int``,
+            ``float`` or ``complex``. Data of type ``int`` is converted to
+            ``float``.
         frequencies : array, double
             Frequencies of the data in Hz. The number of frequencies must match
             the size of the last dimension of `data`, i.e., ``data.shape[-1]``.
         comment : str
             A comment related to `data`. The default is ``None``.
+        caxis_spherical_harmonics : int, tuple
+            Specifies which channel axis (or axes) of data holds the spherical
+            harmonic coefficients. A tuple of integers can be used to specify
+            multiple spherical harmonics channel axes. Each value must be an
+            integer smaller than or equal to -1. The default -1 refers to the
+            last channel axis; a value of -2 would refer to the second last
+            channel axis. See
+            https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+            for more details.
         """
         return cls(data, frequencies,
                    basis_type=sh_definition.basis_type,
                    normalization=sh_definition.normalization,
                    channel_convention=sh_definition.channel_convention,
                    condon_shortley=sh_definition.condon_shortley,
-                   comment=comment)
+                   comment=comment,
+                   caxis_spherical_harmonics=caxis_spherical_harmonics)
 
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
-        return _convert_from_standard_definition(FrequencyData.freq.fget(self),
-                                                 self.normalization,
-                                                 self.channel_convention)
+        return _convert_from_standard_definition(
+                    FrequencyData.freq.fget(self),
+                    self.normalization,
+                    self.channel_convention,
+                    self._caxis_spherical_harmonics)
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape)
+
+        _assert_valid_number_of_sh_channels(
+            value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention,
+            self._caxis_spherical_harmonics)
 
         FrequencyData.freq.fset(self, value)
 
@@ -464,15 +732,18 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Raw data of the spherical harmonics signal in the time or
         frequency domain. The data should have at least 2 dimensions, with
         the last dimension representing the time domain
-        samples/frequency domain bins, the second to last the spherical
-        harmonic coefficients, and any leading dimensions representing
-        optional channels. Accordingly, the data should follow the 'C'
-        memory layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel
-        with 4 spherical harmonic coefficients with 1024 samples or frequency
-        bins each. Time data is converted to ``float``. Frequency is
-        converted to ``complex`` and must be provided as single
-        sided spectra, i.e., for all frequencies between 0 Hz and
-        half the sampling rate.
+        samples/frequency domain bins and the second to last the spherical
+        harmonic coefficients. If the raw data have more then 3 dimensions
+        `caxis_spherical_harmonics` defines the axis holding the spherical
+        harmonic coefficients. The default is -1 (last channel axis).
+        Accordingly, the default data shape follows the 'C' memory layout,
+        e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4 spherical
+        harmonic coefficients with 1024 samples or frequency bins each, and a
+        `caxis_spherical_harmonics` of -1. The data can be ``int``, ``float``
+        or ``complex``. Data of type ``int`` is converted to ``float``.
+        Frequency is converted to ``complex`` and must be provided as single
+        sided spectra, i.e., for all frequencies between 0 Hz and half the
+        sampling rate.
     sampling_rate : double
         Sampling rate in Hz
     basis_type : str
@@ -507,6 +778,15 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         Specifies if the underlying time domain data are complex
         or real-valued. If ``True`` and `domain` is ``'time'``, the
         input data will be cast to complex. The default is ``False``.
+    caxis_spherical_harmonics : int, tuple
+        Specifies which channel axis (or axes) of data holds the spherical
+        harmonic coefficients. A tuple of integers can be used to specify
+        multiple spherical harmonics channel axes. Each value must be an
+        integer smaller than or equal to -1. The default -1 refers to the last
+        channel axis; a value of -2 would refer to the second last channel
+        axis. See
+        https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+        for more details.
 
     References
     ----------
@@ -530,14 +810,24 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                  domain='time',
                  fft_norm='none',
                  comment="",
-                 is_complex=False):
+                 is_complex=False,
+                 caxis_spherical_harmonics=-1):
+
+        if isinstance(caxis_spherical_harmonics, int):
+            caxis_spherical_harmonics = (caxis_spherical_harmonics, )
+
+        _assert_valid_caxis_spherical_harmonics(
+            data, caxis_spherical_harmonics)
 
         data = _atleast_3d_first_dimension(data)
-        _assert_valid_number_of_sh_channels(data.shape)
+
+        _assert_valid_number_of_sh_channels(
+            data.shape, caxis_spherical_harmonics)
 
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
-            condon_shortley)
+            condon_shortley,
+            caxis_spherical_harmonics=caxis_spherical_harmonics)
 
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -546,7 +836,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
     @classmethod
     def from_definition(
             cls, sh_definition, data, sampling_rate, domain='time',
-            fft_norm='none', comment="", is_complex=False):
+            fft_norm='none', comment="", is_complex=False,
+            caxis_spherical_harmonics=-1):
         r"""
         Create a SphericalHarmonicSignal class object from
         SphericalHarmonicDefinition object, data, and sampling
@@ -557,18 +848,21 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         sh_definition : SphericalHarmonicDefinition
             The spherical harmonic definition.
         data : ndarray, double
-            Raw data of the spherical harmonic signal in the time or
+            Raw data of the spherical harmonics signal in the time or
             frequency domain. The data should have at least 2 dimensions, with
             the last dimension representing the time domain
-            samples/frequency domain bins, the second to last the spherical
-            harmonic coefficients, and any leading dimensions representing
-            optional channels. Accordingly, the data should follow the 'C'
-            memory layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel
-            with 4 spherical harmonic coefficients with 1024 samples or
-            frequency bins each. Time data is converted to ``float``.
-            Frequency is converted to ``complex`` and must be provided as
-            single sided spectra, i.e., for all frequencies between 0 Hz and
-            half the sampling rate.
+            samples/frequency domain bins and the second to last the spherical
+            harmonic coefficients. If the raw data have more then 3 dimensions
+            `caxis_spherical_harmonics` defines the axis holding the spherical
+            harmonic coefficients. The default is -1 (last channel axis).
+            Accordingly, the default data shape follows the 'C' memory
+            layout, e.g. data of ``shape = (1, 4, 1024)`` has 1 channel with 4
+            spherical harmonic coefficients with 1024 samples or frequency
+            bins each, and a `caxis_spherical_harmonics` of -1. The data can be
+            ``int``, ``float`` or ``complex``. Data of type ``int`` is
+            converted to ``float``. Frequency is converted to ``complex`` and
+            must be provided as single sided spectra, i.e., for all
+            frequencies between 0 Hz and half the sampling rate.
         sampling_rate : double
             Sampling rate in Hz
         domain : ``'time'``, ``'freq'``, optional
@@ -585,6 +879,15 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             Specifies if the underlying time domain data are complex
             or real-valued. If ``True`` and `domain` is ``'time'``, the
             input data will be cast to complex. The default is ``False``.
+        caxis_spherical_harmonics : int, tuple
+            Specifies which channel axis (or axes) of data holds the spherical
+            harmonic coefficients. A tuple of integers can be used to specify
+            multiple spherical harmonics channel axes. Each value must be an
+            integer smaller than or equal to -1. The default -1 refers to the
+            last channel axis; a value of -2 would refer to the second last
+            channel axis. See
+            https://pyfar-gallery.readthedocs.io/en/latest/gallery/interactive/pyfar_audio_objects.html#Signal-cshape,-length,-and-caxis
+            for more details.
         """
         return cls(data, sampling_rate,
                    basis_type=sh_definition.basis_type,
@@ -592,57 +895,77 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                    channel_convention=sh_definition.channel_convention,
                    condon_shortley=sh_definition.condon_shortley,
                    domain=domain, fft_norm=fft_norm,
-                   comment=comment, is_complex=is_complex)
+                   comment=comment, is_complex=is_complex,
+                   caxis_spherical_harmonics=caxis_spherical_harmonics)
 
     @property
     def freq(self):
         """Return or set the data in the frequency domain."""
-        return _convert_from_standard_definition(Signal.freq.fget(self),
-                                                 self.normalization,
-                                                 self.channel_convention)
+
+        return _convert_from_standard_definition(
+                    Signal.freq.fget(self),
+                    self.normalization,
+                    self.channel_convention,
+                    self._caxis_spherical_harmonics)
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape)
+
+        _assert_valid_number_of_sh_channels(
+            value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention,
+            self._caxis_spherical_harmonics)
 
         Signal.freq.fset(self, value)
 
     @property
     def freq_raw(self):
         """Return or set the frequency domain data without normalization."""
-        return _convert_from_standard_definition(Signal.freq_raw.fget(self),
-                                                 self.normalization,
-                                                 self.channel_convention)
+
+        return _convert_from_standard_definition(
+                    Signal.freq_raw.fget(self),
+                    self.normalization,
+                    self.channel_convention,
+                    self._caxis_spherical_harmonics)
 
     @freq_raw.setter
     def freq_raw(self, value):
         """Return or set the frequency domain data without normalization."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape)
+
+        _assert_valid_number_of_sh_channels(
+            value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention,
+            self._caxis_spherical_harmonics)
 
         Signal.freq_raw.fset(self, value)
 
     @property
     def time(self):
         """Return or set the time data."""
-        return _convert_from_standard_definition(Signal.time.fget(self),
-                                                 self.normalization,
-                                                 self.channel_convention)
+
+        return _convert_from_standard_definition(
+                    Signal.time.fget(self),
+                    self.normalization,
+                    self.channel_convention,
+                    self._caxis_spherical_harmonics)
 
     @time.setter
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
-        _assert_valid_number_of_sh_channels(value.shape)
+
+        _assert_valid_number_of_sh_channels(
+            value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
-            value, self.normalization, self.channel_convention)
+            value, self.normalization, self.channel_convention,
+            self._caxis_spherical_harmonics)
+
         Signal.time.fset(self, value)
