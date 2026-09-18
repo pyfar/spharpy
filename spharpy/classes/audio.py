@@ -291,8 +291,8 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
     def reshape(self, newshape):
         """
-        Return reshaped copy of the audio object. Axes containing the
-        spherical harmonics coefficients can not be reshaped.
+        Return reshaped copy of the SphericalHarmonicAudio object. Axes
+        containing the spherical harmonics coefficients can not be reshaped.
 
         Parameters
         ----------
@@ -338,7 +338,8 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         return reshaped
 
     def transpose(self, *axes):
-        """Transpose time/frequency data and return copy of the audio object.
+        """Transpose time/frequency data and return copy of the
+           SphericalHarmonicAudio object.
 
         Parameters
         ----------
@@ -383,6 +384,26 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
         transposed._caxis_spherical_harmonics = tuple(new_caxis_sh)
         return transposed
+
+    def flatten(self):
+        """Return flattened copy of the SphericalHarmonicAudio object.
+
+        Returns
+        -------
+        flat : SphericalHarmonicSignal, SphericalHarmonicFrequencyData,
+               SphericalHarmonicTimeData
+            Flattened copy of audio object with
+            ``flat.cshape = np.prod(audio.cshape)``
+
+        Notes
+        -----
+        The number of samples and frequency bins always remains the same, e.g.,
+        an audio object of ``cshape=(4,3)`` and ``n_samples=512`` will have
+        ``cshape=(12, )`` and ``n_samples=512`` after flattening.
+        """
+        raise NotImplementedError(
+            "flatten() is not allowed for SphericalHarmonicsAudio objects."
+        )
 
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
@@ -449,7 +470,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         if not is_complex and basis_type == 'complex':
             raise ValueError(
                 "Complex spherical harmonic basis requires "
-                "complex time data. Set is_complex=True.") 
+                "complex time data. Set is_complex=True.")
 
         if isinstance(caxis_spherical_harmonics, int):
             caxis_spherical_harmonics = (caxis_spherical_harmonics, )
@@ -917,7 +938,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         value = _atleast_3d_first_dimension(value)
 
         _assert_valid_number_of_sh_channels(
-            value.shape, self._caxis_spherical_harmonics)       
+            value.shape, self._caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention,
