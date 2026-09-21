@@ -55,14 +55,14 @@ def _atleast_3d_first_dimension(data):
     return data[np.newaxis, ...] if data.ndim < 3 else data
 
 
-def _assert_valid_caxis_spherical_harmonics(data, caxis_spherical_harmonics):
-    """Check if the spherical harmonic channel axes are ``ìnt`` and do
+def _assert_valid_caxis_spherical_harmonics(ndim, caxis_spherical_harmonics):
+    """Check if the spherical harmonic channel axes are ``int`` and do
        not exceed the number of dimensions of the data.
 
     Parameters
     ----------
-    data : numpy.ndarray
-        Spherical harmonic data.
+    ndim : int
+        Number of dimensions of the data.
     caxis_spherical_harmonics : tuple
         Specifies which axis of data holds the spherical harmonic coefficients.
         Negative indexing, i.e., interpreted relative to the end of the array.
@@ -70,8 +70,8 @@ def _assert_valid_caxis_spherical_harmonics(data, caxis_spherical_harmonics):
     Raises
     ------
     ValueError
-        Raised if the number of spherical harmonic channels does not match
-        (n_max + 1)^2 for an integer n_max.
+        Raised if caxis_spherical_harmonics does not only contain integers, or
+        does contain values greater than data's number of dimensions.
     """
 
     for caxis in caxis_spherical_harmonics:
@@ -80,10 +80,10 @@ def _assert_valid_caxis_spherical_harmonics(data, caxis_spherical_harmonics):
                 "caxis_spherical_harmonics must contain only integers, "
                 f"but got {type(caxis).__name__}.")
 
-        if abs(caxis) > data.ndim:
+        if abs(caxis) > ndim:
             raise ValueError(
                 "caxis_spherical_harmonics contains invalid axis. "
-                f"Axis must be in the range [{-data.ndim}, {data.ndim}], "
+                f"Axis must be in the range [{-ndim}, {ndim}], "
                 f"but is {caxis}.")
 
 
@@ -378,7 +378,8 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
             new_axis_positive = axes_t.index(old_axis_positive)
             new_caxis_sh.append(new_axis_positive - cdim)
 
-        _assert_valid_caxis_spherical_harmonics(transposed._data, new_caxis_sh)
+        _assert_valid_caxis_spherical_harmonics(
+            transposed._data.ndim, new_caxis_sh)
         _assert_valid_number_of_sh_channels(
             transposed._data.shape, new_caxis_sh)
 
@@ -402,8 +403,7 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
         ``cshape=(12, )`` and ``n_samples=512`` after flattening.
         """
         raise NotImplementedError(
-            "flatten() is not allowed for SphericalHarmonicsAudio objects."
-        )
+            "flatten() is not allowed for SphericalHarmonicsAudio objects.")
 
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
@@ -477,7 +477,7 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
 
         data = _atleast_3d_first_dimension(data)
         _assert_valid_caxis_spherical_harmonics(
-            data, caxis_spherical_harmonics)
+            data.ndim, caxis_spherical_harmonics)
 
         _assert_valid_number_of_sh_channels(
             data.shape, caxis_spherical_harmonics)
@@ -627,7 +627,7 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         data = _atleast_3d_first_dimension(data)
 
         _assert_valid_caxis_spherical_harmonics(
-            data, caxis_spherical_harmonics)
+            data.ndim, caxis_spherical_harmonics)
 
         _assert_valid_number_of_sh_channels(
             data.shape, caxis_spherical_harmonics)
@@ -817,7 +817,7 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
             caxis_spherical_harmonics = (caxis_spherical_harmonics, )
 
         _assert_valid_caxis_spherical_harmonics(
-            data, caxis_spherical_harmonics)
+            data.ndim, caxis_spherical_harmonics)
 
         data = _atleast_3d_first_dimension(data)
 
