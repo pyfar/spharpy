@@ -122,6 +122,75 @@ def _assert_valid_number_of_sh_channels(shape, caxis_spherical_harmonics):
             f"{sh_channels}. It must match (n_max + 1)^2.")
 
 
+def _init_spherical_harmonic_channels(cshape, caxis_spherical_harmonics):
+    """Create the arrays tracking the spherical harmonic channels.
+
+    Parameters
+    ----------
+    cshape : tuple
+        Channel shape of the data.
+    caxis_spherical_harmonics : tuple
+        Specifies which channel axis (or axes) holds the spherical harmonic
+        coefficients. Negative indexing, i.e., interpreted relative to the
+        end of `cshape`.
+
+    Returns
+    -------
+    is_sh_channel : numpy.ndarray
+        Boolean array of shape `cshape` that is ``True`` for each channel
+        containing spherical harmonic coefficients.
+    acn : numpy.ndarray
+        Integer array of shape ``cshape + (len(caxis_spherical_harmonics), )``
+        containing the ambisonic channel number (ACN) of each channel. The
+        last dimension holds the ACN with respect to each spherical harmonic
+        channel axis.
+    """
+    cdim = len(cshape)
+    is_sh_channel = np.ones(cshape, dtype=bool)
+    acn = np.zeros(cshape + (len(caxis_spherical_harmonics), ), dtype=int)
+
+    for idx, caxis in enumerate(caxis_spherical_harmonics):
+        # ACNs increase along the spherical harmonic axis and are constant
+        # along all other axes
+        shape = [1] * cdim
+        shape[caxis] = cshape[caxis]
+        acn[..., idx] = np.arange(cshape[caxis]).reshape(shape)
+
+    return is_sh_channel, acn
+
+
+def _is_spherical_harmonic_axis(acn, axis):
+    """Check if the ambisonic channel numbers (ACN) are valid along an axis.
+
+    The ACNs are valid along `axis` if they are ``0, 1, 2, ..., (N+1)^2-1``
+    along `axis` and constant along all other axes.
+
+    Parameters
+    ----------
+    acn : numpy.ndarray
+        Integer array of ambisonic channel numbers of shape `cshape`.
+    axis : int
+        Channel axis to check.
+
+    Returns
+    -------
+    is_sh_axis : bool
+        ``True`` if `axis` holds valid spherical harmonic channels.
+    """
+    n_channels = acn.shape[axis]
+
+    # number of channels must match (N+1)^2
+    if not np.sqrt(n_channels).is_integer():
+        return False
+
+    shape = [1] * acn.ndim
+    shape[axis] = n_channels
+    expected = np.broadcast_to(
+        np.arange(n_channels).reshape(shape), acn.shape)
+
+    return np.array_equal(acn, expected)
+
+
 def _convert_to_standard_definition(
         data,
         normalization,
@@ -253,7 +322,12 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
     """
 
     def __init__(self, basis_type, normalization, channel_convention,
-                 condon_shortley, caxis_spherical_harmonics):
+                 condon_shortley, caxis_spherical_harmonics, cshape):
+
+        # must be set first, because n_max is required for checking the
+        # channel convention and normalization
+        self._is_sh_channel, self._acn = _init_spherical_harmonic_channels(
+            cshape, caxis_spherical_harmonics)
 
         _SphericalHarmonicBase.__init__(
             self,
@@ -262,18 +336,90 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
             channel_convention,
             condon_shortley)
 
-        self._caxis_spherical_harmonics = caxis_spherical_harmonics
-
     @property
     def n_max(self):
-        """Get or set the spherical harmonic order."""
-        return int(np.sqrt(self.cshape[-1])-1)
+        """Get the spherical harmonic order."""
+        return int(np.sqrt(np.max(self._acn) + 1) - 1)
 
     @property
     def caxis_spherical_harmonics(self):
-        """Get the spherical harmonic axis."""
+        """Get the spherical harmonic channel axes.
 
-        return self._caxis_spherical_harmonics
+        The spherical harmonic channel axes are determined from the ambisonic
+        channel numbers (ACN) of the channels, which are tracked when the
+        object is reshaped, flattened, or transposed. A channel axis holds
+        spherical harmonic coefficients if all its channels are spherical
+        harmonic channels and the ACNs along the axis are
+        ``0, 1, 2, ..., (N+1)^2-1``.
+
+        Raises
+        ------
+        ValueError
+            If the spherical harmonic coefficients are not contained in
+            separate channel axes, e.g., after flattening the object. This can
+            be resolved by reshaping the object.
+        """
+        is_sh_channel, acn = self._get_spherical_harmonic_channels()
+        cdim = is_sh_channel.ndim
+
+        if not np.all(is_sh_channel):
+            raise ValueError(
+                "The object contains channels that are not spherical "
+                "harmonic channels.")
+
+        caxis_spherical_harmonics = []
+        for idx in range(acn.shape[-1]):
+            # find channel axes holding valid ACNs that are not yet assigned
+            candidates = [
+                axis - cdim for axis in range(cdim)
+                if _is_spherical_harmonic_axis(acn[..., idx], axis)
+                and axis - cdim not in caxis_spherical_harmonics]
+
+            if not candidates:
+                raise ValueError(
+                    "The spherical harmonic coefficients are not contained "
+                    "in a channel axis, e.g., because the object was "
+                    "flattened or reshaped. This can be resolved by "
+                    "reshaping the object to a cshape that holds the "
+                    "spherical harmonic coefficients in separate channel "
+                    f"axes. The current cshape is {is_sh_channel.shape}.")
+
+            # Multiple candidates can only occur for channel axes of size one
+            # (n_max=0). In this case the axes are interchangeable and the
+            # last one is used.
+            caxis_spherical_harmonics.append(candidates[-1])
+
+        return tuple(caxis_spherical_harmonics)
+
+    def _get_spherical_harmonic_channels(self):
+        """Return the arrays tracking the spherical harmonic channels.
+
+        The arrays are broadcasted to the current cshape if required, e.g.,
+        if the cshape of the data was changed by
+        :py:func:`pyfar.utils.broadcast_cshape`.
+        """
+        is_sh_channel, acn = self._is_sh_channel, self._acn
+
+        if hasattr(self, '_data') and is_sh_channel.shape != self.cshape:
+            try:
+                is_sh_channel = np.broadcast_to(is_sh_channel, self.cshape)
+                acn = np.broadcast_to(acn, self.cshape + (acn.shape[-1], ))
+            except ValueError as e:
+                raise ValueError(
+                    "The spherical harmonic channels of cshape "
+                    f"{is_sh_channel.shape} do not match the cshape "
+                    f"{self.cshape} of the data.") from e
+
+        return is_sh_channel, acn
+
+    def _update_spherical_harmonic_channels(self, caxis_spherical_harmonics):
+        """Re-initialize the spherical harmonic channels if the cshape of the
+        data changed, e.g., after setting the time or frequency data.
+        """
+        if self._is_sh_channel.shape != self.cshape:
+            self._is_sh_channel, self._acn = \
+                _init_spherical_harmonic_channels(
+                    self.cshape, caxis_spherical_harmonics)
 
     @_SphericalHarmonicBase.basis_type.setter
     def basis_type(self, value):
@@ -291,8 +437,14 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
     def reshape(self, newshape):
         """
-        Return reshaped copy of the SphericalHarmonicAudio object. Axes
-        containing the spherical harmonics coefficients can not be reshaped.
+        Return reshaped copy of the SphericalHarmonicAudio object.
+
+        The spherical harmonic channels are reshaped together with the data.
+        If the spherical harmonic coefficients are not contained in separate
+        channel axes after reshaping, e.g., ``cshape=(2, 4)`` is reshaped to
+        ``cshape=(4, 2)``, the object can still be used as a container but
+        :py:attr:`caxis_spherical_harmonics` and all operations requiring it
+        raise an error until the object is reshaped to a valid cshape.
 
         Parameters
         ----------
@@ -303,43 +455,27 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
 
         Returns
         -------
-        reshaped : Signal, FrequencyData, TimeData
+        reshaped : SphericalHarmonicSignal, SphericalHarmonicFrequencyData, SphericalHarmonicTimeData
             reshaped copy of the audio object.
 
         Notes
         -----
         The number of samples and frequency bins always remains the same.
 
-        """
-
-        old_cshape = self.cshape
+        """  # noqa: E501
+        is_sh_channel, acn = self._get_spherical_harmonic_channels()
         reshaped = super().reshape(newshape)
-        new_cshape = reshaped.cshape
 
-        # check if there are axes with valid sh_channels
-        # and determine new caxis_spherical_harmonics
-        new_caxis_sh = []
-        for caxis in self._caxis_spherical_harmonics:
-            n_sh_channels = old_cshape[caxis]
-            if n_sh_channels not in new_cshape:
-                raise ValueError(
-                    "The requested new shape does not leave a "
-                    "channel axis to hold the spherical "
-                    "harmonic channels.")
+        reshaped._is_sh_channel = is_sh_channel.reshape(reshaped.cshape)
+        reshaped._acn = acn.reshape(reshaped.cshape + (acn.shape[-1], ))
 
-            # determine first matching new axis
-            new_axis = new_cshape.index(n_sh_channels)
-            new_caxis_sh.append(new_axis - len(new_cshape))
-
-        _assert_valid_number_of_sh_channels(
-            new_cshape + (1,), tuple(new_caxis_sh))
-
-        reshaped._caxis_spherical_harmonics = tuple(new_caxis_sh)
         return reshaped
 
     def transpose(self, *axes):
         """Transpose time/frequency data and return copy of the
            SphericalHarmonicAudio object.
+
+        The spherical harmonic channels are transposed together with the data.
 
         Parameters
         ----------
@@ -359,51 +495,22 @@ class _SphericalHarmonicAudio(_Audio, _SphericalHarmonicBase, ABC):
             n ints
                 same as 'iterable of ints'.
         """
-        cdim = len(self.cshape)
-
-        # get transposed axes
-        axes_t = axes
-        if hasattr(axes_t, '__iter__'):
-            axes_t = axes_t[0] if len(axes_t) == 1 else axes_t
-        if axes_t is None or len(axes_t) == 0:
-            axes_t = tuple(range(cdim))[::-1]
-        else:
-            axes_t = tuple(a % cdim if a < 0 else a for a in axes_t)
-
+        is_sh_channel, acn = self._get_spherical_harmonic_channels()
         transposed = super().transpose(*axes)
 
-        new_caxis_sh = []
-        for c in self._caxis_spherical_harmonics:
-            old_axis_positive = c % cdim
-            new_axis_positive = axes_t.index(old_axis_positive)
-            new_caxis_sh.append(new_axis_positive - cdim)
+        # get transposed axes in the same way as pyfar
+        cdim = len(self.cshape)
+        if hasattr(axes, '__iter__'):
+            axes = axes[0] if len(axes) == 1 else axes
+        if axes is None or len(axes) == 0:
+            axes = tuple(range(cdim))[::-1]
+        else:
+            axes = tuple(a % cdim if a < 0 else a for a in axes)
 
-        _assert_valid_caxis_spherical_harmonics(
-            transposed._data.ndim, new_caxis_sh)
-        _assert_valid_number_of_sh_channels(
-            transposed._data.shape, new_caxis_sh)
+        transposed._is_sh_channel = is_sh_channel.transpose(axes)
+        transposed._acn = acn.transpose(*axes, cdim)
 
-        transposed._caxis_spherical_harmonics = tuple(new_caxis_sh)
         return transposed
-
-    def flatten(self):
-        """Return flattened copy of the SphericalHarmonicAudio object.
-
-        Returns
-        -------
-        flat : SphericalHarmonicSignal, SphericalHarmonicFrequencyData,
-               SphericalHarmonicTimeData
-            Flattened copy of audio object with
-            ``flat.cshape = np.prod(audio.cshape)``
-
-        Notes
-        -----
-        The number of samples and frequency bins always remains the same, e.g.,
-        an audio object of ``cshape=(4,3)`` and ``n_samples=512`` will have
-        ``cshape=(12, )`` and ``n_samples=512`` after flattening.
-        """
-        raise NotImplementedError(
-            "flatten() is not allowed for SphericalHarmonicsAudio objects.")
 
 
 class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
@@ -485,7 +592,8 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley,
-            caxis_spherical_harmonics=caxis_spherical_harmonics)
+            caxis_spherical_harmonics=caxis_spherical_harmonics,
+            cshape=data.shape[:-1])
 
         TimeData.__init__(self, data=data, times=times, comment=comment,
                           is_complex=is_complex)
@@ -548,20 +656,23 @@ class SphericalHarmonicTimeData(_SphericalHarmonicAudio, TimeData):
 
         return _convert_from_standard_definition(
             TimeData.time.fget(self), self.normalization,
-            self.channel_convention, self._caxis_spherical_harmonics)
+            self.channel_convention, self.caxis_spherical_harmonics)
 
     @time.setter
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
+        caxis_spherical_harmonics = self.caxis_spherical_harmonics
 
         _assert_valid_number_of_sh_channels(
-            value.shape, self._caxis_spherical_harmonics)
+            value.shape, caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics)
+            caxis_spherical_harmonics)
         TimeData.time.fset(self, value)
+        self._update_spherical_harmonic_channels(
+            caxis_spherical_harmonics)
 
 
 class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
@@ -635,7 +746,8 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley,
-            caxis_spherical_harmonics=caxis_spherical_harmonics)
+            caxis_spherical_harmonics=caxis_spherical_harmonics,
+            cshape=data.shape[:-1])
 
         FrequencyData.__init__(self, data=data, frequencies=frequencies,
                                comment=comment)
@@ -696,21 +808,24 @@ class SphericalHarmonicFrequencyData(_SphericalHarmonicAudio, FrequencyData):
                     FrequencyData.freq.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics)
+                    self.caxis_spherical_harmonics)
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
+        caxis_spherical_harmonics = self.caxis_spherical_harmonics
 
         _assert_valid_number_of_sh_channels(
-            value.shape, self._caxis_spherical_harmonics)
+            value.shape, caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics)
+            caxis_spherical_harmonics)
 
         FrequencyData.freq.fset(self, value)
+        self._update_spherical_harmonic_channels(
+            caxis_spherical_harmonics)
 
 
 class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
@@ -827,7 +942,8 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
         _SphericalHarmonicAudio.__init__(
             self, basis_type, normalization, channel_convention,
             condon_shortley,
-            caxis_spherical_harmonics=caxis_spherical_harmonics)
+            caxis_spherical_harmonics=caxis_spherical_harmonics,
+            cshape=data.shape[:-1])
 
         Signal.__init__(self, data=data, sampling_rate=sampling_rate,
                         n_samples=n_samples, domain=domain, fft_norm=fft_norm,
@@ -906,21 +1022,24 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                     Signal.freq.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics)
+                    self.caxis_spherical_harmonics)
 
     @freq.setter
     def freq(self, value):
         """Return or set the data in the frequency domain."""
         value = _atleast_3d_first_dimension(value)
+        caxis_spherical_harmonics = self.caxis_spherical_harmonics
 
         _assert_valid_number_of_sh_channels(
-            value.shape, self._caxis_spherical_harmonics)
+            value.shape, caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics)
+            caxis_spherical_harmonics)
 
         Signal.freq.fset(self, value)
+        self._update_spherical_harmonic_channels(
+            caxis_spherical_harmonics)
 
     @property
     def freq_raw(self):
@@ -930,21 +1049,24 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                     Signal.freq_raw.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics)
+                    self.caxis_spherical_harmonics)
 
     @freq_raw.setter
     def freq_raw(self, value):
         """Return or set the frequency domain data without normalization."""
         value = _atleast_3d_first_dimension(value)
+        caxis_spherical_harmonics = self.caxis_spherical_harmonics
 
         _assert_valid_number_of_sh_channels(
-            value.shape, self._caxis_spherical_harmonics)
+            value.shape, caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics)
+            caxis_spherical_harmonics)
 
         Signal.freq_raw.fset(self, value)
+        self._update_spherical_harmonic_channels(
+            caxis_spherical_harmonics)
 
     @property
     def time(self):
@@ -954,18 +1076,21 @@ class SphericalHarmonicSignal(_SphericalHarmonicAudio, Signal):
                     Signal.time.fget(self),
                     self.normalization,
                     self.channel_convention,
-                    self._caxis_spherical_harmonics)
+                    self.caxis_spherical_harmonics)
 
     @time.setter
     def time(self, value):
         """Return or set the time data."""
         value = _atleast_3d_first_dimension(value)
+        caxis_spherical_harmonics = self.caxis_spherical_harmonics
 
         _assert_valid_number_of_sh_channels(
-            value.shape, self._caxis_spherical_harmonics)
+            value.shape, caxis_spherical_harmonics)
 
         value = _convert_to_standard_definition(
             value, self.normalization, self.channel_convention,
-            self._caxis_spherical_harmonics)
+            caxis_spherical_harmonics)
 
         Signal.time.fset(self, value)
+        self._update_spherical_harmonic_channels(
+            caxis_spherical_harmonics)

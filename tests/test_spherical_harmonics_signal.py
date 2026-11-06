@@ -339,3 +339,39 @@ def test_sh_signal_init_wrong_caxis_spherical_harmonics():
                                 normalization='N3D',
                                 condon_shortley=False,
                                 caxis_spherical_harmonics=-4)
+
+
+def test_flatten_and_reshape_signal():
+    """Test flattening and reshaping a SphericalHarmonicSignal."""
+    rng = np.random.default_rng(42)
+    data = rng.standard_normal((2, 4, 16))
+    signal = SphericalHarmonicSignal(data,
+                                     44100, basis_type='real',
+                                     channel_convention='FuMa',
+                                     normalization='maxN',
+                                     condon_shortley=False,
+                                     caxis_spherical_harmonics=-1)
+
+    flat = signal.flatten()
+    assert flat.cshape == (8, )
+    assert flat.n_max == 1
+    with pytest.raises(ValueError, match=re.escape(
+            "The spherical harmonic coefficients are not contained in a "
+            "channel axis")):
+        _ = flat.freq
+
+    restored = flat.reshape((2, 4))
+    assert restored.caxis_spherical_harmonics == (-1, )
+    np.testing.assert_allclose(restored.time, signal.time)
+    np.testing.assert_allclose(restored.freq, signal.freq)
+
+
+def test_init_fuma_n_max_too_large():
+    """FuMa is only supported up to third order."""
+    with pytest.raises(ValueError, match=re.escape(
+            "n_max > 3 is not allowed with 'FuMa' channel convention")):
+        SphericalHarmonicSignal(np.zeros((25, 4)),
+                                44100, basis_type='real',
+                                channel_convention='FuMa',
+                                normalization='N3D',
+                                condon_shortley=False)
