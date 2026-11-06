@@ -136,6 +136,113 @@ def test_renormalize(channel_convention):
                             np.ones((4, 2)))
 
 
+@pytest.mark.parametrize("channel_convention", ['ACN', 'FuMa'])
+def test_renormalize_mimo(channel_convention):
+    sh_data = np.ones((4, 4, 2))
+
+    # test from n3d to maxN
+    current_norm = 'N3D'
+    target_norm = 'maxN'
+    sh_data_n3d_to_maxN = sh.renormalize(sh_data, channel_convention,
+                                         current_norm,
+                                         target_norm, axis=(0, 1))
+    factor = np.array([np.sqrt(1/2), np.sqrt(1/3), np.sqrt(1/3), np.sqrt(1/3)])
+
+    sh_data_ref = np.outer(factor, factor)
+
+    sh_data_ref = np.broadcast_to(sh_data_ref[:, :, np.newaxis],
+                                  (4, 4, 2))
+
+    np.testing.assert_equal(sh_data_n3d_to_maxN, sh_data_ref)
+
+    # test from n3d to nm
+    current_norm = 'N3D'
+    target_norm = 'NM'
+    sh_data_n3d_to_nm = sh.renormalize(sh_data, channel_convention,
+                                       current_norm,
+                                       target_norm, axis=(0, 1))
+    factor = np.sqrt(4 * np.pi) * np.sqrt(4 * np.pi)
+    np.testing.assert_equal(sh_data_n3d_to_nm,
+                            sh_data * factor)
+
+    # test from maxN to n3d
+    current_norm = 'maxN'
+    target_norm = 'N3D'
+    sh_data_maxN_to_n3d = sh.renormalize(sh_data_n3d_to_maxN,
+                                         channel_convention,
+                                         current_norm,
+                                         target_norm, axis=(0, 1))
+    np.testing.assert_equal(sh_data_maxN_to_n3d, np.ones((4, 4, 2)))
+
+    # test from maxN to sn3d
+    current_norm = 'maxN'
+    target_norm = 'SN3D'
+    sh_data_maxN_to_sn3d = sh.renormalize(sh_data_n3d_to_maxN,
+                                          channel_convention,
+                                          current_norm,
+                                          target_norm, axis=(0, 1))
+    # back to n3d to check against ones
+    sh_data_sn3d_to_n3d = sh.renormalize(sh_data_maxN_to_sn3d,
+                                         channel_convention,
+                                         'SN3D',
+                                         'N3D', axis=(0, 1))
+    np.testing.assert_equal(sh_data_sn3d_to_n3d, np.ones((4, 4, 2)))
+
+    # test from n3d to sn3d
+    current_norm = 'N3D'
+    target_norm = 'SN3D'
+    sh_data_n3d_to_sn3d = sh.renormalize(sh_data, channel_convention,
+                                         current_norm,
+                                         target_norm, axis=(0, 1))
+
+    factor = np.array([1/np.sqrt(2*0+1),
+                       1/np.sqrt(2*1+1),
+                       1/np.sqrt(2*1+1),
+                       1/np.sqrt(2*1+1)])
+
+    sh_data_ref = np.outer(factor, factor)
+    sh_data_ref = np.broadcast_to(sh_data_ref[:, :, np.newaxis],
+                                  (4, 4, 2))
+
+    np.testing.assert_equal(sh_data_n3d_to_sn3d, sh_data_ref)
+
+    # test from sn3d to n3d
+    current_norm = 'SN3D'
+    target_norm = 'N3D'
+    sh_data_sn3d_to_n3d = sh.renormalize(sh_data_n3d_to_sn3d,
+                                         channel_convention,
+                                         current_norm,
+                                         target_norm, axis=(0, 1))
+    np.testing.assert_equal(sh_data_sn3d_to_n3d, np.ones((4, 4, 2)))
+
+    # test from sn3d to maxN
+    current_norm = 'SN3D'
+    target_norm = 'maxN'
+    sh_data_sn3d_to_maxN = sh.renormalize(sh_data_n3d_to_sn3d,
+                                          channel_convention,
+                                          current_norm,
+                                          target_norm, axis=(0, 1))
+
+    # test from sn3d to snm
+    current_norm = 'SN3D'
+    target_norm = 'SNM'
+    sh_data_sn3d_to_snm = sh.renormalize(sh_data_n3d_to_sn3d,
+                                         channel_convention,
+                                         current_norm,
+                                         target_norm, axis=(0, 1))
+
+    factor = np.sqrt(4 * np.pi) * np.sqrt(4 * np.pi)
+    np.testing.assert_allclose(sh_data_sn3d_to_snm,
+                               sh_data_n3d_to_sn3d * factor)
+
+    # back to n3d to check against ones
+    sh_data_maxN_to_n3d = sh.renormalize(sh_data_sn3d_to_maxN,
+                                         channel_convention,
+                                         'maxN',
+                                         'N3D', axis=(0, 1))
+    np.testing.assert_allclose(sh_data_maxN_to_n3d, np.ones((4, 4, 2)))
+
+
 def test_renormalize_wrong_channel_number():
     sh_data = np.ones((5, 2))
     with pytest.raises(
@@ -177,5 +284,28 @@ def test_change_channel_convention():
     current_channel_convention = 'FuMa'
     sh_data_new_convention = sh.change_channel_convention(
         sh_data_new_convention_fuma, current_channel_convention, 'ACN', axis=0)
+    np.testing.assert_equal(sh_data,
+                            sh_data_new_convention)
+
+
+def test_change_channel_convention_mimo():
+    # create multichannel sh data
+    sh_data = np.arange(1, 17).reshape(4, 4).astype(float)
+    sh_data = np.broadcast_to(sh_data[:, :, np.newaxis], (4, 4, 3)).copy()
+
+    # test conversion to FuMa
+    current_channel_convention = 'ACN'
+    sh_data_new_convention = sh.change_channel_convention(
+        sh_data, current_channel_convention, 'FuMa', axis=(0, 1))
+    fuma_idx = [0, 3, 1, 2]
+    sh_data_new_convention_fuma = sh_data[fuma_idx, :, :][:, fuma_idx, :]
+    np.testing.assert_equal(sh_data_new_convention_fuma,
+                            sh_data_new_convention)
+
+    # test conversion to acn
+    current_channel_convention = 'FuMa'
+    sh_data_new_convention = sh.change_channel_convention(
+        sh_data_new_convention_fuma, current_channel_convention, 'ACN',
+        axis=(0, 1))
     np.testing.assert_equal(sh_data,
                             sh_data_new_convention)
