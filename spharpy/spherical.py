@@ -950,8 +950,6 @@ def radiation_from_sphere(
     a positive cap velocity with the intensity vector pointing away from the
     source [#]_, [#]_.
 
-    TODO: This function does not have a test yet.
-
     References
     ----------
     .. [#]  E. G. Williams, Fourier Acoustics. Academic Press, 1999.
