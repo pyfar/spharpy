@@ -179,3 +179,54 @@ def test_change_channel_convention():
         sh_data_new_convention_fuma, current_channel_convention, 'ACN', axis=0)
     np.testing.assert_equal(sh_data,
                             sh_data_new_convention)
+
+
+def _hankel2(n, x, derivative=False):
+    """Spherical Hankel function of the second kind from scipy Bessel."""
+    from scipy import special
+    return (special.spherical_jn(n, x, derivative=derivative)
+            - 1j * special.spherical_yn(n, x, derivative=derivative))
+
+
+@pytest.mark.parametrize('n_max', [0, 1, 3])
+@pytest.mark.parametrize('distance', [0.5, 2.])
+def test_radiation_from_sphere_values(n_max, distance):
+    k = np.array([1., 5., 20.])
+    rad_sphere = 0.1
+    density, c = 1.2, 343.0
+
+    radiation = sh.radiation_from_sphere(
+        n_max, rad_sphere, k, distance, density, c)
+
+    n_sh = (n_max + 1)**2
+    assert radiation.shape == (k.size, n_sh, n_sh)
+    assert np.iscomplexobj(radiation)
+
+    # matrix must be diagonal
+    off_diagonal = radiation - np.einsum(
+        'kii->ki', radiation)[..., None] * np.eye(n_sh)
+    np.testing.assert_allclose(off_diagonal, 0)
+
+    # compare diagonal to independent evaluation of the formula
+    for n in range(n_max + 1):
+        expected = -1j * _hankel2(n, k * distance) / \
+            _hankel2(n, k * rad_sphere, derivative=True) * density * c
+        for m in range(-n, n + 1):
+            acn = n**2 + n + m
+            np.testing.assert_allclose(
+                radiation[:, acn, acn], expected, rtol=1e-10)
+
+
+def test_radiation_from_sphere_scalar_k_and_defaults():
+    radiation = sh.radiation_from_sphere(1, 0.1, 3., 1.)
+    assert radiation.shape == (1, 4, 4)
+    explicit = sh.radiation_from_sphere(1, 0.1, 3., 1., 1.2, 343.0)
+    np.testing.assert_allclose(radiation, explicit)
+
+
+def test_radiation_from_sphere_scales_with_medium():
+    k = np.array([2., 4.])
+    base = sh.radiation_from_sphere(2, 0.1, k, 1.)
+    scaled = sh.radiation_from_sphere(
+        2, 0.1, k, 1., density_medium=2.4, speed_of_sound=686.0)
+    np.testing.assert_allclose(scaled, 4 * base)
