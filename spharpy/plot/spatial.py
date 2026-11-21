@@ -18,6 +18,8 @@ from scipy.stats import circmean
 from .cmap import phase_twilight
 
 from pyfar.plot._utils import _add_colorbar
+from pyfar.plot.ticker import (
+    MultipleFractionFormatter, MultipleFractionLocator)
 from pyfar.plot.utils import context as pyfar_plot_context
 from spharpy.samplings import spherical_voronoi
 from spharpy.plot._utils import _prepare_plot
@@ -275,6 +277,24 @@ def _balloon_color_data(tri, data, itype):
     return colors, vmin, vmax
 
 
+def _add_balloon_colorbar(colorbar, fig, ax, plot, cmap_encoding):
+    """Add the colorbar for magnitude or wrapped phase on the sphere."""
+    if not colorbar or cmap_encoding == 'magnitude':
+        return _add_colorbar(colorbar, fig, ax, plot, 'Magnitude')
+
+    # Leave room for the 3D z-axis label when placing the colorbar.
+    cb = fig.colorbar(plot, ax=ax[0], cax=ax[1], pad=0.18)
+    cb.set_label('Phase (rad)')
+    # Use pi/2 for a full turn and adapt to custom limits in powers of two.
+    step = 2.0 ** round(np.log2((cb.vmax - cb.vmin) / (4 * np.pi)))
+    numerator, denominator = step.as_integer_ratio()
+    cb.locator = MultipleFractionLocator(numerator, denominator, np.pi)
+    cb.formatter = MultipleFractionFormatter(
+        numerator, denominator, np.pi, r'\pi')
+    cb.update_ticks()
+    return cb
+
+
 def pcolor_sphere(
         coordinates,
         data,
@@ -309,6 +329,7 @@ def pcolor_sphere(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
+        Phase colorbar ticks are labeled in multiples of π.
     ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
@@ -380,14 +401,9 @@ def pcolor_sphere(
         if '3d' not in ax[0].name:
             raise ValueError("The projection of the axis needs to be '3d'")
 
-        if cmap_encoding == 'phase':
-            if cmap is None:
-                cmap = phase_twilight()
-            clabel = 'Phase (rad)'
-        elif cmap_encoding == 'magnitude':
-            if cmap is None:
-                cmap = plt.get_cmap('viridis')
-            clabel = 'Magnitude'
+        if cmap is None:
+            cmap = (phase_twilight() if cmap_encoding == 'phase'
+                    else plt.get_cmap('viridis'))
 
         cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
@@ -404,7 +420,7 @@ def pcolor_sphere(
 
         plot.set_array(cdata)
 
-        cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+        cb = _add_balloon_colorbar(colorbar, fig, ax, plot, cmap_encoding)
 
         # reduce to plot-axis, colorbar-axis will be returned as cb.ax
         ax = ax[0]
@@ -460,6 +476,7 @@ def balloon_wireframe(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
+        Phase colorbar ticks are labeled in multiples of π.
     ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
@@ -535,14 +552,9 @@ def balloon_wireframe(
         if '3d' not in ax[0].name:
             raise ValueError("The projection of the axis needs to be '3d'")
 
-        if cmap_encoding == 'phase':
-            if cmap is None:
-                cmap = phase_twilight()
-            clabel = 'Phase (rad)'
-        elif cmap_encoding == 'magnitude':
-            if cmap is None:
-                cmap = plt.get_cmap('viridis')
-            clabel = 'Magnitude'
+        if cmap is None:
+            cmap = (phase_twilight() if cmap_encoding == 'phase'
+                    else plt.get_cmap('viridis'))
 
         cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
@@ -572,7 +584,7 @@ def balloon_wireframe(
         plot.set_edgecolors(cmap_colors)
         plot.set_facecolors(np.ones(cmap_colors.shape)*0.9)
 
-        cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+        cb = _add_balloon_colorbar(colorbar, fig, ax, plot, cmap_encoding)
 
         # reduce to plot-axis, colorbar-axis will be returned as cb.ax
         ax = ax[0]
@@ -628,6 +640,7 @@ def balloon(
     cmap_encoding : str, optional
         The information encoded in the colormap. Can be either ``'phase'``
         (in radians) or ``'magnitude'``. The default is ``'phase'``.
+        Phase colorbar ticks are labeled in multiples of π.
     ax : matplotlib.axes.Axes or list, tuple or ndarray of matplotlib.axes.Axes
         Axes to plot on.
 
@@ -694,21 +707,16 @@ def balloon(
     with pyfar_plot_context(style):
         fig, ax = _prepare_plot(ax, '3d')
 
-        # _add_colorbar expects a list of axes
+        # Keep the plot axis and optional colorbar axis together.
         if not isinstance(ax, (list, tuple, np.ndarray)):
             ax = [ax, None]
 
         if '3d' not in ax[0].name:
             raise ValueError("The projection of the axis needs to be '3d'")
 
-        if cmap_encoding == 'phase':
-            if cmap is None:
-                cmap = phase_twilight()
-            clabel = 'Phase (rad)'
-        elif cmap_encoding == 'magnitude':
-            if cmap is None:
-                cmap = plt.get_cmap('viridis')
-            clabel = cmap_encoding.title()
+        if cmap is None:
+            cmap = (phase_twilight() if cmap_encoding == 'phase'
+                    else plt.get_cmap('viridis'))
 
         cdata, vmin, vmax = _balloon_color_data(tri, data, cmap_encoding)
 
@@ -730,7 +738,7 @@ def balloon(
             np.ptp(xyz[1]),
             np.ptp(xyz[2])])
 
-        cb = _add_colorbar(colorbar, fig, ax, plot, clabel)
+        cb = _add_balloon_colorbar(colorbar, fig, ax, plot, cmap_encoding)
 
         # reduce to plot-axis, colorbar-axis will be returned as cb.ax
         ax = ax[0]

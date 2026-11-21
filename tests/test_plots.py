@@ -259,9 +259,32 @@ def test_balloon_cmap_encoding(function, cmap_encoding, cmap):
     # do plotting
     filename = f'{function.__name__}_cmap_encoding_{cmap_encoding}_cmap_{cmap}'
     create_figure()
-    function(coords, data, cmap_encoding=cmap_encoding, cmap=cmap)
+    _, _, cb = function(coords, data, cmap_encoding=cmap_encoding, cmap=cmap)
+    if cmap_encoding == 'phase':
+        ticks = cb.get_ticks()
+        visible = ticks[(ticks >= cb.vmin) & (ticks <= cb.vmax)]
+        np.testing.assert_allclose(visible, np.arange(5) * np.pi / 2)
+        assert cb.formatter.format_ticks(visible) == [
+            r'$0$', r'$\frac{\pi}{2}$', r'$\pi$',
+            r'$\frac{3\pi}{2}$', r'$2\pi$']
+    else:
+        assert isinstance(cb.formatter, mpl.ticker.ScalarFormatter)
     save_and_compare(create_baseline, baseline_path, output_path, filename,
                      file_type, compare_output)
+
+
+def test_phase_colorbar_zoomed_limits():
+    """A narrow phase interval still has visible ticks in fractions of pi."""
+    coords = sp.samplings.equal_area(n_max=0, n_points=12)
+    limits = (np.pi / 4, np.pi / 2)
+    _, plot, cb = sp.plot.pcolor_sphere(coords, np.exp(1j * coords.azimuth),
+                                        limits=limits)
+    np.testing.assert_allclose(plot.get_clim(), limits)
+    ticks = cb.get_ticks()
+    visible = ticks[(ticks >= cb.vmin) & (ticks <= cb.vmax)]
+    assert len(visible) >= 2
+    assert cb.formatter(visible[0]) == r'$\frac{\pi}{4}$'
+
 
 @pytest.mark.parametrize('function', [
     (sp.plot.balloon),
