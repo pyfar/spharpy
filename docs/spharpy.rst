@@ -20,9 +20,7 @@ Python package for spherical array processing.
         :link: readme.html
         :text-align: center
         :padding: 0 0 3 3
-
-        **Getting Started**
-        ^^^^
+        :header: **Getting Started**
 
         .. raw:: html
 
@@ -34,9 +32,7 @@ Python package for spherical array processing.
         :link-type: ref
         :text-align: center
         :padding: 0 0 3 3
-
-        **API Reference**
-        ^^^^
+        :header: **API Reference**
 
         .. raw:: html
 
@@ -47,9 +43,7 @@ Python package for spherical array processing.
         :link: contributing.html
         :text-align: center
         :padding: 0 0 3 3
-
-        **Contributing**
-        ^^^^
+        :header: **Contributing**
 
         .. raw:: html
 
@@ -59,9 +53,7 @@ Python package for spherical array processing.
         :link: history.html
         :text-align: center
         :padding: 0 0 3 3
-
-        **History**
-        ^^^^
+        :header: **History**
 
         .. raw:: html
 
